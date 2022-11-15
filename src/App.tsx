@@ -1,3 +1,4 @@
+/* eslint-disable no-empty-pattern */
 import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
@@ -20,7 +21,7 @@ const App = ({ }: T_Props) => {
             <Router>
               <Routes>
                 <Route path='/inicio' element={<Home />} />
-                <Route path='/condiciones' element={<Conditions />} />
+                <Route path='/condiciones/:city' element={<Conditions />} />
                 <Route path='/condiciones/detalles' element={<ConditionsDetails />} />
                 <Route path='*' element={<Navigate to="/inicio" />} />
               </Routes>

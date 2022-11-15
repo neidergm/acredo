@@ -1,7 +1,12 @@
+import React from 'react';
+import { useParams } from "react-router-dom";
+
 const Conditions = () => {
+  
+  const {city} = useParams()
   return (
     <div>
-        Esta página va a contener las condiciones luego de haber seleccionado una agrupación en la página de Home
+        Condiciones {city}
     </div>
   )
 }
