@@ -17,12 +17,12 @@ const App = ({ }: T_Props) => {
     <div className="layout">
       <main className="main">
         <Suspense fallback={<FallbackComponen1 />}>
-          <div className='container'>
+          <div>
             <Router>
               <Routes>
                 <Route path='/inicio' element={<Home />} />
+                <Route path='/condiciones/detalles/:id' element={<ConditionsDetails />} />
                 <Route path='/condiciones/:city' element={<Conditions />} />
-                <Route path='/condiciones/detalles' element={<ConditionsDetails />} />
                 <Route path='*' element={<Navigate to="/inicio" />} />
               </Routes>
             </Router>

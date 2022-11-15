@@ -5,9 +5,37 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: rgb(250, 250, 250) !important;
+
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+
+/*============Header of pages============*/
+.header{
+  background: linear-gradient(to right, #06A099 0%, #31AC69 100%);
+  
+}
+/*============Btn Back============*/
+.back{
+  font-size: 13px !important ;
+}
+/* ==============HOME==================  */
+.home-condiciones-container .home-content .cards .card{
+  text-align: center;
+  background-color: white !important;
+  text-decoration: none;
+  color: black;
+  border: none;
+  width: 30%;
+}
+
+
+/* ============parragraph of conditions================  */
+.info-condicion{
+  font-size: 14px;
 }
