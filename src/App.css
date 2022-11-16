@@ -1,3 +1,8 @@
+*{
+  margin: 0;
+  padding: 0;
+  text-decoration: none !important;
+}
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -5,7 +10,6 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: rgb(250, 250, 250) !important;
 
 }
 
@@ -20,10 +24,16 @@ code {
   background: linear-gradient(to right, #06A099 0%, #31AC69 100%);
   
 }
+
+
+
 /*============Btn Back============*/
 .back{
   font-size: 13px !important ;
 }
+
+
+
 /* ==============HOME==================  */
 .home-condiciones-container .home-content .cards .card{
   text-align: center;
@@ -35,7 +45,69 @@ code {
 }
 
 
+
+/*======CONDICIONES========*/
+.condiciones-container .container-nav{
+  background-color: #E3E8ED;
+  color: #4B5C6B;
+}
+.condiciones-container .container-nav .institucionales, .container-nav .programas{
+  width: 150px;  cursor: pointer; 
+
+}
+
+.condiciones-container .container-nav .institucionales:hover, .container-nav .programas:hover{
+  background-color: #d5dce2;
+}
+.condiciones-container .container-body-condiciones{
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+}
+.condiciones-container .container-body-condiciones.active .content-2{
+  margin: 0;
+}
+.condiciones-container .container-body-condiciones.active .content-1{
+  margin-left: -100%;
+}
+.condiciones-container .content-1, .content-2{
+  width: 100% !important;transition: .2s;
+}
+.condiciones-container .content-2{
+  margin-right: -100%;
+}
+.condiciones-container .btn-active{
+  color: orange;
+}
+.condiciones-container .item{
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  border: 2px solid orange;
+  width: 150px;
+}
+.condiciones-container .item.move-item{
+  margin-left: 150px;
+}
+
+.condiciones-container table tbody{
+  font-size: 14px;
+}
+
+
+
 /* ============parragraph of conditions================  */
 .info-condicion{
+  font-size: 14px;
+}
+
+
+
+/*========CONVOCATORIAS==========*/
+
+.conv-card {
+  list-style: none ;
+  background-color: #E3E8ED;
+  color: #4B5C6B;
   font-size: 14px;
 }

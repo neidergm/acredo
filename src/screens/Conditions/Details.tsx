@@ -89,7 +89,7 @@ const ConditionsDetails = () => {
         .filter((condicion) => condicion.codigo === id)
         .map((condiciones) => (
           <div className="contenedor-filter">
-            <div className="header p-4 border condiciones-header">
+            <div className="header p-4  condiciones-header">
               <div className="title fs-3 text-white">
                 <div className="container">
                   {condiciones.condicion.toLowerCase()}
