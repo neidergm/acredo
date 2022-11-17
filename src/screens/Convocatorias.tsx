@@ -53,7 +53,7 @@ const Convocatorias = () => {
       <div className="body-convocatorias container pt-4">
         {/* se mapea el contenido y se generan las cards */}
         {convocatorias.map((convocatoria) => (
-          <Link to="/condiciones">
+          <Link to="/condiciones">  
             <div className=" p-2 conv-card px-5 my-2 d-flex flex-row justify-content-between">
               <div className="nombre d-flex flex-column">
 

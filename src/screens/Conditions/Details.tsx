@@ -6,17 +6,20 @@ import React, { useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {
   TabContent, TabPane, Nav,
-  NavItem, NavLink, Row, Col, Button, Modal, ModalHeader, ModalBody, ModalFooter
+  NavItem, NavLink, Row, Col, Button,
 } from 'reactstrap';
 import classnames from 'classnames';
+import Modal, { I_ModalContentProps } from "../../components/Modal";
 
 
 const ConditionsDetails = () => {
 
-  
+
 
   // State for current active Tab
   const [currentActiveTab, setCurrentActiveTab] = useState('1');
+
+  const [modalData, setModalData] = useState<null | I_ModalContentProps>(null);
 
   // Toggle active state for Tab
   const toggleTab = (tab: any) => {
@@ -241,8 +244,28 @@ const ConditionsDetails = () => {
   ]
 
 
+  
   return (
     <div className="container-details">
+      {/* <button onClick={()=>setModalData({
+        title: "Hola",
+        children: "Hola",
+        closeButton: {value: "CERRAR", color: "danger", onClick: ()=>{
+          console.log("Cancel")
+        }},
+        submitButton: {value: "OK",
+         onClick: ()=>{
+          setModalData(null)
+          console.log("Some")
+        }},
+        onClosed: ()=> setModalData(null)
+      })}>OpenModal</button>
+
+      <Modal 
+        isOpen={!!(modalData)}
+        {...modalData as I_ModalContentProps}
+      /> */}
+
       {condiciones
         .filter((condicion: any) => condicion.codigo === id)
         .map((condiciones: any) => (
@@ -386,27 +409,54 @@ const ConditionsDetails = () => {
                       <Row>
                         <Col sm="12">
                           {historial.map(anexo =>
-                            <div className="historial py-1  d-flex align-items-center mt-3">
+                            <div className="historial py-1  d-flex align-items-center mt-3" >
                               <div className="icon-container d-flex alig-items-center justify-content-center">
                                 <div className="icon p-2 d-flex flex-column justify-content-center">
                                   <div className="item-icon d-flex align-items-center"><Daate size={20} />00.00-0000</div>
                                   <div className="item-icon d-flex align-items-center"><Clock size={20} />00:00</div>
                                 </div>
+
                               </div>
-                              <div className="anexo-body historial-body p-0 py-1 d-flex flex-column  ">
+                              <div className="anexo-body historial-body p-0 py-1 d-flex flex-column  " onClick={()=>{
+                                setModalData({
+                                  title:' ',
+                                  children: (
+                                    <div>
+                                      <p className="m-0">Accion:</p>
+                                      <b>{anexo.tipo}</b>
+                                      <p className="mt-3 m-0">Fecha:</p>
+                                      <b>00-00-0000</b>
+                                      <p className="mt-3 m-0">Usuario:</p>
+                                      <b>Name User</b>
+                                      <hr />
+                                      <p>{anexo.descripcion}</p>
+                                      
+                                    </div>                                     
+                                  ),                                                                  
+                                  onClosed: () => setModalData(null)
+                                })
+                              }}>
+
                                 <span><span className={anexo.tipo === 'CONDICION' ? 'badge text-white rounded-pill  text-bg-success' : anexo.tipo === 'REVISIÓN' ? 'badge text-white rounded-pill  text-bg-warning' : anexo.tipo === 'ANEXO' ? 'badge text-white rounded-pill  text-bg-info' : ''}>{anexo.tipo}</span></span>
                                 <span>{anexo.descripcion}</span>
                               </div>
+                             
                             </div>
 
+
+
                           )}
-                          
+
                         </Col>
                       </Row>
                     </TabPane>
                   </TabContent>
 
                 </div>
+                <Modal
+                                  isOpen={!!(modalData)}
+                                  {...modalData as I_ModalContentProps}
+                                />
               </div>
             </div>
           </div>
