@@ -21,7 +21,7 @@ const App = ({ }: T_Props) => {
             <Router>
               <Routes>
                 <Route path='/' element={<Convocatorias />} />
-                <Route path='/condiciones/detalles/:id' element={<ConditionsDetails />} />
+                <Route path='/condiciones/detalles/:dependency/:id' element={<ConditionsDetails />} />
                 <Route path='/condiciones/' element={<Conditions />} />
                 <Route path='*' element={<Navigate to="/" />} />
               </Routes>
