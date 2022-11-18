@@ -1,13 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button, Modal as ModalB, ModalHeader, ModalBody, ModalFooter as ModalFooterB, ModalProps, ButtonProps } from 'reactstrap';
 import classnames from 'classnames';
+import Form from 'react-ngm-form';
 
+type T_ModalToggleAction = (toggle?: boolean) => void;
 type T_Btn = Omit<ButtonProps, 'onClick'> & {
     /**
      * Custom onClick function.
      * The parameter is the modal toggle function
      */
-    onClick?: (modalToggleFunction: (toggle?: boolean) => void) => void
+    onClick?: (modalToggleFunction: T_ModalToggleAction) => void;
 };
 
 export interface I_ModalActionButtons {
@@ -20,7 +22,7 @@ export interface I_ModalContentProps extends I_ModalActionButtons {
     title?: JSX.Element | JSX.Element[] | any;
     onClosed?: () => void;
     isOpen?: boolean;
-    form?: any;
+    form?: { fields: Array<any>, defaultValues: { [x: string]: any }, onSubmit: (data: any, toggle: T_ModalToggleAction) => void };
 }
 
 const Modal = ({
@@ -34,12 +36,13 @@ const Modal = ({
     className
 }: ModalProps & I_ModalContentProps) => {
     const [showModal, setShowModal] = useState(isOpen);
+    const btnSubmitInForm = useRef<any>(null);
 
     useEffect(() => {
         setShowModal(isOpen);
     }, [isOpen])
 
-    const toggle = (action?: boolean) => {
+    const toggle: T_ModalToggleAction = (action?: boolean) => {
         action !== undefined ? setShowModal(action) : setShowModal(!showModal);
     };
 
@@ -55,11 +58,25 @@ const Modal = ({
             onClosed={onClosed}
         >
             {title && <ModalHeader toggle={() => toggle()} style={{ border: 0 }}>{title}</ModalHeader>}
-            <ModalBody>
-                {children}
-            </ModalBody>
-            <ModalFooter closeButton={closeButton} submitButton={submitButton} action={toggle} />
-        </ModalB>
+
+            {form ? <>
+                <ModalBody>
+                    {children}
+                    <Form {...form} onSubmit={data => form.onSubmit(data, toggle)} >
+                        <button type='submit'  ref={btnSubmitInForm} className="d-none"></button>
+                    </Form>
+                </ModalBody>
+                <ModalFooter closeButton={closeButton} submitButton={{ ...submitButton, onClick:()=> btnSubmitInForm.current.click() }} action={() => { }} />
+            </>
+                :
+                <>
+                    <ModalBody>
+                        {children}
+                    </ModalBody>
+                    <ModalFooter closeButton={closeButton} submitButton={submitButton} action={toggle} />
+                </>
+            }
+        </ModalB >
     );
 }
 

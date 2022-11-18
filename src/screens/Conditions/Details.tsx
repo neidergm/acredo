@@ -451,6 +451,24 @@ const ConditionsDetails = () => {
                 </div>
                 <Modal
                   isOpen={!!(modalData)}
+                  form={{
+                    fields: [{
+                      label: 'Text',
+                      name: 'textInput',
+                      tag: 'input',
+                      type: 'text',
+                      validations: {
+                        maxLength: 10,
+                        minLength: 3,
+                        required: true
+                      }
+                    }],
+                    defaultValues:{},
+                    onSubmit: (data, toggle)=>{
+                      console.log({data})
+                      
+                    }
+                  }}
                   {...modalData as I_ModalContentProps}
                 />
               </div>
