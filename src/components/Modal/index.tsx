@@ -19,31 +19,8 @@ export interface I_ModalContentProps extends I_ModalActionButtons {
     title?: JSX.Element | JSX.Element[] | any;
     onClosed?: () => void;
     isOpen?: boolean;
+    isForm?: boolean;
 }
-
-export const ModalFooter = ({
-    closeButton,
-    submitButton,
-    action
-}: { action: (t?: boolean) => void } & I_ModalActionButtons) => (closeButton || submitButton) ?
-        <ModalFooterB style={{ border: 0, justifyContent: closeButton && submitButton ? "space-between" : "center" }}>
-            {closeButton &&
-                <Button color='primary' {...closeButton}
-                    onClick={() => {
-                        if (!!(closeButton.onClick)) return closeButton.onClick(action);
-                        action();
-                    }}
-                >{closeButton.value || "Cancelar"}</Button>
-            }
-            {submitButton &&
-                <Button color='primary' {...submitButton}
-                    onClick={() => {
-                        if (!!(submitButton.onClick)) return submitButton.onClick(action);
-                        action()
-                    }}
-                >{submitButton.value || "Ok"}</Button>
-            }
-        </ModalFooterB> : null
 
 const Modal = ({
     title,
@@ -75,13 +52,41 @@ const Modal = ({
             onClosed={onClosed}
         >
             {title && <ModalHeader toggle={() => toggle()} style={{ border: 0 }}>{title}</ModalHeader>}
-            <ModalBody>{children}</ModalBody>
+            <ModalBody>
+                {children}
+            </ModalBody>
             <ModalFooter closeButton={closeButton} submitButton={submitButton} action={toggle} />
         </ModalB>
     );
 }
 
 export default Modal;
+
+export const ModalFooter = ({
+    closeButton,
+    submitButton,
+    action
+}: { action: (t?: boolean) => void } & I_ModalActionButtons) => (closeButton || submitButton) ?
+        <ModalFooterB style={{ border: 0, justifyContent: closeButton && submitButton ? "space-between" : "center" }}>
+            {closeButton &&
+                <Button color='primary' {...closeButton}
+                    type="button"
+                    onClick={() => {
+                        if (!!(closeButton.onClick)) return closeButton.onClick(action);
+                        action();
+                    }}
+                >{closeButton.value || "Cancelar"}</Button>
+            }
+            {submitButton &&
+                <Button color='primary' {...submitButton}
+                    onClick={() => {
+                        if (!!(submitButton.onClick)) return submitButton.onClick(action);
+                        action()
+                    }}
+                >{submitButton.value || "Ok"}</Button>
+            }
+        </ModalFooterB> : null
+
 
 /**
  * Usage example

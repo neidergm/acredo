@@ -7,7 +7,7 @@ import lazyLoaderComponents from './services/lazyLoadingService';
 
 const Conditions = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Conditions" */ './screens/Conditions')));
 const ConditionsDetails = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "ConditionsDetails" */ './screens/Conditions/Details')));
-const Convocatorias = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "ConditionsDetails" */ './screens/Convocatorias')));
+const Convocatorias = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Convocatories" */ './screens/Convocatorias')));
 
 type T_Props = {}
 

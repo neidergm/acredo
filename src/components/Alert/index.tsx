@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Modal, ModalBody, ModalHeader, ButtonProps } from 'reactstrap';
+import { Modal, ModalBody, ModalHeader } from 'reactstrap';
+import { CheckCircleFill, ExclamationCircleFill, InfoCircleFill, QuestionCircleFill, XCircleFill } from '../Icons';
 import { I_ModalActionButtons, ModalFooter } from './../Modal';
 
 interface I_Props extends I_ModalActionButtons {
@@ -8,7 +9,16 @@ interface I_Props extends I_ModalActionButtons {
   subtitle?: string | JSX.Element | JSX.Element[];
   size?: 'sm' | 'md' | 'lg' | 'xl';
   onClosed?: () => void;
+  type?: keyof typeof alertType;
 };
+
+const alertType = {
+  info: <i className='text-info'><InfoCircleFill size={55} /></i>,
+  success: <i className='text-success'><CheckCircleFill size={55} /></i>,
+  error: <i className='text-danger'><XCircleFill size={55} /></i>,
+  warning: <i className='text-warning'><ExclamationCircleFill size={55} /></i>,
+  question: <i className='text-primary'><QuestionCircleFill size={55} /></i>,
+}
 
 const Alert = ({
   title,
@@ -17,7 +27,8 @@ const Alert = ({
   onClosed,
   submitButton,
   closeButton,
-  size = 'md'
+  size = 'md',
+  type,
 }: I_Props) => {
   const [showAlert, setShowAlert] = useState(isOpen);
 
@@ -40,13 +51,9 @@ const Alert = ({
     >
       {
         <ModalHeader className='border-0 pb-0 flex-column-reverse' toggle={!(!!(closeButton) || !!(submitButton)) ? (() => toggle()) : undefined}>
-          <div className='justify-content-center p-3 text-success'>
-            <svg xmlns="http://www.w3.org/2000/svg" width="55" height="55" fill="currentColor" className="bi bi-check-circle-fill" viewBox="0 0 16 16">
-              <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
-            </svg>
-          </div>
+          <div className='justify-content-center p-3'>{alertType[type!]}</div>
         </ModalHeader>
-      } 
+      }
       <ModalBody className="text-center">
         {title && <h3 className='mb-4'>{title}</h3>}
         {subtitle && <p>{subtitle}</p>}

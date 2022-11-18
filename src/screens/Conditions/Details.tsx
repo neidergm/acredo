@@ -10,6 +10,7 @@ import {
 } from 'reactstrap';
 import classnames from 'classnames';
 import Modal, { I_ModalContentProps } from "../../components/Modal";
+import { GoBackButton } from "../../components/GoBackButton";
 
 
 const ConditionsDetails = () => {
@@ -244,7 +245,7 @@ const ConditionsDetails = () => {
   ]
 
 
-  
+
   return (
     <div className="container-details">
       {/* <button onClick={()=>setModalData({
@@ -278,12 +279,7 @@ const ConditionsDetails = () => {
               </div>
             </div>
             <div className="container py-5">
-              <button
-                className="btn back btn-secondary  rounded"
-                onClick={() => navigate(-1)}
-              >
-                <IName size={20} /> Atras
-              </button>
+              <GoBackButton />
 
               <div className=" body-details mt-4 bg-white py-4 px-5 shadow">
                 <div className="px-5 pt-3">
@@ -417,9 +413,9 @@ const ConditionsDetails = () => {
                                 </div>
 
                               </div>
-                              <div className="anexo-body historial-body p-0 py-1 d-flex flex-column  " onClick={()=>{
+                              <div className="anexo-body historial-body p-0 py-1 d-flex flex-column  " onClick={() => {
                                 setModalData({
-                                  title:' ',
+                                  title: ' ',
                                   children: (
                                     <div>
                                       <p className="m-0">Accion:</p>
@@ -430,9 +426,9 @@ const ConditionsDetails = () => {
                                       <b>Name User</b>
                                       <hr />
                                       <p>{anexo.descripcion}</p>
-                                      
-                                    </div>                                     
-                                  ),                                                                  
+
+                                    </div>
+                                  ),
                                   onClosed: () => setModalData(null)
                                 })
                               }}>
@@ -440,7 +436,7 @@ const ConditionsDetails = () => {
                                 <span><span className={anexo.tipo === 'CONDICION' ? 'badge text-white rounded-pill  text-bg-success' : anexo.tipo === 'REVISIÓN' ? 'badge text-white rounded-pill  text-bg-warning' : anexo.tipo === 'ANEXO' ? 'badge text-white rounded-pill  text-bg-info' : ''}>{anexo.tipo}</span></span>
                                 <span>{anexo.descripcion}</span>
                               </div>
-                             
+
                             </div>
 
 
@@ -454,9 +450,9 @@ const ConditionsDetails = () => {
 
                 </div>
                 <Modal
-                                  isOpen={!!(modalData)}
-                                  {...modalData as I_ModalContentProps}
-                                />
+                  isOpen={!!(modalData)}
+                  {...modalData as I_ModalContentProps}
+                />
               </div>
             </div>
           </div>
