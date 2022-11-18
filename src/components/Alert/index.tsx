@@ -1,16 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Modal, ModalBody, ModalHeader, ButtonProps } from 'reactstrap';
-import { ModalFooter } from './../Modal';
+import { I_ModalActionButtons, ModalFooter } from './../Modal';
 
-type T_Props = {
+interface I_Props extends I_ModalActionButtons {
   isOpen: boolean;
   title?: string | JSX.Element | JSX.Element[];
   subtitle?: string | JSX.Element | JSX.Element[];
   size?: 'sm' | 'md' | 'lg' | 'xl';
-  closeButton?: ButtonProps;
-  submitButton?: ButtonProps;
   onClosed?: () => void;
-}
+};
 
 const Alert = ({
   title,
@@ -20,7 +18,7 @@ const Alert = ({
   submitButton,
   closeButton,
   size = 'md'
-}: T_Props) => {
+}: I_Props) => {
   const [showAlert, setShowAlert] = useState(isOpen);
 
   useEffect(() => {
@@ -53,7 +51,7 @@ const Alert = ({
         {title && <h3 className='mb-4'>{title}</h3>}
         {subtitle && <p>{subtitle}</p>}
       </ModalBody>
-      <ModalFooter action={toggle} btn1={closeButton} btn2={submitButton} />
+      <ModalFooter action={toggle} closeButton={closeButton} submitButton={submitButton} />
     </Modal>
   )
 }

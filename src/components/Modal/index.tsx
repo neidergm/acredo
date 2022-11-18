@@ -1,43 +1,49 @@
 import { useState, useEffect } from 'react';
 import { Button, Modal as ModalB, ModalHeader, ModalBody, ModalFooter as ModalFooterB, ModalProps, ButtonProps } from 'reactstrap';
 
-export interface I_ModalContentProps {
+type T_Btn = Omit<ButtonProps, 'onClick'> & {
+    /**
+     * Custom onClick function.
+     * The parameter is the modal toggle function
+     */
+    onClick?: (modalToggleFunction: (toggle?: boolean) => void) => void
+};
+
+export interface I_ModalActionButtons {
+    closeButton?: T_Btn;
+    submitButton?: T_Btn;
+}
+
+export interface I_ModalContentProps extends I_ModalActionButtons {
     children: JSX.Element | JSX.Element[] | string;
-    closeButton?: ButtonProps;
-    submitButton?: ButtonProps;
     title?: JSX.Element | JSX.Element[] | any;
     onClosed?: () => void;
     isOpen?: boolean;
 }
 
 export const ModalFooter = ({
-    btn1,
-    btn2,
+    closeButton,
+    submitButton,
     action
-}: {
-    btn1?: ButtonProps,
-    btn2?: ButtonProps,
-    action: Function
-}) => (btn1 || btn2) ?
-    <ModalFooterB style={{ border: 0, justifyContent: btn1 && btn2 ? "space-between" : "center" }}>
-        {btn1 &&
-            <Button color='primary' {...btn1}
-                onClick={() => { btn1.onClick?.(action as any) || action() }}
-            >
-                {btn1.value || "Cancelar"}
-            </Button>
-        }
-        {btn2 &&
-            <Button color='primary' {...btn2}
-                onClick={() => {
-                    if (!!(btn2.onClick)) return btn2.onClick(action as any);
-                    action()
-                }}
-            >
-                {btn2.value || "Ok"}
-            </Button>
-        }
-    </ModalFooterB> : null
+}: { action: (t?: boolean) => void } & I_ModalActionButtons) => (closeButton || submitButton) ?
+        <ModalFooterB style={{ border: 0, justifyContent: closeButton && submitButton ? "space-between" : "center" }}>
+            {closeButton &&
+                <Button color='primary' {...closeButton}
+                    onClick={() => {
+                        if (!!(closeButton.onClick)) return closeButton.onClick(action);
+                        action();
+                    }}
+                >{closeButton.value || "Cancelar"}</Button>
+            }
+            {submitButton &&
+                <Button color='primary' {...submitButton}
+                    onClick={() => {
+                        if (!!(submitButton.onClick)) return submitButton.onClick(action);
+                        action()
+                    }}
+                >{submitButton.value || "Ok"}</Button>
+            }
+        </ModalFooterB> : null
 
 const Modal = ({
     title,
@@ -70,13 +76,12 @@ const Modal = ({
         >
             {title && <ModalHeader toggle={() => toggle()} style={{ border: 0 }}>{title}</ModalHeader>}
             <ModalBody>{children}</ModalBody>
-            <ModalFooter btn1={closeButton} btn2={submitButton} action={toggle} />
+            <ModalFooter closeButton={closeButton} submitButton={submitButton} action={toggle} />
         </ModalB>
     );
 }
 
 export default Modal;
-
 
 /**
  * Usage example
@@ -84,13 +89,20 @@ export default Modal;
  * setModalData({
  *   title: "hola",
  *   closeButton: { color: "danger" },
- *   submitButton: { color: "success", onClick: successAction as any },
+ *   submitButton: { color: "success", onClick: successAction },
  *   children: "lorem",
  * })
  * 
- * const successAction = (toggle: Function) => {
+ * const successAction = (toggle) => {
  *      console.log("ok")
  *      setModalData({ children: "Cargando" })
  *      toggle(true)
  *  }
+ * 
+ *  <Modal
+ *    onClosed={() => setModalData(null)}
+ *    isOpen={!!(modalData)}
+ *    {...modalData as I_ModalContentProps}
+ * />
+ * 
  */
