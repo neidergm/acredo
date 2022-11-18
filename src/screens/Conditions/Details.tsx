@@ -11,6 +11,8 @@ import {
 import classnames from 'classnames';
 import Modal, { I_ModalContentProps } from "../../components/Modal";
 import { GoBackButton } from "../../components/GoBackButton";
+import Header from "../../components/header";
+import './details.css'
 
 
 const ConditionsDetails = () => {
@@ -248,40 +250,17 @@ const ConditionsDetails = () => {
 
   return (
     <div className="container-details">
-      {/* <button onClick={()=>setModalData({
-        title: "Hola",
-        children: "Hola",
-        closeButton: {value: "CERRAR", color: "danger", onClick: ()=>{
-          console.log("Cancel")
-        }},
-        submitButton: {value: "OK",
-         onClick: ()=>{
-          setModalData(null)
-          console.log("Some")
-        }},
-        onClosed: ()=> setModalData(null)
-      })}>OpenModal</button>
-
-      <Modal 
-        isOpen={!!(modalData)}
-        {...modalData as I_ModalContentProps}
-      /> */}
 
       {condiciones
         .filter((condicion: any) => condicion.codigo === id)
         .map((condiciones: any) => (
           <div className="contenedor-filter">
-            <div className="header p-4  condiciones-header">
-              <div className="title fs-3 text-white">
-                <div className="container">
-                  {condiciones.condicion.toLowerCase()}
-                </div>
-              </div>
-            </div>
+                  <Header/>
+
             <div className="container py-5">
               <GoBackButton />
 
-              <div className=" body-details mt-4 bg-white py-4 px-5 shadow">
+              <div className=" body-details mt-4 bg-white py-5 px-5 shadow shadow-large">
                 <div className="px-5 pt-3">
                   <div className="d-flex justify-content-between">
                     <div className="subtitle ps-4">Nombre</div>
@@ -415,7 +394,7 @@ const ConditionsDetails = () => {
                               </div>
                               <div className="anexo-body historial-body p-0 py-1 d-flex flex-column  " onClick={() => {
                                 setModalData({
-                                  title: ' ',
+                                  title: anexo.tipo,
                                   children: (
                                     <div>
                                       <p className="m-0">Accion:</p>

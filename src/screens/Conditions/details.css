@@ -1,0 +1,115 @@
+.body-details{
+    color: #4B5C6B;
+  }
+  
+  .body-details .subtitle{
+    background-color: #E3E8ED;
+    width: 200px;
+    border-radius: 20px;
+    padding: 5px;
+    font-weight: bold;
+    font-size: 15px;
+  }
+  
+  .group-subtitle, Nav{
+    background-color: #E3E8ED;
+    width: auto !important; border-radius: 20px;
+    position: relative;
+  }
+  
+  .group-subtitle .sub-item, .sub-item:hover{
+    font-size: 14px;
+    font-weight: bold;
+    background-color: #E3E8ED;
+  font-size: 15px;
+  color: #4B5C6B !important;
+  border: none;
+  border-radius: 20px !important;
+  margin-right: 10px;
+  cursor: pointer;
+  column-gap: 5px;
+  }
+  
+  .group-subtitle .sub-item:focus , .sub-item.active{
+    background-color: white !important;
+    color: #E9863F !important;
+  
+  }
+  textarea{
+    width: 100%;
+    height: 230px;
+    resize: none !important;
+    color: #4B5C6B;
+    background-color: #F2F5F7;
+    border: 2px dashed #DAE2E8;
+    outline:  none !important
+  }
+  
+  .pointer{
+    cursor: pointer;
+  }
+  button.pointer{
+    border: none;
+    outline: none;
+    color: #4B5C6B;
+    width: auto;
+    column-gap: 5px;
+  }
+  .container-details{
+    font-size: 14px;
+  }
+  
+  .dialog{
+    display: none;
+  }
+  .dialog.active{
+    display: block;
+  }
+  .anexo, .historial{
+    background-color: #F2F5F7;
+  }
+  .anexo .icon-container{
+    width: 10%;
+  }
+  .anexo .icon-container .icon{
+    background-color: #CED8E0 !important;
+    border-radius: 50%;
+  }
+  .anexo-body{
+    width: 80%;
+    justify-content: center !important;
+  }
+  .anexo-options{
+    color: #4B5C6B;
+    justify-content: center;
+    align-items: center;
+    width: 10%;
+    column-gap: 5px;
+  }
+  .icon-option{
+    cursor: pointer;
+  }
+  .icon-option > *{
+    color: #4B5C6B !important;
+  }
+  .historial .icon-container{
+    color: #788896 !important;
+    font-weight: 500;
+    width: 15%;
+  }
+  .historial, .anexo{
+    transition: .1s;
+  }
+  .historial:hover, .anexo:hover{
+    background-color: #CED8E0;
+  }
+  .icon-container .item-icon{
+    column-gap: 5px;
+  }
+  .body-details{
+    padding-bottom: 100px !important;
+  }
+  .historial-body{
+    cursor: pointer;
+    color: #59646F;
+  }

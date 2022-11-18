@@ -1,0 +1,42 @@
+.condiciones-container .institucionales,  .programas{
+    width: 150px;  cursor: pointer;  color: #4B5C6B !important;
+  
+  }
+  
+  
+  .condiciones-container .container-body-condiciones{
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+  }
+  .condiciones-container .container-body-condiciones.active .content-2{
+    margin: 0;
+  }
+  .condiciones-container .container-body-condiciones.active .content-1{
+    margin-left: -100%;
+  }
+  .condiciones-container .content-1, .content-2{
+    width: 100% !important;transition: .2s;
+  }
+  .condiciones-container .content-2{
+    margin-right: -100%;
+  }
+  .condiciones-container .btn-active{
+    color: orange;
+  }
+  .condiciones-container .item{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    border: 2px solid orange;
+    width: 150px;
+  }
+  .condiciones-container .item.move-item{
+    margin-left: 150px;
+  }
+  
+  .condiciones-container table tbody{
+    font-size: 14px;
+  }
+  
+  
