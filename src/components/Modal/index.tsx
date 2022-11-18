@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button, Modal as ModalB, ModalHeader, ModalBody, ModalFooter as ModalFooterB, ModalProps, ButtonProps } from 'reactstrap';
+import classnames from 'classnames';
 
 type T_Btn = Omit<ButtonProps, 'onClick'> & {
     /**
@@ -19,7 +20,7 @@ export interface I_ModalContentProps extends I_ModalActionButtons {
     title?: JSX.Element | JSX.Element[] | any;
     onClosed?: () => void;
     isOpen?: boolean;
-    isForm?: boolean;
+    form?: any;
 }
 
 const Modal = ({
@@ -28,7 +29,9 @@ const Modal = ({
     submitButton,
     closeButton,
     onClosed,
-    isOpen
+    isOpen,
+    form,
+    className
 }: ModalProps & I_ModalContentProps) => {
     const [showModal, setShowModal] = useState(isOpen);
 
@@ -43,7 +46,7 @@ const Modal = ({
     return (
         <ModalB
             modalTranssition
-            contentClassName='p-md-2 p-xl-3 border-0'
+            contentClassName={classnames('p-md-2 p-xl-3 border-0', className)}
             style={{ border: 0 }}
             isOpen={showModal}
             toggle={() => toggle()}

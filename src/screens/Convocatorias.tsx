@@ -2,6 +2,8 @@
 
 import React from "react";
 import { useParams, Link, Routes, Route, useNavigate } from "react-router-dom";
+import { GoBackButton } from "../components/GoBackButton";
+import { SubHeader } from "../components/SubHeader";
 
 const convocatorias = [
   {
@@ -50,10 +52,11 @@ const Convocatorias = () => {
           <div className="container">CONVOCATORIAS</div>
         </div>
       </div>
+      <SubHeader text="Convocatorias" showBackButton/>
       <div className="body-convocatorias container pt-4">
         {/* se mapea el contenido y se generan las cards */}
         {convocatorias.map((convocatoria) => (
-          <Link to="/condiciones">  
+          <Link to="/condiciones">
             <div className=" p-2 conv-card px-5 my-2 d-flex flex-row justify-content-between">
               <div className="nombre d-flex flex-column">
 
