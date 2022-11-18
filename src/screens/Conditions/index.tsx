@@ -173,7 +173,7 @@ const Conditions = () => {
   return (
     <div className="condiciones-container">
       <Header/>
-      <div className="container pt-5">
+      <div className="container-md pt-5">
       <GoBackButton />
 
 
@@ -221,7 +221,7 @@ const Conditions = () => {
               <TabPane tabId="1">
                 <Row>
                   <Col sm="12">
-                    <table className="table table-striped border mt-4">
+                    <table className="table table-striped border mt-4 ">
                       <thead>
                         <tr>
                           <th className="text-center">Codigo</th>
@@ -273,7 +273,7 @@ const Conditions = () => {
                             <td>{item.programa}</td>
                             <td>{item.estado !== 'no' ? 'Verificado' : 'Pendiente'}</td>
                             <td>
-                              <Link to="">ver</Link>
+                              <Link to={'/condiciones/detalles/'+item.programa+'/'+item.codigo}>ver</Link>
                             </td>
                           </tr>
                         ))}

@@ -1,7 +1,8 @@
 
 import React from "react";
-import { Link } from "react-router-dom";
+import {  Link} from "react-router-dom";
 import Header from "../components/header";
+import { SubHeader } from "../components/SubHeader";
 
 const convocatorias = [
   {
@@ -46,8 +47,8 @@ const Convocatorias = () => {
   return (
     <div className="container-convocatorias">
       <Header/>
-
-      <div className="body-convocatorias container pt-4">
+      <SubHeader text={'Convocatorias'} />
+      <div className="body-convocatorias container-sm pt-4">
         {convocatorias.map((convocatoria) => (
           <Link to="/condiciones">
             <div className=" py-3 conv-card card px-5  my-2 d-flex flex-row justify-content-between">

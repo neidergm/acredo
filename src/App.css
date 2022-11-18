@@ -3,6 +3,9 @@
   list-style: none;
   text-decoration: none !important;
 }
+table{
+  overflow-x: scroll !important;
+}
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

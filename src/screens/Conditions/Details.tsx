@@ -13,6 +13,7 @@ import Modal, { I_ModalContentProps } from "../../components/Modal";
 import { GoBackButton } from "../../components/GoBackButton";
 import Header from "../../components/header";
 import './details.css'
+import { SubHeader } from "../../components/SubHeader";
 
 
 const ConditionsDetails = () => {
@@ -31,7 +32,67 @@ const ConditionsDetails = () => {
   const navigate = useNavigate();
   const { dependency } = useParams();
   const { id } = useParams();
+  var programas = [
+    {
+      codigo: '100',
+      condicion: 'CONDICIÓN DE DENOMINACIÓN',
+      estado: 'no',
+      programa: 'Medicina',
+      informacion:'Ingrese la información en la que desarrolla de manera integral y particular lo solicitado por la normativa vigente, de acuerdo con lo señalado en los artículos 2.5.3.2.3.2.2 y 2.5.3.2.3.2.12 del Decreto 1075 de 2015, modificado por el Decreto 1330 de 2019 y los artículos 53 y 55 de la Resolución 21795 de 2020',
 
+    },
+    {
+      codigo: '200',
+      condicion: 'CONDICIÓN DE JUSTIFICACIÓN',
+      estado: 'no',
+      programa: 'Bacteriología',
+    },
+    {
+      codigo: '300',
+      condicion: 'CONDICIÓN DE ASPECTOS CURRICULARES',
+      numero: 'Condición 3',
+      estado: 'no',
+      programa: 'Enfermería',
+    },
+    {
+      codigo: '400',
+      condicion: 'CONDICIÓN ORGANIZACIÓN DE ACTIVIDADES ACADEMICAS Y PROCESO FORMATIVO',
+      estado: 'no',
+      programa: 'Mecánica dental',
+
+    },
+    {
+      codigo: '500',
+      condicion: 'CONDICIÓN DE INVESTIGACIÓN, INNOVACIÓN Y/O CREACIÓN ARTÍSTICA Y CULTURAL',
+      estado: 'no',
+      programa: 'Odontología',
+    },
+    {
+      codigo: '600',
+      condicion: 'CONDICIÓN RELACIÓN CON EL SECTOR EXTERNO',
+      estado: 'no',
+      programa: 'Sistemas',
+    },
+    {
+      codigo: '700',
+      condicion: 'PROFESORES',
+      estado: 'no',
+      programa: 'Derecho',
+    },
+    {
+      codigo: '800',
+      condicion: 'MEDIOS EDUCATIVOS',
+      estado: 'no',
+      programa: 'Adminstración',
+    },
+    {
+      codigo: '900',
+      condicion: 'INFRAESTRUTURA FISICA Y TECNOLOGICA',
+      estado: 'no',
+      programa: 'Contaduría',
+    },
+
+  ]
   var condiciones: any = [];
   if (dependency === 'Barranquilla') {
     condiciones = [
@@ -179,6 +240,8 @@ const ConditionsDetails = () => {
         control: true,
       }
     ]
+  } else {
+    condiciones = programas.filter((d)=>d.programa === dependency)
   }
   const anexos = [
     {
@@ -255,33 +318,33 @@ const ConditionsDetails = () => {
         .filter((condicion: any) => condicion.codigo === id)
         .map((condiciones: any) => (
           <div className="contenedor-filter">
-                  <Header/>
+            <Header />
+            <SubHeader text={condiciones.condicion} showBackButton={true} />
 
-            <div className="container py-5">
-              <GoBackButton />
 
-              <div className=" body-details mt-4 bg-white py-5 px-5 shadow shadow-large">
-                <div className="px-5 pt-3">
+            <div className="container-md py-1 pb-4">
+              <div className=" body-details mt-4 bg-white py-5-md px-5-md px-3 shadow shadow-large">
+                <div className="px-5-md pt-3">
                   <div className="d-flex justify-content-between">
-                    <div className="subtitle ps-4">Nombre</div>
-                    <span className="badge rounded-pill text-bg-danger d-flex align-items-center justify-content-center "><Warning size={10} /> <span className="ms-1">Pendiente</span></span>
+                    <div className="subtitle px-4">Nombre</div>
+                    <span className="badge rounded-pill text-bg-danger py-0 d-flex align-items-center justify-content-center "><Warning size={10} /> <span className="ms-1">Pendiente</span></span>
                   </div>
                   <p className="px-2 mt-2">{condiciones.condicion}</p>
                   <br />
-                  <div className="subtitle ps-4">Descripcion</div>
+                  <div className="d-flex justify-content-between"><div className="subtitle px-4">Descripcion</div></div>
                   <p className="info-condicion px-2 mb-4 mt-2">{condiciones.informacion}</p>
-                  <span className="ps-2">Ciudad:</span> <b className="">{condiciones.ciudad}</b>
+                  <span className="ps-2">Ciudad / Programa:</span> <b className="">{condiciones.ciudad ? condiciones.ciudad : condiciones.programa }</b>
 
 
 
 
 
 
-                  <Nav tabs className="group-subtitle p-1 ps-1 mt-4">
+                  <Nav tabs className="group-subtitle p-1  mt-4  justify-content-md-start flex-md-flex d-block">
                     <div className="line"></div>
                     <NavItem>
                       <NavLink
-                        className={"sub-item text-center p-2  px-4 d-flex align-items-center " + classnames({
+                        className={"sub-item text-center p-2 m-0  px-4 d-flex align-items-center " + classnames({
                           active:
                             currentActiveTab === '1'
                         })}
@@ -292,7 +355,7 @@ const ConditionsDetails = () => {
                     </NavItem>
                     <NavItem>
                       <NavLink
-                        className={"sub-item text-center p-2  px-4 d-flex align-items-center " + classnames({
+                        className={"sub-item text-center p-2  m-0 px-4 d-flex align-items-center " + classnames({
                           active:
                             currentActiveTab === '2'
                         })}
@@ -303,7 +366,7 @@ const ConditionsDetails = () => {
                     </NavItem>
                     <NavItem>
                       <NavLink
-                        className={"sub-item text-center p-2  px-4 d-flex align-items-center " + classnames({
+                        className={"sub-item text-center p-2  m-0 px-4 d-flex align-items-center " + classnames({
                           active:
                             currentActiveTab === '3'
                         })}
@@ -315,7 +378,7 @@ const ConditionsDetails = () => {
 
                     <NavItem>
                       <NavLink
-                        className={"sub-item text-center p-2  px-4 d-flex align-items-center " + classnames({
+                        className={"sub-item text-center p-2  m-0 px-4 d-flex align-items-center " + classnames({
                           active:
                             currentActiveTab === '4'
                         })}
@@ -330,9 +393,9 @@ const ConditionsDetails = () => {
                     <TabPane tabId="1">
                       <Row>
                         <Col sm="12">
-                          <button className="subtitle p-2 mt-4 pointer d-flex justify-content-center align-items-center"><Edit /> Habilitar edicion</button>
+                          <button className="subtitle p-2 mt-4 px-4 pointer d-flex justify-content-center align-items-center"><Edit /> Habilitar edicion</button>
                           <div className="edit">
-                            <textarea className="p-3 mt-3">
+                            <textarea className="p-3 mt-3 ">
                               Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus aut amet ullam explicabo qui pariatur quae aperiam.
                               Animi perferendis possimus molestiae doloremque eius alias magnam libero tenetur tempore commodi. Exercitationem voluptatem porro maxime quisquam animi alias cupiditate amet, architecto accusamus nesciunt quas consequatur veritatis magni impedit optio? Reiciendis possimus non recusandae sequi porro voluptatibus, incidunt libero facilis, praesentium dolore repellat ratione quam beatae itaque obcaecati, totam dignissimos. Sequi ipsam saepe exercitationem eligendi repudiandae vitae cumque, asperiores porro culpa, accusantium in voluptatibus! Provident impedit rem repellat accusamus laboriosam reprehenderit corrupti cumque ipsam eum,
                               ad inventore maxime facere sunt, officiis veritatis quaerat.
@@ -344,21 +407,21 @@ const ConditionsDetails = () => {
                     <TabPane tabId="2">
                       <Row>
                         <Col sm="12">
-                          <button className="subtitle p-2 my-4 pointer d-flex justify-content-center align-items-center"><Edit /> Añadir nuevo Anexo</button>
+                          <button className="subtitle p-2 px-4 my-4 pointer d-flex justify-content-center align-items-center"><Edit /> Añadir nuevo Anexo</button>
                           {anexos.map(anexo =>
-                            <div className="anexo d-flex align-items-center mt-3">
+                            <div className="anexo d-flex align-items-center mt-3 p-2 px-4  px-md-0 row" >
                               <div className="icon-container d-flex alig-items-center justify-content-center">
                                 <div className="icon p-2 d-flex align-items-center justify-content-center">
                                   <Clip size={22} />
                                 </div>
                               </div>
-                              <div className="anexo-body p-0 py-1 d-flex flex-column  ">
-                                <b>{anexo.nombre}</b>
-                                <p >{anexo.descripcion}</p>
+                              <div className="anexo-body px-2 ms-4 ms-sm-0 px-sm-0 py-1 d-flex justify-content-center flex-column  ">
+                                <b className="">{anexo.nombre}</b>
+                                <p className="anexo-descripcion p-0 m-0">{anexo.descripcion}</p>
                               </div>
-                              <div className="anexo-options d-flex ">
-                                <div className="icon-option"><Link to={anexo.link}><Eye size={22} /></Link></div>
-                                <div className="icon-option"><Exit size={20} /></div>
+                              <div className="anexo-options d-flex mt-2 mt-sm-0 align-items-center justify-content-end  w-100  col-12">
+                                <div className="icon-option"><Link to={anexo.link}><Eye size={27} /></Link></div>
+                                <div className="icon-option"><Exit size={22} /></div>
                               </div>
                             </div>
                           )}
@@ -368,7 +431,7 @@ const ConditionsDetails = () => {
                     <TabPane tabId="3">
                       <Row>
                         <Col sm="12">
-                          <button className="subtitle p-2 mt-4 pointer d-flex justify-content-center align-items-center"><Edit /> Habilitar edicion</button>
+                          <button className="subtitle p-2 mt-4 px-4 pointer d-flex justify-content-center align-items-center"><Edit /> Habilitar edicion</button>
                           <div className="edit">
                             <textarea className="p-3 mt-3">
                               Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus aut amet ullam explicabo qui pariatur quae aperiam.

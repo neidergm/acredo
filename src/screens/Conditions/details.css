@@ -4,7 +4,6 @@
   
   .body-details .subtitle{
     background-color: #E3E8ED;
-    width: 200px;
     border-radius: 20px;
     padding: 5px;
     font-weight: bold;
@@ -13,7 +12,7 @@
   
   .group-subtitle, Nav{
     background-color: #E3E8ED;
-    width: auto !important; border-radius: 20px;
+     border-radius: 20px;
     position: relative;
   }
   
@@ -28,6 +27,10 @@
   margin-right: 10px;
   cursor: pointer;
   column-gap: 5px;
+  }
+  .sub-item > *{
+  transition: .2s !important;
+
   }
   
   .group-subtitle .sub-item:focus , .sub-item.active{
@@ -80,17 +83,16 @@
     justify-content: center !important;
   }
   .anexo-options{
-    color: #4B5C6B;
     justify-content: center;
     align-items: center;
     width: 10%;
-    column-gap: 5px;
+    column-gap: 20px;
   }
   .icon-option{
     cursor: pointer;
   }
   .icon-option > *{
-    color: #4B5C6B !important;
+    color: #788896 !important;
   }
   .historial .icon-container{
     color: #788896 !important;
@@ -112,4 +114,10 @@
   .historial-body{
     cursor: pointer;
     color: #59646F;
+  }
+  .anexo-descripcion{
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
