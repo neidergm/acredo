@@ -1,7 +1,6 @@
 *{
   transition: all 0.2s ease-in-out;
 }
-
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -9,9 +8,219 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+
+/*============Header of pages============*/
+.header{
+  background: linear-gradient(to right, #06A099 0%, #31AC69 100%);
+  
+}
+
+
+
+/*============Btn Back============*/
+.back{
+  font-size: 13px !important ;
+}
+
+
+
+/* ==============HOME==================  */
+.home-condiciones-container .home-content .cards .card{
+  text-align: center;
+  background-color: white !important;
+  text-decoration: none;
+  color: black;
+  border: none;
+  width: 30%;
+}
+
+
+
+/*======CONDICIONES========*/
+
+.condiciones-container .institucionales,  .programas{
+  width: 150px;  cursor: pointer;  color: #4B5C6B !important;
+
+}
+
+
+.condiciones-container .container-body-condiciones{
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+}
+.condiciones-container .container-body-condiciones.active .content-2{
+  margin: 0;
+}
+.condiciones-container .container-body-condiciones.active .content-1{
+  margin-left: -100%;
+}
+.condiciones-container .content-1, .content-2{
+  width: 100% !important;transition: .2s;
+}
+.condiciones-container .content-2{
+  margin-right: -100%;
+}
+.condiciones-container .btn-active{
+  color: orange;
+}
+.condiciones-container .item{
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  border: 2px solid orange;
+  width: 150px;
+}
+.condiciones-container .item.move-item{
+  margin-left: 150px;
+}
+
+.condiciones-container table tbody{
+  font-size: 14px;
+}
+
+
+
+/* ============parragraph of conditions================  */
+.info-condicion{
+  font-size: 14px;
+}
+
+
+
+/*========CONVOCATORIAS==========*/
+
+.conv-card {
+  list-style: none ;
+  background-color: #E3E8ED;
+  color: #4B5C6B;
+  font-size: 14px;
+}
+
+/*===========DETALLES=========*/
+
+.body-details{
+  color: #4B5C6B;
+}
+
+.body-details .subtitle{
+  background-color: #E3E8ED;
+  width: 200px;
+  border-radius: 20px;
+  padding: 5px;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.group-subtitle, Nav{
+  background-color: #E3E8ED;
+  width: auto !important; border-radius: 20px;
+  position: relative;
+}
+
+.group-subtitle .sub-item, .sub-item:hover{
+  font-size: 14px;
+  font-weight: bold;
+  background-color: #E3E8ED;
+font-size: 15px;
+color: #4B5C6B !important;
+border: none;
+border-radius: 20px !important;
+margin-right: 10px;
+cursor: pointer;
+column-gap: 5px;
+}
+
+.group-subtitle .sub-item:focus , .sub-item.active{
+  background-color: white !important;
+  color: #E9863F !important;
+
+}
+textarea{
+  width: 100%;
+  height: 230px;
+  resize: none !important;
+  color: #4B5C6B;
+  background-color: #F2F5F7;
+  border: 2px dashed #DAE2E8;
+  outline:  none !important
+}
+
+.pointer{
+  cursor: pointer;
+}
+button.pointer{
+  border: none;
+  outline: none;
+  color: #4B5C6B;
+  width: auto;
+  column-gap: 5px;
+}
+.container-details{
+  font-size: 14px;
+}
+
+.dialog{
+  display: none;
+}
+.dialog.active{
+  display: block;
+}
+.anexo, .historial{
+  background-color: #F2F5F7;
+}
+.anexo .icon-container{
+  width: 10%;
+}
+.anexo .icon-container .icon{
+  background-color: #CED8E0 !important;
+  border-radius: 50%;
+}
+.anexo-body{
+  width: 80%;
+  justify-content: center !important;
+}
+.anexo-options{
+  color: #4B5C6B;
+  justify-content: center;
+  align-items: center;
+  width: 10%;
+  column-gap: 5px;
+}
+.icon-option{
+  cursor: pointer;
+}
+.icon-option > *{
+  color: #4B5C6B !important;
+}
+.historial .icon-container{
+  color: #788896 !important;
+  font-weight: 500;
+  width: 15%;
+}
+.historial, .anexo{
+  transition: .1s;
+}
+.historial:hover, .anexo:hover{
+  background-color: #CED8E0;
+}
+.icon-container .item-icon{
+  column-gap: 5px;
+}
+.body-details{
+  padding-bottom: 100px !important;
+}
+.historial-body{
+  cursor: pointer;
+}.modal-historial{
+  border-radius: 1px !important;
+  font-size: 14px !important;
 }
