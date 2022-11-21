@@ -1,17 +1,18 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from "react";
-import { useParams, Link, Routes, Route, useNavigate } from "react-router-dom";
-import { IName, Flag, Box } from "../../components/Icons";
+import {  Link } from "react-router-dom";
+import {  Flag, Box } from "../../components/Icons";
+import Header from "../../components/header";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './condiciones.css';
 import {
   TabContent, TabPane, Nav,
   NavItem, NavLink, Row, Col
 } from 'reactstrap';
 import classnames from 'classnames';
+import { GoBackButton } from "../../components/GoBackButton";
 
 
 const Conditions = () => {
-  const navigate = useNavigate();
 
   const condiciones = [
     {
@@ -165,30 +166,20 @@ const Conditions = () => {
   const toggle = (tab: any) => {
     if (currentActiveTab !== tab) setCurrentActiveTab(tab);
   }
-  const botones = document.querySelectorAll('.button');
 
 
 
 
   return (
     <div className="condiciones-container">
-      <div className="header p-4 border condiciones-header">
-        <div className="title  fs-3 text-white">
-          <div className="container">CONDICIONES</div>
-        </div>
-      </div>
-
-      <div className="container">
-        <button
-          className="btn back btn-secondary  mt-2 rounded"
-          onClick={() => navigate(-1)}
-        >
-          <IName size={20} /> Atras
-        </button>
+      <Header/>
+      <div className="container-md pt-5">
+      <GoBackButton />
 
 
 
-        <div className="mt-2 py-5 container-body-condiciones " id="container">
+
+        <div className="mt-2 py-2 container-body-condiciones " id="container">
           <div className="content-1">
 
             <Nav tabs>
@@ -225,11 +216,12 @@ const Conditions = () => {
                 </NavLink>
               </NavItem>
             </Nav>
+            
             <TabContent activeTab={currentActiveTab}>
               <TabPane tabId="1">
                 <Row>
                   <Col sm="12">
-                    <table className="table table-striped border mt-4">
+                    <table className="table table-striped border mt-4 ">
                       <thead>
                         <tr>
                           <th className="text-center">Codigo</th>
@@ -281,7 +273,7 @@ const Conditions = () => {
                             <td>{item.programa}</td>
                             <td>{item.estado !== 'no' ? 'Verificado' : 'Pendiente'}</td>
                             <td>
-                              <Link to="">ver</Link>
+                              <Link to={'/condiciones/detalles/'+item.programa+'/'+item.codigo}>ver</Link>
                             </td>
                           </tr>
                         ))}
