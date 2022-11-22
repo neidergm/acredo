@@ -29,7 +29,7 @@
     color: #E9863F !important;
   
   }
-  textarea{
+  textarea, .show-text{
 
     height: 230px;
     resize: none !important;
@@ -37,6 +37,10 @@
     background-color: #F2F5F7;
     border: 2px dashed #DAE2E8;
     outline:  none !important
+  }
+  .show-text{
+    border-style: solid;
+    overflow-y: auto;
   }
   
   .pointer{

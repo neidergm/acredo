@@ -2,7 +2,7 @@
 import { useParams, Link, Routes, Route, useNavigate } from "react-router-dom";
 import { IName, Warning, Check, History, Anex, Edit, Clip, Eye, Plus, Exit, Daate, Clock } from "../../components/Icons";
 
-import React, { useState } from 'react'
+import React, { ElementRef, TextareaHTMLAttributes, useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {
   TabContent, TabPane, Nav,
@@ -15,6 +15,7 @@ import Alert from "../../components/Alert";
 import Header from "../../components/header";
 import './details.css'
 import { SubHeader } from "../../components/SubHeader";
+import { text } from "node:stream/consumers";
 
 
 const ConditionsDetails = () => {
@@ -39,7 +40,7 @@ const ConditionsDetails = () => {
       condicion: 'CONDICIÓN DE DENOMINACIÓN',
       estado: 'no',
       programa: 'Medicina',
-      informacion:'Ingrese la información en la que desarrolla de manera integral y particular lo solicitado por la normativa vigente, de acuerdo con lo señalado en los artículos 2.5.3.2.3.2.2 y 2.5.3.2.3.2.12 del Decreto 1075 de 2015, modificado por el Decreto 1330 de 2019 y los artículos 53 y 55 de la Resolución 21795 de 2020',
+      informacion: 'Ingrese la información en la que desarrolla de manera integral y particular lo solicitado por la normativa vigente, de acuerdo con lo señalado en los artículos 2.5.3.2.3.2.2 y 2.5.3.2.3.2.12 del Decreto 1075 de 2015, modificado por el Decreto 1330 de 2019 y los artículos 53 y 55 de la Resolución 21795 de 2020',
 
     },
     {
@@ -242,7 +243,7 @@ const ConditionsDetails = () => {
       }
     ]
   } else {
-    condiciones = programas.filter((d)=>d.programa === dependency)
+    condiciones = programas.filter((d) => d.programa === dependency)
   }
   const anexos = [
     {
@@ -310,12 +311,12 @@ const ConditionsDetails = () => {
     }
   ]
 
+  var [textarea1, setTextArea1] = useState(true);
 
 
   return (
 
     <div className="container-details">
-      <Alert isOpen={true} type="question" title={"¿Estás seguro?"} subtitle="se perderán los cambios que has realizado" onClosed={() => { }} closeButton={{value: "Cerrar"}}/>
       <Modal isOpen={!!(modalData?.isOpen)} onClosed={() => { setModalData(null) }} toggle={() => closeModal(setModalData)}>
         <ModalHeader textCenter toggle={() => closeModal(setModalData)}>{modalData?.title}</ModalHeader>
         <ModalBody>{modalData?.children}</ModalBody>
@@ -363,7 +364,7 @@ const ConditionsDetails = () => {
                   <br />
                   <div className="d-flex justify-content-between"><div className="subtitle rounded-pill fw-bold py-1 px-4">Descripcion</div></div>
                   <p className="info-condicion px-2 mb-4 mt-2">{condiciones.informacion}</p>
-                  <span className="ps-2">Ciudad / Programa:</span> <b className="">{condiciones.ciudad ? condiciones.ciudad : condiciones.programa }</b>
+                  <span className="ps-2">Ciudad / Programa:</span> <b className="">{condiciones.ciudad ? condiciones.ciudad : condiciones.programa}</b>
 
 
 
@@ -371,7 +372,7 @@ const ConditionsDetails = () => {
 
 
                   <Nav tabs className="group-subtitle rounded-4 p-1  mt-4  justify-content-md-start d-md-flex d-block">
-          
+
                     <NavItem>
                       <NavLink
                         className={"sub-item border-0 fw-bold text-center p-2 m-0  px-4 d-flex align-items-center " + classnames({
@@ -423,14 +424,23 @@ const ConditionsDetails = () => {
                     <TabPane tabId="1">
                       <Row>
                         <Col sm="12">
-                          <button className="subtitle rounded-pill fw-bold fw- p-2 mt-4 px-4 pointer d-flex justify-content-center align-items-center"><Edit /> Habilitar edicion</button>
+                          <button className={`subtitle rounded-pill fw-bold fw- p-2 mt-4 px-4 pointer d-flex justify-content-center align-items-center btn-edit ${!textarea1 ? 'bg-danger text-white' : ''}`} onClick={(e) => {
+                            if(textarea1){
+                              setTextArea1(!textarea1)
+                            }else{
+                             
+                            }
+
+                          }}><Edit /> {textarea1 ? 'HABILITAR EDICIÓN' : 'CANCELAR EDICIÓN'}</button>
                           <div className="edit">
-                            <textarea readOnly className="p-3 mt-3 w-100 ">
-                              Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus aut amet ullam explicabo qui pariatur quae aperiam.
-                              Animi perferendis possimus molestiae doloremque eius alias magnam libero tenetur tempore commodi. Exercitationem voluptatem porro maxime quisquam animi alias cupiditate amet, architecto accusamus nesciunt quas consequatur veritatis magni impedit optio? Reiciendis possimus non recusandae sequi porro voluptatibus, incidunt libero facilis, praesentium dolore repellat ratione quam beatae itaque obcaecati, totam dignissimos. Sequi ipsam saepe exercitationem eligendi repudiandae vitae cumque, asperiores porro culpa, accusantium in voluptatibus! Provident impedit rem repellat accusamus laboriosam reprehenderit corrupti cumque ipsam eum,
-                              ad inventore maxime facere sunt, officiis veritatis quaerat.
+                            <textarea className={textarea1 ? " p-3 mt-3 w-100  p-3 mt-3 w-100" : 'bg-white border-secondary p-3 mt-3 w-100  p-3 mt-3 w-100'} readOnly={textarea1}>
+                              lorem  Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus aut amet ullam explicabo qui pariatur quae aperiam Animi perferendis possimus molestiae doloremque eius alias magnam libero tenetur tempore commodi. Exercitationem voluptatem porro maxime quisquam animi alias cupiditate amet, architecto accusamus nesciunt quas consequatur veritatis magni impedit optio? Reiciendis possimus non recusandae sequi porro voluptatibus, incidunt libero facilis, praesentium dolore repellat ratione quam beatae itaque obcaecati, totam dignissimos. Sequi ipsam saepe exercitationem eligendi repudiandae vitae cumque, asperiores porro culpa, accusantium in voluptatibus! Provident impedit rem repellat accusamus laboriosam reprehenderit corrupti cumque ipsam eum,ad inventore maxime facere sunt, officiis veritatis quaerat
                             </textarea>
                           </div>
+                          <div className="col-12 d-flex justify-content-end">
+                           {!textarea1 ?  <button className="btn btn-success w-25">Guardar</button> : ''}
+                          </div>
+
                         </Col>
                       </Row>
                     </TabPane>
@@ -461,13 +471,18 @@ const ConditionsDetails = () => {
                     <TabPane tabId="3">
                       <Row>
                         <Col sm="12">
-                          <button className="subtitle rounded-pill fw-bold p-2 mt-4 px-4 pointer d-flex justify-content-center align-items-center"><Edit /> Habilitar edicion</button>
+                          <button className="subtitle rounded-pill fw-bold p-2 mt-4 px-4 pointer d-flex justify-content-center align-items-center btn-edit"><Edit /> Habilitar edicion</button>
                           <div className="edit">
-                            <textarea readOnly className="p-3 mt-3 w-100">
+                            <textarea readOnly className="p-3 mt-3 w-100 d-none" >
                               Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus aut amet ullam explicabo qui pariatur quae aperiam.
                               Animi perferendis possimus molestiae doloremque eius alias magnam libero tenetur tempore commodi. Exercitationem voluptatem porro maxime quisquam animi alias cupiditate amet, architecto accusamus nesciunt quas consequatur veritatis magni impedit optio? Reiciendis possimus non recusandae sequi porro voluptatibus, incidunt libero facilis, praesentium dolore repellat ratione quam beatae itaque obcaecati, totam dignissimos. Sequi ipsam saepe exercitationem eligendi repudiandae vitae cumque, asperiores porro culpa, accusantium in voluptatibus! Provident impedit rem repellat accusamus laboriosam reprehenderit corrupti cumque ipsam eum,
                               ad inventore maxime facere sunt, officiis veritatis quaerat.
                             </textarea>
+                            <div className="show-text p-3 mt-3 w-100">
+                              Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus aut amet ullam explicabo qui pariatur quae aperiam.
+                              Animi perferendis possimus molestiae doloremque eius alias magnam libero tenetur tempore commodi. Exercitationem voluptatem porro maxime quisquam animi alias cupiditate amet, architecto accusamus nesciunt quas consequatur veritatis magni impedit optio? Reiciendis possimus non recusandae sequi porro voluptatibus, incidunt libero facilis, praesentium dolore repellat ratione quam beatae itaque obcaecati, totam dignissimos. Sequi ipsam saepe exercitationem eligendi repudiandae vitae cumque, asperiores porro culpa, accusantium in voluptatibus! Provident impedit rem repellat accusamus laboriosam reprehenderit corrupti cumque ipsam eum,
+                              ad inventore maxime facere sunt, officiis veritatis quaerat.
+                            </div>
                           </div>
                         </Col>
                       </Row>
@@ -501,7 +516,7 @@ const ConditionsDetails = () => {
                                     </div>
                                   ),
                                 })
-                                }}>
+                              }}>
 
                                 <span><span className={anexo.tipo === 'CONDICION' ? 'badge text-white rounded-pill  text-bg-success' : anexo.tipo === 'REVISIÓN' ? 'badge text-white rounded-pill  text-bg-warning' : anexo.tipo === 'ANEXO' ? 'badge text-white rounded-pill  text-bg-info' : ''}>{anexo.tipo}</span></span>
                                 <span className=" text-truncate w-100 m-0">{anexo.descripcion}</span>
