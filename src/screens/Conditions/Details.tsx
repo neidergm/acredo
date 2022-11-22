@@ -354,8 +354,8 @@ const ConditionsDetails = () => {
 
 
             <div className="container-md py-1 pb-4">
-              <div className=" body-details mt-4 bg-white py-5-md px-5-md px-3 shadow shadow-large">
-                <div className="px-5-md pt-3">
+              <div className="card mb-4 py- p-4  border-0 bg-white shadow">
+                <div className="card-body px-5-md pt-3">
                   <div className="d-flex justify-content-between">
                     <div className="subtitle rounded-pill fw-bold py-1 px-4">Nombre</div>
                     <span className="badge rounded-pill text-bg-danger py-0 d-flex align-items-center justify-content-center "><Warning size={10} /> <span className="ms-1">Pendiente</span></span>
