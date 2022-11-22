@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import {  Link } from "react-router-dom";
-import {  Flag, Box } from "../../components/Icons";
+import { Link } from "react-router-dom";
+import { Flag, Box } from "../../components/Icons";
 import Header from "../../components/header";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './condiciones.css';
@@ -9,20 +9,15 @@ import {
   NavItem, NavLink, Row, Col
 } from 'reactstrap';
 import classnames from 'classnames';
-import { GoBackButton } from "../../components/GoBackButton";
-
+import { Badge } from 'reactstrap';
+import { SubHeader } from "../../components/SubHeader";
+import { useNavigate } from 'react-router-dom';
 
 const Conditions = () => {
 
+  const navigate = useNavigate();
+
   const condiciones = [
-    {
-      //Barranquilla
-      codigo: "100",
-      condicion:
-        "MECANISMOS DE SELECCIÓN Y EVALUACIÓN DE ESTUDIANTES Y PROFESORES",
-      ciudad: "Barranquilla",
-      estado: "no",
-    },
     {
       codigo: "200",
       condicion: "ESTRUCTURA ADMINISTRATIVA Y ACADEMICA",
@@ -95,69 +90,6 @@ const Conditions = () => {
       estado: "no",
     },
   ];
- 
-
-  const condicionesProgramas =[
-    {
-      codigo:'100',
-      condicion:'CONDICIÓN DE DENOMINACIÓN', 
-      estado:'no',
-      programa:'Medicina',
-    },
-    {
-      codigo:'200',  
-      condicion:'CONDICIÓN DE JUSTIFICACIÓN', 
-      estado:'no',
-      programa:'Bacteriología',  
-    },
-    {
-      codigo:'300',  
-      condicion:'CONDICIÓN DE ASPECTOS CURRICULARES', 
-      numero:'Condición 3',
-      estado:'no',
-      programa:'Enfermería',
-    },
-    {
-      codigo:'400',  
-      condicion:'CONDICIÓN ORGANIZACIÓN DE ACTIVIDADES ACADEMICAS Y PROCESO FORMATIVO', 
-      estado:'no',
-      programa:'Mecánica dental',
-      
-    },
-    {
-      codigo:'500',  
-      condicion:'CONDICIÓN DE INVESTIGACIÓN, INNOVACIÓN Y/O CREACIÓN ARTÍSTICA Y CULTURAL',   
-      estado:'no',
-      programa:'Odontología',
-    },
-    {
-      codigo:'600',  
-      condicion:'CONDICIÓN RELACIÓN CON EL SECTOR EXTERNO', 
-      estado:'no',
-      programa:'Sistemas',
-      },
-    {
-      codigo:'700',  
-      condicion:'PROFESORES', 
-      estado:'no',
-      programa:'Derecho',
-   },
-    {
-      codigo:'800',  
-      condicion:'MEDIOS EDUCATIVOS', 
-      estado:'no',
-      programa:'Adminstración',
-      },
-    {
-      codigo:'900',  
-      condicion:'INFRAESTRUTURA FISICA Y TECNOLOGICA', 
-      estado:'no',
-      programa:'Contaduría',
-    },
-    
-  
-  ];
-
 
   // State for current active Tab
   const [currentActiveTab, setCurrentActiveTab] = useState('1');
@@ -167,128 +99,79 @@ const Conditions = () => {
     if (currentActiveTab !== tab) setCurrentActiveTab(tab);
   }
 
-
-
-
   return (
     <div className="condiciones-container">
-      <Header/>
-      <div className="container-md pt-5">
-      <GoBackButton />
+      <Header />
+      <SubHeader text={"Condiciones"} showBackButton />
 
+      <div className="container">
+        <div className="mb-5">
+          <p>
+            <b>Convocatoria:</b>
+            <span className="d-block">MECANISMOS DE SELECCIÓN Y EVALUACIÓN DE ESTUDIANTES Y PROFESORES</span>
+          </p>
+        </div>
 
-
-
-        <div className="mt-2 py-2 container-body-condiciones " id="container">
-          <div className="content-1">
-
-            <Nav tabs>
-              <NavItem>
-                <NavLink
-                  className={classnames({
-                    active:
-                      currentActiveTab === '1'
-                  })}
-                  onClick={() => { toggle('1'); }}
-                >
-                  <div className="institucionales  d-flex flex-column p-3  button align-items-center" id="institucionales">
-                    <span className="icon">
-                      <Box />
-                    </span>
-                    <div className="title">Institucionales</div>
+        <div>
+          <div>
+            {condiciones.map((item) => (
+              <div
+                className="card mb-4 border-0 bg-light hover-scale-up hover-shadow-sm"
+                onClick={() => navigate(`/condiciones/detalles/${item.ciudad}/${item.codigo}`)}
+              >
+                <div className="card-body">
+                  {/* <h5 className="card-title">Card title</h5> */}
+                  <div className="d-flex flex-sm-row-reverse justify-content-sm-between flex-column gap-3">
+                    <div>
+                      <Badge
+                        pill
+                        color="info"
+                        className="px-3"
+                      >
+                        ESTADO
+                      </Badge>
+                    </div>
+                    <div>
+                      <p className="mb-1">{item.condicion}</p>
+                      <p><b>Ciudad:</b> {item.ciudad}</p>
+                    </div>
                   </div>
-                </NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink
-                  className={classnames({
-                    active:
-                      currentActiveTab === '2'
-                  })}
-                  onClick={() => { toggle('2'); }}
-                >
-                  <div className="programas d-flex flex-column  p-3 align-items-center button" id="programas">
-                    <span className="icon">
-                      <Flag />
-                    </span>
-                    <div className="title">Programas</div>
-                  </div>
-                </NavLink>
-              </NavItem>
-            </Nav>
-            
-            <TabContent activeTab={currentActiveTab}>
-              <TabPane tabId="1">
-                <Row>
-                  <Col sm="12">
-                    <table className="table table-striped border mt-4 ">
-                      <thead>
-                        <tr>
-                          <th className="text-center">Codigo</th>
-                          <th>Nombre</th>
-                          <th>Ultima modificacion</th>
-                          <th>Sede</th>
-                          <th>Estado</th>
-                          <th></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {condiciones.map((item) => (
-                          <tr>
-                            <td className="text-center">{item.codigo}</td>
-                            <td>{item.condicion}</td>
-                            <td>00/00/0000 a las 00:00</td>
-                            <td>{item.ciudad}</td>
-                            <td>{item.estado !== 'no' ? 'Verificado' : 'Pendiente'}</td>
-                            <td>
-                              <Link to={'/condiciones/detalles/'+item.ciudad+'/'+item.codigo}>ver</Link>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </Col>
-                </Row>
-              </TabPane>
-              <TabPane tabId="2">
-                <Row>
-                  <Col sm="12">
-                    <table className="table table-striped border mt-4">
-                      <thead>
-                        <tr>
-                          <th className="text-center">Codigo</th>
-                          <th>Nombre</th>
-                          <th>Ultima modificacion</th>
-                          <th>Sede</th>
-                          <th>Estado</th>
-                          <th></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                      {condicionesProgramas.map((item) => (
-                          <tr>
-                            <td className="text-center">{item.codigo}</td>
-                            <td>{item.condicion}</td>
-                            <td>00/00/0000 a las 00:00</td>
-                            <td>{item.programa}</td>
-                            <td>{item.estado !== 'no' ? 'Verificado' : 'Pendiente'}</td>
-                            <td>
-                              <Link to={'/condiciones/detalles/'+item.programa+'/'+item.codigo}>ver</Link>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </Col>
-                </Row>
-              </TabPane>
-
-            </TabContent>
-
-
-
+                  <p className="card-text"><small className="text-muted">- Última actualización {"00-00-0000 a las 00:00"}</small></p>
+                </div>
+              </div>
+            ))
+            }
+            {/* <Row>
+              <Col sm="12">
+                <table className="table table-striped border mt-4 ">
+                  <thead>
+                    <tr>
+                      <th className="text-center">Codigo</th>
+                      <th>Nombre</th>
+                      <th>Ultima modificacion</th>
+                      <th>Sede</th>
+                      <th>Estado</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {condiciones.map((item) => (
+                      <tr>
+                        <td className="text-center">{item.codigo}</td>
+                        <td>{item.condicion}</td>
+                        <td>00/00/0000 a las 00:00</td>
+                        <td>{item.ciudad}</td>
+                        <td>{item.estado !== 'no' ? 'Verificado' : 'Pendiente'}</td>
+                        <td>
+                          <Link to={'/condiciones/detalles/' + item.ciudad + '/' + item.codigo}>ver</Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </Col>
+            </Row> */}
           </div>
-          <div className="content-2"></div>
         </div>
       </div>
     </div>
