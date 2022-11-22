@@ -356,12 +356,12 @@ const ConditionsDetails = () => {
               <div className=" body-details mt-4 bg-white py-5-md px-5-md px-3 shadow shadow-large">
                 <div className="px-5-md pt-3">
                   <div className="d-flex justify-content-between">
-                    <div className="subtitle px-4">Nombre</div>
+                    <div className="subtitle rounded-pill fw-bold py-1 px-4">Nombre</div>
                     <span className="badge rounded-pill text-bg-danger py-0 d-flex align-items-center justify-content-center "><Warning size={10} /> <span className="ms-1">Pendiente</span></span>
                   </div>
                   <p className="px-2 mt-2">{condiciones.condicion}</p>
                   <br />
-                  <div className="d-flex justify-content-between"><div className="subtitle px-4">Descripcion</div></div>
+                  <div className="d-flex justify-content-between"><div className="subtitle rounded-pill fw-bold py-1 px-4">Descripcion</div></div>
                   <p className="info-condicion px-2 mb-4 mt-2">{condiciones.informacion}</p>
                   <span className="ps-2">Ciudad / Programa:</span> <b className="">{condiciones.ciudad ? condiciones.ciudad : condiciones.programa }</b>
 
@@ -370,11 +370,11 @@ const ConditionsDetails = () => {
 
 
 
-                  <Nav tabs className="group-subtitle p-1  mt-4  justify-content-md-start d-md-flex d-block">
-                    <div className="line"></div>
+                  <Nav tabs className="group-subtitle rounded-4 p-1  mt-4  justify-content-md-start d-md-flex d-block">
+          
                     <NavItem>
                       <NavLink
-                        className={"sub-item text-center p-2 m-0  px-4 d-flex align-items-center " + classnames({
+                        className={"sub-item border-0 fw-bold text-center p-2 m-0  px-4 d-flex align-items-center " + classnames({
                           active:
                             currentActiveTab === '1'
                         })}
@@ -385,7 +385,7 @@ const ConditionsDetails = () => {
                     </NavItem>
                     <NavItem>
                       <NavLink
-                        className={"sub-item text-center p-2  m-0 px-4 d-flex align-items-center " + classnames({
+                        className={"sub-item border-0 fw-bold text-center p-2  m-0 px-4 d-flex align-items-center " + classnames({
                           active:
                             currentActiveTab === '2'
                         })}
@@ -396,7 +396,7 @@ const ConditionsDetails = () => {
                     </NavItem>
                     <NavItem>
                       <NavLink
-                        className={"sub-item text-center p-2  m-0 px-4 d-flex align-items-center " + classnames({
+                        className={"sub-item border-0 fw-bold text-center p-2  m-0 px-4 d-flex align-items-center " + classnames({
                           active:
                             currentActiveTab === '3'
                         })}
@@ -408,7 +408,7 @@ const ConditionsDetails = () => {
 
                     <NavItem>
                       <NavLink
-                        className={"sub-item text-center p-2  m-0 px-4 d-flex align-items-center " + classnames({
+                        className={"sub-item border-0 fw-bold text-center p-2  m-0 px-4 d-flex align-items-center " + classnames({
                           active:
                             currentActiveTab === '4'
                         })}
@@ -423,9 +423,9 @@ const ConditionsDetails = () => {
                     <TabPane tabId="1">
                       <Row>
                         <Col sm="12">
-                          <button className="subtitle p-2 mt-4 px-4 pointer d-flex justify-content-center align-items-center"><Edit /> Habilitar edicion</button>
+                          <button className="subtitle rounded-pill fw-bold fw- p-2 mt-4 px-4 pointer d-flex justify-content-center align-items-center"><Edit /> Habilitar edicion</button>
                           <div className="edit">
-                            <textarea className="p-3 mt-3 ">
+                            <textarea readOnly className="p-3 mt-3 w-100 ">
                               Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus aut amet ullam explicabo qui pariatur quae aperiam.
                               Animi perferendis possimus molestiae doloremque eius alias magnam libero tenetur tempore commodi. Exercitationem voluptatem porro maxime quisquam animi alias cupiditate amet, architecto accusamus nesciunt quas consequatur veritatis magni impedit optio? Reiciendis possimus non recusandae sequi porro voluptatibus, incidunt libero facilis, praesentium dolore repellat ratione quam beatae itaque obcaecati, totam dignissimos. Sequi ipsam saepe exercitationem eligendi repudiandae vitae cumque, asperiores porro culpa, accusantium in voluptatibus! Provident impedit rem repellat accusamus laboriosam reprehenderit corrupti cumque ipsam eum,
                               ad inventore maxime facere sunt, officiis veritatis quaerat.
@@ -437,21 +437,21 @@ const ConditionsDetails = () => {
                     <TabPane tabId="2">
                       <Row>
                         <Col sm="12">
-                          <button className="subtitle p-2 px-4 my-4 pointer d-flex justify-content-center align-items-center"><Edit /> Añadir nuevo Anexo</button>
+                          <button className="subtitle rounded-pill fw-bold p-2 px-4 my-4 pointer d-flex justify-content-center align-items-center"><Edit /> Añadir nuevo Anexo</button>
                           {anexos.map(anexo =>
-                            <div className="anexo d-flex align-items-center mt-3 p-2 px-4  px-md-0 row" >
-                              <div className="icon-container d-flex alig-items-center justify-content-center">
+                            <div className="card mx-1 mx-md-3 mb-4 p-3 px-2 px-md-5 border-0 bg-light hover-scale-up hover-shadow-sm d-flex flex-row justify-content-between" >
+                              <div >
                                 <div className="icon p-2 d-flex align-items-center justify-content-center">
                                   <Clip size={22} />
                                 </div>
                               </div>
-                              <div className="anexo-body px-2 ms-4 ms-sm-0 px-sm-0 py-1 d-flex justify-content-center flex-column  ">
-                                <b className="">{anexo.nombre}</b>
-                                <p className="anexo-descripcion p-0 m-0">{anexo.descripcion}</p>
+                              <div className="ms-1 ms-md-3  row align-self-start text-truncate">
+                                <b className="col-12" >{anexo.nombre}</b>
+                                <p className="  m-0 col-12 text-truncate">{anexo.descripcion}</p>
                               </div>
-                              <div className="anexo-options d-flex mt-2 mt-sm-0 align-items-center justify-content-end  w-100  col-12">
+                              <div className="d-flex ms-4 ms-md-3 justify-content-center align-items-center ">
                                 <div className="icon-option"><Link to={anexo.link}><Eye size={27} /></Link></div>
-                                <div className="icon-option"><Exit size={22} /></div>
+                                <div className="icon-option ms-2"><Exit size={22} /></div>
                               </div>
                             </div>
                           )}
@@ -461,9 +461,9 @@ const ConditionsDetails = () => {
                     <TabPane tabId="3">
                       <Row>
                         <Col sm="12">
-                          <button className="subtitle p-2 mt-4 px-4 pointer d-flex justify-content-center align-items-center"><Edit /> Habilitar edicion</button>
+                          <button className="subtitle rounded-pill fw-bold p-2 mt-4 px-4 pointer d-flex justify-content-center align-items-center"><Edit /> Habilitar edicion</button>
                           <div className="edit">
-                            <textarea className="p-3 mt-3">
+                            <textarea readOnly className="p-3 mt-3 w-100">
                               Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus aut amet ullam explicabo qui pariatur quae aperiam.
                               Animi perferendis possimus molestiae doloremque eius alias magnam libero tenetur tempore commodi. Exercitationem voluptatem porro maxime quisquam animi alias cupiditate amet, architecto accusamus nesciunt quas consequatur veritatis magni impedit optio? Reiciendis possimus non recusandae sequi porro voluptatibus, incidunt libero facilis, praesentium dolore repellat ratione quam beatae itaque obcaecati, totam dignissimos. Sequi ipsam saepe exercitationem eligendi repudiandae vitae cumque, asperiores porro culpa, accusantium in voluptatibus! Provident impedit rem repellat accusamus laboriosam reprehenderit corrupti cumque ipsam eum,
                               ad inventore maxime facere sunt, officiis veritatis quaerat.
@@ -477,15 +477,15 @@ const ConditionsDetails = () => {
                       <Row>
                         <Col sm="12">
                           {historial.map(anexo =>
-                            <div className="historial py-1  d-flex align-items-center mt-3" >
-                              <div className="icon-container d-flex alig-items-center justify-content-center">
-                                <div className="icon p-2 d-flex flex-column justify-content-center">
-                                  <div className="item-icon d-flex align-items-center"><Daate size={20} />00.00-0000</div>
-                                  <div className="item-icon d-flex align-items-center"><Clock size={20} />00:00</div>
+                            <div className="card mx-1 mx-md-3 mb-4 border-0 bg-light hover-scale-up hover-shadow-sm d-flex flex-row mt-4 py-3 px-1 px-md-3" >
+                              <div className="d-flex alig-items-center justify-content-center">
+                                <div className="icon p-2 d-flex flex-column justify-content-center w-100">
+                                  <div className="item-icon  fw-bold text-truncate gap-3"><Daate size={20} /> 00.00-0000</div>
+                                  <div className="item-icon  fw-bold mt-2 text-truncate gap-3"><Clock size={20} /> 00:00</div>
                                 </div>
 
                               </div>
-                              <div className="anexo-body historial-body p-0 py-1 d-flex flex-column  " onClick={() => {
+                              <div className="  p-0  ms-2 px-2 d-flex justify-content-center flex-column text-truncate" onClick={() => {
                                 setModalData({
                                   isOpen: true,
                                   title: anexo.tipo,
@@ -501,10 +501,10 @@ const ConditionsDetails = () => {
                                     </div>
                                   ),
                                 })
-                              }}>
+                                }}>
 
                                 <span><span className={anexo.tipo === 'CONDICION' ? 'badge text-white rounded-pill  text-bg-success' : anexo.tipo === 'REVISIÓN' ? 'badge text-white rounded-pill  text-bg-warning' : anexo.tipo === 'ANEXO' ? 'badge text-white rounded-pill  text-bg-info' : ''}>{anexo.tipo}</span></span>
-                                <span>{anexo.descripcion}</span>
+                                <span className=" text-truncate w-100 m-0">{anexo.descripcion}</span>
                               </div>
 
                             </div>
