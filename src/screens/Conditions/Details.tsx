@@ -370,7 +370,7 @@ const ConditionsDetails = () => {
 
 
 
-                  <Nav tabs className="group-subtitle p-1  mt-4  justify-content-md-start flex-md-flex d-block">
+                  <Nav tabs className="group-subtitle p-1  mt-4  justify-content-md-start d-md-flex d-block">
                     <div className="line"></div>
                     <NavItem>
                       <NavLink
