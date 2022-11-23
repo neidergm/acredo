@@ -1,5 +1,5 @@
-export const BASE_API = "https://xxxx";
-export const baseUrl = `${BASE_API}/api/api`;
+export const BASE_API = "https://axis.curn.edu.co";
+export const baseUrl = `${BASE_API}/apisiac/api`;
 // export const baseUrl = `${BASE_API}/apiprueba/api`;
 
 export const localstorageItemPrefix = "SIAC/";
