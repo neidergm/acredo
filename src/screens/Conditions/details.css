@@ -1,28 +1,19 @@
-.body-details{
+.card-body{
     color: #4B5C6B;
   }
   
-  .body-details .subtitle{
+  .card-body .subtitle{
     background-color: #E3E8ED;
-    border-radius: 20px;
-    padding: 5px;
-    font-weight: bold;
-    font-size: 15px;
+
   }
   
   .group-subtitle, Nav{
     background-color: #E3E8ED;
-     border-radius: 20px;
-    position: relative;
   }
   
   .group-subtitle .sub-item, .sub-item:hover{
-    font-size: 14px;
-    font-weight: bold;
     background-color: #E3E8ED;
-  font-size: 15px;
   color: #4B5C6B !important;
-  border: none;
   border-radius: 20px !important;
   margin-right: 10px;
   cursor: pointer;
@@ -38,14 +29,18 @@
     color: #E9863F !important;
   
   }
-  textarea{
-    width: 100%;
-    height: 230px;
+  textarea, .show-text{
+
+    height: 350px;
     resize: none !important;
     color: #4B5C6B;
     background-color: #F2F5F7;
     border: 2px dashed #DAE2E8;
     outline:  none !important
+  }
+  .show-text{
+    border-style: solid;
+    overflow-y: auto;
   }
   
   .pointer{
@@ -58,66 +53,32 @@
     width: auto;
     column-gap: 5px;
   }
-  .container-details{
-    font-size: 14px;
-  }
   
-  .dialog{
-    display: none;
-  }
-  .dialog.active{
-    display: block;
-  }
+  
+ 
   .anexo, .historial{
     background-color: #F2F5F7;
   }
-  .anexo .icon-container{
-    width: 10%;
-  }
+ 
   .anexo .icon-container .icon{
     background-color: #CED8E0 !important;
-    border-radius: 50%;
   }
-  .anexo-body{
-    width: 80%;
-    justify-content: center !important;
-  }
-  .anexo-options{
-    justify-content: center;
-    align-items: center;
-    width: 10%;
-    column-gap: 20px;
-  }
-  .icon-option{
-    cursor: pointer;
-  }
-  .icon-option > *{
+ 
+
+  .icon-option > *, .item-icon{
     color: #788896 !important;
   }
   .historial .icon-container{
     color: #788896 !important;
-    font-weight: 500;
-    width: 15%;
   }
-  .historial, .anexo{
-    transition: .1s;
-  }
+ 
   .historial:hover, .anexo:hover{
     background-color: #CED8E0;
   }
-  .icon-container .item-icon{
-    column-gap: 5px;
-  }
+ 
   .body-details{
     padding-bottom: 100px !important;
   }
-  .historial-body{
-    cursor: pointer;
-    color: #59646F;
-  }
-  .anexo-descripcion{
-    width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  .item-icon{
+    font-size: 13px;
   }

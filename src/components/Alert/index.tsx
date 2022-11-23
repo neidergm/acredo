@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { CheckCircleFill, ExclamationCircleFill, InfoCircleFill, QuestionCircleFill, XCircleFill } from '../Icons';
-import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader } from '../Modal';
+import { Modal, ModalBody, ModalFooter, ModalHeader } from '../Modal';
 import { ButtonProps, Button } from 'reactstrap';
 
 type T_Btn = Omit<ButtonProps, 'onClick'> & {
@@ -46,6 +46,8 @@ const Alert = ({
   const [showAlert, setShowAlert] = useState(isOpen);
 
   const toggle = () => setShowAlert(!showAlert);
+
+  useEffect(() => setShowAlert(isOpen), [isOpen])
 
   const buttons = [];
 

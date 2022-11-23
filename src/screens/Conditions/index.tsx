@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { Flag, Box } from "../../components/Icons";
 import Header from "../../components/header";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './condiciones.css';
 import {
   TabContent, TabPane, Nav,
   NavItem, NavLink, Row, Col
