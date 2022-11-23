@@ -1,94 +1,31 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { Flag, Box } from "../../components/Icons";
+import React, { useState, useEffect } from "react";
 import Header from "../../components/header";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {
-  TabContent, TabPane, Nav,
-  NavItem, NavLink, Row, Col
-} from 'reactstrap';
-import classnames from 'classnames';
-import { Badge } from 'reactstrap';
+import { AXIOS_REQUEST } from "../../services/axiosService";
+import { CONDITIONS_BY_CONVOCATORY } from "../../services/endPointsService";
 import { SubHeader } from "../../components/SubHeader";
-import { useNavigate } from 'react-router-dom';
+
+let DATA: Array<any> = [];
 
 const Conditions = () => {
 
-  const navigate = useNavigate();
 
-  const condiciones = [
-    {
-      codigo: "200",
-      condicion: "ESTRUCTURA ADMINISTRATIVA Y ACADEMICA",
-      ciudad: "Barranquilla",
-      estado: "no",
-    },
-    {
-      codigo: "300",
-      condicion: "CULTURA DE LA AUTOEVALUACIÓN",
-      ciudad: "Barranquilla",
-      estado: "no",
-    },
-    {
-      codigo: "400",
-      condicion: "PROGRAMA DE EGRESADOS",
-      ciudad: "Barranquilla",
-      estado: "no",
-    },
-    {
-      codigo: "500",
-      condicion: "MODELO DE BIENESTAR",
-      ciudad: "Barranquilla",
-      estado: "no",
-    },
-    {
-      codigo: "600",
-      condicion:
-        "RECURSOS SUFICIENTES PARA GARANTIZAR EL CUMPLIMIENTO DE LAS METAS",
-      ciudad: "Barranquilla",
-      estado: "no",
-    },
+ //queda para consumir el dia de jueves
 
-    //Cartagena
-    {
-      codigo: "100",
-      condicion:
-        "MECANISMOS DE SELECCIÓN Y EVALUACIÓN DE ESTUDIANTES Y PROFESORES",
-      ciudad: "Cartagena",
-      estado: "no",
-    },
-    {
-      codigo: "200",
-      condicion: "ESTRUCTURA ADMINISTRATIVA Y ACADEMICA",
-      ciudad: "Cartagena",
-      estado: "no",
-    },
-    {
-      codigo: "300",
-      condicion: "CULTURA DE LA AUTOEVALUACIÓN",
-      ciudad: "Cartagena",
-      estado: "no",
-    },
-    {
-      codigo: "400",
-      condicion: "PROGRAMA DE EGRESADOS",
-      ciudad: "Cartagena",
-      estado: "no",
-    },
-    {
-      codigo: "500",
-      condicion: "MODELO DE BIENESTAR",
-      ciudad: "Cartagena",
-      estado: "no",
-    },
-    {
-      codigo: "600",
-      condicion:
-        "RECURSOS SUFICIENTES PARA GARANTIZAR EL CUMPLIMIENTO DE LAS METAS",
-      ciudad: "Cartagena",
-      estado: "no",
-    },
-  ];
+  const [convocatorias, setConvocatorias] = useState<typeof DATA>(DATA);
+
+  useEffect(() => {
+    !DATA.length && AXIOS_REQUEST(CONDITIONS_BY_CONVOCATORY)
+      .then(res => {
+        setConvocatorias(res.data)
+      })
+      .catch(err => err)
+
+    return () => {
+      DATA = convocatorias;
+    }
+
+  }, [])
 
   // State for current active Tab
   const [currentActiveTab, setCurrentActiveTab] = useState('1');
@@ -113,13 +50,13 @@ const Conditions = () => {
 
         <div>
           <div>
-            {condiciones.map((item) => (
+            {/*{condiciones.map((item) => (
               <div
                 className="card mb-4 border-0 bg-light hover-scale-up hover-shadow-sm"
                 onClick={() => navigate(`/condiciones/detalles/${item.ciudad}/${item.codigo}`)}
               >
                 <div className="card-body">
-                  {/* <h5 className="card-title">Card title</h5> */}
+                 
                   <div className="d-flex flex-sm-row-reverse justify-content-sm-between flex-column gap-3">
                     <div>
                       <Badge
@@ -138,9 +75,8 @@ const Conditions = () => {
                   <p className="card-text"><small className="text-muted">- Última actualización {"00-00-0000 a las 00:00"}</small></p>
                 </div>
               </div>
-            ))
-            }
-            {/* <Row>
+            ))}
+             <Row>
               <Col sm="12">
                 <table className="table table-striped border mt-4 ">
                   <thead>
