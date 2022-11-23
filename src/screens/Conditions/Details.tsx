@@ -377,7 +377,7 @@ const ConditionsDetails = () => {
                   <br />
                   <div className="d-flex justify-content-between"><div className="subtitle rounded-pill fw-bold py-1 px-4">Descripcion</div></div>
                   <p className="info-condicion px-2 mb-4 mt-2">{condiciones.informacion}</p>
-                  <span className="ps-2">Ciudad / Programa:</span> <b className="">{condiciones.ciudad ? condiciones.ciudad : condiciones.programa}</b>
+                  <span className="ps-2"><b>Ciudad :</b></span> {condiciones.ciudad.toUpperCase()}
 
 
 
