@@ -26,6 +26,15 @@ const ConditionsDetails = () => {
   const [currentActiveTab, setCurrentActiveTab] = useState('1');
   const [modalData, setModalData] = useState<any>(null);
 
+  const [textarea1, setTextArea1] = useState(true);
+  const [openAlert1, setOpenAlert1] = useState(false);
+  const [saveAlert1, setSaveAlert1] = useState(false);
+
+
+  const [textarea2, setTextArea2] = useState(true);
+  const [openAlert2, setOpenAlert2] = useState(false);
+  const [saveAlert2, setSaveAlert2] = useState(false);
+
 
 
   // Toggle active state for Tab
@@ -311,12 +320,16 @@ const ConditionsDetails = () => {
     }
   ]
 
-  var [textarea1, setTextArea1] = useState(true);
-
-
+ 
   return (
 
     <div className="container-details">
+      <Alert isOpen={openAlert1} type="question"  title={"¿Estás seguro?"}  subtitle="se perderán los cambios que has realizado" onClosed={() => {setOpenAlert1(false) }} closeButton={{value: " Cancelar", color:'danger'}} submitButton={{value : 'Descartar cambios', onClick:()=>{setTextArea1(!textarea1)}}} />
+      <Alert isOpen={saveAlert1} type="success"   title={"¡ Guardado !"}    subtitle="Los cambios se han guardado correctamente" onClosed={() => {setSaveAlert1(false) }} closeButton={{value:'cerrar'}} />
+
+      <Alert isOpen={openAlert2} type="question"  title={"¿Estás seguro?"}  subtitle="se perderán los cambios que has realizado" onClosed={() => {setOpenAlert2(false) }} closeButton={{value: " Cancelar", color:'danger'}} submitButton={{value : 'Descartar cambios', onClick:()=>{setTextArea2(!textarea2)}}} />
+      <Alert isOpen={saveAlert2} type="success"   title={"¡ Guardado !"}    subtitle="Los cambios se han guardado correctamente" onClosed={() => {setSaveAlert2(false) }} closeButton={{value:'cerrar'}} />
+
       <Modal isOpen={!!(modalData?.isOpen)} onClosed={() => { setModalData(null) }} toggle={() => closeModal(setModalData)}>
         <ModalHeader textCenter toggle={() => closeModal(setModalData)}>{modalData?.title}</ModalHeader>
         <ModalBody>{modalData?.children}</ModalBody>
@@ -425,20 +438,18 @@ const ConditionsDetails = () => {
                       <Row>
                         <Col sm="12">
                           <button className={`subtitle rounded-pill fw-bold fw- p-2 mt-4 px-4 pointer d-flex justify-content-center align-items-center btn-edit ${!textarea1 ? 'bg-danger text-white' : ''}`} onClick={(e) => {
-                            if(textarea1){
-                              setTextArea1(!textarea1)
-                            }else{
-                             
-                            }
-
-                          }}><Edit /> {textarea1 ? 'HABILITAR EDICIÓN' : 'CANCELAR EDICIÓN'}</button>
+                            textarea1 ? setTextArea1(!textarea1) : setOpenAlert1(true)
+                          }}><Edit /> {textarea1 ? 'Habilitar edición' : 'Cancelar edición'}</button>
                           <div className="edit">
                             <textarea className={textarea1 ? " p-3 mt-3 w-100  p-3 mt-3 w-100" : 'bg-white border-secondary p-3 mt-3 w-100  p-3 mt-3 w-100'} readOnly={textarea1}>
                               lorem  Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus aut amet ullam explicabo qui pariatur quae aperiam Animi perferendis possimus molestiae doloremque eius alias magnam libero tenetur tempore commodi. Exercitationem voluptatem porro maxime quisquam animi alias cupiditate amet, architecto accusamus nesciunt quas consequatur veritatis magni impedit optio? Reiciendis possimus non recusandae sequi porro voluptatibus, incidunt libero facilis, praesentium dolore repellat ratione quam beatae itaque obcaecati, totam dignissimos. Sequi ipsam saepe exercitationem eligendi repudiandae vitae cumque, asperiores porro culpa, accusantium in voluptatibus! Provident impedit rem repellat accusamus laboriosam reprehenderit corrupti cumque ipsam eum,ad inventore maxime facere sunt, officiis veritatis quaerat
                             </textarea>
                           </div>
                           <div className="col-12 d-flex justify-content-end">
-                           {!textarea1 ?  <button className="btn btn-success w-25">Guardar</button> : ''}
+                           {!textarea1 ?  <button className="btn btn-primary w-25" onClick={()=>{
+                            setTextArea1(!textarea1);
+                            setSaveAlert1(true);
+                           }}>Guardar</button> : ''}
                           </div>
 
                         </Col>
@@ -471,19 +482,21 @@ const ConditionsDetails = () => {
                     <TabPane tabId="3">
                       <Row>
                         <Col sm="12">
-                          <button className="subtitle rounded-pill fw-bold p-2 mt-4 px-4 pointer d-flex justify-content-center align-items-center btn-edit"><Edit /> Habilitar edicion</button>
+                        <button className={`subtitle rounded-pill fw-bold fw- p-2 mt-4 px-4 pointer d-flex justify-content-center align-items-center btn-edit ${!textarea2 ? 'bg-danger text-white' : ''}`} onClick={(e) => {
+                            textarea2 ? setTextArea2(!textarea2) : setOpenAlert2(true)
+                          }}><Edit /> {textarea2 ? 'Habilitar edición' : 'Cancelar edición'}</button>
                           <div className="edit">
-                            <textarea readOnly className="p-3 mt-3 w-100 d-none" >
-                              Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus aut amet ullam explicabo qui pariatur quae aperiam.
-                              Animi perferendis possimus molestiae doloremque eius alias magnam libero tenetur tempore commodi. Exercitationem voluptatem porro maxime quisquam animi alias cupiditate amet, architecto accusamus nesciunt quas consequatur veritatis magni impedit optio? Reiciendis possimus non recusandae sequi porro voluptatibus, incidunt libero facilis, praesentium dolore repellat ratione quam beatae itaque obcaecati, totam dignissimos. Sequi ipsam saepe exercitationem eligendi repudiandae vitae cumque, asperiores porro culpa, accusantium in voluptatibus! Provident impedit rem repellat accusamus laboriosam reprehenderit corrupti cumque ipsam eum,
-                              ad inventore maxime facere sunt, officiis veritatis quaerat.
+                            <textarea className={textarea2 ? " p-3 mt-3 w-100  p-3 mt-3 w-100" : 'bg-white border-secondary p-3 mt-3 w-100  p-3 mt-3 w-100'} readOnly={textarea2}>
+                              lorem  Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus aut amet ullam explicabo qui pariatur quae aperiam Animi perferendis possimus molestiae doloremque eius alias magnam libero tenetur tempore commodi. Exercitationem voluptatem porro maxime quisquam animi alias cupiditate amet, architecto accusamus nesciunt quas consequatur veritatis magni impedit optio? Reiciendis possimus non recusandae sequi porro voluptatibus, incidunt libero facilis, praesentium dolore repellat ratione quam beatae itaque obcaecati, totam dignissimos. Sequi ipsam saepe exercitationem eligendi repudiandae vitae cumque, asperiores porro culpa, accusantium in voluptatibus! Provident impedit rem repellat accusamus laboriosam reprehenderit corrupti cumque ipsam eum,ad inventore maxime facere sunt, officiis veritatis quaerat
                             </textarea>
-                            <div className="show-text p-3 mt-3 w-100">
-                              Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus aut amet ullam explicabo qui pariatur quae aperiam.
-                              Animi perferendis possimus molestiae doloremque eius alias magnam libero tenetur tempore commodi. Exercitationem voluptatem porro maxime quisquam animi alias cupiditate amet, architecto accusamus nesciunt quas consequatur veritatis magni impedit optio? Reiciendis possimus non recusandae sequi porro voluptatibus, incidunt libero facilis, praesentium dolore repellat ratione quam beatae itaque obcaecati, totam dignissimos. Sequi ipsam saepe exercitationem eligendi repudiandae vitae cumque, asperiores porro culpa, accusantium in voluptatibus! Provident impedit rem repellat accusamus laboriosam reprehenderit corrupti cumque ipsam eum,
-                              ad inventore maxime facere sunt, officiis veritatis quaerat.
-                            </div>
                           </div>
+                          <div className="col-12 d-flex justify-content-end">
+                           {!textarea2 ?  <button className="btn btn-primary w-25" onClick={()=>{
+                            setTextArea2(!textarea2);
+                            setSaveAlert2(true);
+                           }}>Guardar</button> : ''}
+                          </div>
+                           
                         </Col>
                       </Row>
                     </TabPane>
