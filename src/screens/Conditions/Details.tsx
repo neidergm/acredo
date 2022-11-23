@@ -441,7 +441,7 @@ const ConditionsDetails = () => {
                             textarea1 ? setTextArea1(!textarea1) : setOpenAlert1(true)
                           }}><Edit /> {textarea1 ? 'Habilitar edición' : 'Cancelar edición'}</button>
                           <div className="edit">
-                            <textarea className={textarea1 ? " p-3 mt-3 w-100  p-3 mt-3 w-100" : 'bg-white border-secondary p-3 mt-3 w-100  p-3 mt-3 w-100'} readOnly={textarea1}>
+                            <textarea autoFocus={textarea1} className={textarea1 ? " p-3 mt-3 w-100  p-3 mt-3 w-100" : 'bg-white border-secondary p-3 mt-3 w-100  p-3 mt-3 w-100'} readOnly={textarea1}>
                               lorem  Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus aut amet ullam explicabo qui pariatur quae aperiam Animi perferendis possimus molestiae doloremque eius alias magnam libero tenetur tempore commodi. Exercitationem voluptatem porro maxime quisquam animi alias cupiditate amet, architecto accusamus nesciunt quas consequatur veritatis magni impedit optio? Reiciendis possimus non recusandae sequi porro voluptatibus, incidunt libero facilis, praesentium dolore repellat ratione quam beatae itaque obcaecati, totam dignissimos. Sequi ipsam saepe exercitationem eligendi repudiandae vitae cumque, asperiores porro culpa, accusantium in voluptatibus! Provident impedit rem repellat accusamus laboriosam reprehenderit corrupti cumque ipsam eum,ad inventore maxime facere sunt, officiis veritatis quaerat
                             </textarea>
                           </div>
@@ -486,7 +486,7 @@ const ConditionsDetails = () => {
                             textarea2 ? setTextArea2(!textarea2) : setOpenAlert2(true)
                           }}><Edit /> {textarea2 ? 'Habilitar edición' : 'Cancelar edición'}</button>
                           <div className="edit">
-                            <textarea className={textarea2 ? " p-3 mt-3 w-100  p-3 mt-3 w-100" : 'bg-white border-secondary p-3 mt-3 w-100  p-3 mt-3 w-100'} readOnly={textarea2}>
+                            <textarea autoFocus className={textarea2 ? " p-3 mt-3 w-100  p-3 mt-3 w-100" : 'bg-white border-secondary p-3 mt-3 w-100  p-3 mt-3 w-100'} readOnly={textarea2}>
                               lorem  Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus aut amet ullam explicabo qui pariatur quae aperiam Animi perferendis possimus molestiae doloremque eius alias magnam libero tenetur tempore commodi. Exercitationem voluptatem porro maxime quisquam animi alias cupiditate amet, architecto accusamus nesciunt quas consequatur veritatis magni impedit optio? Reiciendis possimus non recusandae sequi porro voluptatibus, incidunt libero facilis, praesentium dolore repellat ratione quam beatae itaque obcaecati, totam dignissimos. Sequi ipsam saepe exercitationem eligendi repudiandae vitae cumque, asperiores porro culpa, accusantium in voluptatibus! Provident impedit rem repellat accusamus laboriosam reprehenderit corrupti cumque ipsam eum,ad inventore maxime facere sunt, officiis veritatis quaerat
                             </textarea>
                           </div>
