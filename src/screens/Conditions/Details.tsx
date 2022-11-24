@@ -121,7 +121,7 @@ const ConditionsDetails = () => {
       })
       .catch(err => err)
 
-  }, [])
+  }, [id])
 
   const alertOpenTwo = ()=>{
     setalertopen({
