@@ -123,28 +123,32 @@ const ConditionsDetails = () => {
 
   }, [id])
 
-  const alertOpenTwo = ()=>{
+  const alertOpenTwo = () => {
     setalertopen({
-      isOpen:true, 
-      type:"question",
-      title:"¿Estás seguro?",
-      subtitle:"se perderán los cambios que has realizado" ,
-      onClosed:() => {setalertopen({isOpen:false}) } ,
-      closeButton:{value: " Cancelar", color:'danger'}, 
-      submitButton:{value : 'Descartar cambios', 
-      onClick:()=>setTextarea2(!textarea2)}
+      isOpen: true,
+      type: "question",
+      title: "¿Estás seguro?",
+      subtitle: "se perderán los cambios que has realizado",
+      onClosed: () => { setalertopen({ isOpen: false }) },
+      closeButton: { value: " Cancelar", color: 'danger' },
+      submitButton: {
+        value: 'Descartar cambios',
+        onClick: () => setTextarea2(!textarea2)
+      }
     })
   }
-  const alertOpenOne = ()=>{
+  const alertOpenOne = () => {
     setalertopen({
-      isOpen:true, 
-      type:"question",
-      title:"¿Estás seguro?",
-      subtitle:"se perderán los cambios que has realizado" ,
-      onClosed:() => {setalertopen({isOpen:false}) } ,
-      closeButton:{value: " Cancelar", color:'danger'}, 
-      submitButton:{value : 'Descartar cambios', 
-      onClick:()=>setTextarea1(!textarea1)}
+      isOpen: true,
+      type: "question",
+      title: "¿Estás seguro?",
+      subtitle: "se perderán los cambios que has realizado",
+      onClosed: () => { setalertopen({ isOpen: false }) },
+      closeButton: { value: " Cancelar", color: 'danger' },
+      submitButton: {
+        value: 'Descartar cambios',
+        onClick: () => setTextarea1(!textarea1)
+      }
     })
   }
 
@@ -165,6 +169,12 @@ const ConditionsDetails = () => {
         <SubHeader text={condiciones.nomb_cond} showBackButton={true} />
 
         <div className="container-md py-1 pb-4">
+          <div className="mb-5">
+            <p>
+              <b>Convocatoria:</b>
+              <span className="d-block">{conv.nomb_conv}</span>
+            </p>
+          </div>
           {!respuestas ? <Loader isOpen loaderAsModal={false} />
             :
             !respuestas.length ?
@@ -173,15 +183,12 @@ const ConditionsDetails = () => {
               <div className="card mb-4 py- p-4 bg-white border-0 shadow shadow-small ">
 
                 <div className="card-body px-5-md pt-3">
-                  <div className="d-flex justify-content-between">
-                    <div className="subtitle rounded-pill fw-bold py-1 px-4">Nombre</div>
-                    <span className="badge rounded-pill text-bg-danger py-0 d-flex align-items-center justify-content-center "><Warning size={10} /> <span className="ms-1">Pendiente</span></span>
+                  <div className="d-flex justify-content-end">
+                    <span className="badge rounded-pill text-bg-danger py-1 d-flex align-items-center justify-content-center "><Warning size={10} /> <span className="ms-1">Pendiente</span></span>
                   </div>
-                  <p className="px-2 mt-2">{condiciones.nomb_cond}</p>
-                  <br />
-                  <div className="d-flex justify-content-between"><div className="subtitle rounded-pill fw-bold py-1 px-4">Descripcion</div></div>
-                  {/* <p className="info-condicion px-2 mb-4 mt-2">{condiciones.informacion}</p> */}
-                  <span className="ps-2"><b>Ciudad :</b></span> {condiciones.sede.toUpperCase()}
+                  
+                  <div className="d-flex justify-content-start "><div className="subtitle rounded-pill fw-bold py-1 px-4">Descripcion</div></div>
+                  <div className="mt-3"><span className="ps-2 "><b>Campus :</b></span> {condiciones.sede.toUpperCase()}</div>
 
                   <Nav tabs className="group-subtitle rounded-4 p-1  mt-4  justify-content-md-start d-md-flex d-block">
 
@@ -236,7 +243,7 @@ const ConditionsDetails = () => {
                     <TabPane tabId="1">
                       <Row>
                         <Col sm="12">
-                        <button className={`subtitle rounded-pill fw-bold fw- p-2 mt-4 px-4 pointer d-flex justify-content-center align-items-center btn-edit ${textarea1 ? 'text-white bg-danger' : ''}`} onClick={(e) => {
+                          <button className={`subtitle rounded-pill fw-bold fw- p-2 mt-4 px-4 pointer d-flex justify-content-center align-items-center btn-edit ${textarea1 ? 'text-white bg-danger' : ''}`} onClick={(e) => {
                             if (!textarea1) {
                               setTextarea1(!textarea1)
                             } else {
@@ -249,7 +256,7 @@ const ConditionsDetails = () => {
                             </textarea>
                           </div>
                           <div className="d-flex justify-content-end" >
-                            {textarea1 ? <button className="btn btn-primary w-25" onClick={()=>{setTextarea1(false)}}>Guardar</button> : ''}
+                            {textarea1 ? <button className="btn btn-primary w-25" onClick={() => { setTextarea1(false) }}>Guardar</button> : ''}
                           </div>
 
                         </Col>
@@ -295,7 +302,7 @@ const ConditionsDetails = () => {
                             </textarea>
                           </div>
                           <div className="d-flex justify-content-end" >
-                            {textarea2 ? <button className="btn btn-primary w-25" onClick={()=>{setTextarea2(false)}}>Guardar</button> : ''}
+                            {textarea2 ? <button className="btn btn-primary w-25" onClick={() => { setTextarea2(false) }}>Guardar</button> : ''}
                           </div>
 
                         </Col>
