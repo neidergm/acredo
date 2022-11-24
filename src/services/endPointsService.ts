@@ -22,7 +22,7 @@ export const CONDITIONS_BY_CONVOCATORY = `cond/all/`;
  * [GET]
  * /cond/detalle/{id_cond}
  */
-export const CONDITION_DETAILS = `cond/detalle/`;
+export const CONDITION_DETAILS = `cond/detalles/`;
 
 /**
  * [GET]
