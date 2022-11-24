@@ -7,7 +7,7 @@ import lazyLoaderComponents from './services/lazyLoadingService';
 
 const Conditions = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Conditions" */ './screens/Conditions')));
 const ConditionsDetails = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "ConditionsDetails" */ './screens/Conditions/Details')));
-const Convocatorias = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Convocatories" */ './screens/Convocatorias')));
+const Convocatorias = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Convocatories" */ './screens/Convocatories')));
 
 type T_Props = {}
 
@@ -21,8 +21,8 @@ const App = ({ }: T_Props) => {
             <Router>
               <Routes>
                 <Route path='/' element={<Convocatorias />} />
-                <Route path='/condiciones/detalles/:dependency/:id' element={<ConditionsDetails />} />
-                <Route path='/condiciones/' element={<Conditions />} />
+                <Route path='/condiciones/:dependency' element={<Conditions />} />
+                <Route path='/condiciones/detalles/:id' element={<ConditionsDetails />} />
                 <Route path='*' element={<Navigate to="/" />} />
               </Routes>
             </Router>

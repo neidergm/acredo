@@ -6,14 +6,20 @@ type T_Props = {
     title?: string | JSX.Element | JSX.Element[];
     subtitle?: string | JSX.Element | JSX.Element[];
     size?: 'sm' | 'md' | 'lg' | 'xl';
+    loaderAsModal?: boolean;
 }
 
 const Loader = ({
     title,
     isOpen = false,
+    loaderAsModal = true,
     subtitle,
     size = 'sm'
 }: T_Props) => {
+
+    if (!loaderAsModal) {
+        return <div className='text-center w-100 h-100'><Spinner animation="border" role="status" /></div>
+    }
     return (
         <Modal
             centered
