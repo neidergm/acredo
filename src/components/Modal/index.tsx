@@ -5,6 +5,7 @@ import {
     ModalBody as ModalBodyB,
     ModalFooter as ModalFooterB,
     ModalHeaderProps,
+    ModalProps,
     ModalFooterProps
 } from 'reactstrap';
 import classnames from 'classnames';
@@ -15,6 +16,8 @@ type T_ModalHeaderProps = {
     textCenter?: boolean;
     toggle?: T_ModalToggleAction;
 } & ModalHeaderProps;
+
+export type T_ModalJSON = T_ModalHeaderProps & ModalFooterProps & ModalProps;
 
 export const closeModal = (
     setStateCallback: (currentState: { [x: string]: any }) => any

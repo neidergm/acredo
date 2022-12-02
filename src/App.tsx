@@ -1,9 +1,9 @@
-/* eslint-disable no-empty-pattern */
 import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
-import './App.css';
 import FallbackComponen1 from './components/Loader/FallbackComponen1';
 import lazyLoaderComponents from './services/lazyLoadingService';
+import Header from './components/Header';
+import './App.css';
 
 const Conditions = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Conditions" */ './screens/Conditions')));
 const ConditionsDetails = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "ConditionsDetails" */ './screens/Conditions/Details')));
@@ -12,21 +12,19 @@ const Convocatorias = lazy(lazyLoaderComponents(() => import(/* webpackChunkName
 type T_Props = {}
 
 const App = ({ }: T_Props) => {
-
   return (
     <div className="layout">
+      <Header />
       <main className="main">
         <Suspense fallback={<FallbackComponen1 />}>
-          <div>
-            <Router>
-              <Routes>
-                <Route path='/' element={<Convocatorias />} />
-                <Route path='/condiciones/:dependency' element={<Conditions />} />
-                <Route path='/condiciones/detalles/:id' element={<ConditionsDetails />} />
-                <Route path='*' element={<Navigate to="/" />} />
-              </Routes>
-            </Router>
-          </div>
+          <Router>
+            <Routes >
+              <Route path='/' element={<Convocatorias />} />
+              <Route path='/condiciones/:dependency' element={<Conditions />} />
+              <Route path='/condiciones/detalles/:id_cond' element={<ConditionsDetails />} />
+              <Route path='*' element={<Navigate to="/" />} />
+            </Routes>
+          </Router>
         </Suspense>
       </main>
     </div>

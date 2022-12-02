@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import Header from "../../components/header";
 import { AXIOS_REQUEST } from "../../services/axiosService";
 import { CONDITIONS_BY_CONVOCATORY } from "../../services/endPointsService";
 import { SubHeader } from "../../components/SubHeader";
@@ -30,21 +29,15 @@ const Conditions = () => {
     } else {
       AXIOS_REQUEST(CONDITIONS_BY_CONVOCATORY + dependency)
         .then(res => {
-          setConditions(res.data)
+          setConditions(res.data);
+          DATA[dependency] = res.data;
         })
         .catch(err => err)
-    }
-
-    return () => {
-      if (conditions) {
-        DATA[dependency] = conditions;
-      }
     }
   }, [])
 
   return (
     <div className="condiciones-container">
-      <Header />
       <SubHeader text={"Condiciones"} showBackButton />
 
       <div className="container">
@@ -83,7 +76,11 @@ const Conditions = () => {
                         <p><b>Campus:</b> {item.sede}</p>
                       </div>
                     </div>
-                    <p className="card-text"><small className="text-muted">- Última actualización {item.marc_update}</small></p>
+                    <p className="card-text">
+                      <small className="text-muted">
+                        - Última actualización el {new Date(item.marc_update).toLocaleString([], { dateStyle: "long", timeStyle: "short" })}
+                      </small>
+                    </p>
                   </div>
                 </div>
               ))}

@@ -1,84 +1,27 @@
-.card-body{
-    color: #4B5C6B;
-  }
-  
-  .card-body .subtitle{
-    background-color: #E3E8ED;
+.group-subtitle {
+  transition: all 0.2s linear;
+  background-color: #E3E8ED;
+  border-radius: 10px !important;
+}
 
-  }
-  
-  .group-subtitle, Nav{
-    background-color: #E3E8ED;
-  }
-  
-  .group-subtitle .sub-item, .sub-item:hover{
-    background-color: #E3E8ED;
-  color: #4B5C6B !important;
-  border-radius: 20px !important;
-  margin-right: 10px;
+.group-subtitle .sub-item {
+  transition: all 0.2s linear;
+  margin: 0px;
+  border: 0px;
+  background-color: #E3E8ED;
+  /* color: #4B5C6B !important; */
+  border-radius: 10px !important;
+  /* margin-right: 10px; */
   cursor: pointer;
-  column-gap: 5px;
-  }
-  .sub-item > *{
-  transition: .2s !important;
+  column-gap: 7px;
+}
 
-  }
-  
-  .group-subtitle .sub-item:focus , .sub-item.active{
-    background-color: white !important;
-    color: #E9863F !important;
-  
-  }
-  textarea, .show-text{
+.group-subtitle .sub-item:focus,
+.sub-item.active {
+  background-color: white !important;
+  color: #E9863F !important;
+}
 
-    height: 350px;
-    resize: none !important;
-    color: #4B5C6B;
-    background-color: #F2F5F7;
-    border: 2px dashed #DAE2E8;
-    outline:  none !important
-  }
-  .show-text{
-    border-style: solid;
-    overflow-y: auto;
-  }
-  
-  .pointer{
-    cursor: pointer;
-  }
-  button.pointer{
-    border: none;
-    outline: none;
-    color: #4B5C6B;
-    width: auto;
-    column-gap: 5px;
-  }
-  
-  
- 
-  .anexo, .historial{
-    background-color: #F2F5F7;
-  }
- 
-  .anexo .icon-container .icon{
-    background-color: #CED8E0 !important;
-  }
- 
-
-  .icon-option > *, .item-icon{
-    color: #788896 !important;
-  }
-  .historial .icon-container{
-    color: #788896 !important;
-  }
- 
-  .historial:hover, .anexo:hover{
-    background-color: #CED8E0;
-  }
- 
-  .body-details{
-    padding-bottom: 100px !important;
-  }
-  .item-icon{
-    font-size: 13px;
-  }
+.accordion-item .accordion-header button:not(.collapsed){
+  font-weight: bold !important;
+}

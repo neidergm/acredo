@@ -26,8 +26,8 @@ const setOtherAxiosConfig = (config = {}) => { otherConfig = { ...otherConfig, .
  * @param {Object} header custom headers params 
  * @param {String} token token for a particular request 
  */
-const AXIOS_REQUEST = (url: string, method = "get", data = null, formData = false, header = {}, onUploadProgress = (p: any) => { }) => {
-    if(!(token_storaged)){
+const AXIOS_REQUEST = (url: string, method = "get", data: any = null, formData = false, header = {}, onUploadProgress = (p: any) => { }) => {
+    if (!(token_storaged)) {
         setTokenForAxiosRequest(localStorageService.getItem("token"))
     }
     let headers: any = {

@@ -1,5 +1,3 @@
-import { baseUrl } from "./constantsService";
-
 /**
  * [GET]
  * /conv
@@ -26,14 +24,44 @@ export const CONDITION_DETAILS = `cond/detalles/`;
 
 /**
  * [GET]
- * /resp/all/{id_fcamp}
+ * /resp/one/{id_form}
  */
-export const FORM_ANSWERS = `resp/all/`;
+export const ANSWER_BY_FORM = `resp/one/`;
+
+/**
+ * [GET]
+ * /resp/all/{id_form}
+ */
+export const ALL_ANSWERS_BY_FORM = `resp/all/`;
+
+/**
+ * [POST]
+ * /resp
+ */
+export const SAVE_ANSWERS = `resp`;
+
+/**
+ * [DELETE]
+ * /resp/resp/{id_fcamp}/{grupo}
+ */
+export const DELETE_ANSWERS = `resp/`;
+
+/**
+ * [GET]
+ * /form/{fields}
+ */
+export const FORM = `form/`;
 
 /**
  * [GET]
  * /form/campos/{fields}
  */
 export const FORM_FIELDS = `form/campos/`;
+
+/**
+ * [GET]
+ * /resp/historial/{id_cond}
+ */
+export const HISTORIC_BY_CONDITION = `resp/historial/`;
 
 

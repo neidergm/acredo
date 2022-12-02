@@ -11,10 +11,9 @@ type T_Btn = Omit<ButtonProps, 'onClick'> & {
   onClick?: () => void;
 };
 
-// interface I_Props extends I_ModalActionButtons {
-interface I_Props {
+export interface I_AlertObject {
   isOpen: boolean;
-  onClosed: () => void;
+  onClosed?: () => void;
   showCloseX?: boolean;
   closeButton?: T_Btn;
   submitButton?: T_Btn;
@@ -37,12 +36,12 @@ const Alert = ({
   showCloseX,
   isOpen = false,
   subtitle,
-  onClosed,
+  onClosed = () => { },
   size = 'md',
   type,
   closeButton,
   submitButton
-}: I_Props) => {
+}: I_AlertObject) => {
   const [showAlert, setShowAlert] = useState(isOpen);
 
   const toggle = () => setShowAlert(!showAlert);
@@ -53,6 +52,7 @@ const Alert = ({
 
   if (closeButton) {
     buttons.push(<Button
+      key="closeButton"
       color="primary"
       {...closeButton}
       onClick={() => {
@@ -64,6 +64,7 @@ const Alert = ({
 
   if (submitButton) {
     buttons.push(<Button
+      key="submitButton"
       color="primary"
       {...submitButton}
       onClick={() => {
@@ -90,27 +91,7 @@ const Alert = ({
         {subtitle && <p className='mb-0 text-secondary'>{subtitle}</p>}
       </ModalBody>
       <ModalFooter>{buttons}</ModalFooter>
-      {/*  <ModalFooter action={toggle} closeButton={closeButton} submitButton={submitButton} /> */}
     </Modal>
-    // <Modal
-    //   centered
-    //   contentClassName='border-0 pb-2'
-    //   isOpen={showAlert}
-    //   onClosed={onClosed}
-    //   backdrop="static"
-    //   size={size}
-    // >
-    //   {
-    //     <ModalHeader className='border-0 pb-0 flex-column-reverse' toggle={!(!!(closeButton) || !!(submitButton)) ? (() => toggle()) : undefined}>
-    //       <div className='justify-content-center p-3'>{alertType[type!]}</div>
-    //     </ModalHeader>
-    //   }
-    //   <ModalBody className="text-center">
-    //     {title && <h3 className='mb-4'>{title}</h3>}
-    //     {subtitle && <p>{subtitle}</p>}
-    //   </ModalBody>
-    //   <ModalFooter action={toggle} closeButton={closeButton} submitButton={submitButton} />
-    // </Modal>
   )
 }
 
