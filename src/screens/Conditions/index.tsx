@@ -12,40 +12,49 @@ let DATA: { [id_conv: string]: Array<I_Condition> } = {};
 
 const Conditions = () => {
 
-  const { dependency } = useParams();
-  const selectedConvocatory: I_Convocatory = useLocation().state;
+  const { id_convocatory } = useParams();
+  const convocatorySelected: I_Convocatory = useLocation().state;
   const navigate = useNavigate();
 
   const [conditions, setConditions] = useState<Array<I_Condition> | null>(null);
+  const isInstitutional = convocatorySelected.tipo_cond.toLocaleLowerCase() === "institucional";
 
   const goToConditionDetailsScreen = (condition: I_Condition) => {
-    navigate(`/condiciones/detalles/${condition.id_cond}`, { state: { condition, convocatory: selectedConvocatory } })
+    let type = isInstitutional ? "detalles" : "programa";
+    if (!isInstitutional && condition.form_cond.split(",").length > 1) type = "programa";
+    navigate(`/condiciones/${type}/${condition.id_cond}`, { state: { condition, convocatory: convocatorySelected } })
   }
 
   useEffect(() => {
-    if (!dependency) return
-    if (!!(DATA[dependency])) {
-      setConditions(DATA[dependency])
+    if (!id_convocatory) return
+    if (!!(DATA[id_convocatory])) {
+      setConditions(DATA[id_convocatory])
     } else {
-      AXIOS_REQUEST(CONDITIONS_BY_CONVOCATORY + dependency)
+      AXIOS_REQUEST(CONDITIONS_BY_CONVOCATORY + id_convocatory)
         .then(res => {
           setConditions(res.data);
-          DATA[dependency] = res.data;
+          DATA[id_convocatory] = res.data;
         })
         .catch(err => err)
     }
   }, [])
 
   return (
-    <div className="condiciones-container">
-      <SubHeader text={"Condiciones"} showBackButton />
-
-      <div className="container">
+    <>
+      <SubHeader
+        showBackButton
+        text={`Condiciones ${isInstitutional ? "intitucionales" : "de programa"}`}
+      />
+      <div className="container pt-3 pb-5">
         <div className="mb-5">
           <p>
             <b>Convocatoria:</b>
-            <span className="d-block">{selectedConvocatory.nomb_conv}</span>
+            <span className="d-block">{convocatorySelected.nomb_conv}</span>
           </p>
+          {!isInstitutional && <p className="mb-1">
+            <b>Programa:</b>
+            <span className="d-block">{convocatorySelected.programa}</span>
+          </p>}
         </div>
 
         <div>
@@ -86,7 +95,7 @@ const Conditions = () => {
               ))}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

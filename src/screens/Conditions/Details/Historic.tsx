@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Clock, Calendar2Event } from '../../components/Icons'
-import { I_HistoryItem } from '../../interfaces/conditions.interface'
-import { AXIOS_REQUEST } from '../../services/axiosService';
-import { HISTORIC_BY_CONDITION } from '../../services/endPointsService';
+import { Clock, Calendar2Event } from '../../../components/Icons'
+import { I_HistoryItem } from '../../../interfaces/conditions.interface'
+import { AXIOS_REQUEST } from '../../../services/axiosService';
+import { HISTORIC_BY_CONDITION } from '../../../services/endPointsService';
 import classnames from 'classnames';
-import Loader from '../../components/Loader';
-import { closeModal, Modal, ModalBody, ModalHeader, T_ModalJSON } from '../../components/Modal';
+import Loader from '../../../components/Loader';
+import { closeModal, Modal, ModalBody, ModalHeader, T_ModalJSON } from '../../../components/Modal';
 import Form from 'react-ngm-form';
-import { formToObjectWithFieldsAndValues } from '../../utils/formUtils';
+import { formToObjectWithFieldsAndValues } from '../../../utils/formUtils';
 
 interface I_Props {
     id_condition: number;

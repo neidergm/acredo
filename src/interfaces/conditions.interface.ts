@@ -1,15 +1,15 @@
 export interface I_Condition {
-    estado: string,
-    form_anexo: number,
-    form_cond: number,
-    form_obse: number,
-    form_respuesta: number,
-    id_cond: number,
-    id_esta: number,
-    id_form: number,
-    marc_temp: string,
-    marc_update: string,
-    nomb_cond: string,
+    estado: string;
+    form_anexo: number;
+    form_cond: string;
+    form_obse: number;
+    form_respuesta: number;
+    id_cond: number;
+    id_esta: number;
+    id_form: number;
+    marc_temp: string;
+    marc_update: string;
+    nomb_cond: string;
     sede: string
 }
 
@@ -21,28 +21,42 @@ export interface I_AttachmentsConditions {
 }
 
 export interface I_HistoryItem {
-    grupo_resp: string,
-    id_cond: number,
-    id_resp: number,
-    id_fcamp: 4,
-    json_campo: { [x: string]: any },
-    marc_temp: string,
-    respuesta: any,
-    usuario: string,
-    tipo: string,
+    grupo_resp: string;
+    id_cond: number;
+    id_resp: number;
+    id_fcamp: 4;
+    json_campo: { [x: string]: any };
+    marc_temp: string;
+    respuesta: any;
+    usuario: string;
+    tipo: string;
 }
 
 export interface I_FormField {
-    grupo_resp: string,
-    id_campo: number,
-    id_fcamp: number,
-    id_form: number,
-    id_resp: number,
-    json_campo: { [x: string]: any },
-    marc_temp: string,
-    marc_update: string,
-    nomb_campo: string,
-    nomb_form: string,
-    respuesta: any,
+    id_campo: number;
+    json_campo: { [x: string]: any };
+    marc_temp: string;
+    marc_update: string;
+    nomb_campo: string;
+}
+
+export interface I_FormFieldWithAnswer extends I_FormField {
+    grupo_resp: string;
+    id_fcamp: number;
+    id_form: number;
+    id_resp: number;
+    nomb_form: string;
+    respuesta: any;
     usuario?: string
+}
+
+export interface I_Form {
+    campos: string;
+    est_form: 0 | 1;
+    est_resp: 0 | 1;
+    id_fcamp: number;
+    id_form: number;
+    marc_temp: string;
+    marc_update: string;
+    nomb_form: string;
 }

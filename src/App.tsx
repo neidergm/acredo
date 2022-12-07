@@ -6,8 +6,9 @@ import Header from './components/Header';
 import './App.css';
 
 const Conditions = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Conditions" */ './screens/Conditions')));
-const ConditionsDetails = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "ConditionsDetails" */ './screens/Conditions/Details')));
-const Convocatorias = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Convocatories" */ './screens/Convocatories')));
+const IntitutionlConditions = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "ConditionsIntitutional" */ './screens/Conditions/Details')));
+const Convocatories = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Convocatories" */ './screens/Convocatories')));
+const ProgramsConditions = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "ConditionsIntitutional" */ './screens/Conditions/Programs')));
 
 type T_Props = {}
 
@@ -19,9 +20,10 @@ const App = ({ }: T_Props) => {
         <Suspense fallback={<FallbackComponen1 />}>
           <Router>
             <Routes >
-              <Route path='/' element={<Convocatorias />} />
-              <Route path='/condiciones/:dependency' element={<Conditions />} />
-              <Route path='/condiciones/detalles/:id_cond' element={<ConditionsDetails />} />
+              <Route path='/' element={<Convocatories />} />
+              <Route path='/condiciones/programa/:id_cond' element={<ProgramsConditions />} />
+              <Route path='/condiciones/detalles/:id_cond' element={<IntitutionlConditions />} />
+              <Route path='/condiciones/:id_convocatory' element={<Conditions />} />
               <Route path='*' element={<Navigate to="/" />} />
             </Routes>
           </Router>

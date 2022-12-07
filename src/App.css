@@ -1,11 +1,10 @@
-* {
-  transition: all 0.2s ease-in-out;
-  list-style: none;
-  text-decoration: none !important;
+html {
+  scroll-behavior: smooth;
 }
 
-table {
-  overflow-x: scroll !important;
+* {
+  transition: all 0.2s ease-in-out;
+  text-decoration: none !important;
 }
 
 body {

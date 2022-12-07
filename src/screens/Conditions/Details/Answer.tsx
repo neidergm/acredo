@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react'
 import Form from 'react-ngm-form';
 import { Button } from 'reactstrap';
-import Alert, { I_AlertObject } from '../../components/Alert';
-import { Edit } from '../../components/Icons';
-import Loader from '../../components/Loader';
-import { I_FormField } from '../../interfaces/conditions.interface';
-import { AXIOS_REQUEST } from '../../services/axiosService';
-import { ANSWER_BY_FORM, SAVE_ANSWERS } from '../../services/endPointsService';
-import { formToSubmitData, T_FetchedFormData } from '../../utils/formUtils';
+import Alert, { I_AlertObject } from '../../../components/Alert';
+import { Edit } from '../../../components/Icons';
+import Loader from '../../../components/Loader';
+import { I_FormFieldWithAnswer } from '../../../interfaces/conditions.interface';
+import { AXIOS_REQUEST } from '../../../services/axiosService';
+import { ANSWER_BY_FORM, SAVE_ANSWERS } from '../../../services/endPointsService';
+import { formToSubmitData, T_FetchedFormData } from '../../../utils/formUtils';
 
 interface I_Props {
     idForm: number,
@@ -47,6 +47,7 @@ const Answer = ({
         let formData = form.fetchedForm && formToSubmitData(data,
             form.fetchedForm,
             ["id_fcamp", "id_campo"],
+            undefined,
             { id_cond: idCondition, id_form: idForm })
 
         AXIOS_REQUEST(SAVE_ANSWERS, "POST", formData, true)
@@ -77,7 +78,7 @@ const Answer = ({
         AXIOS_REQUEST(ANSWER_BY_FORM + idForm)
             .then(res => {
                 let data = form;
-                res.data.map((item: I_FormField) => {
+                res.data.map((item: I_FormFieldWithAnswer) => {
                     let field = item.json_campo;
                     data.fields.push(field);
                     data.defaultValues[field.name] = item.respuesta;

@@ -34,7 +34,7 @@ const Convocatories = () => {
   return (
     <>
       <SubHeader text={'Convocatorias'} />
-      <div className="container pt-4" >
+      <div className="container pt-3 pb-5">
         {!(convocatories) ?
           <Loader loaderAsModal={false} isOpen />
           :

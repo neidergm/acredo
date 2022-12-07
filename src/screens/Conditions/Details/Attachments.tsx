@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react'
 import { Button } from 'reactstrap'
-import { Clip, PlusCircleFill } from '../../components/Icons'
-import Loader from '../../components/Loader';
-import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } from '../../components/Modal';
-import { I_AttachmentsConditions, I_FormField } from '../../interfaces/conditions.interface'
-import { AXIOS_REQUEST } from '../../services/axiosService';
-import { ALL_ANSWERS_BY_FORM, ANSWER_BY_FORM, DELETE_ANSWERS, FORM, FORM_FIELDS, SAVE_ANSWERS } from '../../services/endPointsService';
+import { Clip, PlusCircleFill } from '../../../components/Icons'
+import Loader from '../../../components/Loader';
+import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } from '../../../components/Modal';
+import { I_AttachmentsConditions, I_FormFieldWithAnswer } from '../../../interfaces/conditions.interface'
+import { AXIOS_REQUEST } from '../../../services/axiosService';
+import { ALL_ANSWERS_BY_FORM, ANSWER_BY_FORM, DELETE_ANSWERS, FORM, FORM_FIELDS, SAVE_ANSWERS } from '../../../services/endPointsService';
 import Form from 'react-ngm-form';
-import Alert, { I_AlertObject } from '../../components/Alert';
-import { formToObjectWithFieldsAndValues, formToSubmitData, T_FetchedFormData } from '../../utils/formUtils';
+import Alert, { I_AlertObject } from '../../../components/Alert';
+import { formToObjectWithFieldsAndValues, formToSubmitData, T_FetchedFormData } from '../../../utils/formUtils';
 
 interface I_Props {
     idCondition: number;
@@ -25,7 +25,7 @@ const Attachments = ({
     const [myForm, setMyForm] = useState<T_FetchedFormData>(
         { fields: [], defaultValues: {}, fetchedForm: null }
     );
-    const [list, setList] = useState<{ [x: string]: I_FormField[] } | null>(null);
+    const [list, setList] = useState<{ [x: string]: I_FormFieldWithAnswer[] } | null>(null);
     const [modal, setModal] = useState<T_ModalJSON | null>(null);
     const [loader, setLoader] = useState<string | null>(null);
     const [alertConfirm, setAlertConfirm] = useState<I_AlertObject | null>(null);
@@ -102,7 +102,7 @@ const Attachments = ({
         })
     }
 
-    const attachmentDetails = (item: I_FormField[]) => {
+    const attachmentDetails = (item: I_FormFieldWithAnswer[]) => {
         let _form = formToObjectWithFieldsAndValues(item);
 
         setModal({
@@ -150,6 +150,7 @@ const Attachments = ({
         let formData = FETCHEDFORM.fetchedForm && formToSubmitData(data,
             FETCHEDFORM.fetchedForm,
             ["id_fcamp", "id_campo"],
+            undefined,
             { id_cond: idCondition, id_form: idForm })
         AXIOS_REQUEST(SAVE_ANSWERS, "POST", formData, true)
             .then(res => {
@@ -179,7 +180,7 @@ const Attachments = ({
         AXIOS_REQUEST(ALL_ANSWERS_BY_FORM + idForm)
             .then(res => {
                 setList(
-                    res.data.reduce((p: typeof list, c: I_FormField) => {
+                    res.data.reduce((p: typeof list, c: I_FormFieldWithAnswer) => {
                         p![c.grupo_resp] = [...(p![c.grupo_resp] || []), c]
                         return { ...p }
                     }, {})
@@ -240,10 +241,11 @@ const Attachments = ({
                                         {
                                             li.map((item, i) => {
                                                 return (item.json_campo.tag !== "file" && item.json_campo.type !== "url") ?
-                                                <div key={`it-${i}`} className='text-truncate'>
-                                                    <b className="me-1 text-muted small" >{item.json_campo?.label}: </b>
-                                                    <small>{typeof item.respuesta === "string" && item.respuesta}</small>
-                                                </div> : null})
+                                                    <div key={`it-${i}`} className='text-truncate'>
+                                                        <b className="me-1 text-muted small" >{item.json_campo?.label}: </b>
+                                                        <small>{typeof item.respuesta === "string" && item.respuesta}</small>
+                                                    </div> : null
+                                            })
                                         }
                                     </div>
                                     {/* <div className="row align-self-start text-truncate">

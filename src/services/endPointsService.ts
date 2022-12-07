@@ -42,13 +42,13 @@ export const SAVE_ANSWERS = `resp`;
 
 /**
  * [DELETE]
- * /resp/resp/{id_fcamp}/{grupo}
+ * /resp/{id_fcamp}/{grupo}
  */
 export const DELETE_ANSWERS = `resp/`;
 
 /**
  * [GET]
- * /form/{fields}
+ * /form/{id_form}
  */
 export const FORM = `form/`;
 

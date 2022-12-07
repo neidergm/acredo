@@ -1,0 +1,15 @@
+declare module "@ckeditor/ckeditor5-react" {
+    // const CKEditor: any;
+    export const CKEditor;
+}
+
+declare module "@ckeditor/ckeditor5-build-classic" {
+    const ClassicEditor: any;
+    export = ClassicEditor;
+}
+
+
+// declare module '@ckeditor/ckeditor5-font/src/font' {
+//     const Font: any;
+//     export = Font;
+// }
