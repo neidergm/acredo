@@ -4,10 +4,12 @@ import { Button } from 'reactstrap';
 import Alert, { I_AlertObject } from '../../../components/Alert';
 import { Edit } from '../../../components/Icons';
 import Loader from '../../../components/Loader';
+import TextEditor from '../../../components/TextEditor';
 import { I_FormFieldWithAnswer } from '../../../interfaces/conditions.interface';
 import { AXIOS_REQUEST } from '../../../services/axiosService';
-import { ANSWER_BY_FORM, SAVE_ANSWERS } from '../../../services/endPointsService';
+import { ANSWER_BY_FORM, FORM, FORM_FIELDS, SAVE_ANSWERS } from '../../../services/endPointsService';
 import { formToSubmitData, T_FetchedFormData } from '../../../utils/formUtils';
+import mapFields from '../../../utils/mapFields';
 
 interface I_Props {
     idForm: number,
@@ -15,6 +17,8 @@ interface I_Props {
 }
 
 const ID_FORM = "formReview";
+
+let formDataFetched: any = null;
 
 const Review = ({
     idForm, idCondition
@@ -44,8 +48,8 @@ const Review = ({
 
         let formData = form.fetchedForm && formToSubmitData(data,
             form.fetchedForm,
-            ["id_fcamp", "id_campo"],
-            undefined,
+            ["id_campo"],
+            { id_fcamp: formDataFetched?.id_fcamp },
             { id_cond: idCondition, id_form: idForm })
 
         AXIOS_REQUEST(SAVE_ANSWERS, "POST", formData, true)
@@ -72,17 +76,29 @@ const Review = ({
             })
     }
 
+    const getForm = async () => {
+
+        let formData = (await AXIOS_REQUEST(FORM + idForm)).data[0];
+        formDataFetched = formData;
+        let data = form;
+        let result;
+        if (formData.est_resp === 1) {
+            result = await AXIOS_REQUEST(ANSWER_BY_FORM + idForm);
+        } else {
+            result = await AXIOS_REQUEST(FORM_FIELDS + formData.campos);
+        }
+
+        data.fields = mapFields(result.data, (field, item) => {
+            // formData.est_resp === 1 && (data.defaultValues[field.name] = field.respuesta)
+            data.defaultValues[field.name] = item.respuesta;
+            return field;
+        });
+
+        setForm({ ...data, fetchedForm: result.data });
+    }
+
     useEffect(() => {
-        AXIOS_REQUEST(ANSWER_BY_FORM + idForm)
-            .then(res => {
-                let data = form;
-                res.data.forEach((item: I_FormFieldWithAnswer) => {
-                    let field = item.json_campo;
-                    data.fields.push(field);
-                    data.defaultValues[field.name] = item.respuesta;
-                })
-                setForm({ ...data, fetchedForm: res.data });
-            })
+        getForm()
     }, [])
 
     return (
@@ -112,7 +128,7 @@ const Review = ({
                     defaultValues={{ ...form.defaultValues }}
                 >
                     <div className="row justify-content-end mt-4 pt-2">
-                        <div className="col col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                        <div className="col col-sm-6 col-md-5 col-lg-4 col-xl-3">
                             {enableEdit && <Button color="primary" block form={ID_FORM}>Guardar</Button>}
                         </div>
                     </div>

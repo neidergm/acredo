@@ -160,7 +160,7 @@ const ConditionsDetails = () => {
                 </TabPane>
                 <TabPane tabId={2}>
                   <div className='row'>
-                    <div className='col-md-6 col-7'>
+                    <div className='d-none d-md-block col-md-6'>
                       {loadedTabs[loadedTabs.length - 1] === 2 &&
                         <Suspense fallback={<Loader loaderAsModal={false} isOpen />}>
                           <div className='mb-2 border-start border-4 border-warning ps-2'><b>Texto de condición</b></div>
@@ -168,7 +168,7 @@ const ConditionsDetails = () => {
                         </Suspense>
                       }
                     </div>
-                    <div className='col'>
+                    <div className='col-md-6 col-12'>
                       {loadedTabs.includes(2) && <Suspense fallback={<Loader loaderAsModal={false} isOpen />}>
                         <Review idForm={conditionSelected.form_obse} idCondition={conditionSelected.id_cond} />
                       </Suspense>}

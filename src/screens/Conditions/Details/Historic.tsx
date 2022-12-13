@@ -117,13 +117,13 @@ const Historic = (
                                                 {item.tipo}
                                             </span>
                                         </div>
-                                        {
+                                        {/* {
                                             (item.json_campo.tag !== "file" && item.json_campo.type !== "url") ?
                                                 <div className='text-truncate'>
                                                     <b className="me-1 text-muted small" >{item.json_campo?.label}: </b>
-                                                    <small>{typeof item.respuesta === "string" && item.respuesta}</small>
+                                                    <div className='text-truncate' dangerouslySetInnerHTML={{ __html: typeof item.respuesta === "string" ? item.respuesta : "" }}></div>
                                                 </div> : null
-                                        }
+                                        } */}
                                         <div className='float-md-end text-muted'>
                                             <small className="me-1" >Realizado por </small>
                                             <small>{item.usuario}</small>

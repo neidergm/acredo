@@ -2,3 +2,20 @@
     width: auto;
     margin: initial;
 }
+
+.ck-editor{
+    height: 100% !important;
+    display: flex;
+    flex-direction: column;
+}
+
+.ck-editor .ck-editor__main{
+    display: flex;
+    flex-grow: 1;
+    overflow: auto;
+    flex-direction: column;
+} 
+.ck-editor .ck-editor__main > div{
+    height: 100%;
+}
+
