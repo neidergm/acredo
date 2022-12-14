@@ -7,18 +7,18 @@ export default {
         localStorage.setItem(`${prefix}${name}`, stringBase64(value))
     },
     setItems: function (object: any) {
-        for (const key in object) { this.setItem(`${prefix}${key}`, object[key]) }
+        for (const key in object) { this.setItem(`${key}`, object[key]) }
     },
     getItem: function (name: string) { return stringBase64(localStorage.getItem(`${prefix}${name}`) || "null", true) },
     getItems: function (names_array: Array<string>) {
         return names_array.reduce((prev: { [key: string]: string }, current: string) => {
-            prev[current] = this.getItem(`${prefix}${current}`);
+            prev[current] = this.getItem(`${current}`);
             return prev;
         }, {})
     },
     deleteItem: function (name: string) { localStorage.removeItem(`${prefix}${name}`) },
     deleteItems: function (names_array: Array<string>) {
-        names_array.forEach(e => { this.deleteItem(`${prefix}${e}`) })
+        names_array.forEach(e => { this.deleteItem(`${e}`) })
     },
     clear: function () { localStorage.clear() }
 }

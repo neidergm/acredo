@@ -13,13 +13,15 @@ import { formToObjectWithFieldsAndValues, formToSubmitData, T_FetchedFormData } 
 interface I_Props {
     idCondition: number;
     idForm: number;
+    canEdit?: boolean;
 }
 const FORM_ID = "addAttachmentForm";
 let FETCHEDFORM: any;
 
 const Attachments = ({
     idForm,
-    idCondition
+    idCondition,
+    canEdit
 }: I_Props) => {
 
     const [myForm, setMyForm] = useState<T_FetchedFormData>(
@@ -197,7 +199,7 @@ const Attachments = ({
 
     return (
         <div>
-            {!!list && <Button
+            {canEdit && !!list && <Button
                 outline
                 color={"primary"}
                 className="rounded-pill btn-sm px-3 mb-4 d-flex align-items-center"

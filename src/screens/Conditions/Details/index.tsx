@@ -6,8 +6,8 @@ import {
   TabContent, TabPane, Nav,
   NavItem, NavLink, Accordion, AccordionItem, AccordionHeader, AccordionBody,
 } from 'reactstrap';
-import { I_Condition } from "../../../interfaces/conditions.interface";
 
+import { I_Condition } from "../../../interfaces/conditions.interface";
 import classnames from 'classnames';
 import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader } from "../../../components/Modal";
 import { SubHeader } from "../../../components/SubHeader";
@@ -17,6 +17,8 @@ import { I_Convocatory } from "../../../interfaces/convocatory.interface";
 import Loader from '../../../components/Loader'
 import lazyLoaderComponents from "../../../services/lazyLoadingService";
 import './style.css'
+import { I_User } from '../../../interfaces/user.interface';
+import localStorageService from '../../../services/localStorageService';
 
 const Answer = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Answer" */ './Answer')));
 const Attachments = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Attachments" */ './Attachments')));
@@ -151,11 +153,19 @@ const ConditionsDetails = () => {
 
               <TabContent activeTab={currentActiveTab} className="tab-content-item pt-4">
                 <TabPane tabId={0}>
-                  <Answer idForm={conditionSelected.form_respuesta} idCondition={conditionSelected.id_cond} />
+                  <Answer
+                    idForm={conditionSelected.form_respuesta}
+                    idCondition={conditionSelected.id_cond}
+                    canEdit={conditionSelected.rol.split(",").includes("A")}
+                  />
                 </TabPane>
                 <TabPane tabId={1}>
                   {loadedTabs.includes(1) && <Suspense fallback={<Loader loaderAsModal={false} isOpen />}>
-                    <Attachments idForm={conditionSelected.form_anexo} idCondition={conditionSelected.id_cond} />
+                    <Attachments
+                      idForm={conditionSelected.form_anexo}
+                      idCondition={conditionSelected.id_cond}
+                      canEdit={conditionSelected.rol.split(",").includes("A")}
+                    />
                   </Suspense>}
                 </TabPane>
                 <TabPane tabId={2}>
@@ -164,13 +174,20 @@ const ConditionsDetails = () => {
                       {loadedTabs[loadedTabs.length - 1] === 2 &&
                         <Suspense fallback={<Loader loaderAsModal={false} isOpen />}>
                           <div className='mb-2 border-start border-4 border-warning ps-2'><b>Texto de condición</b></div>
-                          <Answer idForm={conditionSelected.form_respuesta} showActionButton={false} />
+                          <Answer
+                            idForm={conditionSelected.form_respuesta}
+                            showActionButton={false}
+                          />
                         </Suspense>
                       }
                     </div>
                     <div className='col-md-6 col-12'>
                       {loadedTabs.includes(2) && <Suspense fallback={<Loader loaderAsModal={false} isOpen />}>
-                        <Review idForm={conditionSelected.form_obse} idCondition={conditionSelected.id_cond} />
+                        <Review
+                          idForm={conditionSelected.form_obse}
+                          idCondition={conditionSelected.id_cond}
+                          canEdit={conditionSelected.rol.split(",").includes("B")}
+                        />
                       </Suspense>}
                     </div>
                   </div>

@@ -1,4 +1,10 @@
 /**
+ * [POST]
+ * {token: string, confia: 0}
+ */
+export const LOGIN = "auth/autenticar";
+
+/**
  * [GET]
  * /conv
  */

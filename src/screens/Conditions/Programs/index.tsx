@@ -204,6 +204,7 @@ const Create = () => {
                           <div className='p-5'><Loader loaderAsModal={false} isOpen /></div>
                           :
                           <Form
+                            disabled={conditionSelected.rol === "D"}
                             key={selectedForm.id_form}
                             {...(selectedForm.form_fields || []).reduce((p, c) => ({
                               defaultValues: { ...p.defaultValues, [c.json_campo.name]: c.respuesta || c.json_campo.defaultValue },

@@ -13,7 +13,8 @@ import mapFields from '../../../utils/mapFields';
 
 interface I_Props {
     idForm: number,
-    idCondition: number
+    idCondition: number,
+    canEdit?: boolean
 }
 
 const ID_FORM = "formReview";
@@ -21,7 +22,7 @@ const ID_FORM = "formReview";
 let formDataFetched: any = null;
 
 const Review = ({
-    idForm, idCondition
+    idForm, idCondition, canEdit
 }: I_Props) => {
 
     const [enableEdit, setEnableEdit] = useState(false);
@@ -107,7 +108,7 @@ const Review = ({
             <Alert isOpen={!!(alertConfirm?.isOpen)}  {...alertConfirm} onClosed={() => setAlertConfirm(null)} />
             <Alert isOpen={!!(_alert?.isOpen)}  {..._alert} onClosed={() => setAlert(null)} />
             <div className='text-end'>
-                <Button
+                {canEdit && <Button
                     outline={!enableEdit}
                     color={!enableEdit ? "primary" : "secondary"}
                     className="rounded-pill btn-sm px-3 mb-4"
@@ -115,6 +116,7 @@ const Review = ({
                 >
                     <Edit /> <span className="ms-2">{!enableEdit ? 'Habilitar edición' : 'Cancelar edición'}</span>
                 </Button>
+                }
             </div>
 
             {!(form.fields.length) ?

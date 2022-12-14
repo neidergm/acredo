@@ -1,5 +1,9 @@
 export interface I_Condition {
     estado: string;
+    /**
+     * A = Lider; B = Revisor; C = Admin; D = Solo lectura
+     */
+    rol: "A" | "B" | "C" | "D";
     form_anexo: number;
     form_cond: string;
     form_obse: number;

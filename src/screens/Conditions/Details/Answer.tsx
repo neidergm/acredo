@@ -13,7 +13,8 @@ import mapFields from '../../../utils/mapFields';
 interface I_Props {
     idForm: number,
     idCondition: number,
-    showActionButton?: boolean
+    showActionButton?: boolean,
+    canEdit?: boolean
 }
 
 const ID_FORM = "conditionForm";
@@ -22,7 +23,8 @@ let formDataFetched: any = null;
 const Answer = ({
     idForm,
     idCondition,
-    showActionButton = true
+    showActionButton = true,
+    canEdit
 }: I_Props) => {
 
     const [enableEdit, setEnableEdit] = useState(false);
@@ -76,10 +78,7 @@ const Answer = ({
             })
     }
 
-
     const getForm = async () => {
-
-
         let formData = (await AXIOS_REQUEST(FORM + idForm)).data[0];
         formDataFetched = formData;
         let data = form;
@@ -97,26 +96,6 @@ const Answer = ({
         });
 
         setForm({ ...data, fetchedForm: result.data });
-
-        // let f = await AXIOS_REQUEST(ANSWER_BY_FORM + idForm);
-        // let result;
-        // if (f.data.length > 0) {
-        //     result = f.data;
-        // } else {
-        //     result = (await AXIOS_REQUEST(FORM_FIELDS + idForm)).data;
-        // }
-
-        // let data = form;
-        // // result.forEach((item: I_FormFieldWithAnswer) => {
-        // //     let field = item.json_campo;
-        // //     data.fields.push(field);
-        // //     data.defaultValues[field.name] = item.respuesta;
-        // // })
-        // data.fields = mapFields(result, (field, item) => {
-        //     data.defaultValues[field.name] = item.respuesta
-        // });
-
-        // setForm({ ...data, fetchedForm: result });
     }
 
     useEffect(() => {
@@ -125,7 +104,7 @@ const Answer = ({
 
     return (
         <div>
-            {showActionButton && <Button
+            {canEdit && showActionButton && <Button
                 outline={!enableEdit}
                 color={!enableEdit ? "primary" : "secondary"}
                 className="rounded-pill btn-sm px-3 mb-4"
