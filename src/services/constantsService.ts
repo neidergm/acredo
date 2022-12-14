@@ -4,7 +4,7 @@ export const baseUrl = `${BASE_API}/apisiac/api`;
 
 export const localstorageItemPrefix = "SIAC/";
 
-export const GOOGLE_CLIENT_ID = "489784104983-0aj59m5r7qkmqntur44j5st3dg5ror9t.apps.googleusercontent.com";
+export const GOOGLE_CLIENT_ID = "893692184575-1uh8uljsdqb2vt84dq0u25vnodrhfekp.apps.googleusercontent.com";
 
 export const ERROR_REPORTING_URL = "https://axis.curn.edu.co/apildap/api/log/errorwrite";
 
