@@ -3,7 +3,7 @@ import localStorageService from '../../services/localStorageService';
 import Alert, { I_AlertObject } from '../Alert';
 import './header.css'
 
-export const Header = ({ titulo = "CONDICIONES DE CALIDAD" }: { titulo?: string }) => {
+export const Header = ({ titulo = "SEGUIMIENTO A CONDICIONES DE CALIDAD" }: { titulo?: string }) => {
 
   const [_alert, setAlert] = useState<null | I_AlertObject>(null);
 
@@ -25,14 +25,16 @@ export const Header = ({ titulo = "CONDICIONES DE CALIDAD" }: { titulo?: string 
   }
 
   return (
-    <div className="header p-4  condiciones-header">
+    <div className="header py-4 condiciones-header">
       <Alert isOpen={!!(_alert?.isOpen)}{..._alert} onClosed={() => { setAlert(null) }} />
 
-      <div className="title  fs-3 text-white">
+      <div className="title fs-3 text-white">
         <div className="container">
           <div className='d-flex justify-content-between'>
             {titulo}
-            <button onClick={logout} className='btn rounded-pill btn-light btn-sm px-4 fw-bold'>Salir</button>
+            <div className='ms-3 d-flex align-items-center'>
+              <button onClick={logout} className='btn rounded-pill btn-light btn-sm px-4 py-2 fw-bold'>Salir</button>
+            </div>
           </div>
         </div>
       </div>
