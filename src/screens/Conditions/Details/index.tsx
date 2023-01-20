@@ -99,7 +99,7 @@ const ConditionsDetails = () => {
       <div className="container pt-3 pb-5">
         <div className="">
           <p>
-            <b>Convocatoria:</b>
+            <b>Proceso:</b>
             <span className="d-block">{convocatorySelected.nomb_conv}</span>
           </p>
           {!!convocatorySelected.programa && <p>

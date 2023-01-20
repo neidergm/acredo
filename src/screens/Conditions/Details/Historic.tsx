@@ -44,12 +44,12 @@ const Historic = (
                     </p>
                 </div>
                 <hr />
-                <Form
+                {_form && <Form
                     disabled
                     defaultValues={_form.defaultValues}
-                    fields={_form.fields}
+                    fields={_form.fields as any}
                     onSubmit={() => { }}
-                />
+                />}
             </>,
         })
     }

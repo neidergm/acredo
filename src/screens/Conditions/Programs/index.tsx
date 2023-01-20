@@ -13,7 +13,7 @@ import './style.css';
 import Form from 'react-ngm-form';
 import { formToSubmitData } from '../../../utils/formUtils';
 import Alert, { I_AlertObject } from '../../../components/Alert';
-import mapFields from '../../../utils/mapFields';
+import mapField from '../../../utils/mapField';
 
 type T_Form = { form_fields?: Array<I_FormFieldWithAnswer> } & I_Form;
 let DATA: { [form: string]: Array<I_FormFieldWithAnswer> } = {};
@@ -50,7 +50,11 @@ const Create = () => {
       .then(res => {
         setSelectedForm(e => {
           DATA[e!.id_form] = res.data;
-          return { ...e!, form_fields: mapFields(res.data, (field, item) => item) as any }
+          return {
+            ...e!,
+            // form_fields: mapField(res.data, (field, item) => item) as any }
+            form_fields: res.data.map((item: any) => mapField(item))
+          }
         })
       })
       .catch(err => { })
@@ -134,7 +138,7 @@ const Create = () => {
       <div className="container pt-3 pb-5">
         <div>
           <p>
-            <b>Convocatoria:</b>
+            <b>Proceso:</b>
             <span className="d-block">{convocatorySelected.nomb_conv}</span>
           </p>
           {!!convocatorySelected.programa && <p>
@@ -190,7 +194,7 @@ const Create = () => {
                     )}
                   </div>
                 </div>
-                {selectedForm && < div className='col-md-8 col-xl-9'>
+                {selectedForm && < div className='col-lg-8 col-xl-9'>
                   <Card className='border-0 h-100' >
                     <CardBody className='pt-1 px-0 ps-md-3'>
                       <div className='mb-4'>

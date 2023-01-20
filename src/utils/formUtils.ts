@@ -1,4 +1,5 @@
 import { I_FormFieldWithAnswer } from "../interfaces/conditions.interface"
+import mapField from "./mapField";
 
 type T_GENERIC_JSON = { [x: string]: any };
 
@@ -25,20 +26,22 @@ export const formToObjectWithFieldsAndValues = (items: T_Items[]) => {
         if (obj.type === "url" || obj.tag === "file") {
             obj = {
                 label: obj.label,
-                type: "HTML",
-                tag: "div",
+                type: "div",
+                tag: "HTML",
                 props: { className: "d-flex gap-2 flex-wrap" },
                 value: obj.type === "url"
                     ? `<div><a href="${c.respuesta}" target="_blank">Abrir enlace</a></div>`
                     : !!(c.respuesta) && c.respuesta.reduce((p: string, c: T_FileItem) =>
                         `${p}<div><a class="btn btn-light link-primary" href="${c.ruta}" target="_blank">${c.nombreReal}</a></div>`, "")
             }
+        } else if (obj.tag === "custom") {
+            obj = mapField(c as any) as any;
         }
         return {
             fields: [...p.fields, obj],
             defaultValues: { ...p.defaultValues, [obj.name]: c.respuesta }
         }
-    }, { fields: [] as T_GENERIC_JSON[], defaultValues: {} })
+    }, { fields: [], defaultValues: {} } as T_GENERIC_JSON)
 }
 
 export const formToSubmitData = (
@@ -53,9 +56,9 @@ export const formToSubmitData = (
      * Keys and values for every one form item has to have 
      */
     commonData: T_GENERIC_JSON = {},
-     /**
-     * Keys and values for the general form 
-     */
+    /**
+    * Keys and values for the general form 
+    */
     extraData: T_GENERIC_JSON = {},
 ) => {
     let form = new FormData();

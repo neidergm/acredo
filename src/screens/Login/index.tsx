@@ -67,7 +67,7 @@ const Login = (props: I_Props) => {
                 </div>
                 <div className="mb-5">
                     <small>Acceder</small>
-                    <h5>SIAC | Condiciones</h5>
+                    <h5>Condiciones de calidad</h5>
                 </div>
                 <div className={style['login-content']}>
                     <GoogleLogin

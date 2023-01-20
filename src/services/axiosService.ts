@@ -5,6 +5,10 @@ import localStorageService from './localStorageService';
 let token_storaged = "";
 let otherConfig = {
     validateStatus: (status: number) => {
+        if(status === 401){
+            localStorageService.deleteItems(["user", "token"]);
+            window.location.reload();
+        }
         return status >= 200 && status < 300; // default
     }
 };

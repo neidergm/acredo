@@ -33,13 +33,13 @@ const Convocatories = () => {
 
   return (
     <>
-      <SubHeader text={'Convocatorias'} />
+      <SubHeader text={'Procesos'} />
       <div className="container pt-3 pb-5">
         {!(convocatories) ?
           <Loader loaderAsModal={false} isOpen />
           :
           !(convocatories.length) ?
-            <p className='text-muted'>Sin convocatorias registradas</p>
+            <p className='text-muted'>Sin procesos registradas</p>
             :
             convocatories.map(convocatory => (
               <div

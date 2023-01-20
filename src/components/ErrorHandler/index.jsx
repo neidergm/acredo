@@ -9,7 +9,7 @@ export const sendReport = (_data, successCallback = () => { }, errorCallback = (
         _data.device = navigator.userAgent;
 
         let data = {
-            app: window.document.title || "SIAC",
+            app: window.document.title || "SeguimientoCondiciones",
             msgerror: JSON.stringify(_data),
             user: localStorage.getItem(`${localstorageItemPrefix}user`) || localStorage.getItem(`${localstorageItemPrefix}token`) || "WITHOUT USER INFO"
         }

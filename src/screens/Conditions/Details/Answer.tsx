@@ -8,7 +8,7 @@ import { I_FormFieldWithAnswer } from '../../../interfaces/conditions.interface'
 import { AXIOS_REQUEST } from '../../../services/axiosService';
 import { ANSWER_BY_FORM, FORM, FORM_FIELDS, SAVE_ANSWERS } from '../../../services/endPointsService';
 import { formToSubmitData, T_FetchedFormData } from '../../../utils/formUtils';
-import mapFields from '../../../utils/mapFields';
+import mapField from '../../../utils/mapField';
 
 interface I_Props {
     idForm: number,
@@ -89,11 +89,19 @@ const Answer = ({
             result = await AXIOS_REQUEST(FORM_FIELDS + formData.campos);
         }
 
-        data.fields = mapFields(result.data, (field, item) => {
-            // formData.est_resp === 1 && (data.defaultValues[field.name] = field.respuesta)
-            data.defaultValues[field.name] = item.respuesta;
-            return field;
-        });
+        data.fields = (result.data as I_FormFieldWithAnswer[]).map(item => {
+            let field = mapField(item);
+            data.defaultValues[field?.name] = item.respuesta;
+            return field
+        })
+
+        // data.fields = mapField(result.data, (field, item) => {
+        //     // formData.est_resp === 1 && (data.defaultValues[field.name] = field.respuesta)
+        //     data.defaultValues[field.name] = item.respuesta;
+        //     return field;
+        // });
+
+        console.log(data)
 
         setForm({ ...data, fetchedForm: result.data });
     }

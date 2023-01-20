@@ -21,7 +21,10 @@ const Conditions = () => {
 
   const goToConditionDetailsScreen = (condition: I_Condition) => {
     let type = isInstitutional ? "detalles" : "programa";
-    if (!isInstitutional && condition.form_cond.split(",").length > 1) type = "programa";
+    if (!isInstitutional) {
+      if (condition.form_cond.split(",").length > 1) type = "programa";
+      else type = "detalles";
+    }
     navigate(`/condiciones/${type}/${condition.id_cond}`, { state: { condition, convocatory: convocatorySelected } })
   }
 
@@ -48,7 +51,7 @@ const Conditions = () => {
       <div className="container pt-3 pb-5">
         <div className="mb-5">
           <p>
-            <b>Convocatoria:</b>
+            <b>Proceso:</b>
             <span className="d-block">{convocatorySelected.nomb_conv}</span>
           </p>
           {!isInstitutional && <p className="mb-1">
@@ -61,7 +64,7 @@ const Conditions = () => {
           {!conditions ? <Loader isOpen loaderAsModal={false} />
             :
             !conditions.length ?
-              <p>| No hay condiciones registradas en la convocatoria</p>
+              <p>| No hay condiciones registradas en el proceso</p>
               :
               conditions.map((item) => (
                 <div
