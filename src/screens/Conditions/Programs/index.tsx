@@ -4,7 +4,7 @@ import { Card, CardBody } from 'reactstrap';
 import { ArrowLeftShort, CheckCircleFill, ExclamationCircleFill } from '../../../components/Icons';
 import Loader from '../../../components/Loader';
 import { SubHeader } from '../../../components/SubHeader';
-import { I_Condition, I_Form, I_FormField, I_FormFieldWithAnswer } from '../../../interfaces/conditions.interface';
+import { I_Condition, I_Form, I_FormFieldWithAnswer } from '../../../interfaces/conditions.interface';
 import { I_Convocatory } from '../../../interfaces/convocatory.interface';
 import { AXIOS_REQUEST } from '../../../services/axiosService';
 import { ANSWER_BY_FORM, FORM, FORM_FIELDS, SAVE_ANSWERS } from '../../../services/endPointsService';
@@ -13,13 +13,18 @@ import './style.css';
 import Form from 'react-ngm-form';
 import { formToSubmitData } from '../../../utils/formUtils';
 import Alert, { I_AlertObject } from '../../../components/Alert';
-import mapField from '../../../utils/mapField';
+import { mapFieldAndDefaultValues } from '../../../utils/mapField';
+import { I_FieldProps, I_JSONObject } from '../../../interfaces/generic.interface';
+import { T_FieldsTypes } from 'react-ngm-form/dist/interfaces/FormElements.interface';
 
-type T_Form = { form_fields?: Array<I_FormFieldWithAnswer> } & I_Form;
+type T_Form = {
+  fields: Array<I_FieldProps>;
+  defaultValues: I_JSONObject;
+} & I_Form;
+
 let DATA: { [form: string]: Array<I_FormFieldWithAnswer> } = {};
 
 const Create = () => {
-
   const conditionSelected: I_Condition = useLocation().state.condition;
   const convocatorySelected: I_Convocatory = useLocation().state.convocatory;
   const { id_cond } = useParams();
@@ -34,7 +39,7 @@ const Create = () => {
     if (item) {
       let form_fields = DATA[item.id_form];
       if (form_fields) {
-        setSelectedForm({ ...item, form_fields: [...form_fields] });
+        setSelectedForm({ ...item, ...mapFieldAndDefaultValues(form_fields) });
       } else {
         setSelectedForm(item);
         getFormFields(
@@ -46,14 +51,13 @@ const Create = () => {
   }
 
   const getFormFields = (param: string | number, url: string) => {
-    AXIOS_REQUEST(url + param)
+    AXIOS_REQUEST(`${url}${param}`)
       .then(res => {
         setSelectedForm(e => {
           DATA[e!.id_form] = res.data;
           return {
             ...e!,
-            // form_fields: mapField(res.data, (field, item) => item) as any }
-            form_fields: res.data.map((item: any) => mapField(item))
+            ...mapFieldAndDefaultValues(res.data)
           }
         })
       })
@@ -73,7 +77,7 @@ const Create = () => {
   const submitAll = (data: any) => {
     setLoader("Guardando datos");
     let formData = formToSubmitData(data,
-      selectedForm!.form_fields?.map(i => ({ ...i, id_fcamp: selectedForm?.id_fcamp })) as I_FormFieldWithAnswer[],
+      DATA[selectedForm!.id_form].map(i => ({ ...i, id_fcamp: selectedForm?.id_fcamp })),
       ["id_campo"],
       { id_fcamp: selectedForm?.id_fcamp },
       { id_cond: conditionSelected.id_cond, id_form: selectedForm?.id_form }
@@ -204,18 +208,20 @@ const Create = () => {
                       </div>
                       <h4>{selectedForm.nomb_form}</h4>
                       <div className='mt-4'>
-                        {!(selectedForm.form_fields) ?
+                        {!(selectedForm.fields) ?
                           <div className='p-5'><Loader loaderAsModal={false} isOpen /></div>
                           :
                           <Form
                             disabled={conditionSelected.rol === "D"}
                             key={selectedForm.id_form}
-                            {...(selectedForm.form_fields || []).reduce((p, c) => ({
-                              defaultValues: { ...p.defaultValues, [c.json_campo.name]: c.respuesta || c.json_campo.defaultValue },
-                              fields: [...p.fields, c.json_campo]
-                            }),
-                              { defaultValues: {}, fields: [] } as any
-                            )}
+                            // {...(selectedForm.form_fields || []).reduce((p, c) => ({
+                            //   defaultValues: { ...p.defaultValues, [c.json_campo.name]: c.respuesta || c.json_campo.defaultValue },
+                            //   fields: [...p.fields, c.json_campo]
+                            // }),
+                            //   { defaultValues: {}, fields: [] } as any
+                            // )}
+                            fields={selectedForm.fields as T_FieldsTypes[]}
+                            defaultValues={selectedForm.defaultValues}
                             onSubmit={confirmSubmit}
                           >
                             <div className='text-end mt-4'>

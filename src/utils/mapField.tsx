@@ -44,39 +44,47 @@ import { I_FormFieldWithAnswer } from "../interfaces/conditions.interface";
 //     })
 // }
 const mapField = (item: I_FormFieldWithAnswer) => {
-    console.log({ item })
-        let field = item.json_campo;
+    let field = item.json_campo;
 
-        if (field.tag === "custom") {
-            if (field.type === "ckeditor") {
-                field.render = ({ field: { ref, onChange, onBlur, value, ...f } }: any) => {
-                    // console.log({ field, f });
-                    return <TextEditor
-                        {...f}
-                        // config={field.config}
-                        // style={field.style}
-                        data={item.respuesta || value}
-                        inputRef={ref}
-                        // style={f.style}
-                        onChange={(event: any, editor: any) => {
-                            // console.log({ event, editor, data });
-                            onChange(editor.getData())
-                        }}
-                        onBlur={(event: any, editor: any) => {
-                            // console.log({ event, editor, data });
-                            onBlur(editor.getData())
-                        }}
-                    />
-                }
-            } else {
-                return null;
+    if (field.tag === "custom") {
+        if (field.type === "ckeditor") {
+            field.render = ({ field: { ref, onChange, onBlur, value, ...f } }: any) => {
+                // console.log({ field, f });
+                return <TextEditor
+                    {...f}
+                    // config={field.config}
+                    // style={field.style}
+                    data={item.respuesta || value}
+                    inputRef={ref}
+                    // style={f.style}
+                    onChange={(event: any, editor: any) => {
+                        // console.log({ event, editor, data });
+                        onChange(editor.getData())
+                    }}
+                    onBlur={(event: any, editor: any) => {
+                        // console.log({ event, editor, data });
+                        onBlur(editor.getData())
+                    }}
+                />
             }
+        } else {
+            return null;
         }
+    }
 
-        return field;
+    return field;
+}
 
-        //  formData.est_resp === 1 && (data.defaultValues[field.name] = item.respuesta);
-    // })
+export const mapFieldAndDefaultValues = (list: I_FormFieldWithAnswer[]) => {
+    return list.reduce((p, c) => {
+        return {
+            fields: [...p.fields, mapField(c)],
+            defaultValues: { ...p.defaultValues, [c.json_campo.name]: c.respuesta }
+        }
+    }, {
+        fields: [],
+        defaultValues: {}
+    } as { fields: any[], defaultValues: { [x: string]: any } })
 }
 
 export default mapField;
