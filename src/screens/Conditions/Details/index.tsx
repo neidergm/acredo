@@ -13,12 +13,13 @@ import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader } from "../../..
 import { SubHeader } from "../../../components/SubHeader";
 import { CONDITION_DETAILS } from "../../../services/endPointsService";
 import { AXIOS_REQUEST } from "../../../services/axiosService";
-import { I_Convocatory } from "../../../interfaces/convocatory.interface";
+import { I_Process } from "../../../interfaces/process.interface";
 import Loader from '../../../components/Loader'
 import lazyLoaderComponents from "../../../services/lazyLoadingService";
 import './style.css'
-import { I_User } from '../../../interfaces/user.interface';
-import localStorageService from '../../../services/localStorageService';
+import { useAppSelector } from '../../../hooks/useAppSelector';
+import { useAppDispatch } from '../../../hooks/useAppDispatch';
+import { setConditionDetails } from '../../../store/actions/conditionsActions';
 
 const Answer = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Answer" */ './Answer')));
 const Attachments = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Attachments" */ './Attachments')));
@@ -44,18 +45,21 @@ const menuItems = [
   }
 ]
 
-let DATA: { [id_conv: string]: Array<I_Condition> } = {};
 let loadedTabs: number[] = [0];
 
 const ConditionsDetails = () => {
 
   const conditionSelected: I_Condition = useLocation().state.condition;
-  const convocatorySelected: I_Convocatory = useLocation().state.convocatory;
+  const processSelected: I_Process = useLocation().state.process;
   const { id_cond } = useParams();
 
   const [currentActiveTab, setCurrentActiveTab] = useState(loadedTabs[0]);
   const [activeAccordion, setActiveAccordion] = useState("");
-  const [conditionDetails, setConditionDetails] = useState<any>(null);
+
+  const conditionDetails = useAppSelector(state => state.conditions.details);
+  const dispatch = useAppDispatch();
+
+  const currentDetails = id_cond ? conditionDetails[id_cond] : null;
 
   const [modalData, setModalData] = useState<any>(null);
 
@@ -71,14 +75,11 @@ const ConditionsDetails = () => {
 
   useEffect(() => {
     if (!id_cond) return;
-    if (!!(DATA[id_cond])) {
-      setConditionDetails(DATA[id_cond]);
-    } else {
+    if (!(currentDetails)) {
       AXIOS_REQUEST(CONDITION_DETAILS + id_cond)
         .then(res => {
           let data = res.data.map((i: { [x: string]: any }) => ({ label: i.json_campo.label, value: i.respuesta }));
-          setConditionDetails(data);
-          DATA[id_cond] = data;
+          dispatch(setConditionDetails(id_cond, data));
         })
         .catch(err => { })
     }
@@ -100,16 +101,16 @@ const ConditionsDetails = () => {
         <div className="">
           <p>
             <b>Proceso:</b>
-            <span className="d-block">{convocatorySelected.nomb_conv}</span>
+            <span className="d-block">{processSelected.nomb_conv}</span>
           </p>
-          {!!convocatorySelected.programa && <p>
+          {!!processSelected.programa && <p>
             <b>Programa:</b>
-            <span className="d-block">{convocatorySelected.programa}</span>
+            <span className="d-block">{processSelected.programa}</span>
           </p>}
         </div>
-        {!conditionDetails ? <Loader isOpen loaderAsModal={false} />
+        {!currentDetails ? <Loader isOpen loaderAsModal={false} />
           :
-          !conditionDetails.length ?
+          !currentDetails.length ?
             <p>| No hay nada para mostrar</p>
             :
             <div className="">
@@ -125,7 +126,7 @@ const ConditionsDetails = () => {
                 <b>Detalles:</b>
                 <Accordion className="mt-2" open={activeAccordion} {...{ toggle: toggleAccordion }}>
                   {
-                    conditionDetails?.map((c: any, i: number) =>
+                    currentDetails.map((c: any, i: number) =>
                       <AccordionItem className="accordion-item" key={`ac-${i}`}>
                         <AccordionHeader targetId={`${i}`}><b className="me-1">-</b> <small>{c.label}</small></AccordionHeader>
                         <AccordionBody accordionId={`${i}`}>

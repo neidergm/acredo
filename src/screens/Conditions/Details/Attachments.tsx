@@ -9,6 +9,7 @@ import { ALL_ANSWERS_BY_FORM, ANSWER_BY_FORM, DELETE_ANSWERS, FORM, FORM_FIELDS,
 import Form from 'react-ngm-form';
 import Alert, { I_AlertObject } from '../../../components/Alert';
 import { formToObjectWithFieldsAndValues, formToSubmitData, T_FetchedFormData } from '../../../utils/formUtils';
+import mapField from '../../../utils/mapField';
 
 interface I_Props {
     idCondition: number;
@@ -41,7 +42,7 @@ const Attachments = ({
 
         return {
             fetchedForm: _formFields.data.map((i: any) => ({ ...i, id_fcamp: _form.id_fcamp })),
-            fields: _formFields.data.map((i: any) => i.json_campo),
+            fields: _formFields.data.map((i: any) => mapField(i)),
             defaultValues: {}
         };
     }

@@ -5,7 +5,7 @@ import { ArrowLeftShort, CheckCircleFill, ExclamationCircleFill } from '../../..
 import Loader from '../../../components/Loader';
 import { SubHeader } from '../../../components/SubHeader';
 import { I_Condition, I_Form, I_FormFieldWithAnswer } from '../../../interfaces/conditions.interface';
-import { I_Convocatory } from '../../../interfaces/convocatory.interface';
+import { I_Process } from '../../../interfaces/process.interface';
 import { AXIOS_REQUEST } from '../../../services/axiosService';
 import { ANSWER_BY_FORM, FORM, FORM_FIELDS, SAVE_ANSWERS } from '../../../services/endPointsService';
 import classnames from 'classnames';
@@ -26,7 +26,7 @@ let DATA: { [form: string]: Array<I_FormFieldWithAnswer> } = {};
 
 const Create = () => {
   const conditionSelected: I_Condition = useLocation().state.condition;
-  const convocatorySelected: I_Convocatory = useLocation().state.convocatory;
+  const processSelected: I_Process = useLocation().state.process;
   const { id_cond } = useParams();
 
   const [selectedForm, setSelectedForm] = useState<T_Form | null>(null);
@@ -121,6 +121,9 @@ const Create = () => {
         setFormList(res.data);
       })
       .catch(err => { })
+      return ()=>{
+        DATA = {};
+      }
   }, []);
 
   useEffect(() => {
@@ -143,11 +146,11 @@ const Create = () => {
         <div>
           <p>
             <b>Proceso:</b>
-            <span className="d-block">{convocatorySelected.nomb_conv}</span>
+            <span className="d-block">{processSelected.nomb_conv}</span>
           </p>
-          {!!convocatorySelected.programa && <p>
+          {!!processSelected.programa && <p>
             <b>Programa:</b>
-            <span className="d-block">{convocatorySelected.programa}</span>
+            <span className="d-block">{processSelected.programa}</span>
           </p>}
         </div>
         {!formList ? <Loader isOpen loaderAsModal={false} />

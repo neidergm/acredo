@@ -1,23 +1,27 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { AXIOS_REQUEST } from "../../services/axiosService";
 import { CONDITIONS_BY_CONVOCATORY } from "../../services/endPointsService";
 import { SubHeader } from "../../components/SubHeader";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { I_Condition } from "../../interfaces/conditions.interface";
-import { I_Convocatory } from "../../interfaces/convocatory.interface";
+import { I_Process } from "../../interfaces/process.interface";
 import { Badge } from "reactstrap";
 import Loader from "../../components/Loader";
-
-let DATA: { [id_conv: string]: Array<I_Condition> } = {};
+import { useAppSelector } from "../../hooks/useAppSelector";
+import { useAppDispatch } from "../../hooks/useAppDispatch";
+import { setConditions } from "../../store/actions/conditionsActions";
 
 const Conditions = () => {
 
-  const { id_convocatory } = useParams();
-  const convocatorySelected: I_Convocatory = useLocation().state;
+  const { id_Process } = useParams();
+  const processSelected: I_Process = useLocation().state;
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
-  const [conditions, setConditions] = useState<Array<I_Condition> | null>(null);
-  const isInstitutional = convocatorySelected.tipo_cond.toLocaleLowerCase() === "institucional";
+  const conditions = useAppSelector(state => state.conditions.list);
+  const currentCondition = id_Process ? conditions[id_Process] : null;
+
+  const isInstitutional = processSelected.tipo_cond.toLocaleLowerCase() === "institucional";
 
   const goToConditionDetailsScreen = (condition: I_Condition) => {
     let type = isInstitutional ? "detalles" : "programa";
@@ -25,18 +29,15 @@ const Conditions = () => {
       if (condition.form_cond.split(",").length > 1) type = "programa";
       else type = "detalles";
     }
-    navigate(`/condiciones/${type}/${condition.id_cond}`, { state: { condition, convocatory: convocatorySelected } })
+    navigate(`/condiciones/${type}/${condition.id_cond}`, { state: { condition, process: processSelected } })
   }
 
   useEffect(() => {
-    if (!id_convocatory) return
-    if (!!(DATA[id_convocatory])) {
-      setConditions(DATA[id_convocatory])
-    } else {
-      AXIOS_REQUEST(CONDITIONS_BY_CONVOCATORY + id_convocatory)
+    if (!id_Process) return
+    if (!(currentCondition)) {
+      AXIOS_REQUEST(CONDITIONS_BY_CONVOCATORY + id_Process)
         .then(res => {
-          setConditions(res.data);
-          DATA[id_convocatory] = res.data;
+          dispatch(setConditions(id_Process, res.data));
         })
         .catch(err => err)
     }
@@ -52,21 +53,21 @@ const Conditions = () => {
         <div className="mb-5">
           <p>
             <b>Proceso:</b>
-            <span className="d-block">{convocatorySelected.nomb_conv}</span>
+            <span className="d-block">{processSelected.nomb_conv}</span>
           </p>
           {!isInstitutional && <p className="mb-1">
             <b>Programa:</b>
-            <span className="d-block">{convocatorySelected.programa}</span>
+            <span className="d-block">{processSelected.programa}</span>
           </p>}
         </div>
 
         <div>
-          {!conditions ? <Loader isOpen loaderAsModal={false} />
+          {!currentCondition ? <Loader isOpen loaderAsModal={false} />
             :
-            !conditions.length ?
+            !currentCondition.length ?
               <p>| No hay condiciones registradas en el proceso</p>
               :
-              conditions.map((item) => (
+              currentCondition.map((item) => (
                 <div
                   key={item.id_cond}
                   className="card mb-4 border-0 bg-light hover-scale-up hover-shadow-sm"

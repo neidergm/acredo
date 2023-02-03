@@ -1,3 +1,5 @@
+import { T_UserRole } from "./generic.interface";
+
 export interface I_User {
     token: string;
     codProg: string;
@@ -6,7 +8,8 @@ export interface I_User {
     dni: string;
     mail: string;
     nombProg: string;
-    prog_cond: string;
-    rol: string;
+    rol: T_UserRole;
     type: string;
+    prog_cond?: string;
+    picture?: string;
 }

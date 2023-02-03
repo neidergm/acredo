@@ -1,5 +1,36 @@
-.header{
-    background: linear-gradient(to right, #06A099 0%, #31AC69 100%);
-    
-  }
-  
+.header {
+  background: linear-gradient(to right, #06A099 0%, #31AC69 100%);
+}
+
+.avatar>div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 42px;
+  width: 42px;
+  border-radius: 100%;
+  background: white;
+  color: black;
+  text-transform: capitalize;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s box-shadow ease-in;
+  overflow: hidden;
+}
+
+.avatar>div:hover {
+  box-shadow: 0px 2px 15px #0000002a;
+  /* opacity: 0.9; */
+  border: 2px solid rgb(168, 168, 168)
+}
+
+.menu .logout-item {
+  pointer-events: initial !important;
+}
+
+.avatar>div img {
+  height: inherit;
+  width: inherit;
+  border: 2px solid #fff;
+  border-radius: inherit;
+}

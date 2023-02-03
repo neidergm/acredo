@@ -1,14 +1,14 @@
-export const BASE_API = "https://axis.curn.edu.co";
-export const baseUrl = `${BASE_API}/apisiac/api`;
-// export const baseUrl = `${BASE_API}/apiprueba/api`;
+export const BASE_API = process.env.NODE_ENV ==="production" ? "https://axis.curn.edu.co/apisiac": "https://axis.curn.edu.co/apisiac";
+export const baseUrl = `${BASE_API}/api`;
 
-export const localstorageItemPrefix = "SIAC/";
+export const localstorageItemPrefix = "CONDITIONS_/";
 
-export const GOOGLE_CLIENT_ID = "893692184575-1uh8uljsdqb2vt84dq0u25vnodrhfekp.apps.googleusercontent.com";
+export const GOOGLE_CLIENT_ID = "227610805652-c451askq3usbv82f8e7v6g3qd6i1vdpq.apps.googleusercontent.com";
 
 export const ERROR_REPORTING_URL = "https://axis.curn.edu.co/apildap/api/log/errorwrite";
 
-export const stringBase64 = (str: string, decrypt?: boolean) => {
+export const stringBase64 = (str: string | null, decrypt?: boolean) => {
+    if (!str) return str;
     if (decrypt === true) {
         try {
             str = decodeURIComponent(escape(window.atob(str)));

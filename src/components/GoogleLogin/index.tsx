@@ -1,59 +1,56 @@
-import { Component } from 'react';
+import { useEffect } from 'react';
 import { Spinner } from 'reactstrap';
 import { GOOGLE_CLIENT_ID } from '../../services/constantsService';
 import './index.css';
 
 interface I_Props {
     color: string,
-    successCallback: Function,
     disabled: boolean,
-}
-
-interface I_State {
-    type: string,
-    loading: JSX.Element,
+    successCallback: (credential: string) => void,
+    failureCallback?: (error: string) => void,
 }
 
 declare global {
     interface Window { google: any; }
 }
 
-class GoogleLogin extends Component<I_Props, I_State> {
+interface I_Google_response {
+    clientId: string;
+    client_id: string;
+    credential: string;
+    select_by: "user" | "btn" | string;
+}
 
-    constructor(props: I_Props) {
-        super(props);
-
-        this.state = {
-            type: 'curnvirtual',
-            loading: <>Cargando<Spinner animation='border' size="sm" className="ml-3" /></>
-        }
-    }
-
-    componentDidMount() {
+const GoogleLogin = (props: I_Props) => {
+    useEffect(() => {
         const script = document.createElement('script')
         script.src = 'https://accounts.google.com/gsi/client'
         script.async = true;
-        script.onload = this.initializeGsi;
-        document.querySelector('body')!.appendChild(script);
-    }
+        script.onload = initializeGsi;
+        document.querySelector('body')?.appendChild(script);
 
-    initializeGsi = () => {
+        return () => {
+            document.querySelector('body')?.removeChild(script)
+        }
+    }, [])
+
+    const initializeGsi = () => {
         try {
             window.google?.accounts.id.initialize({
                 client_id: GOOGLE_CLIENT_ID,
-                callback: this.responseGoogle,
+                callback: responseGoogle,
                 cancel_on_tap_outside: true,
             });
 
-            this.showOneTapPrompt()
-            this.showGLoginBtn()
+            showOneTapPrompt();
+            showGLoginBtn();
+
         } catch (error) {
             console.log({ error })
         }
     }
 
-    showOneTapPrompt = () => {
-        // //Show One tap
+    const showOneTapPrompt = () => {
         window.google.accounts.id.prompt((notification: any) => {
             // console.log(notification)
             if (notification.isNotDisplayed()) {
@@ -66,37 +63,30 @@ class GoogleLogin extends Component<I_Props, I_State> {
         });
     }
 
-    showGLoginBtn = () => {
-        //Show button login
+    const showGLoginBtn = () => {
         window.google.accounts.id.renderButton(document.getElementById("NG_GLOGIN_BTN"), {
             type: "standard", //OR icon
-            theme: this.props.color || 'filled_black', //or Outline/filled_blue
+            theme: props.color || 'filled_black', //or Outline/filled_blue
             size: 'large',
             width: window.innerWidth <= 500 ? 300 : null,
             shape: "pill", //Or rectangular
         });
     }
 
-    onSuccess = (data: any) => {
-        this.props.successCallback(data, (userId = data.clientId) => window.google.accounts.id.revoke(userId, (done: any) => { }));
-    }
-
-    onFailure = (data: any) => {
-        // console.log(data)
-    }
-
-    responseGoogle = (data: any) => {
+    const responseGoogle = (data: I_Google_response) => {
         if (!!(data?.credential)) {
-            this.onSuccess(data)
+            props.successCallback(data.credential);
         } else {
-            this.onFailure('Hubo un error, intenta nuevamente')
-            this.showOneTapPrompt()
+            props.failureCallback?.('Hubo un error, intenta nuevamente');
+            showOneTapPrompt();
         }
     }
 
-    render() {
-        return <div id="NG_GLOGIN_BTN" className={this.props.disabled ? "disabled" : ""}><Spinner animation='border' /> </div>
-    }
+    return (
+        <div id="NG_GLOGIN_BTN" className={props.disabled ? "disabled" : ""}>
+            <Spinner animation='border' size="sm" className="ml-3" />
+        </div>
+    )
 }
 
 export default GoogleLogin;

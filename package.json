@@ -1,5 +1,5 @@
 {
-  "name": "siac",
+  "name": "scp",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -16,10 +16,13 @@
     "bootstrap": "^5.2.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-ngm-form": "^0.3.5",
+    "react-ngm-form": "^0.3.7",
+    "react-redux": "^8.0.5",
     "react-router-dom": "^6.4.3",
     "react-scripts": "5.0.1",
     "reactstrap": "^9.1.5",
+    "redux": "^4.2.1",
+    "redux-thunk": "^2.4.2",
     "typescript": "^4.8.4",
     "web-vitals": "^2.1.4"
   },

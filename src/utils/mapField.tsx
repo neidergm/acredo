@@ -1,48 +1,12 @@
 import TextEditor from "../components/TextEditor";
 import { I_FormFieldWithAnswer } from "../interfaces/conditions.interface";
+import { AXIOS_REQUEST } from "../services/axiosService";
 
 /**
  * Map fetched field item with custom fields 
- * @param list Fields Array
- * @param callback executed every map item
+ * @param item 
  * @return JSON FIELD
  */
-// const mapField = (list: I_FormFieldWithAnswer[], callback: (field: { [x: string]: any }, originalItem: I_FormFieldWithAnswer) => void) => {
-//     console.log({ list })
-//     return list.map((item: I_FormFieldWithAnswer) => {
-//         let field = item.json_campo;
-
-//         if (field.tag === "custom") {
-//             if (field.type === "ckeditor") {
-//                 field.render = ({ field: { ref, onChange, onBlur, value, ...f } }: any) => {
-//                     // console.log({ field, f });
-//                     return <TextEditor
-//                         {...f}
-//                         // config={field.config}
-//                         // style={field.style}
-//                         data={item.respuesta || value}
-//                         inputRef={ref}
-//                         // style={f.style}
-//                         onChange={(event: any, editor: any) => {
-//                             // console.log({ event, editor, data });
-//                             onChange(editor.getData())
-//                         }}
-//                         onBlur={(event: any, editor: any) => {
-//                             // console.log({ event, editor, data });
-//                             onBlur(editor.getData())
-//                         }}
-//                     />
-//                 }
-//             } else {
-//                 return null;
-//             }
-//         }
-
-//         return callback(field, item)
-
-//         //  formData.est_resp === 1 && (data.defaultValues[field.name] = item.respuesta);
-//     })
-// }
 const mapField = (item: I_FormFieldWithAnswer) => {
     let field = item.json_campo;
 
@@ -70,7 +34,23 @@ const mapField = (item: I_FormFieldWithAnswer) => {
         } else {
             return null;
         }
+    } else if (field.tag === "select") {
+        if (field.request) {
+            field.doRequest = ({ method, params, url }) => {
+                return AXIOS_REQUEST(url, method, params).then(resp => {
+                    return { options: resp.data };
+                })
+            }
+        }
+        if (field.dependsOn) {
+            field.watchingCallback = (value, callback, formMethods) => {
+                if (!value) {
+                    callback({ options: [] })
+                }
+            }
+        }
     }
+
 
     return field;
 }

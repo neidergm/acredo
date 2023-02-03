@@ -1,6 +1,8 @@
 import ReactDOM from 'react-dom/client';
 import ErrorHandler from './components/ErrorHandler';
 import App from './App';
+import { Provider } from 'react-redux';
+import store from './store';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 declare global {
@@ -15,8 +17,10 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   // <React.StrictMode>
+  <Provider store={store}>
     <ErrorHandler>
       <App />
     </ErrorHandler>
+  </Provider>
   // </React.StrictMode>
 );

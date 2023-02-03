@@ -32,7 +32,7 @@ const setOtherAxiosConfig = (config = {}) => { otherConfig = { ...otherConfig, .
  */
 const AXIOS_REQUEST = (url: string, method = "get", data: any = null, formData = false, header = {}, onUploadProgress = (p: any) => { }) => {
     if (!(token_storaged)) {
-        setTokenForAxiosRequest(localStorageService.getItem("token"))
+        token_storaged = setTokenForAxiosRequest(localStorageService.getItem("token"))
     }
     let headers: any = {
         ...header,
@@ -52,7 +52,7 @@ const AXIOS_REQUEST = (url: string, method = "get", data: any = null, formData =
 
     return axios({
         method,
-        url: `${baseUrl}/${url}`,
+        url: /^http(s)?:\/{2}.+/.test(url) ? url : `${baseUrl}/${url}`,
         data,
         params,
         headers,

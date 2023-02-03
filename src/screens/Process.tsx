@@ -1,32 +1,34 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { SubHeader } from "../components/SubHeader";
 import { Badge } from 'reactstrap';
 import { AXIOS_REQUEST } from "../services/axiosService";
 import { CONVOCATORIES_LIST } from "../services/endPointsService";
 import Loader from '../components/Loader';
-import { I_Convocatory } from '../interfaces/convocatory.interface';
-
-let DATA: Array<I_Convocatory> | null = null;
+import { I_Process } from '../interfaces/process.interface';
+import { useAppDispatch } from '../hooks/useAppDispatch';
+import { useAppSelector } from '../hooks/useAppSelector';
+import { setProcessList } from '../store/actions/processActions';
+import { getNormalDate } from '../utils/dateUtils';
 
 const Convocatories = () => {
 
   const navigate = useNavigate();
-  const [convocatories, setConvocatories] = useState(DATA);
+  const processList = useAppSelector(state => state.process.list);
+  const dispatch = useAppDispatch();
 
-  const goToConditionsScreen = (convocatory: I_Convocatory) => {
-    navigate(`/condiciones/${convocatory.id_conv}`, { state: convocatory })
+  const goToConditionsScreen = (process: I_Process) => {
+    navigate(`/condiciones/${process.id_conv}`, { state: process })
   }
 
   useEffect(() => {
-    if (!DATA?.length) {
+    if (!processList?.length) {
       AXIOS_REQUEST(CONVOCATORIES_LIST)
         .then(res => {
-          setConvocatories(res.data)
-          DATA = res.data;
+          dispatch(setProcessList(res.data))
         })
         .catch(err => {
-          setConvocatories([])
+          dispatch(setProcessList([]))
         })
     }
   }, [])
@@ -35,13 +37,13 @@ const Convocatories = () => {
     <>
       <SubHeader text={'Procesos'} />
       <div className="container pt-3 pb-5">
-        {!(convocatories) ?
+        {!(processList) ?
           <Loader loaderAsModal={false} isOpen />
           :
-          !(convocatories.length) ?
+          !(processList.length) ?
             <p className='text-muted'>Sin procesos registradas</p>
             :
-            convocatories.map(convocatory => (
+            processList.map(convocatory => (
               <div
                 key={convocatory.id_conv}
                 className="card mb-4 border-0 bg-light hover-scale-up hover-shadow-sm"
@@ -66,11 +68,11 @@ const Convocatories = () => {
                       <div className="d-flex gap-4 justify-content-between justify-content-sm-start justify-content-md-between">
                         <div className="d-block">
                           <b className="small">Apertura:</b>
-                          <span className="d-block">{new Date(convocatory.fech_ini).toLocaleDateString()}</span>
+                          <span className="d-block">{getNormalDate(convocatory.fech_ini)}</span>
                         </div>
                         <div className="d-block">
                           <b className="small">Cierre:</b>
-                          <span className="d-block">{new Date(convocatory.fech_fin).toLocaleDateString()}</span>
+                          <span className="d-block">{getNormalDate(convocatory.fech_fin)}</span>
                         </div>
                         <div className="d-block">
                           <b className="small">Estado:</b>

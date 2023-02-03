@@ -102,7 +102,6 @@ const Answer = ({
         //     return field;
         // });
 
-        console.log(data)
 
         setForm({ ...data, fetchedForm: result.data });
     }

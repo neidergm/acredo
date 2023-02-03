@@ -1,4 +1,4 @@
-export interface I_Convocatory {
+export interface I_Process {
     condiciones: string,
     est_conv: number,
     fech_fin: string,

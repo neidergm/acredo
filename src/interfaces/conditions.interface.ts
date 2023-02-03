@@ -1,9 +1,9 @@
+import { T_FieldsTypes } from "react-ngm-form/dist/interfaces/FormElements.interface";
+import { T_UserRole } from "./generic.interface";
+
 export interface I_Condition {
     estado: string;
-    /**
-     * A = Lider; B = Revisor; C = Admin; D = Solo lectura
-     */
-    rol: "A" | "B" | "C" | "D";
+    rol: T_UserRole;
     form_anexo: number;
     form_cond: string;
     form_obse: number;
@@ -16,6 +16,8 @@ export interface I_Condition {
     nomb_cond: string;
     sede: string
 }
+
+export type T_ConditionDetails = Array<{ label: string, value: any }>;
 
 export interface I_AttachmentsConditions {
     id: string;
@@ -38,7 +40,8 @@ export interface I_HistoryItem {
 
 export interface I_FormField {
     id_campo: number;
-    json_campo: { [x: string]: any };
+    // json_campo: { [x: string]: any };
+    json_campo: T_FieldsTypes;
     marc_temp: string;
     marc_update: string;
     nomb_campo: string;

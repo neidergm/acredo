@@ -1,10 +1,10 @@
-import { lazy, useEffect, useState } from "react";
+import { lazy, useState } from "react";
 import style from "./login.module.css";
 import lazyLoaderComponents from "../../services/lazyLoadingService";
 import Alert, { I_AlertObject } from '../../components/Alert';
-import { AXIOS_REQUEST } from "../../services/axiosService";
-import { LOGIN } from "../../services/endPointsService";
 import { I_User } from "../../interfaces/user.interface";
+import { useAppDispatch } from "../../hooks/useAppDispatch";
+import { login } from "../../store/actions/userActions";
 
 const GoogleLogin = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "GoogleLogin" */ './../../components/GoogleLogin')));
 
@@ -18,39 +18,28 @@ const Login = (props: I_Props) => {
     const [loader, setLoader] = useState<boolean>(false);
     const [_alert, setAlert] = useState<null | I_AlertObject>(null);
 
-    // useEffect(() => {
-    //     if (state.alert) {
-    //         setTimeout(() => { setState({ alert: null }) }, 5000)
-    //     }
-    // }, [state.alert])
-
-
-    const startLogin = (gObject: any, revokeCallback: Function) => {
-        let data = { token: gObject.credential, confia: 0 }
-
-        AXIOS_REQUEST(LOGIN, "post", data).then((res) => {
-            if (!res) throw new Error();
-            console.log(res)
-            props.callback(res.rpt.data, res.token)
-
-        }).catch(err => {
-            revokeCallback()
-            setAlert({
-                isOpen: true,
-                title: "Espere",
-                subtitle: "Parece que no tienes permisos para acceder",
-                type: "warning",
-            });
-            setLoader(false);
-        })
-    }
+    const dispatch = useAppDispatch();
 
     /**
     * @param {json} gObject Google object response
     */
-    const loginWithGoogle = (gObject: any, revokeCallback: Function) => {
+    const loginWithGoogle = (credential: string) => {
         setLoader(true);
-        startLogin(gObject, revokeCallback)
+
+        dispatch(login(credential) as any)
+            .then((resp: any) => {
+                if (!(resp)) {
+                    setAlert({
+                        isOpen: true,
+                        title: "Espere",
+                        subtitle: "Parece que no tienes permisos para acceder",
+                        type: "warning",
+                    });
+                    setLoader(false);
+                }
+            })
+
+        // startLogin(gObject, revokeCallback)
     }
 
     return (

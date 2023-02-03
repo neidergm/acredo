@@ -1,42 +1,40 @@
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
 import FallbackComponen1 from './components/Loader/FallbackComponen1';
 import lazyLoaderComponents from './services/lazyLoadingService';
 import Header from './components/Header';
+import { useAppSelector } from './hooks/useAppSelector';
 import './App.css';
-import { I_User } from './interfaces/user.interface';
-import localStorageService from './services/localStorageService';
+import { CloseButton, Toast, ToastBody } from 'reactstrap';
+import { useAppDispatch } from './hooks/useAppDispatch';
+import { setUnauthorized } from './store/actions/userActions';
 
 const Login = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Login" */ './screens/Login')));
 const Conditions = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Conditions" */ './screens/Conditions')));
 const IntitutionlConditions = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "ConditionsIntitutional" */ './screens/Conditions/Details')));
-const Convocatories = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Convocatories" */ './screens/Convocatories')));
+const Convocatories = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Process" */ './screens/Process')));
 const ProgramsConditions = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "ConditionsIntitutional" */ './screens/Conditions/Programs')));
 
 type T_Props = {}
 
 const App = ({ }: T_Props) => {
 
-  const [user, setUser] = useState<"null" | I_User>()
+  const user = useAppSelector(state => state.user);
+  const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    setUser(localStorageService.getItem("user"));
-  }, [])
-
-  const login = (user: I_User, token: string) => {
-    localStorageService.setItem("user", user);
-    localStorageService.setItem("token", token);
-
-    window.location.reload();
-  }
-
-  if (user === undefined) {
-    return null;
-  }
-
-  if (user === "null") {
+  if (user.unauthorized || !(user.userInfo)) {
     return <Suspense fallback={<FallbackComponen1 />}>
-      <Login callback={login} />
+      {user.unauthorized &&
+        <div className='position-absolute w-100'>
+          <Toast className='border-0 bg-danger text-white my-4 mx-auto'>
+            <ToastBody className='d-flex justify-content-between'>
+              <div>Su sesión ha expirado</div>
+              <div><CloseButton variant='white' onClick={() => { dispatch(setUnauthorized("")) }} /></div>
+            </ToastBody>
+          </Toast>
+        </div>
+      }
+      <Login />
     </Suspense>
   }
 
@@ -50,7 +48,7 @@ const App = ({ }: T_Props) => {
               <Route path='/' element={<Convocatories />} />
               <Route path='/condiciones/programa/:id_cond' element={<ProgramsConditions />} />
               <Route path='/condiciones/detalles/:id_cond' element={<IntitutionlConditions />} />
-              <Route path='/condiciones/:id_convocatory' element={<Conditions />} />
+              <Route path='/condiciones/:id_Process' element={<Conditions />} />
               <Route path='*' element={<Navigate to="/" />} />
             </Routes>
           </Router>

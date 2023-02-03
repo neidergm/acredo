@@ -9,7 +9,7 @@ export default {
     setItems: function (object: any) {
         for (const key in object) { this.setItem(`${key}`, object[key]) }
     },
-    getItem: function (name: string) { return stringBase64(localStorage.getItem(`${prefix}${name}`) || "null", true) },
+    getItem: function (name: string) { return stringBase64(localStorage.getItem(`${prefix}${name}`), true) },
     getItems: function (names_array: Array<string>) {
         return names_array.reduce((prev: { [key: string]: string }, current: string) => {
             prev[current] = this.getItem(`${current}`);

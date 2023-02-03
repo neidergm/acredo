@@ -2,7 +2,7 @@ html {
   scroll-behavior: smooth;
 }
 
-* {
+.main *, .header .container {
   transition: all 0.2s ease-in-out;
   text-decoration: none !important;
 }
