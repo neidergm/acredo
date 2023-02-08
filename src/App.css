@@ -2,7 +2,8 @@ html {
   scroll-behavior: smooth;
 }
 
-.main *, .header .container {
+.main *,
+.header .container {
   transition: all 0.2s ease-in-out;
   text-decoration: none !important;
 }
@@ -37,4 +38,16 @@ code {
 
 *[disabled] {
   border: none !important;
+}
+
+@media screen and (min-width: 400px) {
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 9px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    border: 2px solid transparent;
+    border-radius: 2px;
+    background-color: darkgrey;
+  }
 }

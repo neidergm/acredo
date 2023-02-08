@@ -1,6 +1,6 @@
 import { T_AppDispatch } from "..";
 import { I_User } from "../../interfaces/user.interface";
-import { AXIOS_REQUEST } from "../../services/axiosService";
+import { AXIOS_REQUEST, setTokenForAxiosRequest } from "../../services/axiosService";
 import { LOGIN as AUTH } from "../../services/endPointsService";
 import localStorageService from "../../services/localStorageService";
 
@@ -42,11 +42,12 @@ export const login = (credential: string) => {
                 "user": JSON.stringify(user),
                 "token": resp.token
             });
+            setTokenForAxiosRequest("");
             dispatch(setUserInfo(user));
             return true;
         }).catch(err => {
+            dispatch(setUnauthorized("Parece que no tiene permisos para ingresar"))
             // if (err.message == 401) {
-            //     dispatch(setUnauthorized("Parece que no tiene permisos para ingresar"))
             // }
             return null;
         })

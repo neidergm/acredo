@@ -1,5 +1,5 @@
-import { useEffect, useState, lazy, Suspense } from 'react'
-import { useParams, useLocation } from "react-router-dom";
+import { useEffect, useState, lazy, Suspense, useLayoutEffect } from 'react'
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { Anex, History, CheckCircleFill, ExclamationCircleFill } from "../../../components/Icons";
 
 import {
@@ -20,6 +20,7 @@ import './style.css'
 import { useAppSelector } from '../../../hooks/useAppSelector';
 import { useAppDispatch } from '../../../hooks/useAppDispatch';
 import { setConditionDetails } from '../../../store/actions/conditionsActions';
+import { GoBackButton } from '../../../components/GoBackButton';
 
 const Answer = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Answer" */ './Answer')));
 const Attachments = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Attachments" */ './Attachments')));
@@ -49,9 +50,10 @@ let loadedTabs: number[] = [0];
 
 const ConditionsDetails = () => {
 
-  const conditionSelected: I_Condition = useLocation().state.condition;
-  const processSelected: I_Process = useLocation().state.process;
+  const conditionSelected: I_Condition = useLocation().state?.condition;
+  const processSelected: I_Process = useLocation().state?.process;
   const { id_cond } = useParams();
+  const navigate = useNavigate();
 
   const [currentActiveTab, setCurrentActiveTab] = useState(loadedTabs[0]);
   const [activeAccordion, setActiveAccordion] = useState("");
@@ -74,6 +76,7 @@ const ConditionsDetails = () => {
   }
 
   useEffect(() => {
+    if (!conditionSelected || !processSelected) { navigate("/", { replace: true }) }
     if (!id_cond) return;
     if (!(currentDetails)) {
       AXIOS_REQUEST(CONDITION_DETAILS + id_cond)
@@ -84,6 +87,10 @@ const ConditionsDetails = () => {
         .catch(err => { })
     }
   }, []);
+
+  if (!conditionSelected || !processSelected) {
+    return null
+  }
 
   return (
     <>
@@ -151,54 +158,56 @@ const ConditionsDetails = () => {
                   )
                 }
               </Nav>
-
-              <TabContent activeTab={currentActiveTab} className="tab-content-item pt-4">
-                <TabPane tabId={0}>
-                  <Answer
-                    idForm={conditionSelected.form_respuesta}
-                    idCondition={conditionSelected.id_cond}
-                    canEdit={conditionSelected.rol.split(",").includes("A")}
-                  />
-                </TabPane>
-                <TabPane tabId={1}>
-                  {loadedTabs.includes(1) && <Suspense fallback={<Loader loaderAsModal={false} isOpen />}>
-                    <Attachments
-                      idForm={conditionSelected.form_anexo}
+              <Suspense fallback={<div className='mt-5'><Loader isOpen loaderAsModal={false} /></div>}>
+                <TabContent activeTab={currentActiveTab} className="tab-content-item pt-4">
+                  <TabPane tabId={0}>
+                    <Answer
+                      idForm={conditionSelected.form_respuesta}
                       idCondition={conditionSelected.id_cond}
                       canEdit={conditionSelected.rol.split(",").includes("A")}
                     />
-                  </Suspense>}
-                </TabPane>
-                <TabPane tabId={2}>
-                  <div className='row'>
-                    <div className='d-none d-md-block col-md-6'>
-                      {loadedTabs[loadedTabs.length - 1] === 2 &&
-                        <Suspense fallback={<Loader loaderAsModal={false} isOpen />}>
-                          <div className='mb-2 border-start border-4 border-warning ps-2'><b>Texto de condición</b></div>
-                          <Answer
-                            idForm={conditionSelected.form_respuesta}
-                            showActionButton={false}
+                  </TabPane>
+                  <TabPane tabId={1}>
+                    {loadedTabs.includes(1) && <Suspense fallback={<Loader loaderAsModal={false} isOpen />}>
+                      <Attachments
+                        idForm={conditionSelected.form_anexo}
+                        idCondition={conditionSelected.id_cond}
+                        canEdit={conditionSelected.rol.split(",").includes("A")}
+                      />
+                    </Suspense>}
+                  </TabPane>
+                  <TabPane tabId={2}>
+                    <div className='row'>
+                      <div className='d-none d-md-block col-md-6'>
+                        {loadedTabs[loadedTabs.length - 1] === 2 &&
+                          <Suspense fallback={<Loader loaderAsModal={false} isOpen />}>
+                            <div className='mb-2 border-start border-4 border-warning ps-2'><b>Texto de condición</b></div>
+                            <Answer
+                              idForm={conditionSelected.form_respuesta}
+                              showActionButton={false}
+                            />
+                          </Suspense>
+                        }
+                      </div>
+                      <div className='col-md-6 col-12'>
+                        {loadedTabs.includes(2) && <Suspense fallback={<Loader loaderAsModal={false} isOpen />}>
+                          <Review
+                            idForm={conditionSelected.form_obse}
+                            idCondition={conditionSelected.id_cond}
+                            canEdit={conditionSelected.rol.split(",").includes("B")}
                           />
-                        </Suspense>
-                      }
+                        </Suspense>}
+                      </div>
                     </div>
-                    <div className='col-md-6 col-12'>
-                      {loadedTabs.includes(2) && <Suspense fallback={<Loader loaderAsModal={false} isOpen />}>
-                        <Review
-                          idForm={conditionSelected.form_obse}
-                          idCondition={conditionSelected.id_cond}
-                          canEdit={conditionSelected.rol.split(",").includes("B")}
-                        />
-                      </Suspense>}
-                    </div>
-                  </div>
-                </TabPane>
-                <TabPane tabId={3}>
-                  {loadedTabs[loadedTabs.length - 1] === 3 && <Suspense fallback={<Loader loaderAsModal={false} isOpen />}>
-                    <Historic id_condition={conditionSelected.id_cond} />
-                  </Suspense>}
-                </TabPane>
-              </TabContent>
+                  </TabPane>
+                  <TabPane tabId={3}>
+                    {loadedTabs[loadedTabs.length - 1] === 3 && <Suspense fallback={<Loader loaderAsModal={false} isOpen />}>
+                      <Historic id_condition={conditionSelected.id_cond} />
+                    </Suspense>}
+                  </TabPane>
+                </TabContent>
+              </Suspense>
+
             </div>
         }
       </div>

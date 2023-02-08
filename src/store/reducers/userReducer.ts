@@ -26,8 +26,8 @@ const userReducer = (state = initialState, action: I_Action): I_UserState => {
         case SET_USERINFO:
             return {
                 ...state,
-                userInfo: action.payload,
-                unauthorized: ""
+                unauthorized: "",
+                userInfo: action.payload
             };
 
         default:

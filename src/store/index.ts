@@ -30,7 +30,7 @@ const rootReducer = (state: any, action: any) => {
 
 // Config Middleware for async actions
 const thunkHandler = applyMiddleware(thunk);
-const composeEnhancers = (typeof window !== 'undefined' && /localhost/.test(window.location.href) && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose)
+const composeEnhancers = (typeof window !== 'undefined' && process.env.NODE_ENV === "development" && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose)
 
 // Create the store
 const store = createStore(rootReducer, composeEnhancers(thunkHandler))

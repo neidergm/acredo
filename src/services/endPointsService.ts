@@ -70,4 +70,23 @@ export const FORM_FIELDS = `form/campos/`;
  */
 export const HISTORIC_BY_CONDITION = `resp/historial/`;
 
+/**
+ * [GET]
+ * obs/{id_fcamp}
+ */
+export const OBSERVATION_BY_FORM = `obs/`;
+
+
+/**
+ * [GET]
+ * obs/{id_fcamp}/{id_camp}/{grupo}
+ */
+export const OBSERVATION_BY_ATTACHMENT = `obs/`;
+
+/**
+ * [POST]
+ * Required: {observacion:string, id_cond:string, id_form:string, id_fcamp:string}
+ * Optional: {archivos:<Array>, id_camp:string, grupo_resp:string, id_ref:string (para comenter observación (se guarda id de obs))}
+ */
+export const SAVE_OBSERVATION = `obs`;
 

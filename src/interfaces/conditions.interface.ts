@@ -18,6 +18,7 @@ export interface I_Condition {
 }
 
 export type T_ConditionDetails = Array<{ label: string, value: any }>;
+export type T_FileAnswer = { ruta: string, nombreReal: string }
 
 export interface I_AttachmentsConditions {
     id: string;
@@ -53,7 +54,7 @@ export interface I_FormFieldWithAnswer extends I_FormField {
     id_form: number;
     id_resp: number;
     nomb_form: string;
-    respuesta: any;
+    respuesta: any | Array<T_FileAnswer>;
     usuario?: string
 }
 

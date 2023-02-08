@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react'
-import { Button } from 'reactstrap'
-import { Clip, PlusCircleFill } from '../../../components/Icons'
+import { Button, Card, CardTitle, UncontrolledTooltip } from 'reactstrap'
+import { ChatDots, FiletypePDF, InfoCircle, Link, PlusCircleFill } from '../../../components/Icons'
 import Loader from '../../../components/Loader';
 import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } from '../../../components/Modal';
-import { I_AttachmentsConditions, I_FormFieldWithAnswer } from '../../../interfaces/conditions.interface'
+import { I_FormFieldWithAnswer, T_FileAnswer } from '../../../interfaces/conditions.interface'
 import { AXIOS_REQUEST } from '../../../services/axiosService';
-import { ALL_ANSWERS_BY_FORM, ANSWER_BY_FORM, DELETE_ANSWERS, FORM, FORM_FIELDS, SAVE_ANSWERS } from '../../../services/endPointsService';
+import { ALL_ANSWERS_BY_FORM, DELETE_ANSWERS, FORM, FORM_FIELDS, SAVE_ANSWERS } from '../../../services/endPointsService';
 import Form from 'react-ngm-form';
 import Alert, { I_AlertObject } from '../../../components/Alert';
 import { formToObjectWithFieldsAndValues, formToSubmitData, T_FetchedFormData } from '../../../utils/formUtils';
 import mapField from '../../../utils/mapField';
+import { getNormalDate } from '../../../utils/dateUtils';
+import ObservationChat from '../../../components/ObservationChat';
 
 interface I_Props {
     idCondition: number;
@@ -33,6 +35,7 @@ const Attachments = ({
     const [loader, setLoader] = useState<string | null>(null);
     const [alertConfirm, setAlertConfirm] = useState<I_AlertObject | null>(null);
     const [_alert, setAlert] = useState<I_AlertObject | null>(null);
+    const [observationsIsOpen, setObservationsIsOpen] = useState<I_FormFieldWithAnswer[] | null>(null);
 
     const getForm = async () => {
         let _form = await AXIOS_REQUEST(FORM + idForm).then(resp => resp.data[0]);
@@ -191,6 +194,11 @@ const Attachments = ({
             })
     }
 
+    const showObservations = (item: I_FormFieldWithAnswer[] | null) => {
+        console.log(item)
+        setObservationsIsOpen(item)
+    }
+
     useEffect(() => {
         getAttachments();
     }, [])
@@ -224,46 +232,75 @@ const Attachments = ({
                 {modal?.footer}
             </Modal>
 
+            <ObservationChat
+                toggle={showObservations}
+                isOpen={!!(observationsIsOpen)}
+                grupo={"2023-01-18T00:00:00"}
+                id_camp={"7"}
+                id_fcamp={"3"}
+                extra_data_to_send={{
+                    id_cond: idCondition,
+                    id_form: idForm,
+                    
+                }}
+            >
+                <small className='text-muted opacity-75'>
+                    {observationsIsOpen && `Anexo ${getNormalDate(observationsIsOpen[0].grupo_resp, { dateStyle: "long", timeStyle: "medium" })}`}
+                </small>
+            </ObservationChat>
+
             <div>
                 {!list ? <Loader isOpen loaderAsModal={false} />
                     :
                     !Object.values(list).length ? <p className='text-muted'>| No hay nada para mostrar</p>
                         :
-                        Object.values(list).map((li, i) =>
-                            <div key={i} className="card mb-4 p-3 border-0 bg-light hover-scale-up hover-shadow-sm"
-                                onClick={() => attachmentDetails(li)}
-                            >
-                                <div className='d-flex flex-row gap-4 position-relative'>
-                                    <div>
-                                        <div className='bg-white text-secondary rounded-pill p-2 d-flex position-relative'>
-                                            {/* <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning border border-2 border-light">3</span> */}
-                                            <Clip size={22} />
+                        <div className='row align-items-stretch'>
+                            {Object.keys(list).map((date, i) => {
+                                const li = list[date];
+                                return <div className='col-12 col-sm-6 col-lg-4 col-xl-3 pb-3' key={i}>
+                                    <Card className="border h-100 justify-content-between" body>
+                                        <div>
+                                            <CardTitle tag="h6" className='mb-3 text-truncate border-start border-3 py-1 ps-2'>
+                                                {getNormalDate(date, { dateStyle: "long" })}
+                                            </CardTitle>
+                                            <div>
+                                                {
+                                                    li.map((item, i) => {
+                                                        if (item.json_campo.tag === "file") {
+                                                            return item.respuesta?.map((f: T_FileAnswer, ii: number) =>
+                                                                <p key={`attach-${ii}`} className="text-truncate mb-1 hover-scale-up">
+                                                                    <a href={f.ruta} target="_blank" className='small link-secondary'>
+                                                                        <i className='me-1'><FiletypePDF size={18} /></i> {f.nombreReal}
+                                                                    </a>
+                                                                </p>
+                                                            )
+                                                        } else if (item.json_campo.type === "url") {
+                                                            return <p key={`attach-${i}`} className="text-truncate text-secondary">
+                                                                <i><Link size={18} /></i> {item.respuesta}
+                                                            </p>
+                                                        } else {
+                                                            return null;
+                                                        }
+                                                    })
+                                                }
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className='text-truncate'>
-                                        {
-                                            li.map((item, i) => {
-                                                return (item.json_campo.tag !== "file" && item.json_campo.type !== "url") ?
-                                                    <div key={`it-${i}`} className='text-truncate'>
-                                                        <b className="me-1 text-muted small" >{item.json_campo?.label}: </b>
-                                                        <small>{typeof item.respuesta === "string" && item.respuesta}</small>
-                                                    </div> : null
-                                            })
-                                        }
-                                    </div>
-                                    {/* <div className="row align-self-start text-truncate">
-                                        <b className="col-12" >{item.nombre}</b>
-                                        <p className="  m-0 col-12 text-truncate">{item.descripcion}</p>
-                                    </div> */}
-                                    {/* <div className='position-absolute hover-scale-up hover-shadow-sm top-100 start-100'
-                                        onClick={() => confirmDeleteAttachment(li[0].grupo_resp, li[0].id_fcamp)}>
-                                        <i className="text-danger">
-                                            <XCircleFill size={25} />
-                                        </i>
-                                    </div> */}
+                                        <div className='mt-3 d-flex gap-2'>
+                                            <Button color="primary" size='sm' className='w-100' outline onClick={() => { showObservations(list[date]) }}>
+                                                <div className='d-flex gap-2 justify-content-center align-items-center'>
+                                                    <ChatDots />Observaciones
+                                                </div>
+                                            </Button>
+                                            <UncontrolledTooltip target={`btn-info-${i}`}>Ver detalles del anexo</UncontrolledTooltip>
+                                            <Button color="primary" size='sm' id={`btn-info-${i}`} onClick={() => attachmentDetails(list[date])}>
+                                                <InfoCircle />
+                                            </Button>
+                                        </div>
+                                    </Card>
                                 </div>
-                            </div>
-                        )
+                            }
+                            )}
+                        </div>
                 }
             </div>
         </div>
