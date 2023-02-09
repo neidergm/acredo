@@ -1,13 +1,14 @@
 export interface I_Observation {
     adjunto: string;
-    est_obs: 0;
+    est_obs: number;
     grupo_resp: string;
-    id_camp: null;
-    id_fcamp: 3;
-    id_obs: 7;
+    id_fcamp: number;
+    id_obs: number;
     marc_temp: string;
     marc_update: string;
-    obs_ref: null;
     observacion: string;
     usuario: string;
+    dni_usua: string;
+    id_camp: null;
+    obs_ref?: string;
 }

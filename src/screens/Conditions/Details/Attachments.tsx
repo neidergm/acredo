@@ -235,17 +235,16 @@ const Attachments = ({
             <ObservationChat
                 toggle={showObservations}
                 isOpen={!!(observationsIsOpen)}
-                grupo={"2023-01-18T00:00:00"}
-                id_camp={"7"}
-                id_fcamp={"3"}
+                grupo={observationsIsOpen?.[0].grupo_resp}
+                id_fcamp={observationsIsOpen?.[0].id_fcamp}
                 extra_data_to_send={{
                     id_cond: idCondition,
-                    id_form: idForm,
-                    
+                    id_form: idForm
                 }}
             >
-                <small className='text-muted opacity-75'>
-                    {observationsIsOpen && `Anexo ${getNormalDate(observationsIsOpen[0].grupo_resp, { dateStyle: "long", timeStyle: "medium" })}`}
+                <small className='text-muted'>
+                    <b className='border-start ps-2 border-3 border-primary'>Anexo </b>
+                    {observationsIsOpen && `${observationsIsOpen?.[0].grupo_resp}`}
                 </small>
             </ObservationChat>
 
@@ -255,13 +254,13 @@ const Attachments = ({
                     !Object.values(list).length ? <p className='text-muted'>| No hay nada para mostrar</p>
                         :
                         <div className='row align-items-stretch'>
-                            {Object.keys(list).map((date, i) => {
-                                const li = list[date];
+                            {Object.keys(list).map((group, i) => {
+                                const li = list[group];
                                 return <div className='col-12 col-sm-6 col-lg-4 col-xl-3 pb-3' key={i}>
                                     <Card className="border h-100 justify-content-between" body>
                                         <div>
                                             <CardTitle tag="h6" className='mb-3 text-truncate border-start border-3 py-1 ps-2'>
-                                                {getNormalDate(date, { dateStyle: "long" })}
+                                                ID: {group}
                                             </CardTitle>
                                             <div>
                                                 {
@@ -286,13 +285,13 @@ const Attachments = ({
                                             </div>
                                         </div>
                                         <div className='mt-3 d-flex gap-2'>
-                                            <Button color="primary" size='sm' className='w-100' outline onClick={() => { showObservations(list[date]) }}>
+                                            <Button color="primary" size='sm' className='w-100' outline onClick={() => { showObservations(list[group]) }}>
                                                 <div className='d-flex gap-2 justify-content-center align-items-center'>
                                                     <ChatDots />Observaciones
                                                 </div>
                                             </Button>
                                             <UncontrolledTooltip target={`btn-info-${i}`}>Ver detalles del anexo</UncontrolledTooltip>
-                                            <Button color="primary" size='sm' id={`btn-info-${i}`} onClick={() => attachmentDetails(list[date])}>
+                                            <Button color="primary" size='sm' id={`btn-info-${i}`} onClick={() => attachmentDetails(list[group])}>
                                                 <InfoCircle />
                                             </Button>
                                         </div>

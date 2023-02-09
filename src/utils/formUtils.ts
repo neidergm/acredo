@@ -1,7 +1,6 @@
 import { I_FormFieldWithAnswer } from "../interfaces/conditions.interface"
+import { I_JSONObject } from "../interfaces/generic.interface"
 import mapField from "./mapField";
-
-type T_GENERIC_JSON = { [x: string]: any };
 
 export type T_FetchedFormData = {
     fields: { [name: string]: any },
@@ -10,7 +9,7 @@ export type T_FetchedFormData = {
 }
 
 type T_Items = {
-    json_campo: T_GENERIC_JSON,
+    json_campo: I_JSONObject,
     respuesta: any,
     [x: string]: any
 }
@@ -41,13 +40,13 @@ export const formToObjectWithFieldsAndValues = (items: T_Items[]) => {
             fields: [...p.fields, obj],
             defaultValues: { ...p.defaultValues, [obj.name]: c.respuesta }
         }
-    }, { fields: [], defaultValues: {} } as T_GENERIC_JSON)
+    }, { fields: [], defaultValues: {} } as I_JSONObject)
 }
 
 export const formToSubmitData = (
     // prefixes: Array<keyof I_FormFieldWithAnswer>,
-    data: T_GENERIC_JSON,
-    fields: Array<{ json_campo: T_GENERIC_JSON } & T_GENERIC_JSON>,
+    data: I_JSONObject,
+    fields: Array<{ json_campo: I_JSONObject } & I_JSONObject>,
     /**
      * keys for every one form item 
      */
@@ -55,11 +54,11 @@ export const formToSubmitData = (
     /**
      * Keys and values for every one form item has to have 
      */
-    commonData: T_GENERIC_JSON = {},
+    commonData: I_JSONObject = {},
     /**
     * Keys and values for the general form 
     */
-    extraData: T_GENERIC_JSON = {},
+    extraData: I_JSONObject = {},
 ) => {
     let form = new FormData();
     let i = 0;
@@ -90,5 +89,12 @@ export const formToSubmitData = (
     return form;
 }
 
+export const jsonToFormData = (json: I_JSONObject): FormData => {
+    let formData = new FormData();
+    Object.keys(json).forEach(i => {
+        formData.append(`${i}`, json[i]);
+    })
 
+    return formData;
+}
 
