@@ -105,30 +105,44 @@ const ConditionsDetails = () => {
       <SubHeader text={conditionSelected.nomb_cond} showBackButton={true} />
 
       <div className="container pt-3 pb-5">
-        <div className="">
-          <p>
-            <b>Proceso:</b>
-            <span className="d-block">{processSelected.nomb_conv}</span>
-          </p>
-          {!!processSelected.programa && <p>
-            <b>Programa:</b>
-            <span className="d-block">{processSelected.programa}</span>
-          </p>}
-        </div>
-        {!currentDetails ? <Loader isOpen loaderAsModal={false} />
-          :
-          !currentDetails.length ?
-            <p>| No hay nada para mostrar</p>
-            :
-            <div className="">
+
+        <div className="row">
+          <div className='col-xl-8'>
+            <p>
+              <b>Proceso:</b>
+              <span className="d-block">{processSelected.nomb_conv}</span>
+            </p>
+            {!!processSelected.programa && <p>
+              <b>Programa:</b>
+              <span className="d-block">{processSelected.programa}</span>
+            </p>}
+            {!!currentDetails && <>
               <p>
-                <b>Campus:</b>
+                <b>Sede:</b>
                 <span className="d-block">{conditionSelected.sede.toUpperCase()}</span>
               </p>
               <p>
                 <b>Estado:</b>
                 <span className="d-block">PENDIENTE</span>
               </p>
+            </>}
+          </div>
+          <div className='col'>
+            <div className='bg-light mb-3 p-3'>
+              Etapas
+            </div>
+            <div className='bg-light p-3'>
+              Etapa actual
+            </div>
+          </div>
+        </div>
+
+        {!currentDetails ? <Loader isOpen loaderAsModal={false} />
+          :
+          !currentDetails.length ?
+            <p>| No hay nada para mostrar</p>
+            :
+            <div className="">
               <div className="pb-3">
                 <b>Detalles:</b>
                 <Accordion className="mt-2" open={activeAccordion} {...{ toggle: toggleAccordion }}>

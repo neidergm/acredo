@@ -124,11 +124,11 @@ const Answer = ({
             <Loader isOpen={!!(loader)} subtitle={loader || ""} />
             <Alert isOpen={!!(alertConfirm?.isOpen)}  {...alertConfirm} onClosed={() => setAlertConfirm(null)} />
             <Alert isOpen={!!(_alert?.isOpen)}  {..._alert} onClosed={() => setAlert(null)} />
-            <iframe 
+            {/* <iframe 
             src="https://docs.google.com/document/d/e/2PACX-1vRrhp5FFuALDqI5zhtjXIJKP-9HnmJK7wndmKXhY0Y6TifdVKA6dj78dFFydLQpVA/pub?embedded=true"
             width={"100%"}
             height="500px"
-            ></iframe>
+            ></iframe> */}
 
             {!(form.fields.length) ?
                 <Loader isOpen loaderAsModal={false} />

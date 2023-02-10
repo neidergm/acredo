@@ -10,6 +10,7 @@ import Loader from "../../components/Loader";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { setConditions } from "../../store/actions/conditionsActions";
+import CircleProgress from "../../components/CircleProgress";
 
 const Conditions = () => {
 
@@ -74,22 +75,44 @@ const Conditions = () => {
                   onClick={() => goToConditionDetailsScreen(item)}
                 >
                   <div className="card-body">
-                    <div className="d-flex flex-sm-row-reverse justify-content-sm-between flex-column gap-3">
-                      <div>
+                    <div className="float-end ps-md-4">
+                      <CircleProgress
+                        progress={20}
+                        stroke={4}
+                        radius={32}
+                        color="#31ac6a"
+                        content={"100%"}
+                      />
+                    </div>
+
+                    <div className="float-md-end d-flex flex-md-column gap-2 mb-3 mb-md-0 flex-wrap">
+                      <div className="text-end">
                         <Badge
                           pill
-                          color="info"
+                          color="primary"
                           className="px-3"
                         >
                           {item.estado}
                         </Badge>
                       </div>
-                      <div>
-                        <p className="mb-1">{item.nomb_cond}</p>
-                        <p><b>Campus:</b> {item.sede}</p>
+                      <div className="text-end">
+                        <Badge
+                          pill
+                          color="danger"
+                          className="px-3"
+                        >
+                          2 Observaciones
+                        </Badge>
                       </div>
                     </div>
-                    <p className="card-text">
+
+                    <div className="d-flex gap-3">
+                      <div className="flex-grow-1">
+                        <p className="mb-1">{item.nomb_cond}</p>
+                      </div>
+                    </div>
+
+                    <p className="card-text mt-2 mt-md-2 d-inline-block">
                       <small className="text-muted">
                         - Última actualización el {new Date(item.marc_update).toLocaleString([], { dateStyle: "long", timeStyle: "short" })}
                       </small>

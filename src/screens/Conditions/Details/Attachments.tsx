@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Button, Card, CardTitle, UncontrolledTooltip } from 'reactstrap'
+import { Button, Card, CardText, CardTitle, UncontrolledTooltip } from 'reactstrap'
 import { ChatDots, FiletypePDF, InfoCircle, Link, PlusCircleFill } from '../../../components/Icons'
 import Loader from '../../../components/Loader';
 import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } from '../../../components/Modal';
@@ -108,12 +108,12 @@ const Attachments = ({
         })
     }
 
-    const attachmentDetails = (item: I_FormFieldWithAnswer[]) => {
+    const attachmentDetails = (item: I_FormFieldWithAnswer[], group: string) => {
         let _form = formToObjectWithFieldsAndValues(item);
 
         setModal({
             isOpen: true,
-            title: "Detalles de anexo",
+            title: `Detalles de anexo ${group}`,
             children: <>
                 <Form
                     disabled
@@ -256,12 +256,20 @@ const Attachments = ({
                         <div className='row align-items-stretch'>
                             {Object.keys(list).map((group, i) => {
                                 const li = list[group];
-                                return <div className='col-12 col-sm-6 col-lg-4 col-xl-3 pb-3' key={i}>
+                                return <div className='col-12 col-md-6 col-lg-4 pb-3' key={i}>
                                     <Card className="border h-100 justify-content-between" body>
                                         <div>
-                                            <CardTitle tag="h6" className='mb-3 text-truncate border-start border-3 py-1 ps-2'>
-                                                ID: {group}
-                                            </CardTitle>
+                                            <div className='d-flex column-gap-3 flex-wrap mb-3'>
+                                                <CardTitle
+                                                    tag="h6"
+                                                    className='border-start border-3 py-1 px-2 flex-grow-1'
+                                                    onClick={() => attachmentDetails(list[group], group)}>
+                                                    ID: {group}
+                                                </CardTitle>
+                                                <CardText tag={"small"} className="text-muted">
+                                                    {getNormalDate(list[group][0].marc_temp)}
+                                                </CardText>
+                                            </div>
                                             <div>
                                                 {
                                                     li.map((item, i) => {
@@ -291,7 +299,7 @@ const Attachments = ({
                                                 </div>
                                             </Button>
                                             <UncontrolledTooltip target={`btn-info-${i}`}>Ver detalles del anexo</UncontrolledTooltip>
-                                            <Button color="primary" size='sm' id={`btn-info-${i}`} onClick={() => attachmentDetails(list[group])}>
+                                            <Button color="primary" size='sm' id={`btn-info-${i}`} onClick={() => attachmentDetails(list[group], group)}>
                                                 <InfoCircle />
                                             </Button>
                                         </div>

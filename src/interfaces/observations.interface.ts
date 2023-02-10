@@ -11,4 +11,6 @@ export interface I_Observation {
     dni_usua: string;
     id_camp: null;
     obs_ref?: string;
+    id_ref?: string;
+    usua_ref?: string;
 }

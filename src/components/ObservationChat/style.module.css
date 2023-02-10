@@ -91,7 +91,7 @@
     content: "";
 }
 
-.message:last-child {
+.messages-container:last-child {
     margin-bottom: 20px;
 }
 
@@ -194,6 +194,7 @@
 
 .message>.message-content .message-reply {
     border-left: 5px solid #5f86d374;
+    cursor: pointer;
     opacity: 0.8;
     margin: 8px 0px;
     padding: 8px;

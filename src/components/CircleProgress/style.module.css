@@ -1,0 +1,16 @@
+.circleprogress-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    position: relative;
+  }
+  .circleprogress-container .content-text {
+      position: absolute;
+      font-size: 0.85rem;
+  }
+  .circleprogress-container circle {
+    transition: stroke-dashoffset 0.35s;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+  }
