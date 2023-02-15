@@ -12,4 +12,5 @@ export interface I_User {
     type: string;
     prog_cond?: string;
     picture?: string;
+    cargo?: string;
 }

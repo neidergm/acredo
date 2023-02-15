@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
-import { Button, Card, CardText, CardTitle, UncontrolledTooltip } from 'reactstrap'
+import { Button, Card, CardBody, CardHeader, CardText, CardTitle, UncontrolledTooltip } from 'reactstrap'
 import { ChatDots, FiletypePDF, InfoCircle, Link, PlusCircleFill } from '../../../components/Icons'
 import Loader from '../../../components/Loader';
 import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } from '../../../components/Modal';
 import { I_FormFieldWithAnswer, T_FileAnswer } from '../../../interfaces/conditions.interface'
 import { AXIOS_REQUEST } from '../../../services/axiosService';
-import { ALL_ANSWERS_BY_FORM, DELETE_ANSWERS, FORM, FORM_FIELDS, SAVE_ANSWERS } from '../../../services/endPointsService';
+import { ATTACHMENTS_ANSWER, DELETE_ANSWERS, FORM, FORM_FIELDS, SAVE_ANSWERS } from '../../../services/endPointsService';
 import Form from 'react-ngm-form';
 import Alert, { I_AlertObject } from '../../../components/Alert';
 import { formToObjectWithFieldsAndValues, formToSubmitData, T_FetchedFormData } from '../../../utils/formUtils';
@@ -92,6 +92,7 @@ const Attachments = ({
 
         setModal({
             isOpen: true,
+            size: "xl",
             title: "Agregar anexo",
             children: <>
                 <Form
@@ -157,7 +158,7 @@ const Attachments = ({
             FETCHEDFORM.fetchedForm,
             ["id_fcamp", "id_campo"],
             undefined,
-            { id_cond: idCondition, id_form: idForm })
+            { id_cond: idCondition })
         AXIOS_REQUEST(SAVE_ANSWERS, "POST", formData, true)
             .then(res => {
                 setLoader(null);
@@ -183,7 +184,7 @@ const Attachments = ({
     }
 
     const getAttachments = () => {
-        AXIOS_REQUEST(ALL_ANSWERS_BY_FORM + idForm)
+        AXIOS_REQUEST(ATTACHMENTS_ANSWER + idForm)
             .then(res => {
                 setList(
                     res.data.reduce((p: typeof list, c: I_FormFieldWithAnswer) => {
@@ -195,7 +196,6 @@ const Attachments = ({
     }
 
     const showObservations = (item: I_FormFieldWithAnswer[] | null) => {
-        console.log(item)
         setObservationsIsOpen(item)
     }
 
@@ -222,7 +222,7 @@ const Attachments = ({
             <Alert isOpen={!!(_alert?.isOpen)}{..._alert} onClosed={() => { setAlert(null) }} />
             <Alert isOpen={!!(alertConfirm?.isOpen)}{...alertConfirm} onClosed={() => { setAlertConfirm(null) }} />
 
-            <Modal backdrop="static" size="lg"
+            <Modal backdrop="static" size="xl"
                 isOpen={!!(modal?.isOpen)}
                 onClosed={() => { setModal(null) }}
                 toggle={() => closeModal(setModal)}
@@ -233,13 +233,13 @@ const Attachments = ({
             </Modal>
 
             <ObservationChat
+                onlyRead={!canEdit}
                 toggle={showObservations}
                 isOpen={!!(observationsIsOpen)}
                 grupo={observationsIsOpen?.[0].grupo_resp}
                 id_fcamp={observationsIsOpen?.[0].id_fcamp}
                 extra_data_to_send={{
                     id_cond: idCondition,
-                    id_form: idForm
                 }}
             >
                 <small className='text-muted'>
@@ -256,53 +256,66 @@ const Attachments = ({
                         <div className='row align-items-stretch'>
                             {Object.keys(list).map((group, i) => {
                                 const li = list[group];
+                                const criterial = list[group].find(i => i.json_campo.name.toLowerCase() === "criterio");
                                 return <div className='col-12 col-md-6 col-lg-4 pb-3' key={i}>
-                                    <Card className="border h-100 justify-content-between" body>
-                                        <div>
-                                            <div className='d-flex column-gap-3 flex-wrap mb-3'>
-                                                <CardTitle
-                                                    tag="h6"
-                                                    className='border-start border-3 py-1 px-2 flex-grow-1'
-                                                    onClick={() => attachmentDetails(list[group], group)}>
-                                                    ID: {group}
-                                                </CardTitle>
-                                                <CardText tag={"small"} className="text-muted">
-                                                    {getNormalDate(list[group][0].marc_temp)}
-                                                </CardText>
-                                            </div>
+                                    <Card className="border h-100 justify-content-between" >
+                                        <CardHeader
+                                            onClick={() => attachmentDetails(list[group], group)}
+                                            className='border-bottom-0 text-muted text-truncate'
+                                            tag="small">Criterio {criterial?.respuesta}</CardHeader>
+                                        <CardBody>
                                             <div>
-                                                {
-                                                    li.map((item, i) => {
-                                                        if (item.json_campo.tag === "file") {
-                                                            return item.respuesta?.map((f: T_FileAnswer, ii: number) =>
-                                                                <p key={`attach-${ii}`} className="text-truncate mb-1 hover-scale-up">
-                                                                    <a href={f.ruta} target="_blank" className='small link-secondary'>
-                                                                        <i className='me-1'><FiletypePDF size={18} /></i> {f.nombreReal}
-                                                                    </a>
-                                                                </p>
-                                                            )
-                                                        } else if (item.json_campo.type === "url") {
-                                                            return <p key={`attach-${i}`} className="text-truncate text-secondary">
-                                                                <i><Link size={18} /></i> {item.respuesta}
-                                                            </p>
-                                                        } else {
-                                                            return null;
-                                                        }
-                                                    })
-                                                }
-                                            </div>
-                                        </div>
-                                        <div className='mt-3 d-flex gap-2'>
-                                            <Button color="primary" size='sm' className='w-100' outline onClick={() => { showObservations(list[group]) }}>
-                                                <div className='d-flex gap-2 justify-content-center align-items-center'>
-                                                    <ChatDots />Observaciones
+                                                <div className='d-flex column-gap-3 flex-wrap mb-3'>
+                                                    <CardTitle
+                                                        tag="h6"
+                                                        className='border-start border-3 py-1 px-2 flex-grow-1'
+                                                        onClick={() => attachmentDetails(list[group], group)}>
+                                                        ID: {group}
+                                                    </CardTitle>
+                                                    <CardText tag={"small"} className="text-muted">
+                                                        {getNormalDate(list[group][0].marc_temp)}
+                                                    </CardText>
                                                 </div>
-                                            </Button>
-                                            <UncontrolledTooltip target={`btn-info-${i}`}>Ver detalles del anexo</UncontrolledTooltip>
-                                            <Button color="primary" size='sm' id={`btn-info-${i}`} onClick={() => attachmentDetails(list[group], group)}>
-                                                <InfoCircle />
-                                            </Button>
-                                        </div>
+                                                <div>
+                                                    {
+                                                        li.map((item, i) => {
+                                                            if (item.json_campo.tag === "file") {
+                                                                return item.respuesta?.map((f: T_FileAnswer, ii: number) =>
+                                                                    <p key={`attach-${ii}`} className="text-truncate mb-1 hover-scale-up">
+                                                                        <a href={f.ruta} target="_blank" className='small link-secondary'>
+                                                                            <i className='me-1'><FiletypePDF size={18} /></i> {f.nombreReal}
+                                                                        </a>
+                                                                    </p>
+                                                                )
+                                                            } else if (item.json_campo.type === "url") {
+                                                                return <p key={`attach-${i}`} className="text-truncate text-secondary">
+                                                                    <i><Link size={18} /></i> {item.respuesta}
+                                                                </p>
+                                                            } else {
+                                                                return null;
+                                                            }
+                                                        })
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div className='mt-3 d-flex gap-3'>
+                                                <Button color="primary" size='sm' className='w-100 position-relative'
+                                                    outline={!(list[group][0].num_obs)} onClick={() => { showObservations(list[group]) }}>
+                                                    <div className='d-flex gap-2 justify-content-center align-items-center'>
+                                                        <ChatDots />Observaciones
+                                                        {!!(list[group][0].num_obs) &&
+                                                            <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                                                {list[group][0].num_obs}
+                                                                <span className="visually-hidden">unread messages</span>
+                                                            </span>}
+                                                    </div>
+                                                </Button>
+                                                <UncontrolledTooltip target={`btn-info-${i}`}>Ver detalles del anexo</UncontrolledTooltip>
+                                                <Button color="primary" size='sm' id={`btn-info-${i}`} onClick={() => attachmentDetails(list[group], group)}>
+                                                    <InfoCircle />
+                                                </Button>
+                                            </div>
+                                        </CardBody>
                                     </Card>
                                 </div>
                             }

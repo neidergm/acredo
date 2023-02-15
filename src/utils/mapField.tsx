@@ -1,3 +1,5 @@
+import { Button } from "reactstrap";
+import { BoxArrowUpRight } from "../components/Icons";
 import TextEditor from "../components/TextEditor";
 import { I_FormFieldWithAnswer } from "../interfaces/conditions.interface";
 import { AXIOS_REQUEST } from "../services/axiosService";
@@ -31,6 +33,35 @@ const mapField = (item: I_FormFieldWithAnswer) => {
                     }}
                 />
             }
+        } else if (field.type === "googledocs") {
+            field.render = ({ field: { ref, onChange, onBlur, value, ...f } }: any) => {
+                let url = `https://docs.google.com/document/d/${value}?embedded=true`;
+                return <>
+                    <Button
+                        outline
+                        color="primary"
+                        className="rounded-pill btn-sm px-3 mb-4"
+                        onClick={() => { window.open(url, "_blank") }}
+                    >
+                        <div className='d-flex gap-2 justify-content-center align-items-center'>
+                            <BoxArrowUpRight size={16} /> Abrir documento en pestaña nueva
+                        </div>
+                    </Button>
+                    <div style={{ height: "90vh" }} className="shadow-sm">
+                        <iframe
+                            onLoad={() => {
+                                console.log("OK");
+                            }}
+                            // src="https://drive.google.com/file/d/16sNCAcgzNWE-PKNyG4OUlkRFIsxMwBytdYdyo955SZI/preview"
+                            src={url}
+                            // src="https://docs.google.com/document/d/16sNCAcgzNWE-PKNyG4OUlkRFIsxMwBytdYdyo955SZI/preview?embedded=true"
+                            // src="https://docs.google.com/document/d/e/2PACX-1vRrhp5FFuALDqI5zhtjXIJKP-9HnmJK7wndmKXhY0Y6TifdVKA6dj78dFFydLQpVA/pub?embedded=true"
+                            width={"100%"}
+                            height="100%"
+                        ></iframe>
+                    </div>
+                </>
+            }
         } else {
             return null;
         }
@@ -49,8 +80,10 @@ const mapField = (item: I_FormFieldWithAnswer) => {
                 }
             }
         }
-    }
 
+    } else if (field.tag === "list") {
+        field.fields = field.fields.map(f => mapField({ json_campo: f } as any)!)
+    }
 
     return field;
 }

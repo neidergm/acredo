@@ -41,6 +41,12 @@ export const ANSWER_BY_FORM = `resp/one/`;
 export const ALL_ANSWERS_BY_FORM = `resp/all/`;
 
 /**
+ * [GET]
+ * /resp/anexo/{id_form}
+ */
+export const ATTACHMENTS_ANSWER = `resp/anexos/`;
+
+/**
  * [POST]
  * /resp
  */
@@ -79,14 +85,27 @@ export const OBSERVATION_BY_FORM = `obs/`;
 
 /**
  * [GET]
- * obs/{id_fcamp}/{id_camp}/{grupo}
+ * obs/{id_fcamp}/{grupo}
  */
 export const OBSERVATION_BY_ATTACHMENT = `obs/`;
 
 /**
  * [POST]
  * Required: {observacion:string, id_cond:string, id_form:string, id_fcamp:string}
- * Optional: {archivos:<Array>, id_camp:string, grupo_resp:string, id_ref:string (para comenter observación (se guarda id de obs))}
+ * Optional: {archivos:<Array>, id_camp:string, grupo_resp:string (Only for attachments), id_ref:string (para comenter observación (se guarda id de obs))}
  */
 export const SAVE_OBSERVATION = `obs`;
+
+/**
+ * [GET]
+ * etapas/{id_condicion}
+ */
+export const STAGES = `etapas/`;
+
+/**
+ * [PUT]
+ * etapas
+ * {"id_cond": "", "id_nodo": "", "est_etapa": "" }
+ */
+export const PUT_STAGE = `etapas`;
 

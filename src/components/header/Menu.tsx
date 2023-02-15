@@ -40,13 +40,22 @@ const Menu = ({ children }: I_MenuProps) => {
                     {children}
                 </DropdownToggle>
                 <DropdownMenu className='border-0 shadow-sm mt-1 py-3'>
-                    <DropdownItem header >
-                        {userInfo?.mail}
+                    <DropdownItem header style={{whiteSpace: "normal"}} >
+                        <p style={{width: "300px"}} className="text-center">
+                            {userInfo?.cargo}
+                        </p>
                     </DropdownItem>
                     <DropdownItem header >
-                        DNI: {userInfo?.dni}
+                        <p>
+                            <b className='d-block'>Correo:</b>
+                            <span>{userInfo?.mail}</span>
+                        </p>
+                        <p>
+                            <b className='d-block'>Identificación:</b>
+                            <span>{userInfo?.dni}</span>
+                        </p>
                     </DropdownItem>
-                    <DropdownItem disabled tag="div" style={{"pointerEvents": "initial"}} className="mt-4 text-center">
+                    <DropdownItem disabled tag="div" style={{ "pointerEvents": "initial" }} className="mt-3 text-center">
                         <Button color='primary' onClick={confirmLogout}>Cerrar sesión</Button>
                     </DropdownItem>
                 </DropdownMenu>

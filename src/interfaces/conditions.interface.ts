@@ -10,14 +10,24 @@ export interface I_Condition {
     form_respuesta: number;
     id_cond: number;
     id_esta: number;
-    id_form: number;
     marc_temp: string;
     marc_update: string;
     nomb_cond: string;
-    sede: string
+    sede: string;
+    etapa_por?: number;
+    num_obs: number;
 }
 
-export type T_ConditionDetails = Array<{ label: string, value: any }>;
+export type T_Stages = Array<{
+    est_etapa: 0 | 1 | 2; //0: created; 1: Notificated; 2: Completed
+    fech_etapa: string;
+    id_cond: number;
+    id_nodo: number;
+    nomb_nodo: string;
+    resp_etapa: T_UserRole;
+    responsable?: string;
+}>;
+export type T_ConditionDetails = Array<{ label: string, value: any, obs_anex?: number, obs_cond?: number }>;
 export type T_FileAnswer = { ruta: string, nombreReal: string }
 
 export interface I_AttachmentsConditions {
@@ -51,20 +61,19 @@ export interface I_FormField {
 export interface I_FormFieldWithAnswer extends I_FormField {
     grupo_resp: string;
     id_fcamp: number;
-    id_form: number;
     id_resp: number;
     nomb_form: string;
     respuesta: any | Array<T_FileAnswer>;
-    usuario?: string
+    usuario?: string;
+    num_obs?: number;
 }
 
 export interface I_Form {
     campos: string;
-    est_form: 0 | 1;
     est_resp: 0 | 1;
     id_fcamp: number;
-    id_form: number;
     marc_temp: string;
     marc_update: string;
     nomb_form: string;
+    num_obs?: number;
 }

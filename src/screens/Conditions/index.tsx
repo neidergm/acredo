@@ -77,11 +77,11 @@ const Conditions = () => {
                   <div className="card-body">
                     <div className="float-end ps-md-4">
                       <CircleProgress
-                        progress={20}
+                        progress={item.etapa_por || 0}
                         stroke={4}
                         radius={32}
                         color="#31ac6a"
-                        content={"100%"}
+                        content={`${item.etapa_por || 0}%`}
                       />
                     </div>
 
@@ -89,21 +89,21 @@ const Conditions = () => {
                       <div className="text-end">
                         <Badge
                           pill
-                          color="primary"
+                          color="info"
                           className="px-3"
                         >
                           {item.estado}
                         </Badge>
                       </div>
-                      <div className="text-end">
+                      {!!(item.num_obs) && <div className="text-end">
                         <Badge
                           pill
-                          color="danger"
+                          color="warning"
                           className="px-3"
                         >
-                          2 Observaciones
+                          {item.num_obs} Observaciones
                         </Badge>
-                      </div>
+                      </div>}
                     </div>
 
                     <div className="d-flex gap-3">

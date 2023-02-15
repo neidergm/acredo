@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
-import { Card, CardBody } from 'reactstrap';
-import { ArrowLeftShort, CheckCircleFill, ExclamationCircleFill } from '../../../components/Icons';
+import { Button, Card, CardBody } from 'reactstrap';
+import { ArrowLeftShort, ChatDots, ChatDotsFill, CheckCircleFill, ExclamationCircleFill } from '../../../components/Icons';
 import Loader from '../../../components/Loader';
 import { SubHeader } from '../../../components/SubHeader';
 import { I_Condition, I_Form, I_FormFieldWithAnswer } from '../../../interfaces/conditions.interface';
@@ -16,6 +16,7 @@ import Alert, { I_AlertObject } from '../../../components/Alert';
 import { mapFieldAndDefaultValues } from '../../../utils/mapField';
 import { I_FieldProps, I_JSONObject } from '../../../interfaces/generic.interface';
 import { T_FieldsTypes } from 'react-ngm-form/dist/interfaces/FormElements.interface';
+import ObservationChat from '../../../components/ObservationChat';
 
 type T_Form = {
   fields: Array<I_FieldProps>;
@@ -34,16 +35,17 @@ const Create = () => {
   const [loader, setLoader] = useState<string | null>(null);
   const [alertConfirm, setAlertConfirm] = useState<I_AlertObject | null>(null);
   const [_alert, setAlert] = useState<I_AlertObject | null>(null);
+  const [observationsIsOpen, setObservationsIsOpen] = useState<T_Form | null>(null);
 
   const selectForm = (item: typeof selectedForm) => {
     if (item) {
-      let form_fields = DATA[item.id_form];
+      let form_fields = DATA[item.id_fcamp];
       if (form_fields) {
         setSelectedForm({ ...item, ...mapFieldAndDefaultValues(form_fields) });
       } else {
         setSelectedForm(item);
         getFormFields(
-          item?.est_resp === 1 ? item.id_form : item.campos,
+          item?.est_resp === 1 ? item.id_fcamp : item.campos,
           item?.est_resp === 1 ? ANSWER_BY_FORM : FORM_FIELDS
         );
       }
@@ -54,7 +56,7 @@ const Create = () => {
     AXIOS_REQUEST(`${url}${param}`)
       .then(res => {
         setSelectedForm(e => {
-          DATA[e!.id_form] = res.data;
+          DATA[e!.id_fcamp] = res.data;
           return {
             ...e!,
             ...mapFieldAndDefaultValues(res.data)
@@ -77,17 +79,17 @@ const Create = () => {
   const submitAll = (data: any) => {
     setLoader("Guardando datos");
     let formData = formToSubmitData(data,
-      DATA[selectedForm!.id_form].map(i => ({ ...i, id_fcamp: selectedForm?.id_fcamp })),
+      DATA[selectedForm!.id_fcamp].map(i => ({ ...i, id_fcamp: selectedForm?.id_fcamp })),
       ["id_campo"],
       { id_fcamp: selectedForm?.id_fcamp },
-      { id_cond: conditionSelected.id_cond, id_form: selectedForm?.id_form }
+      { id_cond: conditionSelected.id_cond, id_fcamp: selectedForm?.id_fcamp }
     )
 
     AXIOS_REQUEST(SAVE_ANSWERS, "POST", formData, true)
       .then(res => {
-        delete DATA[selectedForm!.id_form];
+        delete DATA[selectedForm!.id_fcamp];
         setFormList(e => {
-          let current = e!.findIndex(i => i.id_form === selectedForm?.id_form);
+          let current = e!.findIndex(i => i.id_fcamp === selectedForm?.id_fcamp);
           if (current) {
             e![current] = { ...selectedForm!, est_resp: 1 }
             selectForm(e![current])
@@ -114,6 +116,10 @@ const Create = () => {
       })
   }
 
+  const showObservations = (item: T_Form | null) => {
+    setObservationsIsOpen(item)
+  }
+
   useEffect(() => {
     if (!id_cond) return;
     AXIOS_REQUEST(FORM + conditionSelected.form_cond)
@@ -121,14 +127,14 @@ const Create = () => {
         setFormList(res.data);
       })
       .catch(err => { })
-      return ()=>{
-        DATA = {};
-      }
+    return () => {
+      DATA = {};
+    }
   }, []);
 
   useEffect(() => {
     if (!!(selectedForm)) {
-      const element = document.getElementById(`form-${selectedForm.id_form}`);
+      const element = document.getElementById(`form-${selectedForm.id_fcamp}`);
       if (element) {
         element.scrollIntoView({ behavior: 'smooth', block: "center" });
       }
@@ -141,6 +147,21 @@ const Create = () => {
       <Loader isOpen={!!loader} subtitle={loader!} />
       <Alert isOpen={!!(_alert?.isOpen)}{..._alert} onClosed={() => { setAlert(null) }} closeButton={{ value: "Ok" }} />
       <Alert isOpen={!!(alertConfirm?.isOpen)}{...alertConfirm} onClosed={() => { setAlertConfirm(null) }} />
+
+      <ObservationChat
+        onlyRead={conditionSelected.rol === "D"}
+        toggle={showObservations}
+        isOpen={!!(observationsIsOpen)}
+        id_fcamp={observationsIsOpen?.id_fcamp}
+        extra_data_to_send={{
+          id_cond: id_cond,
+        }}
+      >
+        <small className='text-muted'>
+          <b className='border-start ps-2 border-3 border-primary'>Formulario </b>
+          {observationsIsOpen && `${observationsIsOpen?.nomb_form}`}
+        </small>
+      </ObservationChat>
 
       <div className="container pt-3 pb-5">
         <div>
@@ -174,30 +195,49 @@ const Create = () => {
                 >
                   <div className='vstack gap-3 pt-4'>
                     {formList.map((f, i) =>
-                      <Card
-                        className={classnames(
-                          'hover-scale-up',
-                          f.id_form === selectedForm?.id_form ? "border-secondary shadow h6 m-0" : "border-0 bg-light")}
-                        key={i}
-                        id={`form-${f.id_form}`}
-                        onClick={() => selectForm(f)}
-                      >
-                        <CardBody className='d-flex align-items-center'>
-                          <div className='pe-3'>
-                            <div
-                              className={classnames("rounded-circle",
-                                f.est_resp === 1 ? "text-success" : "form-index",
-                                { "text-primary": f.id_form === selectedForm?.id_form })
-                              }
-                            >
-                              {f.est_resp === 1 ? <CheckCircleFill size={50} /> : <ExclamationCircleFill size={50} />}
+                      <div className='d-flex' key={i}>
+                        <Card
+                          className={classnames(
+                            'hover-scale-up',
+                            f.id_fcamp === selectedForm?.id_fcamp ? "border-secondary shadow h6 m-0" : "border-0 bg-light",
+                            'flex-grow-1'
+                          )}
+                          id={`form-${f.id_fcamp}`}
+                        >
+                          <CardBody className='d-flex align-items-center' onClick={() => selectForm(f)}>
+                            <div className='pe-3'>
+                              <div
+                                className={classnames("rounded-circle",
+                                  f.est_resp === 1 ? "text-success" : "form-index",
+                                  { "text-primary": f.id_fcamp === selectedForm?.id_fcamp })
+                                }
+                              >
+                                {f.est_resp === 1 ? <CheckCircleFill size={50} /> : <ExclamationCircleFill size={50} />}
+                              </div>
                             </div>
+                            <div className=''>
+                              <span>{f.nomb_form}</span>
+                            </div>
+                          </CardBody>
+                        </Card>
+                        {!selectedForm &&
+                          <div className='ms-3 d-flex align-items-stretch'>
+                            <Button color="light" size='sm' className='p-3 border-0'
+                              onClick={() => showObservations(f)}>
+                              <span className={classnames('position-relative', {
+                                "text-primary": !!(f.num_obs)
+                              })}>
+                                {!(f.num_obs) ? <ChatDots /> : <ChatDotsFill />}
+                                {!!(f.num_obs) &&
+                                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    {f.num_obs}
+                                    <span className="visually-hidden">unread messages</span>
+                                  </span>}
+                              </span>
+                            </Button>
                           </div>
-                          <div>
-                            <span>{f.nomb_form}</span>
-                          </div>
-                        </CardBody>
-                      </Card>
+                        }
+                      </div>
                     )}
                   </div>
                 </div>
@@ -216,7 +256,7 @@ const Create = () => {
                           :
                           <Form
                             disabled={conditionSelected.rol === "D"}
-                            key={selectedForm.id_form}
+                            key={selectedForm.id_fcamp}
                             // {...(selectedForm.form_fields || []).reduce((p, c) => ({
                             //   defaultValues: { ...p.defaultValues, [c.json_campo.name]: c.respuesta || c.json_campo.defaultValue },
                             //   fields: [...p.fields, c.json_campo]

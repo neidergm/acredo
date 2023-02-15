@@ -4,7 +4,7 @@ import { Spinner, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap'
 type T_Props = {
     isOpen: boolean;
     title?: string | JSX.Element | JSX.Element[];
-    subtitle?: string | JSX.Element | JSX.Element[];
+    subtitle?: string | JSX.Element | JSX.Element[] | null;
     size?: 'sm' | 'md' | 'lg' | 'xl';
     loaderAsModal?: boolean;
 }

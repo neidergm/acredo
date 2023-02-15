@@ -1,17 +1,17 @@
 import { useEffect, useState, lazy, Suspense, useLayoutEffect } from 'react'
 import { useParams, useLocation, useNavigate } from "react-router-dom";
-import { Anex, History, CheckCircleFill, ExclamationCircleFill } from "../../../components/Icons";
+import { Anex, History, CheckCircleFill, ExclamationCircleFill, BellFill } from "../../../components/Icons";
 
 import {
   TabContent, TabPane, Nav,
-  NavItem, NavLink, Accordion, AccordionItem, AccordionHeader, AccordionBody,
+  NavItem, NavLink, Accordion, AccordionItem, AccordionHeader, AccordionBody, Button,
 } from 'reactstrap';
 
-import { I_Condition } from "../../../interfaces/conditions.interface";
+import { I_Condition, T_Stages } from "../../../interfaces/conditions.interface";
 import classnames from 'classnames';
 import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader } from "../../../components/Modal";
 import { SubHeader } from "../../../components/SubHeader";
-import { CONDITION_DETAILS } from "../../../services/endPointsService";
+import { CONDITION_DETAILS, PUT_STAGE, STAGES } from "../../../services/endPointsService";
 import { AXIOS_REQUEST } from "../../../services/axiosService";
 import { I_Process } from "../../../interfaces/process.interface";
 import Loader from '../../../components/Loader'
@@ -19,26 +19,28 @@ import lazyLoaderComponents from "../../../services/lazyLoadingService";
 import './style.css'
 import { useAppSelector } from '../../../hooks/useAppSelector';
 import { useAppDispatch } from '../../../hooks/useAppDispatch';
-import { setConditionDetails } from '../../../store/actions/conditionsActions';
-import { GoBackButton } from '../../../components/GoBackButton';
+import { setConditionDetails, setConditions } from '../../../store/actions/conditionsActions';
+import Stages from '../../../components/Stages';
+import CircleProgress from '../../../components/CircleProgress';
+import { getDateDiff, getNormalDate } from '../../../utils/dateUtils';
+import Alert, { I_AlertObject } from '../../../components/Alert';
+import { I_JSONObject } from '../../../interfaces/generic.interface';
+import { jsonToFormData } from '../../../utils/formUtils';
 
 const Answer = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Answer" */ './Answer')));
 const Attachments = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Attachments" */ './Attachments')));
-const Review = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Review" */ './Review')));
 const Historic = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Historic" */ './Historic')));
 
 const menuItems = [
   {
     text: "Texto de condición",
-    icon: <CheckCircleFill size={17} />
+    icon: <CheckCircleFill size={17} />,
+    notificationsNumberKey: "obs_cond"
   },
   {
     text: "Anexos",
-    icon: <Anex />
-  },
-  {
-    text: "Revisión",
-    icon: <ExclamationCircleFill />
+    icon: <Anex />,
+    notificationsNumberKey: "obs_anex"
   },
   {
     text: "Historico",
@@ -47,6 +49,7 @@ const menuItems = [
 ]
 
 let loadedTabs: number[] = [0];
+let currentStage = 0;
 
 const ConditionsDetails = () => {
 
@@ -57,6 +60,9 @@ const ConditionsDetails = () => {
 
   const [currentActiveTab, setCurrentActiveTab] = useState(loadedTabs[0]);
   const [activeAccordion, setActiveAccordion] = useState("");
+  const [stages, setStages] = useState<T_Stages | null>(null);
+  const [_alert, setAlert] = useState<null | I_AlertObject>(null);
+  const [loader, setLoader] = useState<null | string>(null);
 
   const conditionDetails = useAppSelector(state => state.conditions.details);
   const dispatch = useAppDispatch();
@@ -75,18 +81,71 @@ const ConditionsDetails = () => {
     activeAccordion === id ? setActiveAccordion("") : setActiveAccordion(id)
   }
 
+  const getConditionsStages = () => {
+    return AXIOS_REQUEST(STAGES + id_cond).then(resp => {
+      currentStage = (resp.data as T_Stages).findIndex(i => i.est_etapa === 1 || i.est_etapa === 0);
+      setStages(resp.data);
+      return true;
+    })
+  }
+
+  const markStageAsCompleted = () => {
+    setLoader("Espere");
+
+    AXIOS_REQUEST(PUT_STAGE, "PUT", jsonToFormData({
+      id_cond, id_nodo: stages![currentStage].id_nodo, est_etapa: 2
+    })).then(() => {
+      setLoader(null);
+      setStages(null);
+      dispatch(setConditionDetails(id_cond!, null));
+      dispatch(setConditions(`${processSelected!.id_conv}`, null));
+    }).catch(() => {
+      setLoader(null);
+      setAlert({
+        type: "error",
+        title: "Ops...",
+        subtitle: "No se pudo marcar la etapa como finalizada, por favor intente nuevamente",
+        isOpen: true,
+        closeButton: { value: "Ok" }
+      })
+    })
+  }
+
+  const completeStage = () => {
+    setAlert({
+      isOpen: true,
+      title: "¿Está seguro?",
+      subtitle: "Esta acción es irrevertible, la etapa quedará marcada como finalizada",
+      type: "question",
+      submitButton: {
+        value: "Sí, finalizar",
+        onClick: () => {
+          setTimeout(() => {
+            markStageAsCompleted();
+          }, 100)
+        }
+      },
+      closeButton: { value: "No, cancelar" }
+    })
+  }
+
   useEffect(() => {
     if (!conditionSelected || !processSelected) { navigate("/", { replace: true }) }
     if (!id_cond) return;
-    if (!(currentDetails)) {
-      AXIOS_REQUEST(CONDITION_DETAILS + id_cond)
-        .then(res => {
-          let data = res.data.map((i: { [x: string]: any }) => ({ label: i.json_campo.label, value: i.respuesta }));
-          dispatch(setConditionDetails(id_cond, data));
-        })
-        .catch(err => { })
-    }
-  }, []);
+
+    getConditionsStages().then(() => {
+      if (!(currentDetails)) {
+        AXIOS_REQUEST(CONDITION_DETAILS + id_cond)
+          .then(res => {
+            let data = res.data.map((i: I_JSONObject) => ({
+              label: i.json_campo.label, value: i.respuesta, obs_cond: i.obs_cond, obs_anex: i.obs_anex
+            }));
+            dispatch(setConditionDetails(id_cond, data));
+          })
+          .catch(err => { })
+      }
+    });
+  }, [conditionDetails]);
 
   if (!conditionSelected || !processSelected) {
     return null
@@ -102,6 +161,8 @@ const ConditionsDetails = () => {
         </ModalFooter>
       </Modal>
 
+      <Alert isOpen={!!(_alert?.isOpen)}{..._alert} onClosed={() => { setAlert(null) }} />
+      <Loader isOpen={!!(loader)} subtitle={loader} />
       <SubHeader text={conditionSelected.nomb_cond} showBackButton={true} />
 
       <div className="container pt-3 pb-5">
@@ -128,16 +189,64 @@ const ConditionsDetails = () => {
             </>}
           </div>
           <div className='col'>
-            <div className='bg-light mb-3 p-3'>
-              Etapas
-            </div>
-            <div className='bg-light p-3'>
-              Etapa actual
-            </div>
+            {!(stages) ? <Loader isOpen loaderAsModal={false} />
+              :
+              (!(stages.length) ?
+                <p>
+                  <b>Etapas:</b>
+                  <span className="d-block"><i className='text-warning'><ExclamationCircleFill /></i> No hay etapas registradas</span>
+                </p>
+                :
+                <div className='row flex-row-reverse'>
+                  <div className='col-12 col-md-6 col-xl-12'>
+                    <div className='mb-3'>
+                      <p className='mb-2'><b>Etapas:</b></p>
+                      <Stages
+                        items={stages}
+                        current={currentStage}
+                      />
+                    </div>
+                  </div>
+                  <div className='col'>
+                    <div className='mb-3'>
+                      <p className='mb-2'><b>Etapa actual:</b></p>
+                      <div className='d-flex'>
+                        <div className='pe-3'>
+                          <CircleProgress
+                            progress={conditionSelected.etapa_por || 0}
+                            color={getDateDiff(new Date(), new Date(stages[currentStage].fech_etapa)) ? "#dc3545" : '#198754'}
+                            stroke={4}
+                            radius={30}
+                            content={<b>{currentStage + 1}</b>}
+                          />
+                        </div>
+                        <div className='flex-grow-1'>
+                          <p className="mb-1">{stages[currentStage].nomb_nodo}</p>
+                          <p className="mb-1">
+                            Límite: {getNormalDate(stages[currentStage].fech_etapa, { dateStyle: "long" })}
+                            {
+                              getDateDiff(new Date(), new Date(stages[currentStage].fech_etapa)) < 0 &&
+                              <b className='d-block text-danger'>Fecha límite vencida</b>
+                            }
+                          </p>
+                        </div>
+                      </div>
+                      {conditionSelected.rol.split(",").includes(stages[currentStage].resp_etapa) && <div>
+                        <Button color='primary' size="sm"
+                          className='mt-2 float-xl-start w-100'
+                          onClick={() => completeStage()}
+                        >
+                          Marcar etapa como finalizada
+                        </Button>
+                      </div>}
+                    </div>
+                  </div>
+                </div>)
+            }
           </div>
         </div>
 
-        {!currentDetails ? <Loader isOpen loaderAsModal={false} />
+        {!currentDetails || !stages ? <Loader isOpen loaderAsModal={false} />
           :
           !currentDetails.length ?
             <p>| No hay nada para mostrar</p>
@@ -167,6 +276,12 @@ const ConditionsDetails = () => {
                       })}
                     >
                       {item.icon} {item.text}
+                      <span className='position-relative ps-2'>
+                        {!!(item.notificationsNumberKey) && !!((currentDetails[0] as any)?.[item.notificationsNumberKey]) &&
+                          <span className="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger">
+                            {(currentDetails[0] as any)?.[item.notificationsNumberKey]}
+                          </span>}
+                      </span>
                     </NavLink>
                   </NavItem>
                   )
@@ -178,7 +293,8 @@ const ConditionsDetails = () => {
                     <Answer
                       idForm={conditionSelected.form_respuesta}
                       idCondition={conditionSelected.id_cond}
-                      canEdit={conditionSelected.rol.split(",").includes("A")}
+                      canEdit={
+                        conditionSelected.rol.split(",").includes(stages[currentStage]?.resp_etapa || null)}
                     />
                   </TabPane>
                   <TabPane tabId={1}>
@@ -186,36 +302,12 @@ const ConditionsDetails = () => {
                       <Attachments
                         idForm={conditionSelected.form_anexo}
                         idCondition={conditionSelected.id_cond}
-                        canEdit={conditionSelected.rol.split(",").includes("A")}
+                        canEdit={conditionSelected.rol.split(",").includes(stages[currentStage]?.resp_etapa || null)}
                       />
                     </Suspense>}
                   </TabPane>
                   <TabPane tabId={2}>
-                    <div className='row'>
-                      <div className='d-none d-md-block col-md-6'>
-                        {loadedTabs[loadedTabs.length - 1] === 2 &&
-                          <Suspense fallback={<Loader loaderAsModal={false} isOpen />}>
-                            <div className='mb-2 border-start border-4 border-warning ps-2'><b>Texto de condición</b></div>
-                            <Answer
-                              idForm={conditionSelected.form_respuesta}
-                              showActionButton={false}
-                            />
-                          </Suspense>
-                        }
-                      </div>
-                      <div className='col-md-6 col-12'>
-                        {loadedTabs.includes(2) && <Suspense fallback={<Loader loaderAsModal={false} isOpen />}>
-                          <Review
-                            idForm={conditionSelected.form_obse}
-                            idCondition={conditionSelected.id_cond}
-                            canEdit={conditionSelected.rol.split(",").includes("B")}
-                          />
-                        </Suspense>}
-                      </div>
-                    </div>
-                  </TabPane>
-                  <TabPane tabId={3}>
-                    {loadedTabs[loadedTabs.length - 1] === 3 && <Suspense fallback={<Loader loaderAsModal={false} isOpen />}>
+                    {loadedTabs[loadedTabs.length - 1] === 2 && <Suspense fallback={<Loader loaderAsModal={false} isOpen />}>
                       <Historic id_condition={conditionSelected.id_cond} />
                     </Suspense>}
                   </TabPane>

@@ -13,6 +13,7 @@ type T_Btn = Omit<ButtonProps, 'onClick'> & {
 
 export interface I_AlertObject {
   isOpen: boolean;
+  fullscreen?: boolean | 'sm' | 'md' | 'lg' | 'xl';
   onClosed?: () => void;
   showCloseX?: boolean;
   closeButton?: T_Btn;
@@ -40,7 +41,8 @@ const Alert = ({
   size = 'md',
   type,
   closeButton,
-  submitButton
+  submitButton,
+  fullscreen
 }: I_AlertObject) => {
   const [showAlert, setShowAlert] = useState(isOpen);
 
@@ -80,6 +82,7 @@ const Alert = ({
       isOpen={showAlert}
       onClosed={onClosed}
       backdrop="static"
+      fullscreen={fullscreen}
     >
       <ModalHeader className='border-0 pb-0 flex-column-reverse'
         toggle={showCloseX ? toggle : undefined}

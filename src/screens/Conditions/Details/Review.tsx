@@ -50,7 +50,9 @@ const Review = ({
             form.fetchedForm,
             ["id_campo"],
             { id_fcamp: formDataFetched?.id_fcamp },
-            { id_cond: idCondition, id_form: idForm })
+            { id_cond: idCondition
+                // , id_form: idForm
+             })
 
         AXIOS_REQUEST(SAVE_ANSWERS, "POST", formData, true)
             .then(res => {
