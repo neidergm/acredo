@@ -1,66 +1,70 @@
 import React, { useState } from 'react'
-import { CheckCircleFill } from '../Icons';
-import classnames from 'classnames';
-import style from './style.module.css';
-import { T_Stages } from '../../interfaces/conditions.interface';
-import Alert, { I_AlertObject } from '../Alert';
+import { Button } from 'reactstrap';
+import { I_Condition, T_Stage } from '../../interfaces/conditions.interface';
 import { getDateDiff, getNormalDate } from '../../utils/dateUtils';
-import { Badge } from 'reactstrap';
+import Alert, { I_AlertObject } from '../Alert';
+import CircleProgress from '../CircleProgress';
 
 type T_Props = {
-    items: T_Stages;
-    current: number;
+    condition: I_Condition,
+    currentStage: T_Stage,
+    callback: () => void
 }
 
-const Stages = ({ items, current }: T_Props) => {
-
+const Stages = ({ condition, currentStage, callback }: T_Props) => {
     const [_alert, setAlert] = useState<null | I_AlertObject>(null);
 
-    const showDetails = (item: T_Stages[0], idx: number) => {
-        let dateDiff = getDateDiff(new Date(), new Date(item.fech_etapa));
+    const completeStage = () => {
         setAlert({
             isOpen: true,
-            title: `Etapa ${idx}`,
-            subtitle: <>
-                <b className='text-dark'>{item.nomb_nodo}</b>
-                <p className='text-start mt-4'>
-                    <p className={classnames({ "text-danger": dateDiff < 0 && item.est_etapa !== 2 })}>
-                        <b className='d-block'>Fecha límite: </b>
-                        <span className='d-line-block'>{getNormalDate(item.fech_etapa, { dateStyle: "long" })}</span>
-                        {item.est_etapa !== 2 && <Badge pill color={dateDiff < 0 ? "danger" : "primary"} className='float-end d-line-block'>
-                            {dateDiff < 0 ? `Vencido hace ${dateDiff * -1} días` : `Vence ${dateDiff === 0 ? "hoy" : "en " + dateDiff + " días"}`}
-                        </Badge>}
-                    </p>
-                    <p>
-                        <b className='d-block'>Personal asignado: </b>
-                        <ul>
-                            {item.responsable?.split(",").map(r => <li key={r}>{r}</li>)}
-                        </ul>
-                    </p>
-                </p>
-            </>,
-            closeButton: { value: "Ok, cerrar" }
+            title: "¿Está seguro?",
+            subtitle: "Esta acción es irrevertible, la etapa quedará marcada como finalizada",
+            type: "question",
+            submitButton: {
+                value: "Sí, finalizar",
+                onClick: () => {
+                    callback();
+                }
+            },
+            closeButton: { value: "No, cancelar" }
         })
     }
 
     return (
         <>
-            <Alert showCloseX isOpen={!!(_alert?.isOpen)}{..._alert} onClosed={() => { setAlert(null) }} fullscreen={"sm"} />
-
-            <div className={classnames(style["stages-container"], "justify-content-xl-between")}>
-                {
-                    items.map((it, idx) => <div
-                        className={classnames(style["stage-item"], "hover-scale-up hover-shadow-sm", { [style["active"]]: current === idx })}
-                        key={idx}
-                        onClick={() => showDetails(it, idx + 1)}
-                    >
-                        {idx < current && <i className='text-success'><CheckCircleFill /></i>}
-                        <div>{idx + 1}</div>
-                    </div>)
-                }
+            <Alert isOpen={!!(_alert?.isOpen)}{..._alert} onClosed={() => { setAlert(null) }} />
+            <div className='d-flex'>
+                <div className='pe-3'>
+                    <CircleProgress
+                        progress={condition.etapa_por || 0}
+                        color={getDateDiff(new Date(), new Date(currentStage.fech_etapa)) < 0 ? "#dc3545" : '#198754'}
+                        stroke={4}
+                        radius={30}
+                        content={<b>{currentStage.internalId}</b>}
+                    />
+                </div>
+                <div className='flex-grow-1'>
+                    <p className="mb-1">{currentStage.nomb_nodo}</p>
+                    <p className="mb-1">
+                        Límite: {getNormalDate(currentStage.fech_etapa, { dateStyle: "long" })}
+                        {
+                            getDateDiff(new Date(), new Date(currentStage.fech_etapa)) < 0 &&
+                            <b className='d-block text-danger'>Fecha límite vencida</b>
+                        }
+                    </p>
+                </div>
             </div>
-        </>
-    )
+            {
+                condition.rol.split(",").includes(currentStage.resp_etapa) && <div>
+                    <Button color='primary' size="sm"
+                        className='mt-2 float-xl-start w-100'
+                        onClick={() => completeStage()}
+                    >
+                        Marcar etapa como finalizada
+                    </Button>
+                </div>
+            }
+        </>)
 }
 
 export default Stages;

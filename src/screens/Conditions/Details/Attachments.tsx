@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
-import { Button, Card, CardBody, CardHeader, CardText, CardTitle, UncontrolledTooltip } from 'reactstrap'
-import { ChatDots, FiletypePDF, InfoCircle, Link, PlusCircleFill } from '../../../components/Icons'
+import { Badge, Button, Card, CardBody, CardHeader, CardText, CardTitle, UncontrolledTooltip } from 'reactstrap'
+import { ChatDots, FiletypePDF, InfoCircle, Link, PlusCircleFill, Anex } from '../../../components/Icons'
 import Loader from '../../../components/Loader';
 import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } from '../../../components/Modal';
-import { I_FormFieldWithAnswer, T_FileAnswer } from '../../../interfaces/conditions.interface'
+import { I_AttachmentsAnswer, T_FileAnswer } from '../../../interfaces/conditions.interface'
 import { AXIOS_REQUEST } from '../../../services/axiosService';
 import { ATTACHMENTS_ANSWER, DELETE_ANSWERS, FORM, FORM_FIELDS, SAVE_ANSWERS } from '../../../services/endPointsService';
 import Form from 'react-ngm-form';
@@ -30,12 +30,12 @@ const Attachments = ({
     const [myForm, setMyForm] = useState<T_FetchedFormData>(
         { fields: [], defaultValues: {}, fetchedForm: null }
     );
-    const [list, setList] = useState<{ [x: string]: I_FormFieldWithAnswer[] } | null>(null);
+    const [list, setList] = useState<{ [x: string]: I_AttachmentsAnswer[] } | null>(null);
     const [modal, setModal] = useState<T_ModalJSON | null>(null);
     const [loader, setLoader] = useState<string | null>(null);
     const [alertConfirm, setAlertConfirm] = useState<I_AlertObject | null>(null);
     const [_alert, setAlert] = useState<I_AlertObject | null>(null);
-    const [observationsIsOpen, setObservationsIsOpen] = useState<I_FormFieldWithAnswer[] | null>(null);
+    const [observationsIsOpen, setObservationsIsOpen] = useState<I_AttachmentsAnswer[] | null>(null);
 
     const getForm = async () => {
         let _form = await AXIOS_REQUEST(FORM + idForm).then(resp => resp.data[0]);
@@ -109,12 +109,12 @@ const Attachments = ({
         })
     }
 
-    const attachmentDetails = (item: I_FormFieldWithAnswer[], group: string) => {
+    const attachmentDetails = (item: I_AttachmentsAnswer[], group: string) => {
         let _form = formToObjectWithFieldsAndValues(item);
 
         setModal({
             isOpen: true,
-            title: `Detalles de anexo ${group}`,
+            title: `Detalles del anexo ${item[0].nomb_anexo}`,
             children: <>
                 <Form
                     disabled
@@ -187,7 +187,7 @@ const Attachments = ({
         AXIOS_REQUEST(ATTACHMENTS_ANSWER + idForm)
             .then(res => {
                 setList(
-                    res.data.reduce((p: typeof list, c: I_FormFieldWithAnswer) => {
+                    res.data.reduce((p: typeof list, c: I_AttachmentsAnswer) => {
                         p![c.grupo_resp] = [...(p![c.grupo_resp] || []), c]
                         return { ...p }
                     }, {})
@@ -195,8 +195,11 @@ const Attachments = ({
             })
     }
 
-    const showObservations = (item: I_FormFieldWithAnswer[] | null) => {
+    const showObservations = (item: I_AttachmentsAnswer[] | null) => {
         setObservationsIsOpen(item)
+    }
+    const toClipboard = (text: string) => {
+        navigator.clipboard.writeText(text);
     }
 
     useEffect(() => {
@@ -256,27 +259,33 @@ const Attachments = ({
                         <div className='row align-items-stretch'>
                             {Object.keys(list).map((group, i) => {
                                 const li = list[group];
-                                const criterial = list[group].find(i => i.json_campo.name.toLowerCase() === "criterio");
+                                // const criterial = list[group].find(i => i.json_campo.name.toLowerCase() === "criterio");
                                 return <div className='col-12 col-md-6 col-lg-4 pb-3' key={i}>
                                     <Card className="border h-100 justify-content-between" >
                                         <CardHeader
-                                            onClick={() => attachmentDetails(list[group], group)}
                                             className='border-bottom-0 text-muted text-truncate'
-                                            tag="small">Criterio {criterial?.respuesta}</CardHeader>
-                                        <CardBody>
-                                            <div>
-                                                <div className='d-flex column-gap-3 flex-wrap mb-3'>
+                                            tag="small">
+                                            {/* Criterio {criterial?.respuesta} */}
+                                            {getNormalDate(list[group][0].marc_temp, { dateStyle: "long", timeStyle: "short" })}
+                                        </CardHeader>
+                                        <CardBody className='d-flex flex-column'>
+                                            <div className='flex-grow-1'>
+                                                <div className='d-flex column-gap-3 flex-wrap'>
                                                     <CardTitle
                                                         tag="h6"
                                                         className='border-start border-3 py-1 px-2 flex-grow-1'
-                                                        onClick={() => attachmentDetails(list[group], group)}>
-                                                        ID: {group}
+                                                    >
+                                                        Anexo {list[group][0].nomb_anexo}
                                                     </CardTitle>
-                                                    <CardText tag={"small"} className="text-muted">
-                                                        {getNormalDate(list[group][0].marc_temp)}
-                                                    </CardText>
+                                                    <UncontrolledTooltip target={`clipboard-${group}`}>Copiar nombre</UncontrolledTooltip>
+                                                    <div id={`clipboard-${group}`} className='text-primary opacity-50 cursor-pointer' onClick={() => toClipboard(`Anexo ${list[group][0].nomb_anexo}`)}>
+                                                        <Anex />
+                                                    </div>
                                                 </div>
-                                                <div>
+                                                <CardText tag={"small"} className="text-muted">
+                                                    Subido por {list[group][0].nomb_usua}
+                                                </CardText>
+                                                <div className='mt-3'>
                                                     {
                                                         li.map((item, i) => {
                                                             if (item.json_campo.tag === "file") {

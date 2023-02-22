@@ -51,3 +51,7 @@ code {
     background-color: darkgrey;
   }
 }
+
+.cursor-pointer{
+  cursor: pointer;
+}

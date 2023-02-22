@@ -9,7 +9,6 @@ export interface I_Observation {
     observacion: string;
     usuario: string;
     dni_usua: string;
-    id_camp: null;
     obs_ref?: string;
     id_ref?: string;
     usua_ref?: string;

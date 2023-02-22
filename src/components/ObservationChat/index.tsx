@@ -127,11 +127,11 @@ const ObservationChat = ({
         let data: I_JSONObject = {
             ...extra_data_to_send,
             observacion: val,
-            id_fcamp,
-            grupo_resp: grupo
+            id_fcamp
         };
 
         if (!!(newMessage.reply)) data.id_ref = newMessage.reply.id;
+        if (!!(grupo)) data.grupo_resp = grupo;
 
         let fd = jsonToFormData(data)
 

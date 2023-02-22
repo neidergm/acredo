@@ -18,7 +18,8 @@ export interface I_Condition {
     num_obs: number;
 }
 
-export type T_Stages = Array<{
+export type T_Stage = {
+    internalId: number;
     est_etapa: 0 | 1 | 2; //0: created; 1: Notificated; 2: Completed
     fech_etapa: string;
     id_cond: number;
@@ -26,7 +27,7 @@ export type T_Stages = Array<{
     nomb_nodo: string;
     resp_etapa: T_UserRole;
     responsable?: string;
-}>;
+};
 export type T_ConditionDetails = Array<{ label: string, value: any, obs_anex?: number, obs_cond?: number }>;
 export type T_FileAnswer = { ruta: string, nombreReal: string }
 
@@ -66,6 +67,11 @@ export interface I_FormFieldWithAnswer extends I_FormField {
     respuesta: any | Array<T_FileAnswer>;
     usuario?: string;
     num_obs?: number;
+}
+
+export interface I_AttachmentsAnswer extends I_FormFieldWithAnswer {
+    nomb_anexo?: string;
+    nomb_usua?: string;
 }
 
 export interface I_Form {

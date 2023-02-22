@@ -21,7 +21,7 @@ type T_FileItem = {
 
 export const formToObjectWithFieldsAndValues = (items: T_Items[]) => {
     return items.reduce((p, c) => {
-        let obj = c.json_campo;
+        let obj: I_JSONObject = c.json_campo;
         if (obj.type === "url" || obj.tag === "file") {
             obj = {
                 label: obj.label,
@@ -34,6 +34,10 @@ export const formToObjectWithFieldsAndValues = (items: T_Items[]) => {
                         `${p}<div><a class="btn btn-light link-primary" href="${c.ruta}" target="_blank">${c.nombreReal}</a></div>`, "")
             }
         } else if (obj.tag === "custom") {
+            obj = mapField(c as any) as any;
+        }else if(obj.tag === "list"){
+            // obj.fields = obj.fields.map((f:any) => ({...f, value: c.respuesta}));
+            obj.fields = obj.fields.map((f:any) => ({...f, tag: "input", "type": "text", dependsOn: null, disabled: true}));
             obj = mapField(c as any) as any;
         }
         return {
@@ -63,22 +67,44 @@ export const formToSubmitData = (
     let form = new FormData();
     let i = 0;
     Object.keys(data).forEach((e) => {
+        console.log(data[e]);
         if (!!(data[e])) {
             let fieldProps = fields.find((f) => f.json_campo.name === e)
-
-            if ((fieldProps)) {
+            if (!!(fieldProps)) {
                 if (fieldProps.json_campo.tag === "file") {
                     if (data[e].length > 0) {
                         keysOnField.forEach((p) => form.append(`resp[${i}].${p}`, `${fieldProps![p]}`))
-                        for (let f_i = 0; f_i < data[e].length; f_i++) { form.append(`resp[${i}].archivos`, data[e][f_i]); }
+                        let files = setFileAnswer(data[e]);
+                        files.forEach(f => form.append(`resp[${i}].archivos`, f))
+                        // for (let f_i = 0; f_i < data[e].length; f_i++) { form.append(`resp[${i}].archivos`, data[e][f_i]); }
                         i++;
                     }
+                } else if (fieldProps.json_campo.tag === "list") {
+                    let rid = `resp[${i}]`;
+
+                    keysOnField.forEach((p) => form.append(`${rid}.${p}`, `${fieldProps![p]}`));
+
+                    data[e].forEach((row: any, rowID: number) => {
+                        fieldProps!.json_campo.fields.forEach((item: I_JSONObject, idx: number) => {
+                            let itemid = `${rid}.item[${rowID}].campo[${idx}]`;
+                            form.append(`${itemid}.nombre`, item.name);
+                            if (item.tag === "file") {
+                                let files = setFileAnswer(row[item.name]);
+                                files.forEach(f => form.append(`${itemid}.archivos`, f))
+                            } else {
+                                form.append(`${itemid}.respuesta`, row[item.name] || null);
+                            }
+                        })
+                    })
+
                 } else {
-                    Object.keys(commonData).forEach(c => form.append(`resp[${i}].${c}`, `${commonData[c]}`));
+                    // Object.keys(commonData).forEach(c => form.append(`resp[${i}].${c}`, `${commonData[c]}`));
                     keysOnField.forEach((p) => form.append(`resp[${i}].${p}`, `${fieldProps![p]}`))
                     form.append(`resp[${i}].respuesta`, data[e]);
                     i++;
                 }
+
+                Object.keys(commonData).forEach(c => form.append(`resp[${i}].${c}`, `${commonData[c]}`));
             }
 
         }
@@ -87,6 +113,12 @@ export const formToSubmitData = (
     Object.keys(extraData).forEach(c => form.append(`${c}`, `${extraData[c]}`));
 
     return form;
+}
+
+const setFileAnswer = (data: FileList) => {
+    let array = [];
+    for (let f_i = 0; f_i < data.length; f_i++) { array.push(data[f_i]); }
+    return array;
 }
 
 export const jsonToFormData = (json: I_JSONObject): FormData => {

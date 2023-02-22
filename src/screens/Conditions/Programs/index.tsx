@@ -4,19 +4,24 @@ import { Button, Card, CardBody } from 'reactstrap';
 import { ArrowLeftShort, ChatDots, ChatDotsFill, CheckCircleFill, ExclamationCircleFill } from '../../../components/Icons';
 import Loader from '../../../components/Loader';
 import { SubHeader } from '../../../components/SubHeader';
-import { I_Condition, I_Form, I_FormFieldWithAnswer } from '../../../interfaces/conditions.interface';
+import { I_Condition, I_Form, I_FormFieldWithAnswer, T_Stage } from '../../../interfaces/conditions.interface';
 import { I_Process } from '../../../interfaces/process.interface';
 import { AXIOS_REQUEST } from '../../../services/axiosService';
-import { ANSWER_BY_FORM, FORM, FORM_FIELDS, SAVE_ANSWERS } from '../../../services/endPointsService';
+import { ANSWER_BY_FORM, FORM, FORM_FIELDS, PUT_STAGE, SAVE_ANSWERS, STAGES } from '../../../services/endPointsService';
 import classnames from 'classnames';
 import './style.css';
 import Form from 'react-ngm-form';
-import { formToSubmitData } from '../../../utils/formUtils';
+import { formToSubmitData, jsonToFormData } from '../../../utils/formUtils';
 import Alert, { I_AlertObject } from '../../../components/Alert';
 import { mapFieldAndDefaultValues } from '../../../utils/mapField';
 import { I_FieldProps, I_JSONObject } from '../../../interfaces/generic.interface';
 import { T_FieldsTypes } from 'react-ngm-form/dist/interfaces/FormElements.interface';
 import ObservationChat from '../../../components/ObservationChat';
+import { useAppSelector } from '../../../hooks/useAppSelector';
+import { useAppDispatch } from '../../../hooks/useAppDispatch';
+import { setConditionDetails, setConditions } from '../../../store/actions/conditionsActions';
+import StagesList from '../../../components/Stages/StagesList';
+import Stages from '../../../components/Stages';
 
 type T_Form = {
   fields: Array<I_FieldProps>;
@@ -24,6 +29,7 @@ type T_Form = {
 } & I_Form;
 
 let DATA: { [form: string]: Array<I_FormFieldWithAnswer> } = {};
+let currentStage = 1;
 
 const Create = () => {
   const conditionSelected: I_Condition = useLocation().state.condition;
@@ -36,6 +42,11 @@ const Create = () => {
   const [alertConfirm, setAlertConfirm] = useState<I_AlertObject | null>(null);
   const [_alert, setAlert] = useState<I_AlertObject | null>(null);
   const [observationsIsOpen, setObservationsIsOpen] = useState<T_Form | null>(null);
+
+  const [stages, setStages] = useState<Array<T_Stage> | null>(null);
+
+  const canEdit = conditionSelected.rol.split(",").includes(stages?.[currentStage].resp_etapa as any);
+  // const canEdit = true;
 
   const selectForm = (item: typeof selectedForm) => {
     if (item) {
@@ -57,6 +68,7 @@ const Create = () => {
       .then(res => {
         setSelectedForm(e => {
           DATA[e!.id_fcamp] = res.data;
+          console.log(res.data)
           return {
             ...e!,
             ...mapFieldAndDefaultValues(res.data)
@@ -76,15 +88,44 @@ const Create = () => {
     })
   }
 
+  const getConditionsStages = () => {
+    
+    return AXIOS_REQUEST(STAGES + id_cond).then(resp => {
+      currentStage = (resp.data as Array<T_Stage>).findIndex(i => i.est_etapa === 1 || i.est_etapa === 0);
+      setStages((resp.data as Array<T_Stage>).map((item, i) => ({ ...item, internalId: i + 1 })));
+      return true;
+    })
+  }
+
+  const markStageAsCompleted = () => {
+    setLoader("Espere");
+
+    AXIOS_REQUEST(PUT_STAGE, "PUT", jsonToFormData({
+      id_cond, id_nodo: stages![currentStage].id_nodo, est_etapa: 2
+    })).then(() => {
+      setLoader(null);
+      setStages(null);
+    }).catch(() => {
+      setLoader(null);
+      setAlert({
+        type: "error",
+        title: "Ops...",
+        subtitle: "No se pudo marcar la etapa como finalizada, por favor intente nuevamente",
+        isOpen: true,
+        closeButton: { value: "Ok" }
+      })
+    })
+  }
+
   const submitAll = (data: any) => {
+
     setLoader("Guardando datos");
     let formData = formToSubmitData(data,
       DATA[selectedForm!.id_fcamp].map(i => ({ ...i, id_fcamp: selectedForm?.id_fcamp })),
-      ["id_campo"],
-      { id_fcamp: selectedForm?.id_fcamp },
-      { id_cond: conditionSelected.id_cond, id_fcamp: selectedForm?.id_fcamp }
+      ["id_campo", "id_fcamp"],
+      undefined,
+      { id_cond: conditionSelected.id_cond }
     )
-
     AXIOS_REQUEST(SAVE_ANSWERS, "POST", formData, true)
       .then(res => {
         delete DATA[selectedForm!.id_fcamp];
@@ -122,15 +163,19 @@ const Create = () => {
 
   useEffect(() => {
     if (!id_cond) return;
-    AXIOS_REQUEST(FORM + conditionSelected.form_cond)
-      .then(res => {
-        setFormList(res.data);
-      })
-      .catch(err => { })
+
+    !stages && getConditionsStages().then(() => {
+
+      AXIOS_REQUEST(FORM + conditionSelected.form_cond)
+        .then(res => {
+          setFormList(res.data);
+        })
+        .catch(err => { })
+    })
     return () => {
       DATA = {};
     }
-  }, []);
+  }, [stages]);
 
   useEffect(() => {
     if (!!(selectedForm)) {
@@ -149,7 +194,7 @@ const Create = () => {
       <Alert isOpen={!!(alertConfirm?.isOpen)}{...alertConfirm} onClosed={() => { setAlertConfirm(null) }} />
 
       <ObservationChat
-        onlyRead={conditionSelected.rol === "D"}
+        onlyRead={!canEdit}
         toggle={showObservations}
         isOpen={!!(observationsIsOpen)}
         id_fcamp={observationsIsOpen?.id_fcamp}
@@ -164,30 +209,62 @@ const Create = () => {
       </ObservationChat>
 
       <div className="container pt-3 pb-5">
-        <div>
-          <p>
-            <b>Proceso:</b>
-            <span className="d-block">{processSelected.nomb_conv}</span>
-          </p>
-          {!!processSelected.programa && <p>
-            <b>Programa:</b>
-            <span className="d-block">{processSelected.programa}</span>
-          </p>}
+        <div className="row">
+          <div className='col-xl-8'>
+            <p>
+              <b>Proceso:</b>
+              <span className="d-block">{processSelected.nomb_conv}</span>
+            </p>
+            {!!processSelected.programa && <p>
+              <b>Programa:</b>
+              <span className="d-block">{processSelected.programa}</span>
+            </p>}
+            {!!formList && <p>
+              <b>Completados:</b>
+              <span className="d-block">
+                {formList.reduce((p, c) => p += c.est_resp, 0)} de {formList.length} formularios
+              </span>
+            </p>}
+          </div>
+          <div className='col'>
+            {!(stages) ? <Loader isOpen loaderAsModal={false} />
+              :
+              (!(stages.length) ?
+                <p>
+                  <b>Etapas:</b>
+                  <span className="d-block"><i className='text-warning'><ExclamationCircleFill /></i> No hay etapas registradas</span>
+                </p>
+                :
+                <div className='row flex-row-reverse'>
+                  <div className='col-12 col-md-6 col-xl-12'>
+                    <div className='mb-3'>
+                      <p className='mb-2'><b>Etapas:</b></p>
+                      <StagesList
+                        items={stages}
+                        currentStage={stages[currentStage]}
+                      />
+                    </div>
+                  </div>
+                  <div className='col'>
+                    <div className='mb-3'>
+                      <p className='mb-2'><b>Etapa actual:</b></p>
+                      <Stages
+                        condition={conditionSelected}
+                        currentStage={stages[currentStage]}
+                        callback={markStageAsCompleted}
+                      />
+                    </div>
+                  </div>
+                </div>)
+            }
+          </div>
         </div>
-        {!formList ? <Loader isOpen loaderAsModal={false} />
+        {!formList || !stages ? <Loader isOpen loaderAsModal={false} />
           :
           !formList.length ?
             <p>| No hay nada para mostrar</p>
             :
             <>
-              <div className='mb-3'>
-                <p>
-                  <b>Completados:</b>
-                  <span className="d-block">
-                    {formList.reduce((p, c) => p += c.est_resp, 0)} de {formList.length} formularios
-                  </span>
-                </p>
-              </div>
               <div className="row flex-column-reverse flex-md-row">
                 <div
                   className={classnames("overflow-auto pb-5 col-12", !!(selectedForm) ? "col-md-4 col-xl-3 d-none d-lg-block" : "col-md-12")}
@@ -255,7 +332,7 @@ const Create = () => {
                           <div className='p-5'><Loader loaderAsModal={false} isOpen /></div>
                           :
                           <Form
-                            disabled={conditionSelected.rol === "D"}
+                            disabled={!canEdit}
                             key={selectedForm.id_fcamp}
                             // {...(selectedForm.form_fields || []).reduce((p, c) => ({
                             //   defaultValues: { ...p.defaultValues, [c.json_campo.name]: c.respuesta || c.json_campo.defaultValue },
@@ -267,9 +344,13 @@ const Create = () => {
                             defaultValues={selectedForm.defaultValues}
                             onSubmit={confirmSubmit}
                           >
-                            <div className='text-end mt-4'>
-                              <button type='submit' className='btn btn-success'>Guardar</button>
-                            </div>
+                            {canEdit ?
+                              <div className='text-end mt-4'>
+                                <button type='submit' className='btn btn-success'>Guardar</button>
+                              </div>
+                              :
+                              <></>
+                            }
                           </Form>
                         }
                       </div>

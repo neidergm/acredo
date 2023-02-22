@@ -96,7 +96,7 @@ const Answer = ({
                 onlyRead={!canEdit}
                 toggle={showObservations}
                 isOpen={!!(observationsIsOpen)}
-                id_fcamp={1}
+                id_fcamp={idForm}
                 extra_data_to_send={{
                     id_cond: idCondition
                 }}

@@ -1,13 +1,13 @@
-import { useEffect, useState, lazy, Suspense, useLayoutEffect } from 'react'
+import { useEffect, useState, lazy, Suspense } from 'react'
 import { useParams, useLocation, useNavigate } from "react-router-dom";
-import { Anex, History, CheckCircleFill, ExclamationCircleFill, BellFill } from "../../../components/Icons";
+import { Anex, History, CheckCircleFill, ExclamationCircleFill } from "../../../components/Icons";
 
 import {
   TabContent, TabPane, Nav,
-  NavItem, NavLink, Accordion, AccordionItem, AccordionHeader, AccordionBody, Button,
+  NavItem, NavLink, Accordion, AccordionItem, AccordionHeader, AccordionBody,
 } from 'reactstrap';
 
-import { I_Condition, T_Stages } from "../../../interfaces/conditions.interface";
+import { I_Condition, T_Stage } from "../../../interfaces/conditions.interface";
 import classnames from 'classnames';
 import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader } from "../../../components/Modal";
 import { SubHeader } from "../../../components/SubHeader";
@@ -21,8 +21,7 @@ import { useAppSelector } from '../../../hooks/useAppSelector';
 import { useAppDispatch } from '../../../hooks/useAppDispatch';
 import { setConditionDetails, setConditions } from '../../../store/actions/conditionsActions';
 import Stages from '../../../components/Stages';
-import CircleProgress from '../../../components/CircleProgress';
-import { getDateDiff, getNormalDate } from '../../../utils/dateUtils';
+import StagesList from '../../../components/Stages/StagesList';
 import Alert, { I_AlertObject } from '../../../components/Alert';
 import { I_JSONObject } from '../../../interfaces/generic.interface';
 import { jsonToFormData } from '../../../utils/formUtils';
@@ -49,7 +48,7 @@ const menuItems = [
 ]
 
 let loadedTabs: number[] = [0];
-let currentStage = 0;
+let currentStage = 1;
 
 const ConditionsDetails = () => {
 
@@ -60,7 +59,7 @@ const ConditionsDetails = () => {
 
   const [currentActiveTab, setCurrentActiveTab] = useState(loadedTabs[0]);
   const [activeAccordion, setActiveAccordion] = useState("");
-  const [stages, setStages] = useState<T_Stages | null>(null);
+  const [stages, setStages] = useState<Array<T_Stage> | null>(null);
   const [_alert, setAlert] = useState<null | I_AlertObject>(null);
   const [loader, setLoader] = useState<null | string>(null);
 
@@ -83,8 +82,8 @@ const ConditionsDetails = () => {
 
   const getConditionsStages = () => {
     return AXIOS_REQUEST(STAGES + id_cond).then(resp => {
-      currentStage = (resp.data as T_Stages).findIndex(i => i.est_etapa === 1 || i.est_etapa === 0);
-      setStages(resp.data);
+      currentStage = (resp.data as Array<T_Stage>).findIndex(i => i.est_etapa === 1 || i.est_etapa === 0);
+      setStages((resp.data as Array<T_Stage>).map((item, i) => ({ ...item, internalId: i + 1 })));
       return true;
     })
   }
@@ -108,24 +107,6 @@ const ConditionsDetails = () => {
         isOpen: true,
         closeButton: { value: "Ok" }
       })
-    })
-  }
-
-  const completeStage = () => {
-    setAlert({
-      isOpen: true,
-      title: "¿Está seguro?",
-      subtitle: "Esta acción es irrevertible, la etapa quedará marcada como finalizada",
-      type: "question",
-      submitButton: {
-        value: "Sí, finalizar",
-        onClick: () => {
-          setTimeout(() => {
-            markStageAsCompleted();
-          }, 100)
-        }
-      },
-      closeButton: { value: "No, cancelar" }
     })
   }
 
@@ -201,44 +182,20 @@ const ConditionsDetails = () => {
                   <div className='col-12 col-md-6 col-xl-12'>
                     <div className='mb-3'>
                       <p className='mb-2'><b>Etapas:</b></p>
-                      <Stages
+                      <StagesList
                         items={stages}
-                        current={currentStage}
+                        currentStage={stages[currentStage]}
                       />
                     </div>
                   </div>
                   <div className='col'>
                     <div className='mb-3'>
                       <p className='mb-2'><b>Etapa actual:</b></p>
-                      <div className='d-flex'>
-                        <div className='pe-3'>
-                          <CircleProgress
-                            progress={conditionSelected.etapa_por || 0}
-                            color={getDateDiff(new Date(), new Date(stages[currentStage].fech_etapa)) ? "#dc3545" : '#198754'}
-                            stroke={4}
-                            radius={30}
-                            content={<b>{currentStage + 1}</b>}
-                          />
-                        </div>
-                        <div className='flex-grow-1'>
-                          <p className="mb-1">{stages[currentStage].nomb_nodo}</p>
-                          <p className="mb-1">
-                            Límite: {getNormalDate(stages[currentStage].fech_etapa, { dateStyle: "long" })}
-                            {
-                              getDateDiff(new Date(), new Date(stages[currentStage].fech_etapa)) < 0 &&
-                              <b className='d-block text-danger'>Fecha límite vencida</b>
-                            }
-                          </p>
-                        </div>
-                      </div>
-                      {conditionSelected.rol.split(",").includes(stages[currentStage].resp_etapa) && <div>
-                        <Button color='primary' size="sm"
-                          className='mt-2 float-xl-start w-100'
-                          onClick={() => completeStage()}
-                        >
-                          Marcar etapa como finalizada
-                        </Button>
-                      </div>}
+                      <Stages
+                        condition={conditionSelected}
+                        currentStage={stages[currentStage]}
+                        callback={markStageAsCompleted}
+                      />
                     </div>
                   </div>
                 </div>)
@@ -302,7 +259,8 @@ const ConditionsDetails = () => {
                       <Attachments
                         idForm={conditionSelected.form_anexo}
                         idCondition={conditionSelected.id_cond}
-                        canEdit={conditionSelected.rol.split(",").includes(stages[currentStage]?.resp_etapa || null)}
+                        // canEdit={conditionSelected.rol.split(",").includes(stages[currentStage]?.resp_etapa || null)}
+                        canEdit={!conditionSelected.rol.split(",").includes("D")}
                       />
                     </Suspense>}
                   </TabPane>
