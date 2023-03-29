@@ -1,10 +1,16 @@
 import { GoBackButton } from "../GoBackButton"
+import classnames from 'classnames';
 
-export const SubHeader = ({ text, children, showBackButton }: { text: string, children?: any, showBackButton?: boolean }) => {
+export const SubHeader = (
+    { text, children, showBackButton, className }:
+        { text: string | JSX.Element, children?: any, showBackButton?: boolean, className?: string }
+) => {
     return (
-        <div className="container mt-4 mb-4 pt-3 pb-2 w-100 d-flex align-items-center">
-            <h4 className="mb-0 text-secondary border-start pt-2 pb-2 ps-3 border-5 border-success">{text}</h4>
-            {showBackButton && <div className="ms-auto"><GoBackButton /></div>}
+        <div className={classnames("d-flex container-fluid mb-5", className)}>
+            <div className="d-flex flex-grow-1 align-items-center border-start border-5 border-success gap-3">
+                <h4 className="mb-0 text-secondary pt-2 pb-2 ps-3 ">{text}</h4>
+                {showBackButton && <div className="ms-auto"><GoBackButton /></div>}
+            </div>
             {children}
         </div>
     )

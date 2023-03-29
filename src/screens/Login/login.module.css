@@ -1,4 +1,5 @@
 .login-screen {
+    font-weight: 100;
     min-height: 100vh;
     width: 100vw;
     display: flex;
@@ -8,35 +9,131 @@
     background-color: rgba(234, 234, 255, 0.341);
 }
 
-.login-screen>div {
-    text-align: center;
-    min-width: 400px;
-    padding: 70px 30px 40px 30px;
-    border-radius: 25px;
-    background-color: #fff;
-    box-shadow: 0px 3px 40px -10px rgba(0, 0, 0, 0.084);
-}
-
-.login-screen>div>.login-content {
-    display: flex;
+.login-screen > div{
+    width: inherit;
+    flex-grow: 1;
+    display: grid;
+    align-items: center;
     justify-content: center;
 }
 
-.container-loader {
-    margin-top: 40px;
-    width: 100%;
-    height: 4px;
-    background-color: #d3d3d33b;
-    border-radius: 15px;
+.login-screen .container {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    text-align: center;
+    min-width: 400px;
+    border-radius: 25px;
+    background-color: #fff;
+    box-shadow: 0px 3px 40px -10px rgba(0, 0, 0, 0.084);
+    display: flex;
+    overflow: hidden;
+    flex-direction: row;
+}
+
+.login-screen .container .left,
+.login-screen .container .right {
+    padding: 80px 40px;
+    width: 350px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    row-gap: 50px;
 }
 
 
+.login-screen .container .left {
+    justify-content: space-between;
+}
+
+
+.login-screen .container .left .title {
+    line-height: 1px;
+    border-top: 0.4px solid #ededed;
+    text-align: center;
+    font-family: 'FredokaOne' !important;
+}
+
+.login-screen .container .left .title>* {
+    padding: 0px 10px;
+    background-color: white;
+}
+
+.login-screen .container .left::before {
+    content: " ";
+    position: absolute;
+    width: 50%;
+    top: 50px;
+    height: 30px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    background-color: #ff9400;
+    left: -10px;
+}
+
+.login-screen .container .left .logo {
+    margin-top: 25px;
+    height: auto;
+    text-align: center;
+}
+
+.login-screen .container .left .logo>img {
+    height: 130px;
+}
+
+.login-screen .container .right {
+    color: #fff;
+    background-color: #ff9400;
+    align-items: center;
+    column-gap: 30px;
+    font-family: 'FredokaOne' !important;
+}
+
+.login-screen .container .right::after {
+    content: " ";
+    position: absolute;
+    width: 50%;
+    bottom: 50px;
+    height: 30px;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    background-color: #fff;
+    right: -10px;
+}
+
+.login-screen .container .right .logo {
+    padding: 23px;
+    background: #fff;
+    height: 120px;
+    overflow: hidden;
+    width: 120px;
+    border-radius: 100%;
+}
+
+.google-button {
+    display: flex;
+    justify-content: center;
+    max-width: 100%;
+}
+
+
+.container-loader {
+    position: absolute;
+    bottom: 30px;
+    width: 100%;
+    border-radius: 50px;
+    background-color: #00000007;
+}
+
 .bar-loader {
     border-radius: 15px;
-    height: 4px;
-    background-color: rgb(56, 56, 56);
+    height: 8px;
+    background-color: #ff9400;
     width: 50%;
     animation: loader-bar-animation 1.5s linear infinite;
+}
+
+.login-screen .container .footer {
+    display: none;
 }
 
 @keyframes loader-bar-animation {
@@ -70,34 +167,113 @@
     }
 }
 
-@media screen and (max-width: 450px){
-    .login-screen>div {
-        min-width: auto;
-        background-color: transparent;
-        box-shadow:none;
-        max-width: 100%;
+@media screen and (max-width: 780px) {
+    .login-screen .container {
+        flex-direction: column;
+        /* box-shadow: none; */
+        /* flex-grow: 1; */
+        /* margin: 0 */
     }
 
-  
+    .login-screen .container .right,
+    .login-screen .container .left {
+        width: 100%
+    }
+
+    .login-screen .container .right::after {
+        bottom: 40px;
+    }
+
+    .login-screen .container .left .container-loader {
+        left: 10%;
+        max-width: 80%;
+    }
+
+    .login-screen .container .right {
+        flex-direction: row;
+        align-items: start;
+        justify-content: space-between;
+        padding: 30px;
+    }
+
+    .login-screen .container .right .logo {
+        height: 100px;
+        width: 100px;
+        padding: 20px;
+    }
 }
 
-/* .login-screen>div::before{
-    content: " ";
-    height: 150px;
-    width: 150px;
-    background-color: #fff;
-    position: absolute;
-    border-radius: 100%;
-    top: -50px;
-    right: -50px;
+@media screen and (max-width: 460px) {
+    .login-screen {
+        overflow-y: auto !important;
+        background-color: white !important;
+        min-height: 100vh;
+        height: auto;
+    }
+
+    .login-screen .container .right .logo {
+        height: 80px;
+        width: 80px;
+        padding: 15px;
+    }
+
+    .login-screen .container {
+        border-radius: 0px;
+        height: 100%;
+        box-shadow: none;
+        width: 100%;
+        margin: 0;
+    }
+
+    .login-screen .container .left {
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-top: 80px;
+        flex-grow: 1;
+        justify-content: center;
+        row-gap: 70px;
+    }
+
+    .login-screen .container .right {
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+        flex-grow: initial;
+    }
+
+    .login-screen .container .footer {
+        background-color: #ff9400;
+        color: white;
+        font-weight: 400;
+        display: block !important;
+    }
+   
+    .login-screen .container + .footer {
+        display: none;
+    }
+
+    .login-screen {
+        overflow-x: hidden !important;
+        justify-content: space-between;
+    }
+
+    .login-screen .container .right::after {
+        display: none;
+    }
 }
-.login-screen>div::after{
-    content: " ";
-    height: 150px;
-    width: 150px;
-    background-color: #fff;
-    position: absolute;
-    border-radius: 100%;
-    bottom: -50px;
-    left: -50px;
-} */
+
+@media screen and (max-width: 460px) {
+    .login-screen .container{
+        width: 100vw;
+    }
+    .login-screen .container .right {
+        padding: 30px 15px;
+    }
+
+    .login-screen .footer {
+        background-color: #ff9400;
+        color: white;
+        font-weight: 400;
+        padding-top: 0px !important;
+    }
+}

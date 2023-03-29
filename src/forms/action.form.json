@@ -1,0 +1,61 @@
+[
+    {
+        "label": "Nombre",
+        "name": "nomb_accion",
+        "tag": "input",
+        "type": "text",
+        "validations": {
+            "required": true
+        }
+    },
+    {
+        "label": "Fecha límite",
+        "name": "fecha_accion",
+        "tag": "input",
+        "type": "date",
+        "wrapperClassName": "col-md-6",
+        "validations": {
+            "required": true
+        }
+    },
+    {
+        "label": "Rol de responsable",
+        "name": "rol_accion",
+        "tag": "select",
+        "wrapperClassName": "col-md-6",
+        "type": "simple",
+        "options": [
+            {
+                "label": "Administrador",
+                "value": "A"
+            },
+            {
+                "label": "Revisor",
+                "value": "B"
+            },
+            {
+                "label": "Lider de condición",
+                "value": "C"
+            }
+        ],
+        "validations": {
+            "required": true
+        }
+    },
+    {
+        "label": "Responsables",
+        "name": "responsables",
+        "tag": "checkbox",
+        "wrapperClassName": "col-md-6",
+        "type": "multiple",
+        "options": [
+            "Responsable1",
+            "Responsable2",
+            "Responsable3",
+            "Responsable4"
+        ],
+        "validations": {
+            "required": true
+        }
+    }
+]

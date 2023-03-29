@@ -2,6 +2,11 @@
   background: linear-gradient(to right, #06A099 0%, #31AC69 100%);
 }
 
+.title{
+  font-family: 'FredokaOne', sans-serif;
+  font-size: 30px;
+}
+
 .avatar>div {
   display: flex;
   justify-content: center;

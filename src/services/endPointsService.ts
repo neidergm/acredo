@@ -8,7 +8,7 @@ export const LOGIN = "auth/autenticar";
  * [GET]
  * /conv
  */
-export const CONVOCATORIES_LIST = `conv`;
+export const PROCESS_LIST = `conv`;
 
 /**
  * [GET]
@@ -18,21 +18,15 @@ export const CONVOCATORY_DETAILS = `conv/`;
 
 /**
  * [GET]
- * /cond/all/{id_conv}
+ * /cond/{id_cond}
  */
-export const CONDITIONS_BY_CONVOCATORY = `cond/all/`;
+export const CONDITION_DETAILS = `cond/`;
 
 /**
  * [GET]
- * /cond/detalle/{id_cond}
+ * /resp/{id_form}
  */
-export const CONDITION_DETAILS = `cond/detalles/`;
-
-/**
- * [GET]
- * /resp/one/{id_form}
- */
-export const ANSWER_BY_FORM = `resp/one/`;
+export const ANSWER_BY_FORM = `resp/`;
 
 /**
  * [GET]
@@ -44,7 +38,7 @@ export const ALL_ANSWERS_BY_FORM = `resp/all/`;
  * [GET]
  * /resp/anexo/{id_form}
  */
-export const ATTACHMENTS_ANSWER = `resp/anexos/`;
+// export const ATTACHMENTS_ANSWER = `resp/anexos/`;
 
 /**
  * [POST]
@@ -54,9 +48,9 @@ export const SAVE_ANSWERS = `resp`;
 
 /**
  * [DELETE]
- * /resp/{id_fcamp}/{grupo}
+ * /resp/{f_camp}{grupo_resp}
  */
-export const DELETE_ANSWERS = `resp/`;
+export const DELETE_ANSWER = `resp/`;
 
 /**
  * [GET]
@@ -98,6 +92,12 @@ export const SAVE_OBSERVATION = `obs`;
 
 /**
  * [GET]
+ * fases/condiciones/{id_conv}
+ */
+export const PHASES_WITH_COND_BY_PROCESS = `fases/condiciones/`;
+
+/**
+ * [GET]
  * etapas/{id_condicion}
  */
 export const STAGES = `etapas/`;
@@ -109,3 +109,28 @@ export const STAGES = `etapas/`;
  */
 export const PUT_STAGE = `etapas`;
 
+/**
+ * [PUT]
+ * acciones
+ * {"id_accion": "", ...JSON  }
+ */
+export const PUT_ACTION = `acciones`;
+
+/**
+ * [DELETE]
+ * acciones
+ * /id_accion
+ */
+export const DELETE_ACTION = `acciones/`;
+
+/**
+ * [GET]
+ * roles
+ */
+export const ROLS = `acciones/`;
+
+/**
+ * [GET]
+ * cargos/responsables
+ */
+export const RESPONSIBLE = `cargos/responsables`;

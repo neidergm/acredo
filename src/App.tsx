@@ -4,16 +4,16 @@ import FallbackComponen1 from './components/Loader/FallbackComponen1';
 import lazyLoaderComponents from './services/lazyLoadingService';
 import Header from './components/Header';
 import { useAppSelector } from './hooks/useAppSelector';
-import './App.css';
 import { CloseButton, Toast, ToastBody } from 'reactstrap';
 import { useAppDispatch } from './hooks/useAppDispatch';
 import { setUnauthorized } from './store/actions/userActions';
+import Footer from './components/Footer';
+import './App.css';
 
 const Login = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Login" */ './screens/Login')));
 const Conditions = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Conditions" */ './screens/Conditions')));
 const IntitutionalConditions = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "IntitutionalConditions" */ './screens/Conditions/Details')));
-const Convocatories = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Process" */ './screens/Process')));
-const ProgramsConditions = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "ProgramsConditions" */ './screens/Conditions/Programs')));
+const Process = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Process" */ './screens/Process')));
 
 type T_Props = {}
 
@@ -40,21 +40,20 @@ const App = ({ }: T_Props) => {
 
   return (
     <div className="layout">
-      <Header />
-      <main className="main">
-        {/* <FallbackComponen1 /> */}
-        <Router>
+      <Router>
+        <header className='header'><Header /></header>
+        <main className="main">
           <Suspense fallback={<FallbackComponen1 />}>
             <Routes >
-              <Route path='/' element={<Convocatories />} />
-              <Route path='/condiciones/programa/:id_cond' element={<ProgramsConditions />} />
-              <Route path='/condiciones/detalles/:id_cond' element={<IntitutionalConditions />} />
-              <Route path='/condiciones/:id_Process' element={<Conditions />} />
+              <Route path='/' element={<Process />} />
+              <Route path='/proceso/:id_process/:id_cond' element={<IntitutionalConditions />} />
+              <Route path='/proceso/:id_process' element={<Conditions />} />
               <Route path='*' element={<Navigate to="/" />} />
             </Routes>
           </Suspense>
-        </Router>
-      </main>
+        </main>
+        <footer className='border-top'><Footer className='text-muted small' /></footer>
+      </Router>
     </div>
   );
 }

@@ -1,0 +1,47 @@
+import { I_Condition } from "./conditions.interface";
+import { T_UserRole } from "./generic.interface";
+
+export type T_Action = {
+    est_accion: 0 | 1 | 2; //0: created; 1: Notificated; 2: Completed
+    fecha_accion: string;
+    id_accion: number;
+    nomb_accion: string;
+    orden: number;
+    rol_accion: T_UserRole;
+    rol_nombre: string;
+    usuario?: string | null;
+}
+
+export type T_Stage = {
+    name: string;
+    id: number;
+    status: 0 | 1;
+    actions_completed?: number;
+    actions?: Array<T_Action> | null;
+};
+
+export type T_Phase = {
+    name: string;
+    id: number;
+    stages?: Array<T_Stage>;
+    stages_completed?: number;
+}
+
+export type T_ActivePhase = {
+    phase?: T_Phase,
+    stage?: T_Stage,
+    action?: T_Action
+}
+
+export type T_PhasesWithConditions = {
+    condiciones: I_Condition[] | null;
+    fech_fin: string;
+    fech_ini: string;
+    id_conv: number;
+    id_fase: number;
+    marc_temp: string;
+    marc_update: string;
+    nomb_fase: number;
+    porcentaje: number;
+    orden: number;
+}

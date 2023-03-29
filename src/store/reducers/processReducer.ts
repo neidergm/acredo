@@ -1,17 +1,22 @@
-import { I_Action, I_ProcessState } from "../../interfaces/store.interface";
-import { SET_PROCESS_LIST } from "../actions/processActions";
+import { I_AppAction, I_ProcessState } from "../../interfaces/store.interface";
+import { SET_PROCESS_LIST, SELECT_PROCESS } from "../actions/processActions";
 
 let initialState: I_ProcessState = {
-    list: null
+    list: null,
+    selected: null
 }
 
-const userReducer = (state = initialState, action: I_Action): I_ProcessState => {
+const userReducer = (state = initialState, action: I_AppAction): I_ProcessState => {
     switch (action.type) {
         case SET_PROCESS_LIST:
-            // localStorage.clear();
             return {
                 ...state,
                 list: action.payload
+            };
+        case SELECT_PROCESS:
+            return {
+                ...state,
+                selected: action.payload
             };
 
         default:

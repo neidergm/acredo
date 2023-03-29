@@ -1,35 +1,22 @@
-import { T_FieldsTypes } from "react-ngm-form/dist/interfaces/FormElements.interface";
-import { T_UserRole } from "./generic.interface";
+import { T_UserRole, T_FieldsTypes } from "./generic.interface";
 
 export interface I_Condition {
     estado: string;
     rol: T_UserRole;
-    form_anexo: number;
+    rol_nombre: string;
     form_cond: string;
-    form_obse: number;
-    form_respuesta: number;
     id_cond: number;
+    // form_obse: number;
     id_esta: number;
-    marc_temp: string;
     marc_update: string;
     nomb_cond: string;
     sede: string;
-    etapa_por?: number;
+    porcentaje: number;
     num_obs: number;
+    detalle: string;
 }
 
-export type T_Stage = {
-    internalId: number;
-    est_etapa: 0 | 1 | 2; //0: created; 1: Notificated; 2: Completed
-    fech_etapa: string;
-    id_cond: number;
-    id_nodo: number;
-    nomb_nodo: string;
-    resp_etapa: T_UserRole;
-    responsable?: string;
-};
-export type T_ConditionDetails = Array<{ label: string, value: any, obs_anex?: number, obs_cond?: number }>;
-export type T_FileAnswer = { ruta: string, nombreReal: string }
+export type T_FileAnswer = { url: string, name: string }
 
 export interface I_AttachmentsConditions {
     id: string;
@@ -42,7 +29,7 @@ export interface I_HistoryItem {
     grupo_resp: string;
     id_cond: number;
     id_resp: number;
-    id_fcamp: 4;
+    id_fcamp: number;
     json_campo: { [x: string]: any };
     marc_temp: string;
     respuesta: any;
@@ -65,14 +52,15 @@ export interface I_FormFieldWithAnswer extends I_FormField {
     id_resp: number;
     nomb_form: string;
     respuesta: any | Array<T_FileAnswer>;
+    nomb_anexo: null | string;
     usuario?: string;
     num_obs?: number;
 }
 
-export interface I_AttachmentsAnswer extends I_FormFieldWithAnswer {
-    nomb_anexo?: string;
-    nomb_usua?: string;
-}
+// export interface I_AttachmentsAnswer extends I_FormFieldWithAnswer {
+//     nomb_anexo?: string;
+//     nomb_usua?: string;
+// }
 
 export interface I_Form {
     campos: string;
@@ -81,5 +69,23 @@ export interface I_Form {
     marc_temp: string;
     marc_update: string;
     nomb_form: string;
-    num_obs?: number;
+    /**
+     * 0: Default form type
+     * 1: Modal form type
+     */
+    tipo_form: 0 | 1;
+    /**
+     * 0: Form can't have observations.
+     * 1: Form can have observations.
+     * 2: Form can have observations in every one response item.
+     * 
+     * If it's 2, the num_obs property will be an object
+     */
+    tipo_obs: 0 | 1 | 2;
+    num_obs: number | Array<T_ObservationsInFormResp> | null;
+}
+
+export type T_ObservationsInFormResp = {
+    grupo_resp: string;
+    num_obs: number
 }

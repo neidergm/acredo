@@ -5,7 +5,7 @@ import localStorageService from './localStorageService';
 let token_storaged = "";
 let otherConfig = {
     validateStatus: (status: number) => {
-        if(status === 401){
+        if (status === 401) {
             localStorageService.deleteItems(["user", "token"]);
             window.location.reload();
         }
@@ -31,6 +31,8 @@ const setOtherAxiosConfig = (config = {}) => { otherConfig = { ...otherConfig, .
  * @param {String} token token for a particular request 
  */
 const AXIOS_REQUEST = (url: string, method = "get", data: any = null, formData = false, header = {}, onUploadProgress = (p: any) => { }) => {
+    method = method.toLowerCase();
+    
     if (!(token_storaged)) {
         token_storaged = setTokenForAxiosRequest(localStorageService.getItem("token"))
     }

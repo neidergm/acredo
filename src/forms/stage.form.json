@@ -1,0 +1,12 @@
+[
+    {
+        "name": "nomb_etapa",
+        "label": "Nombre de la etapa",
+        "tag": "input",
+        "type": "text",
+        "wrapperClassName": "col-md-6",
+        "validations": {
+            "required": true
+        }
+    }
+]

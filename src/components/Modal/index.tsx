@@ -20,7 +20,7 @@ type T_ModalHeaderProps = {
 export type T_ModalJSON = T_ModalHeaderProps & ModalFooterProps & ModalProps;
 
 export const closeModal = (
-    setStateCallback: (currentState: { [x: string]: any }) => any
+    setStateCallback: (currentState: any) => any
 ) => {
     return setStateCallback((currentState: object) => ({ ...currentState, isOpen: false }));
 }

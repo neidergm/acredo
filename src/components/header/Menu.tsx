@@ -40,8 +40,8 @@ const Menu = ({ children }: I_MenuProps) => {
                     {children}
                 </DropdownToggle>
                 <DropdownMenu className='border-0 shadow-sm mt-1 py-3'>
-                    <DropdownItem header style={{whiteSpace: "normal"}} >
-                        <p style={{width: "300px"}} className="text-center">
+                    <DropdownItem header style={{whiteSpace: "normal"}} className="pb-4">
+                        <p style={{width: "300px"}} className="text-center mb-0 pb-3 border-bottom">
                             {userInfo?.cargo}
                         </p>
                     </DropdownItem>

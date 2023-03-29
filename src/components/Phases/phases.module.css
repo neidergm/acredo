@@ -1,0 +1,114 @@
+.phase,
+.stage {
+    --bs-accordion-active-bg: transparent;
+    --bs-accordion-border-color: transparent;
+    --bs-accordion-btn-focus-box-shadow: transparent;
+    --bs-accordion-btn-color: #696969;
+}
+
+/* .is-admin .phase .phase-header:not(.phase-completed)>button:not(.collapsed) {
+    --bs-accordion-btn-active-icon: none !important;
+} */
+
+.is-admin .phase .phase-header>button.collapsed + button {
+    display: none !important;
+}
+
+.phase .phase-header>button {
+    gap: 10px;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    padding-bottom: 12px;
+}
+
+.phase .phase-header {
+    /* --bs-accordion-active-color: #ff9400; */
+    --bs-accordion-active-color: #000;
+}
+
+.phase .phase-body>div {
+    padding-right: 0 !important;
+    padding-left: 25px !important;
+    padding-top: 0 !important;
+}
+
+.stage {
+    --bs-accordion-btn-icon-width: 1rem;
+    --bs-accordion-active-color: #626262;
+    --bs-accordion-btn-color: #939393;
+    border-left: 1px solid #b7b7b7 !important;
+}
+
+.stage .stage-header>button {
+    gap: 10px;
+    padding-right: 0 !important;
+}
+
+.stage .stage-header>button i {
+    line-height: 10px;
+    content: " ";
+    position: absolute;
+    left: -10px;
+    background-color: white;
+}
+
+.stage .stage-body>div {
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+    padding-left: 15px !important;
+}
+
+.stage .stage-body>div .action {
+    padding: 6px 0px;
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    width: 100%;
+    gap: 10px;
+}
+
+.stage .stage-body>div .action>p {
+    margin: 0px;
+    line-height: 20px;
+    font-size: 14px;
+}
+
+.stage .stage-body>div .action>span>span {
+    width: 25px;
+    height: 25px;
+    background-color: #ababab;
+    display: inline-flex;
+    margin: 0;
+    justify-content: center;
+    align-items: center;
+    border-radius: 9px;
+    font-size: 14px;
+    color: white;
+}
+
+/* .stage .stage-body > div .action.active{
+    background-color: #ababab12;
+    border-radius: 10px;
+    padding-left: 5px;
+} */
+
+.stage .stage-body>div .action.active>span>span {
+    color: white;
+    font-weight: 700 !important;
+    border: 3px solid transparent;
+    animation: active-action 2s ease-in-out infinite;
+}
+
+@keyframes active-action {
+    0% {
+        border-color: #fff;
+    }
+
+    30% {
+        border-color: transparent;
+    }
+
+    100% {
+        border-color: #fff;
+    }
+}

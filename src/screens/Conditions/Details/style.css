@@ -1,25 +1,26 @@
 .group-subtitle {
   transition: all 0.2s linear;
-  background-color: #E3E8ED;
-  border-radius: 10px !important;
+  /* background-color: #E3E8ED;
+  border-radius: 10px !important; */
 }
 
 .group-subtitle .sub-item {
   transition: all 0.2s linear;
   margin: 0px;
   border: 0px;
-  background-color: #E3E8ED;
-  /* color: #4B5C6B !important; */
-  border-radius: 10px !important;
-  /* margin-right: 10px; */
+  /* background-color: #E3E8ED; */
+  /* border-radius: 10px !important; */
   cursor: pointer;
   column-gap: 7px;
+  border-bottom: 5px solid transparent;
+  margin-bottom: -1px;
 }
 
 .group-subtitle .sub-item:focus,
 .sub-item.active {
   background-color: white !important;
   color: #E9863F !important;
+  border-bottom: 5px solid #ff9400 !important;
 }
 
 .accordion-item .accordion-header button:not(.collapsed){

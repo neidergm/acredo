@@ -1,4 +1,4 @@
-import { I_Action, I_UserState } from '../../interfaces/store.interface';
+import { I_AppAction, I_UserState } from '../../interfaces/store.interface';
 import localStorageService from '../../services/localStorageService';
 import { LOGOUT, SET_UNAUTHORIZED, SET_USERINFO } from '../actions/userActions';
 
@@ -7,7 +7,7 @@ let initialState: I_UserState = {
     unauthorized: "",
 }
 
-const userReducer = (state = initialState, action: I_Action): I_UserState => {
+const userReducer = (state = initialState, action: I_AppAction): I_UserState => {
     switch (action.type) {
         case SET_UNAUTHORIZED:
             // localStorage.clear();

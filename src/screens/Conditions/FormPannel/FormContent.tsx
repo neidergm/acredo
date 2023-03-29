@@ -1,0 +1,119 @@
+import React, { useState } from 'react'
+import Form from 'react-ngm-form'
+import { Button } from 'reactstrap'
+import { T_Form, T_FormPannelActions } from '.'
+import AttachmentsTable from '../../../components/AttachmentsTable'
+import { PlusCircleFill } from '../../../components/Icons'
+import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } from '../../../components/Modal'
+
+type T_Props = {
+    canEdit: boolean,
+    formItem: T_Form,
+} & Pick<T_FormPannelActions, "onDelete" | "onSubmit">
+
+const FormContent = ({ canEdit, formItem, onSubmit, onDelete }: T_Props) => {
+    const [modal, setModal] = useState<T_ModalJSON | null>(null);
+
+    const openFormAsModal = (form: T_Form, action = "Agregar") => {
+        let FORM_ID = `FORM-MODAL-${form.id_fcamp}`;
+        setModal({
+            isOpen: true,
+            size: "xl",
+            title: action,
+            children: <Form
+                disabled={!canEdit}
+                key={form.id_fcamp}
+                fields={form.fields}
+                defaultValues={form.defaultValues}
+                onSubmit={data => submit(data, form)}
+                formProps={{ id: FORM_ID }}
+            />,
+            footer: canEdit && <ModalFooter>
+                <Button color="primary" onClick={() => closeModal(setModal)}>Cancelar</Button>
+                <Button color="primary" form={FORM_ID}>Guardar</Button>
+            </ModalFooter>
+        })
+    }
+
+    const submit = (data: any, form = formItem) => {
+        onSubmit(
+            data,
+            form,
+            () => {
+                setModal(null)
+            }
+        )
+    }
+console.log({formItem})
+    return (
+        <>
+            {formItem.tipo_form === 1 ?
+                <>
+                    <Modal backdrop="static" size={modal?.size || "xl"}
+                        isOpen={!!(modal?.isOpen)}
+                        onClosed={() => { setModal(null) }}
+                        toggle={() => closeModal(setModal)}
+                    >
+                        <ModalHeader textCenter toggle={() => closeModal(setModal)}>{modal?.title}</ModalHeader>
+                        <ModalBody>{modal?.children}</ModalBody>
+                        {modal?.footer}
+                    </Modal>
+                    <Button
+                        disabled={!canEdit}
+                        outline
+                        color={"primary"}
+                        className="rounded-pill btn-sm px-3 mb-4 d-flex align-items-center"
+                        onClick={() => { canEdit && openFormAsModal(formItem) }}
+                    >
+                        <PlusCircleFill size={17} />
+                        <span className="ms-2">Agregar</span>
+                    </Button>
+                </>
+                :
+                <Form
+                    disabled={!canEdit}
+                    key={formItem.id_fcamp}
+                    fields={formItem.fields}
+                    defaultValues={formItem.defaultValues}
+                    onSubmit={data => submit(data)}
+                >
+                    {!(formItem.fields[0].type === "googledocs") &&
+                        canEdit ?
+                        <div className='text-center mt-5'>
+                            <button type='submit' className='btn btn-success px-5'>
+                                <div className='px-5'>Guardar</div>
+                            </button>
+                        </div>
+                        :
+                        <></>
+                    }
+                </Form>
+            }
+            {
+                !!(Object.keys(formItem.multiplesValues || {}).length) && (
+                    !(formItem.isAttachmentsTable) ? <>
+                        <p className='ws-bold'>Respuestas registradas:</p>
+                        {
+                            Object.keys(formItem.multiplesValues!).map(r => {
+                                let respItem = formItem.multiplesValues![r];
+                                return <div className="bg-light p-3 mb-5 rounded-3" key={r}>
+                                    <Form
+                                        key={`form_${r}`}
+                                        disabled={true}
+                                        fields={respItem.fields}
+                                        defaultValues={respItem.defaultValues}
+                                        onSubmit={data => { }}
+                                    />
+                                </div>
+                            })
+                        }
+                    </> : <>
+                        <AttachmentsTable list={formItem.multiplesValues!} onEdit={openFormAsModal} onDelete={onDelete} canEdit={canEdit} />
+                    </>
+                )
+            }
+        </>
+    )
+}
+
+export default FormContent;

@@ -1,8 +1,7 @@
 export interface I_Process {
-    condiciones: string,
     est_conv: number,
-    fech_fin: string,
-    fech_ini: string,
+    fase_actual: string,
+    id_fase: number,
     id_conv: number,
     id_prog: null | number,
     id_tcond: number,
@@ -10,5 +9,6 @@ export interface I_Process {
     marc_update: string,
     nomb_conv: string,
     programa: null | string,
-    tipo_cond: "Institucional" | "Programa",
+    tipo_cond: string,
+    porcentaje: number,
 }

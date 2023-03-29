@@ -7,7 +7,7 @@ import classnames from 'classnames';
 import Loader from '../../../components/Loader';
 import { closeModal, Modal, ModalBody, ModalHeader, T_ModalJSON } from '../../../components/Modal';
 import Form from 'react-ngm-form';
-import { formToObjectWithFieldsAndValues } from '../../../utils/formUtils';
+import { mapFieldAndDefaultValues } from '../../../utils/mapField';
 
 interface I_Props {
     id_condition: number;
@@ -23,7 +23,7 @@ const Historic = (
     const [modal, setModal] = useState<T_ModalJSON | null>(null);
 
     const showHistoricDetails = (items: I_HistoryItem[]) => {
-        let _form = formToObjectWithFieldsAndValues(items);
+        let _form = mapFieldAndDefaultValues(items as any);
         const firstItem = items[0];
         setModal({
             isOpen: true,

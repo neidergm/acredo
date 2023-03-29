@@ -1,0 +1,59 @@
+.process-item {
+    --bs-accordion-btn-bg: transparent !important;
+    --bs-accordion-active-bg: transparent !important;
+    --bs-accordion-btn-focus-box-shadow: transparent !important;
+    --bs-accordion-active-color: #181818 !important;
+    --bs-accordion-border-color: transparent !important;
+    --bs-accordion-bg: transparent !important;
+    /* --bs-card-border-width: 0px; */
+    --bs-accordion-inner-border-radius: inherit !important;
+    --bs-accordion-border-radius: inherit !important;
+    /* --bs-accordion-btn-padding-x: none !important; */
+    /* --bs-accordion-btn-padding-y: none !important; */
+}
+
+@media screen and (max-width: 450px) {
+    .process-item {
+        --bs-accordion-btn-padding-x: 7px;
+    }
+}
+
+.process-item>div {
+    position: relative;
+}
+
+.process-item.active {
+    gap: 0px !important;
+}
+
+.process-item.active>div:first-child {
+    /* background-color: var(--bs-info) !important; */
+    /* background-color: rgba(var(--bs-dark-rgb), 3%) !important; */
+    background-color: rgba(var(--bs-white-rgb), 60%) !important;
+    box-shadow: none !important;
+    margin-bottom: 0px !important;
+    border-bottom-left-radius: 0px !important;
+    border-bottom-right-radius: 0px !important;
+    margin-bottom: -30px !important;
+    padding-bottom: 20px !important;
+    transform: scale(0.97);
+}
+
+.process-item.active>div:last-child {
+    padding-bottom: 30px;
+}
+
+.process-item.active>div:first-child {
+    border: 2px solid #fff !important;
+    /* box-shadow: inset 0px -65px 28px -50px rgba(0, 0, 0, 0.137) !important; */
+    box-shadow: inset 0px -80px 30px -70px rgba(0, 0, 0, 0.119) !important;
+}
+
+.process-item.active>div:first-child>button>div:nth-child(2)>span {
+    color: var(--bs-secondary);
+    font-weight: 700 !important;
+}
+
+.process-item>div:first-child>button {
+    gap: 10px;
+}

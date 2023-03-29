@@ -1,17 +1,19 @@
 import { Button } from "reactstrap";
 import { BoxArrowUpRight } from "../components/Icons";
 import TextEditor from "../components/TextEditor";
-import { I_FormFieldWithAnswer } from "../interfaces/conditions.interface";
+import { I_FormField, I_FormFieldWithAnswer, T_FileAnswer } from "../interfaces/conditions.interface";
+import { I_JSONObject, T_FieldsTypes } from "../interfaces/generic.interface";
 import { AXIOS_REQUEST } from "../services/axiosService";
+import { getFormItemDefaultValue } from "./formUtils";
 
 /**
  * Map fetched field item with custom fields 
- * @param item 
- * @return JSON FIELD
+ * @param {I_FormField} item 
+ * @return {I_JSONObject} JSON FIELD
  */
-const mapField = (item: I_FormFieldWithAnswer) => {
+const mapField = (item: I_FormField, defaultValue?: any) => {
     let field = item.json_campo;
-
+    field.key = field.name;
     if (field.tag === "custom") {
         if (field.type === "ckeditor") {
             field.render = ({ field: { ref, onChange, onBlur, value, ...f } }: any) => {
@@ -20,7 +22,7 @@ const mapField = (item: I_FormFieldWithAnswer) => {
                     {...f}
                     // config={field.config}
                     // style={field.style}
-                    data={item.respuesta || value}
+                    data={defaultValue || value}
                     inputRef={ref}
                     // style={f.style}
                     onChange={(event: any, editor: any) => {
@@ -37,17 +39,19 @@ const mapField = (item: I_FormFieldWithAnswer) => {
             field.render = ({ field: { ref, onChange, onBlur, value, ...f } }: any) => {
                 let url = `https://docs.google.com/document/d/${value}?embedded=true`;
                 return <>
-                    <Button
-                        outline
-                        color="primary"
-                        className="rounded-pill btn-sm px-3 mb-4"
-                        onClick={() => { window.open(url, "_blank") }}
-                    >
-                        <div className='d-flex gap-2 justify-content-center align-items-center'>
-                            <BoxArrowUpRight size={16} /> Abrir documento en pestaña nueva
-                        </div>
-                    </Button>
-                    <div style={{ height: "90vh" }} className="shadow-sm">
+                    <div className="text-end">
+                        <Button
+                            outline
+                            color="link"
+                            className="rounded-pill btn-sm px-3 mb-3"
+                            onClick={() => { window.open(url, "_blank") }}
+                        >
+                            <div className='d-flex gap-2 justify-content-center align-items-center'>
+                                <BoxArrowUpRight size={16} /> Abrir documento en pestaña nueva
+                            </div>
+                        </Button>
+                    </div>
+                    <div style={{ height: "90vh" }}>
                         <iframe
                             onLoad={() => {
                                 console.log("OK");
@@ -63,7 +67,13 @@ const mapField = (item: I_FormFieldWithAnswer) => {
                 </>
             }
         } else {
-            return null;
+            field = {
+                ...field,
+                label: 'Error',
+                tag: 'HTML' as any,
+                type: 'div',
+                value: `<p>Campo tipo ${field.type} (${field.tag}) no soportado</p>`
+            }
         }
     } else if (field.tag === "select") {
         if (field.request) {
@@ -82,22 +92,24 @@ const mapField = (item: I_FormFieldWithAnswer) => {
         }
 
     } else if (field.tag === "list") {
-        field.fields = field.fields.map(f => mapField({ json_campo: f } as any)!)
+        field.fields = field.fields.map((f, i) => mapField({ json_campo: f } as typeof item)!)
     }
 
     return field;
 }
 
-export const mapFieldAndDefaultValues = (list: I_FormFieldWithAnswer[]) => {
-    return list.reduce((p, c) => {
-        return {
-            fields: [...p.fields, mapField(c)],
-            defaultValues: { ...p.defaultValues, [c.json_campo.name]: c.respuesta }
-        }
-    }, {
-        fields: [],
-        defaultValues: {}
-    } as { fields: any[], defaultValues: { [x: string]: any } })
+/**
+ * Map fields with default values 
+ * @param {Array<I_FormFieldWithAnswer>} list List with saved values, its the complete form
+ * @param {Array<I_FormFieldWithAnswer>} list2 Optional list WITH SAVED VALUES, the form posibility its incomplete
+ * @returns {I_JSONObject} 
+ */
+export const mapFieldAndDefaultValues = (list: Array<I_FormFieldWithAnswer | I_FormField>, list2?: Array<I_FormFieldWithAnswer> | null) => {
+    let defaultValues = (list2 || []).reduce((p, c) => ({ ...p, [c.json_campo.name]: getFormItemDefaultValue(c) }), {} as I_JSONObject);
+    return {
+        defaultValues,
+        fields: list.map(c => mapField(c, defaultValues[c.json_campo.name])) as T_FieldsTypes[]
+    }
 }
 
 export default mapField;
