@@ -32,12 +32,17 @@ const AsTabs = ({
     }
 
     const getFormFields = () => {
-        onPickOne(formList[currentActiveTab], !!(loadedItems[currentActiveTab]))
+        if (currentActiveTab === null) return;
+        let items = [...loadedItems];
+        let form = items[currentActiveTab];
+        if (!!(form)) {
+            form.fields = [];
+            setLoadedItems(items);
+        }
+        onPickOne(form || formList[currentActiveTab], !!(form))
             .then(resp => {
-                setLoadedItems(items => {
-                    items[currentActiveTab] = resp
-                    return [...items]
-                });
+                items[currentActiveTab] = resp;
+                setLoadedItems([...items]);
             })
     }
 
@@ -136,12 +141,16 @@ const AsTabs = ({
                                             </Button>
                                         </div>
                                     }
-                                    <FormContent
-                                        canEdit={canEdit}
-                                        onSubmit={submit}
-                                        onDelete={onDelete ? deleteHandle : undefined}
-                                        formItem={loadedItems[i]!}
-                                    />
+                                    {!(loadedItems[i]?.fields?.length) ?
+                                        <Loader loaderAsModal={false} isOpen />
+                                        :
+                                        <FormContent
+                                            canEdit={canEdit}
+                                            onSubmit={submit}
+                                            onDelete={onDelete ? deleteHandle : undefined}
+                                            formItem={loadedItems[i]!}
+                                        />
+                                    }
                                 </>
                             }
                         </TabPane>

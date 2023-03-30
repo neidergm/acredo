@@ -16,6 +16,9 @@ const FormContent = ({ canEdit, formItem, onSubmit, onDelete }: T_Props) => {
 
     const openFormAsModal = (form: T_Form, action = "Agregar") => {
         let FORM_ID = `FORM-MODAL-${form.id_fcamp}`;
+        if (action === "Agregar") {
+            form.est_resp = 0;
+        }
         setModal({
             isOpen: true,
             size: "xl",
@@ -44,7 +47,7 @@ const FormContent = ({ canEdit, formItem, onSubmit, onDelete }: T_Props) => {
             }
         )
     }
-console.log({formItem})
+
     return (
         <>
             {formItem.tipo_form === 1 ?

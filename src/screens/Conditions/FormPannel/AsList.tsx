@@ -23,25 +23,24 @@ const AsList = ({
     onDelete
 }: T_Props) => {
 
-    const [selectedItem, setSelectedItem] = useState<T_Form | null>(null);
+
+    const [currentActiveTab, setCurrentActiveTab] = useState<number | null>(null);
     const [observationsIsOpen, setObservationsIsOpen] = useState<T_Form | null>(null);
+    const [loadedItems, setLoadedItems] = useState<Array<T_Form | null>>(formList.map(i => null));
 
     const showObservations = (item: T_Form | null) => setObservationsIsOpen(item)
 
-    const selectItem = (item: T_Form) => {
-        setSelectedItem(item);
-        if (!item) return;
-        onPickOne(item).then(resp => {
-            setSelectedItem(resp)
-        })
+    const selectItem = (item: typeof currentActiveTab, pick = true) => {
+        if (item === null) return setCurrentActiveTab(null);
+        setCurrentActiveTab(item);
     }
 
     const submit = (data: any, form: T_Form, callback = () => { }) => {
-        let f = { ...form, fields: [] };
         onSubmit(
-            data, f,
+            data,
+            form,
             () => {
-                selectItem(f);
+                getFormFields()
                 callback();
             }
         )
@@ -52,18 +51,39 @@ const AsList = ({
             item,
             title,
             subtitle,
-            () => { }
+            () => {
+                getFormFields();
+            }
         )
     }
 
+    const getFormFields = () => {
+        if (currentActiveTab === null) return;
+        let items = loadedItems;
+        let form = items[currentActiveTab];
+        if (!!(form)) {
+            form.fields = [];
+            setLoadedItems(items);
+        }
+        onPickOne(form || formList[currentActiveTab], !!(form))
+            .then(resp => {
+                items[currentActiveTab] = resp;
+                setLoadedItems([...items]);
+            })
+    }
+
     useEffect(() => {
-        if (!!(selectedItem)) {
-            const element = document.getElementById(`form-${selectedItem.id_fcamp}`);
+        if (currentActiveTab !== null) {
+            if (!loadedItems[currentActiveTab]) getFormFields();
+
+            const element = document.getElementById(`form-${currentActiveTab}`);
             if (element) {
                 element.scrollIntoView({ behavior: 'smooth', block: "center" });
             }
         }
-    }, [selectedItem]);
+    }, [currentActiveTab]);
+
+    const selectedItem = currentActiveTab !== null && (loadedItems[currentActiveTab] || formList[currentActiveTab]);
 
     return (
         <>
@@ -86,31 +106,31 @@ const AsList = ({
                     className={classnames("custom-scrollbar overflow-auto pb-5 col-12 mt-3", !!(selectedItem) ? "col-xxl-3 d-none d-xxl-block" : "col-md-12")}
                     style={{ maxHeight: !!(selectedItem) ? "90vh" : "unset" }}
                 >
-                    <div className='vstack gap-3'>
+                    <div className='vstack gap-3 pt-1'>
                         {formList.map((f, i) =>
                             <div className='d-flex' key={i}>
                                 <Card
                                     className={classnames(
                                         'hover-scale-up rounded-3',
-                                        f.id_fcamp === selectedItem?.id_fcamp ? "border-secondary shadow h6 m-0" : "border-0 bg-light",
+                                        i === currentActiveTab ? "border-secondary shadow h6 m-0" : "border-0 bg-light",
                                         'flex-grow-1',
                                         { "small": !!selectedItem }
                                     )}
                                     id={`form-${f.id_fcamp}`}
                                 >
-                                    <CardBody className='d-flex align-items-center' onClick={() => selectItem(f)}>
+                                    <CardBody className='d-flex align-items-center' onClick={() => selectItem(i)}>
                                         <div className='pe-3'>
                                             <div
                                                 className={classnames("rounded-circle",
                                                     f.est_resp === 1 ? "text-success" : "form-index",
-                                                    { "text-primary": f.id_fcamp === selectedItem?.id_fcamp })
+                                                    { "text-primary": i === currentActiveTab })
                                                 }
                                             >
                                                 {f.est_resp === 1 ?
-                                                    <CheckCircleFill size={!!selectedItem ? 32 : 42} />
+                                                    <CheckCircleFill size={selectedItem ? 32 : 42} />
                                                     :
                                                     <i className='text-dark text-opacity-25'>
-                                                        <ExclamationCircleFill size={!!selectedItem ? 32 : 42} />
+                                                        <ExclamationCircleFill size={selectedItem ? 32 : 42} />
                                                     </i>
                                                 }
                                             </div>
@@ -144,7 +164,7 @@ const AsList = ({
                 {selectedItem && <div className='col-xxl-9'>
                     <div className='pt-0 px-0 ps-2'>
                         <div className='float-end'>
-                            <CloseButton onClick={() => setSelectedItem(null)} className="ms-3" />
+                            <CloseButton onClick={() => selectItem(null)} className="ms-3" />
                         </div>
                         <h4 className='mt-3'>{selectedItem.nomb_form}</h4>
                         <div className='mt-5'>

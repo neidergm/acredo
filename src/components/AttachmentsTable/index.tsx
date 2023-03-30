@@ -25,7 +25,7 @@ const AttachmentsTable = ({
         item: T_Form,
         attachment: I_FormFieldWithAnswer
     } | null>(null);
-
+console.log(list)
     const conditionSelected = useAppSelector(state => state.conditions.selected)
 
     const toClipboard = (text: string) => {
@@ -36,7 +36,7 @@ const AttachmentsTable = ({
     const deleteAttach = (key: string, item: T_Form, attach: I_FormFieldWithAnswer) => {
         onDelete!(`${item.id_fcamp}/${key}`,
             undefined,
-            <>Esta acción es irreversible, se eliminará de forma permanente el anexo <b>{attach.nomb_anexo}</b></>
+            <>Esta acción es irreversible, se eliminará de forma permanente el anexo <b>{attach?.nomb_anexo}</b></>
         )
     }
 
@@ -56,8 +56,8 @@ const AttachmentsTable = ({
                 className="text-nowrap"
                 style={{ maxWidth: "300px" }}
             >
-                {!!(attachment) && <>
-                    <div className='d-flex gap-1 mb-2 mt-1 align-items-start'>
+                <div className='d-flex gap-1 mb-2 mt-1 align-items-start'>
+                    {!!(attachment) && <>
                         <div className='flex-grow-1 fw-semibold'>
                             <p className='mb-0 text-wrap'>
                                 {nomb_anexo}-{item.defaultValues.anexo_nombre}
@@ -66,56 +66,58 @@ const AttachmentsTable = ({
                         {!!(item.num_obs) && <div className="cursor-pointer ms-1 badge rounded-pill bg-danger" onClick={() => showObservations({ item, attachment })}>
                             <small>{item.num_obs as number}</small>
                         </div>}
-                        <UncontrolledDropdown >
-                            <DropdownToggle size="sm" color='link' className='text-dark p-0 position-relative'>
-                                <ThreeDotsVertical />
-                            </DropdownToggle>
-                            <DropdownMenu className='border shadow-3 rounded-3 mt-1 py-3'>
-                                <DropdownItem onClick={() => toClipboard(`Anexo ${nomb_anexo}`)}>
-                                    <div className='d-flex gap-3 text-secondary align-items-center'>
-                                        <Quote /><span>Copiar nombre</span>
-                                    </div>
-                                </DropdownItem>
-                                <DropdownItem onClick={() => toClipboard(respuesta[0].url)}>
-                                    <div className='d-flex gap-3 text-secondary align-items-center'>
-                                        <Link /> <span>Copiar link</span>
-                                    </div>
-                                </DropdownItem>
-                                <DropdownItem onClick={() => { showObservations({ item, attachment }) }}>
-                                    <div className='d-flex gap-3 text-secondary align-items-center'>
-                                        {!!(item.num_obs) ?
-                                            <span className='position-relative text-primary text-opacity-75'>
-                                                <ChatDotsFill size={16} />
-                                                <span className="position-absolute top-50 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
-                                            </span>
-                                            :
-                                            <ChatDots size={16} />
-                                        }
-                                        <span>Observaciones
-                                            <small className='ms-4'><Badge pill className='bg-opacity-50'>{item.num_obs as number || 0}</Badge></small>
-                                        </span>
-                                    </div>
-                                </DropdownItem>
-                                {canEdit && <>
-                                    {!!(onEdit) && <DropdownItem onClick={() => { onEdit(item, "Modificar") }}>
-                                        <div className='d-flex gap-3 text-secondary align-items-center'>
-                                            <Edit size={16} /><span>Editar anexo</span>
-                                        </div>
-                                    </DropdownItem>}
-                                    {!!(onDelete) && <DropdownItem onClick={() => { deleteAttach(key, item, attachment) }}>
-                                        <div className='d-flex gap-3 text-secondary align-items-center'>
-                                            <XCircle size={16} /><span>Eliminar anexo</span>
-                                        </div>
-                                    </DropdownItem>}
-                                </>}
-                            </DropdownMenu>
-                        </UncontrolledDropdown>
-                    </div>
+                    </>}
 
+                    <UncontrolledDropdown >
+                        <DropdownToggle size="sm" color='link' className='text-dark p-0 position-relative'>
+                            <ThreeDotsVertical />
+                        </DropdownToggle>
+                        <DropdownMenu className='border shadow-3 rounded-3 mt-1 py-3'>
+                            <DropdownItem onClick={() => toClipboard(`Anexo ${nomb_anexo}`)}>
+                                <div className='d-flex gap-3 text-secondary align-items-center'>
+                                    <Quote /><span>Copiar nombre</span>
+                                </div>
+                            </DropdownItem>
+                            <DropdownItem onClick={() => toClipboard(respuesta[0].url)}>
+                                <div className='d-flex gap-3 text-secondary align-items-center'>
+                                    <Link /> <span>Copiar link</span>
+                                </div>
+                            </DropdownItem>
+                            <DropdownItem onClick={() => { showObservations({ item, attachment }) }}>
+                                <div className='d-flex gap-3 text-secondary align-items-center'>
+                                    {!!(item.num_obs) ?
+                                        <span className='position-relative text-primary text-opacity-75'>
+                                            <ChatDotsFill size={16} />
+                                            <span className="position-absolute top-50 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+                                        </span>
+                                        :
+                                        <ChatDots size={16} />
+                                    }
+                                    <span>Observaciones
+                                        <small className='ms-4'><Badge pill className='bg-opacity-50'>{item.num_obs as number || 0}</Badge></small>
+                                    </span>
+                                </div>
+                            </DropdownItem>
+                            {canEdit && <>
+                                {!!(onEdit) && <DropdownItem onClick={() => { onEdit(item, "Modificar") }}>
+                                    <div className='d-flex gap-3 text-secondary align-items-center'>
+                                        <Edit size={16} /><span>Editar anexo</span>
+                                    </div>
+                                </DropdownItem>}
+                                {!!(onDelete) && <DropdownItem onClick={() => { deleteAttach(key, item, attachment) }}>
+                                    <div className='d-flex gap-3 text-secondary align-items-center'>
+                                        <XCircle size={16} /><span>Eliminar anexo</span>
+                                    </div>
+                                </DropdownItem>}
+                            </>}
+                        </DropdownMenu>
+                    </UncontrolledDropdown>
+                </div>
+                {!!(attachment) &&
                     <p>
                         <a href={respuesta[0].url} target="_blank" className="text-wrap"><small>{respuesta[0].url}</small></a>
                     </p>
-                </>}
+                }
             </td>}
             <td>{i.criterio}</td>
             <td style={{ maxWidth: "300px" }}>{i.evidencias}</td>

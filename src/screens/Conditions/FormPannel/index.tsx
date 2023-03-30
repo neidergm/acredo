@@ -93,16 +93,14 @@ const FormPannel = ({
 
         return AXIOS_REQUEST(SAVE_ANSWERS, method, formData, true)
             .then(res => {
-                // setFormList(e => {
-                //     let current = e!.findIndex(i => i.id_fcamp === formItem.id_fcamp);
-                //     if (current) {
-                //         e![current] = { ...formItem!, est_resp: 1 }
-                //     };
-                //     return [...e!]
-                // });
+                method === "POST" && formItem.est_resp === 0 && setFormList(e => {
+                    let current = e!.findIndex(i => i.id_fcamp === formItem.id_fcamp);
+                    if (current) e![current] = { ...e![current], est_resp: 1 }
+                    return [...e!]
+                });
 
                 callback?.()
-                toast.success("Se ha registraron los datos correctamente", { position: "top-right" })
+                toast.success("Se registraron los datos correctamente", { position: "top-right" })
                 return true;
             })
             .catch(err => {
@@ -114,21 +112,32 @@ const FormPannel = ({
     }
 
     const pickFormItem = async (item: T_Form, onlyGetAnswer = false) => {
+
         let answers: null | Array<I_FormFieldWithAnswer> = null;
-        let fields: null | Array<I_FormField | I_FormFieldWithAnswer> = null;
+        let fields: null | Array<I_FormField | I_FormFieldWithAnswer> = item.originalFieldsObject;
         let multiplesAnswers: { [x: string]: Array<I_FormFieldWithAnswer> } = {};
 
         let multiplesValues: { [x: string]: T_Form } = {};
         let isAttachmentsTable = false;
+        if (item.est_resp === 1 || onlyGetAnswer) answers = await getFormWithAnswers(item.id_fcamp);
 
-        if (item.est_resp === 1) answers = await getFormWithAnswers(item.id_fcamp);
+        if (!(onlyGetAnswer)) {
+            fields = await getFormFields(item.campos);
+        } else {
+            if (!(fields)) {
+                fields = answers || [];
+            }
+        }
+
         if (answers) {
-            multiplesAnswers = answers.reduce((p, c) => {
-                if (!!(c.nomb_anexo)) isAttachmentsTable = true;
-                p[c.grupo_resp] = [...(p[c.grupo_resp] || []), c]
-                return { ...p }
-            }, multiplesAnswers);
             if (item.tipo_form !== 0) {
+
+                multiplesAnswers = answers.reduce((p, c) => {
+                    if (!!(c.nomb_anexo)) isAttachmentsTable = true;
+                    p[c.grupo_resp] = [...(p[c.grupo_resp] || []), c];
+                    return { ...p }
+                }, multiplesAnswers);
+
                 for (const key in multiplesAnswers) {
                     let num_obs = item.num_obs;
                     if (num_obs && typeof num_obs === "object") {
@@ -138,28 +147,16 @@ const FormPannel = ({
                         ...item,
                         ...mapFieldAndDefaultValues(multiplesAnswers[key], multiplesAnswers[key]),
                         num_obs,
+                        est_resp: 1,
                         originalFieldsObject: multiplesAnswers[key]
                     }
                 }
+                // item.est_resp = 0;
                 answers = null;
+            } else {
+                fields = fields.map(f => ({ ...(answers?.find(i => i.id_campo === f.id_campo) || {}), ...f }))
             }
         }
-        // if (!(onlyGetAnswer)) {
-        if (!(onlyGetAnswer)) {
-            fields = await getFormFields(item.campos);
-
-        } else {
-            // if (Object.keys(multiplesAnswers).length === 1) {
-            fields = answers || [];
-            // answers = null;
-            // } else {
-            //     fields = []
-            // }
-        }
-        // } else {
-        //     fields = answers || [];
-        // }
-        console.log({ multiplesAnswers, answers, fields })
 
         let fieldAndValues = mapFieldAndDefaultValues(fields, answers)
 
@@ -168,8 +165,7 @@ const FormPannel = ({
             ...fieldAndValues,
             isAttachmentsTable,
             multiplesValues,
-            originalFieldsObject: item.tipo_form === 0 ?
-                fields.map(f => answers?.find(i => i.id_campo === f.id_campo) || f) : fields
+            originalFieldsObject: fields
         }
         return await d;
     }
