@@ -32,7 +32,7 @@ const setOtherAxiosConfig = (config = {}) => { otherConfig = { ...otherConfig, .
  */
 const AXIOS_REQUEST = (url: string, method = "get", data: any = null, formData = false, header = {}, onUploadProgress = (p: any) => { }) => {
     method = method.toLowerCase();
-    
+
     if (!(token_storaged)) {
         token_storaged = setTokenForAxiosRequest(localStorageService.getItem("token"))
     }
@@ -49,7 +49,11 @@ const AXIOS_REQUEST = (url: string, method = "get", data: any = null, formData =
             "Content-Type": false
         }
     } else if (method === "get" || method === "delete") {
-        params = data;
+        if (typeof data === "string") {
+            url += data
+        } else {
+            params = data;
+        }
     }
 
     return axios({

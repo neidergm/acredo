@@ -94,9 +94,9 @@ const Action = ({
                 <small className='fw-semibold'>Usuarios responsables:</small>
             </p>
             <ul className='ps-3 ms-1 mb-0'>
-                {data.usuario?.split(",").map((user, i) => <li className='small' key={i}>{user}</li>) ||
+                {/* {data.usuario?.split(",").map((user, i) => <li className='small' key={i}>{user}</li>) ||
                     <li className='small text-danger fw-semibold'>SIN RESPONSABLES ASIGNADOS</li>
-                }
+                } */}
             </ul>
         </div>
     </Card>

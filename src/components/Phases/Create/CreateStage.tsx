@@ -5,7 +5,7 @@ import { I_JSONObject, T_FieldsTypes } from '../../../interfaces/generic.interfa
 import { T_Action, T_Stage } from '../../../interfaces/phasesAndStages.interface'
 import stageformfields from './../../../forms/stage.form.json';
 import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } from '../../Modal';
-import action_form from './../../../forms/action.form.json'
+import { actionFields } from './../../../forms/action.form';
 import Alert, { I_AlertObject } from '../../Alert';
 import { AXIOS_REQUEST } from '../../../services/axiosService';
 import { DELETE_ACTION } from '../../../services/endPointsService';
@@ -38,7 +38,7 @@ const CreateStage = ({
       children: <div>
         <Form
           formProps={{ id: "EDIT-ACTION-FORM" }}
-          fields={action_form as T_FieldsTypes[]}
+          fields={actionFields}
           defaultValues={{
             fecha_accion: action.fecha_accion,
             nomb_accion: action.nomb_accion,

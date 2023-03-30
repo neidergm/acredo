@@ -131,6 +131,12 @@ export const ROLS = `acciones/`;
 
 /**
  * [GET]
- * cargos/responsables
+ * cargos
  */
-export const RESPONSIBLE = `cargos/responsables`;
+export const CHARGE = `cargos`;
+
+/**
+ * [GET]
+ * cargos/responsables/{id_charge}
+ */
+export const RESPONSIBLES_BY_CHARGE = `cargos/responsables/`;

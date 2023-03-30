@@ -76,7 +76,7 @@ const mapField = (item: I_FormField, defaultValue?: any) => {
             }
         }
     } else if (field.tag === "select") {
-        if (field.request) {
+        if (field.request && !(field.doRequest)) {
             field.doRequest = ({ method, params, url }) => {
                 return AXIOS_REQUEST(url, method, params).then(resp => {
                     return { options: resp.data };

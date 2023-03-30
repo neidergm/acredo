@@ -25,7 +25,7 @@ const AttachmentsTable = ({
         item: T_Form,
         attachment: I_FormFieldWithAnswer
     } | null>(null);
-console.log(list)
+
     const conditionSelected = useAppSelector(state => state.conditions.selected)
 
     const toClipboard = (text: string) => {
