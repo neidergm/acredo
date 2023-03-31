@@ -37,16 +37,6 @@ const PhasesList = (
       title: action.nomb_accion,
       children: <div>
         <p>
-          <b className='d-block'>Responsables: </b>
-          <ul>
-            {action.usuario?.split(",").map((u, i) => <li key={i}>{u}</li>) || <li>Sin responsables</li>}
-          </ul>
-        </p>
-        {/* <p>
-          <b className='d-block'>Rol responsables: </b>
-          <span>{action.rol_nombre}</span>
-        </p> */}
-        <p>
           <b className='d-block'>Fecha límite: </b>
           <span>
             {getNormalDate(action.fecha_accion, { dateStyle: "long" })}
@@ -62,6 +52,13 @@ const PhasesList = (
         <p>
           <b className='d-block'>Fase: </b>
           <span>{phase.name}</span>
+        </p>
+        <p>
+          <b className='d-block'>Responsables: </b>
+          <ul>
+            {action.usuario?.map((u, i) => <li key={i} title={u.nomb_cargo}>
+              {u.responsable} <small className='text-secondary'> | {u.rol_nombre}</small></li>) || <li>Sin responsables</li>}
+          </ul>
         </p>
       </div>
     })
@@ -121,10 +118,6 @@ const PhasesList = (
     })
   }
 
-  const deletePhase = (phase: T_Phase) => {
-
-  }
-
   const updatePhase = (phase: T_Phase) => {
 
   }
@@ -177,7 +170,7 @@ const PhasesList = (
 
   return (
     <>
-      <Modal backdrop="static" size={modal?.size}
+      <Modal size={modal?.size}
         isOpen={!!(modal?.isOpen)}
         onClosed={() => { setModal(null) }}
         toggle={() => closeModal(setModal)}
@@ -193,6 +186,7 @@ const PhasesList = (
         <OffcanvasBody>
           <CreateStage
             stage={selectStage?.stage}
+            phase={selectStage?.phase}
           />
         </OffcanvasBody>
       </Offcanvas>
@@ -236,14 +230,14 @@ const PhasesList = (
                         <Edit size={16} /><span>Modificar fase</span>
                       </div>
                     </DropdownItem>
-                    <DropdownItem onClick={() => { deletePhase(item) }}
+                    {/* <DropdownItem onClick={() => { deletePhase(item) }}
                       disabled={item.stages_completed !== 0}
                       className={classnames({ "text-mutd opacity-50": item.stages_completed !== 0 })}
                     >
                       <div className='d-flex gap-3 text-secondary align-items-center'>
                         <XCircle size={16} /><span>Eliminar fase</span>
                       </div>
-                    </DropdownItem>
+                    </DropdownItem> */}
                   </DropdownMenu>
                 </UncontrolledDropdown>}
               </div>

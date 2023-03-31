@@ -137,6 +137,6 @@ export const CHARGE = `cargos`;
 
 /**
  * [GET]
- * cargos/responsables/{id_charge}
+ * cargos/responsables/{id_charge}/{id_cond}
  */
-export const RESPONSIBLES_BY_CHARGE = `cargos/responsables/`;
+export const RESPONSIBLES_BY_CHARGE = `cargos/responsable/`;

@@ -4,7 +4,7 @@ import { AXIOS_REQUEST } from "../services/axiosService";
 import { CHARGE, RESPONSIBLES_BY_CHARGE } from "../services/endPointsService";
 import mapField from "../utils/mapField";
 
-export const actionFields: T_FieldsTypes[] = [
+export const actionFields = (id_condicion: string | number): T_FieldsTypes[] => [
   {
     "label": "Nombre",
     "name": "nomb_accion",
@@ -29,10 +29,12 @@ export const actionFields: T_FieldsTypes[] = [
     "label": "Responsable",
     "name": "responsible",
     "tag": "list",
-    "type": "div",
-    "validations": {},
-    "classNameForEveryItem": "col-md-5",
-    "wrapperClassName": "row",
+    "type": "table",
+    "validations": {
+      required: true
+    },
+    // wrapperClassName: "row",
+    "classNameForEveryItem": "col-12",
     "fields": [
       {
         "label": "Cargo",
@@ -65,14 +67,14 @@ export const actionFields: T_FieldsTypes[] = [
         "options": null,
         "request": {
           method: "GET",
-          params: "{cargo}",
+          params: `{cargo}/${id_condicion}`,
           url: RESPONSIBLES_BY_CHARGE
         },
         "dependsOn": "cargo",
         doRequest: ({ method, params, url }: I_JSONObject) => {
           console.log(params)
           return AXIOS_REQUEST(url, method, params).then(resp => {
-            return { options: resp.data.map((i: I_JSONObject) => ({ value: i.id_cargo, label: i.nomb_cargo })) };
+            return { options: resp.data.map((i: I_JSONObject) => ({ value: i.id_rc, label: i.nomb_resp })) };
           })
         }
       },

@@ -1,7 +1,7 @@
 import { T_Action } from '../../interfaces/phasesAndStages.interface';
 import Card from '../Card';
 import classnames from 'classnames';
-import { Button } from 'reactstrap';
+import { Badge, Button } from 'reactstrap';
 import { Edit, XCircle } from '../Icons';
 import { getNormalDate } from '../../utils/dateUtils';
 
@@ -83,10 +83,6 @@ const Action = ({
                     <small className='fw-semibold'>Fecha límite:</small>
                     <span className='d-block small'>{getNormalDate(data.fecha_accion, { dateStyle: "long" })}</span>
                 </div>
-                <div>
-                    <small className='fw-semibold'>Rol responsable:</small>
-                    <span className='d-block small'>{data.rol_accion}</span>
-                </div>
             </div>
         </div>
         <div className='mt-3'>
@@ -94,9 +90,11 @@ const Action = ({
                 <small className='fw-semibold'>Usuarios responsables:</small>
             </p>
             <ul className='ps-3 ms-1 mb-0'>
-                {/* {data.usuario?.split(",").map((user, i) => <li className='small' key={i}>{user}</li>) ||
-                    <li className='small text-danger fw-semibold'>SIN RESPONSABLES ASIGNADOS</li>
-                } */}
+                {data.usuario?.map((user, i) => <li className='small cursor-pointer' key={i} title={user.nomb_cargo}>
+                    {user.responsable}<small className='text-secondary'> | {user.rol_nombre}</small>
+                    {/* <Badge className='ms-2 text-secondary' color='light'>{user.rol_nombre}</Badge> */}
+                </li>) || <li className='small text-danger fw-semibold'>SIN USUARIOS ASIGNADOS</li>
+                }
             </ul>
         </div>
     </Card>

@@ -2,26 +2,29 @@ import React, { useState } from 'react'
 import Form from 'react-ngm-form'
 import { Button } from 'reactstrap';
 import { I_JSONObject, T_FieldsTypes } from '../../../interfaces/generic.interface';
-import { T_Action, T_Stage } from '../../../interfaces/phasesAndStages.interface'
+import { T_Action, T_Phase, T_Stage } from '../../../interfaces/phasesAndStages.interface'
 import stageformfields from './../../../forms/stage.form.json';
 import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } from '../../Modal';
 import { actionFields } from './../../../forms/action.form';
 import Alert, { I_AlertObject } from '../../Alert';
 import { AXIOS_REQUEST } from '../../../services/axiosService';
-import { DELETE_ACTION } from '../../../services/endPointsService';
+import { DELETE_ACTION, PUT_STAGE } from '../../../services/endPointsService';
 import Loader from '../../Loader';
 import { useAppDispatch } from '../../../hooks/useAppDispatch';
 import { getConditionsPhases } from '../../../store/actions/conditionsActions';
 import { useParams } from 'react-router-dom';
 import Action from '../Action';
 import toast, { Toaster } from 'react-hot-toast';
+import { jsonToFormData } from '../../../utils/formUtils';
 
 type T_Props = {
-  stage?: T_Stage
+  stage?: T_Stage,
+  phase?: T_Phase
 }
 
 const CreateStage = ({
-  stage
+  stage,
+  phase
 }: T_Props) => {
   const { id_cond } = useParams();
 
@@ -38,7 +41,7 @@ const CreateStage = ({
       children: <div>
         <Form
           formProps={{ id: "EDIT-ACTION-FORM" }}
-          fields={actionFields}
+          fields={actionFields(id_cond!)}
           defaultValues={{
             fecha_accion: action.fecha_accion,
             nomb_accion: action.nomb_accion,
@@ -94,6 +97,31 @@ const CreateStage = ({
     })
   }
 
+  const updateStage = ({ nomb_etapa }: any) => {
+
+    let data = jsonToFormData({
+      "[0].id_fase": phase?.id,
+      "[0].id_etapa": stage?.id,
+      "[0].id_cond": Number(id_cond),
+      "[0].nomb_etapa": nomb_etapa
+    })
+
+    toast.promise(
+      AXIOS_REQUEST(PUT_STAGE, "PUT", data, true),
+      {
+        error: "No se pudo actualizar la etapa",
+        success: () => {
+          dispatch(getConditionsPhases(Number(id_cond)));
+          return "Se actualizó la etapa correctamente"
+        },
+        loading: "Actualizando etapa"
+      },
+      {
+        position: "top-right"
+      }
+    )
+  }
+
   return (
     <>
       <Toaster />
@@ -110,14 +138,18 @@ const CreateStage = ({
       <Loader isOpen={!!(loader)} subtitle={loader} />
       <div className='d-flex flex-column w-100 h-100'>
         <div className='flex-grow-1'>
-          <div>
-            <Form
-              fields={stageformfields as T_FieldsTypes[]}
-              defaultValues={{ nomb_etapa: stage?.name }}
-              onSubmit={() => {
-
-              }}
-            />
+          <div className='d-flex justify-content-between gap-4 flex-wrap'>
+            <div className='flex-grow-1 '>
+              <Form
+                fields={stageformfields as T_FieldsTypes[]}
+                defaultValues={{ nomb_etapa: stage?.name }}
+                onSubmit={updateStage}
+                formProps={{ id: "STAGE-FORM" }}
+              />
+            </div>
+            <div className='mb-3 align-self-end text-end ms-auto'>
+              <Button color='primary' size="sm" className='rounded-2' form='STAGE-FORM'>Actualizar nombre</Button>
+            </div>
           </div>
           <div className='mt-4 pt-2'>
             <div className='d-flex justify-content-between align-items-center'>
@@ -151,9 +183,8 @@ const CreateStage = ({
             </div>
           </div>
         </div>
-        <div className='pt-3 d-flex justify-content-between pb-3 flex-wrap gap-3'>
+        <div className='pt-4 d-flex justify-content-between pb-3 flex-wrap gap-3'>
           <Button color='danger' className='rounded-2'>Eliminar etapa</Button>
-          <Button color='primary' className='rounded-2'>Guardar cambios</Button>
         </div>
       </div>
     </>

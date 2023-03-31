@@ -1,15 +1,23 @@
 import { I_Condition } from "./conditions.interface";
 import { T_UserRole } from "./generic.interface";
 
+type T_UserOfAction = {
+    nomb_cargo: string;
+    responsable: string;
+    rol: string;
+    rol_nombre: string;
+}
+
 export type T_Action = {
     est_accion: 0 | 1 | 2; //0: created; 1: Notificated; 2: Completed
+    finalizar: 0 | 1;
     fecha_accion: string;
     id_accion: number;
     nomb_accion: string;
     orden: number;
     rol_accion: T_UserRole;
     rol_nombre: string;
-    usuario?: string | null;
+    usuario?: T_UserOfAction[] | null;
 }
 
 export type T_Stage = {

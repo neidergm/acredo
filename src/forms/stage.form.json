@@ -4,7 +4,7 @@
         "label": "Nombre de la etapa",
         "tag": "input",
         "type": "text",
-        "wrapperClassName": "col-md-6",
+        "wrapperClassName": "col-12 col-md-11 col-lg-9 col-xl-8",
         "validations": {
             "required": true
         }
