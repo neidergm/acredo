@@ -26,13 +26,12 @@ export const actionFields = (id_condicion: string | number): T_FieldsTypes[] => 
     }
   },
   {
-    "label": "Responsable",
+    "label": "<br/>Gestor(es) responsable(s)",
+    "help": "No puede modificar los usuarios que son líderes o solo lectura",
     "name": "responsible",
     "tag": "list",
     "type": "table",
-    "validations": {
-      required: true
-    },
+    "validations": {},
     // wrapperClassName: "row",
     "classNameForEveryItem": "col-12",
     "fields": [

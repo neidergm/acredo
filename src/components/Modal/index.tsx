@@ -39,6 +39,7 @@ export const Modal = ({ toggle, className, ...props }: ModalHeaderProps & { togg
     return <ModalB
         contentClassName={classnames('p-md-2 p-xl-3 border-0', className)}
         fullscreen="sm"
+        keyboard={false}
         centered
         {...props}
         toggle={toggle ? (() => toggle()) : undefined}

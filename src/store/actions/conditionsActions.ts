@@ -55,7 +55,7 @@ export const getConditionsPhases = (id_cond: number) => {
                     name: c.nomb_etapa,
                     id: c.id_etapa,
                     actions: c.acciones,
-                    status: c.est_etapa,
+                    status: !!(c.acciones) ? c.est_etapa : 0,
                     actions_completed: c.acciones?.reduce((p: number, c: I_JSONObject) => c.est_accion === 2 ? p += 1 : p, 0)
                 }
 

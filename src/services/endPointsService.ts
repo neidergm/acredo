@@ -110,6 +110,13 @@ export const STAGES = `etapas/`;
 export const PUT_STAGE = `etapas`;
 
 /**
+ * [DELETE]
+ * etapas
+ * /{id_stages}
+ */
+export const DELETE_STAGE = `etapas/`;
+
+/**
  * [PUT]
  * acciones
  * {"id_accion": "", ...JSON  }

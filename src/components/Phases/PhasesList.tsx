@@ -87,7 +87,7 @@ const PhasesList = (
         <AccordionBody accordionId={key} className={styles["stage-body"]} >
           {
             item.actions ?
-              item.actions.map(action => {
+              item.actions.map((action, idx) => {
                 let key = `action-${action.id_accion}`
                 return <div key={key}
                   className={classnames(
@@ -101,7 +101,8 @@ const PhasesList = (
                       action.est_accion === 2 ? "bg-success" : "bg-black bg-opacity-25",
                       { "bg-black bg-opacity-50": action.id_accion === active?.action?.id_accion }
                     )}>
-                      {action.orden}
+                      {/* {action.orden} */}
+                      {idx + 1}
                     </span>
                   </span>
                   <p>
@@ -123,7 +124,7 @@ const PhasesList = (
   }
 
   const createNewStage = (phase: T_Phase) => {
-
+    toggleEditStagePannel({} as T_Stage, phase)
   }
 
   const toggleEditStagePannel = (stage?: T_Stage, phase?: T_Phase) => {
@@ -132,32 +133,19 @@ const PhasesList = (
     } else {
       setSelectStage({ stage, phase })
     }
-    // setModal({
-    //   isOpen: true,
-    //   size: "xl",
-    //   title: "Modificar etapa",
-    //   children: <div>
-    //     <Form
-    //       defaultValues={{}}
-    //       fields={stageForm as T_FieldsTypes[]}
-    //       onSubmit={() => { }}
-    //     />
-    //   </div>
-    // })
   }
 
   useEffect(() => {
     if (!!(selectStage)) {
       setSelectStage((c) => {
         let p = list?.find(i => i.id === c!.phase.id)!;
-        return !p ? null : {
-          stage: p.stages?.find(i => i.id === c!.stage.id)!,
+        return p ? {
+          stage: c!.stage.id ? p.stages?.find(i => i.id === c!.stage.id)! : p.stages?.at(-1)!,
           phase: p
-        }
+        } : null;
       })
     }
   }, [list])
-
 
   if (!(list)) {
     return <div className='mb-3'><Loader isOpen={true} loaderAsModal={false} /></div>
@@ -181,12 +169,15 @@ const PhasesList = (
       </Modal>
       <Offcanvas isOpen={!!(selectStage)} style={{ minWidth: "65%" }}>
         <OffcanvasHeader toggle={() => toggleEditStagePannel()}>
-          <span className='ps-3 border-start border-success border-4 py-1'>Modificar etapa</span>
+          <span className='ps-3 border-start border-success border-4 py-1'>{
+            selectStage?.stage?.id ? "Modificar etapa" : "Crear nueva etapa"
+          }</span>
         </OffcanvasHeader>
         <OffcanvasBody>
           <CreateStage
             stage={selectStage?.stage}
             phase={selectStage?.phase}
+            callback={() => toggleEditStagePannel()}
           />
         </OffcanvasBody>
       </Offcanvas>

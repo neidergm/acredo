@@ -4,8 +4,10 @@ import { T_UserRole } from "./generic.interface";
 type T_UserOfAction = {
     nomb_cargo: string;
     responsable: string;
-    rol: string;
+    rol: T_UserRole;
     rol_nombre: string;
+    id_cargo: number;
+    id_rc: number;
 }
 
 export type T_Action = {

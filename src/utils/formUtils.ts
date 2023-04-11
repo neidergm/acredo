@@ -47,19 +47,27 @@ export type T_FetchedFormData = {
  */
 export const formToSubmitData = (
     data: I_JSONObject,
-    fields: Array<{ json_campo: I_JSONObject } & I_JSONObject>,
+    fields: Array<{ json_campo: I_JSONObject } & I_JSONObject | T_FieldsTypes>,
     keysOnField: string[],
     commonData: I_JSONObject = {},
     extraData: I_JSONObject = {},
+    dataPrefix = "resp"
 ) => {
     let form = new FormData();
     let i = 0;
+
+    let fieldsAsJson = fields.reduce((p, c: any) => {
+        let jc: any = !(c.hasOwnProperty("json_campo")) ? { json_campo: c } : c;
+        return { ...p, [jc.json_campo.name]: jc }
+    }, {} as { [name: string]: { json_campo: I_JSONObject } & I_JSONObject })
+
     Object.keys(data).forEach((e) => {
-        let prefix = `resp[${i}]`;
+        let prefix = `${dataPrefix}[${i}]`;
         let currentData = data[e];
 
         if (!!(currentData)) {
-            let fieldProps = fields.find((f) => f.json_campo.name === e)
+            // let fieldProps = fields.find((f) => f.json_campo.name === e)
+            let fieldProps = fieldsAsJson[e];
             if (!!(fieldProps)) {
                 if (fieldProps.json_campo.tag === "file" && (currentData instanceof FileList)) {
                     if (currentData.length > 0) {
@@ -116,8 +124,7 @@ const setFileAnswer = (data: FileList) => {
  * @param {I_JSONObject} json 
  * @returns FormData
  */
-export const jsonToFormData = (json: I_JSONObject, prefix = ""): FormData => {
-    let formData = new FormData();
+export const jsonToFormData = (json: I_JSONObject, prefix = "", formData = new FormData()): FormData => {
     for (const key in json) {
         formData.append(`${prefix}${key}`, json[key]);
     }
