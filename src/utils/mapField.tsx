@@ -20,6 +20,7 @@ const mapField = (item: I_FormField, defaultValue?: any) => {
                 // console.log({ field, f });
                 return <TextEditor
                     {...f}
+                    className={f.invalid ? "is-invalid" : ""}
                     // config={field.config}
                     // style={field.style}
                     data={defaultValue || value}

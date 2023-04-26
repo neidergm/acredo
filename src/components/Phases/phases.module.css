@@ -28,7 +28,7 @@
 
 .phase .phase-body>div {
     padding-right: 0 !important;
-    padding-left: 25px !important;
+    /* padding-left: 25px !important; */
     padding-top: 0 !important;
 }
 

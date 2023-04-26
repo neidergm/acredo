@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Form from 'react-ngm-form'
 import { Button } from 'reactstrap';
 import { T_FieldsTypes } from '../../../interfaces/generic.interface';
@@ -11,12 +11,14 @@ import { AXIOS_REQUEST } from '../../../services/axiosService';
 import { DELETE_ACTION, DELETE_STAGE, PUT_ACTION, PUT_STAGE } from '../../../services/endPointsService';
 import Loader from '../../Loader';
 import { useAppDispatch } from '../../../hooks/useAppDispatch';
-import { getConditionsPhases } from '../../../store/actions/conditionsActions';
+import { getContionData, getPhasesAndStagesOfCondition, setProcessPhasesWithConditions, setSelectedConditionData } from '../../../store/actions/conditionsActions';
 import { useParams } from 'react-router-dom';
 import Action from '../Action';
 import toast, { Toaster } from 'react-hot-toast';
 import { jsonToFormData } from '../../../utils/formUtils';
 import { getNormalDate } from '../../../utils/dateUtils';
+import { selectProcess } from '../../../store/actions/processActions';
+import confirmDeleteAlertObject from '../../../utils/confirmDeleteAlertObject';
 
 type T_Props = {
   stage?: T_Stage,
@@ -30,17 +32,20 @@ const CreateStage = ({
   callback
 }: T_Props) => {
   const { id_cond } = useParams();
+  const { id_process } = useParams();
   const stageIsRegistered = !!(stage?.id);
   const actions = stage?.actions || [];
   const [modal, setModal] = useState<T_ModalJSON | null>(null);
   const [alert, setAlert] = useState<I_AlertObject | null>(null);
   const [loader, setLoader] = useState<string | null>(null);
 
+  const updateDataOnUnmount = useRef(false)
+
   const dispatch = useAppDispatch();
 
   const modalToEditAction = (action?: T_Action, type = "Modificar") => {
     let formID = `${type}-ACTION-FORM`;
-    let fields = actionFields(id_cond!)
+    let fields = actionFields(id_cond!, action?.id_accion || '0')
     setModal({
       isOpen: true,
       children: <div key={formID}>
@@ -50,7 +55,7 @@ const CreateStage = ({
           defaultValues={action ? {
             fecha_accion: action.fecha_accion,
             nomb_accion: action.nomb_accion,
-            responsible: action.usuario?.filter(i => i.rol === "B").map((u: any) => ({ cargo: u.id_cargo, user: u.id_rc }))
+            responsible: action.usuarios?.filter(i => i.rol === "B").map((u: any) => ({ cargo: u.id_cargo, user: u.id_rc }))
           } : {}}
           onSubmit={(data) => { type === "Modificar" ? onEditAction(data, action || {} as T_Action) : onCreateAction(data) }}
         />
@@ -71,7 +76,6 @@ const CreateStage = ({
     let d = jsonToFormData({
       "[0].nomb_accion": data.nomb_accion,
       "[0].fecha_accion": getNormalDate(data.fecha_accion).split("/").reverse().join("-"),
-      "[0].orden": (stage?.actions?.length || 0) + 1,
       "[0].id_etapa": stage?.id,
     });
 
@@ -87,8 +91,9 @@ const CreateStage = ({
       toast.success("Se ha creado la acción correctamente", {
         position: "top-right"
       });
+      updateDataOnUnmount.current = true;
       closeModal(setModal);
-      dispatch(getConditionsPhases(Number(id_cond)));
+      dispatch(getPhasesAndStagesOfCondition(Number(id_cond)));
     }).catch(e => {
       toast.error("No se pudo crear la acción", {
         position: "top-right"
@@ -102,7 +107,6 @@ const CreateStage = ({
       "[0].id_accion": action.id_accion,
       "[0].nomb_accion": data.nomb_accion,
       "[0].fecha_accion": getNormalDate(data.fecha_accion).split("/").reverse().join("-"),
-      "[0].orden": action.orden,
       "[0].id_etapa": stage?.id,
     });
 
@@ -118,7 +122,9 @@ const CreateStage = ({
       toast.success("Se actualizó la acción correctamente", {
         position: "top-right"
       })
-      dispatch(getConditionsPhases(Number(id_cond)));
+      updateDataOnUnmount.current = true;
+      dispatch(getPhasesAndStagesOfCondition(Number(id_cond)));
+      closeModal(setModal);
     }).catch(e => {
       toast.error("No se pudo actualizar la acción", {
         position: "top-right"
@@ -127,22 +133,35 @@ const CreateStage = ({
   }
 
   const modalToDeleteAction = (action: T_Action) => {
-    setAlert({
-      isOpen: true,
-      title: "¿Está seguro?",
-      type: "question",
-      subtitle: <span>Se eliminará la acción <b>{action.nomb_accion}</b></span>,
-      submitButton: {
-        onClick: () => {
+    setAlert(
+      confirmDeleteAlertObject(
+        <span>Se eliminará la acción <b>{action.nomb_accion}</b></span>,
+        () => {
           onDeleteAction(action);
           closeModal(setAlert)
-        }, value: "Sí, eliminar"
-      },
-      closeButton: { value: "No, cancelar" }
-    })
+        }, 
+        setAlert)
+    )
   }
 
   const modalToDeleteStage = (stage: T_Stage) => {
+    if (phase?.stages?.length === 1) {
+      return setAlert({
+        isOpen: true,
+        title: "Espere",
+        type: "warning",
+        subtitle: <span>No se puede eliminar debido a que la tarea quedaría sin etapas</span>,
+        closeButton: { value: "Ok" }
+      })
+    } else if (stage.actions_completed !== 0) {
+      return setAlert({
+        isOpen: true,
+        title: "Espere",
+        type: "warning",
+        subtitle: <span>No se puede eliminar debido a que la tarea cuenta con acciones realizadas</span>,
+        closeButton: { value: "Ok" }
+      })
+    }
     setAlert({
       isOpen: true,
       title: "¿Está seguro?",
@@ -162,9 +181,8 @@ const CreateStage = ({
     setLoader("Eliminando")
     AXIOS_REQUEST(DELETE_ACTION + action.id_accion, "DELETE").then(resp => {
       toast.success('Acción eliminada correctamente', { position: 'top-right' });
-      dispatch(
-        getConditionsPhases(Number(id_cond))
-      )
+      updateDataOnUnmount.current = true;
+      dispatch(getPhasesAndStagesOfCondition(Number(id_cond)))
     }).catch(() => {
       toast.error('No se pudo eliminar la acción', { position: 'top-right' });
     }).finally(() => {
@@ -175,8 +193,9 @@ const CreateStage = ({
   const onDeleteStage = (stage: T_Stage) => {
     setLoader("Eliminando etapa")
     AXIOS_REQUEST(DELETE_STAGE + stage.id, "DELETE").then(resp => {
+      updateDataOnUnmount.current = true;
       toast.success('Etapa eliminada correctamente', { position: 'top-right' });
-      dispatch(getConditionsPhases(Number(id_cond)));
+      dispatch(getPhasesAndStagesOfCondition(Number(id_cond)));
       callback?.();
     }).catch(() => {
       toast.error('No se pudo eliminar la etapa', { position: 'top-right' });
@@ -195,8 +214,9 @@ const CreateStage = ({
     setLoader("Actualizando etapa");
 
     AXIOS_REQUEST(PUT_STAGE, "PUT", data, true).then(r => {
-      dispatch(getConditionsPhases(Number(id_cond)));
-      toast.success("Se actualizó la etapa correctamente", { position: "top-right" })
+      updateDataOnUnmount.current = true;
+      dispatch(getPhasesAndStagesOfCondition(Number(id_cond)));
+      toast.success("Se actualizó la etapa correctamente", { position: "top-right" });
     }).catch(e => {
       toast.error("No se pudo actualizar la etapa", { position: "top-right" })
     }).finally(() => setLoader(null))
@@ -213,12 +233,24 @@ const CreateStage = ({
     setLoader("Registrando nueva etapa");
 
     AXIOS_REQUEST(PUT_STAGE, "POST", data, true).then(r => {
-      dispatch(getConditionsPhases(Number(id_cond)));
-      toast.success("Se ha registrado la etapa correctamente", { position: "top-right" })
+      // dispatch(getPhasesAndStagesOfCondition(Number(id_cond)));
+      toast.success("Se ha registrado la etapa correctamente", { position: "top-right" });
     }).catch(e => {
       toast.error("No se pudo registrar la etapa", { position: "top-right" })
     }).finally(() => setLoader(null))
   }
+
+  useEffect(() => {
+    return () => {
+      if (updateDataOnUnmount.current) {
+        dispatch(selectProcess(null));
+        dispatch(getContionData(Number(id_cond)));
+        // dispatch(getPhasesAndStagesOfCondition(Number(id_cond)));
+        dispatch(setProcessPhasesWithConditions(Number(id_process), null))
+        // dispatch(setSelectedConditionData(null));
+      }
+    }
+  }, [])
 
   return (
     <>
@@ -232,7 +264,7 @@ const CreateStage = ({
         <ModalBody>{modal?.children}</ModalBody>
         {modal?.footer}
       </Modal>
-      <Alert isOpen={!!(alert?.isOpen)}{...alert} onClosed={() => { setAlert(null) }} />
+      <Alert onClosed={() => { setAlert(null) }} isOpen={!!(alert?.isOpen)}{...alert} />
       <Loader isOpen={!!(loader)} subtitle={loader} />
       <div className='d-flex flex-column w-100 h-100'>
         <div className='flex-grow-1'>

@@ -12,6 +12,8 @@ import { useParams } from 'react-router-dom';
 import { formToSubmitData, getDifferenceBetweenData } from '../../../utils/formUtils';
 import { closeModal } from '../../../components/Modal';
 import toast, { Toaster } from 'react-hot-toast';
+import { ExclamationCircleFill, Plus } from '../../../components/Icons';
+import { Button } from 'reactstrap';
 
 export type T_Form = {
     fields: Array<T_FieldsTypes>;
@@ -177,12 +179,14 @@ const FormPannel = ({
         AXIOS_REQUEST(`${FORM_FIELDS}${fields}`).then(res => res.data)
 
     const getForms = () => {
-        AXIOS_REQUEST(FORM + formId)
+        !!(formId) ? AXIOS_REQUEST(FORM + formId)
             .then(res => {
                 setFormList(res.data)
             }).catch(err => {
                 setFormList([])
             })
+            :
+            setFormList([])
     }
 
     useEffect(() => {
@@ -194,6 +198,17 @@ const FormPannel = ({
     if (!formList) {
         return <div className='mt-5'>
             <Loader isOpen loaderAsModal={false} />
+        </div>
+    } else if (formList.length === 0) {
+        content = <div className="w-100 h-100 d-flex justify-content-center align-items-center flex-column py-5">
+            <i className="text-warning mb-2"><ExclamationCircleFill size={35} /></i>
+            <span className="d-block"> No hay formularios asociados para mostrar</span>
+            <div className='mt-4'>
+                <Button size="sm" color="primary" className='rounded-2 opacity-75'>
+                    <i><Plus /></i>
+                    <span>Asociar formulario</span>
+                </Button>
+            </div>
         </div>
     } else if (formList.length < 4) {
         content = <AsTabs

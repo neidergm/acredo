@@ -3,7 +3,7 @@ import Menu from './Menu';
 import logo from './../../images/logo-master-w.svg';
 import './header.css';
 import { useNavigate } from 'react-router-dom';
-import { Bell, QuestionCircleFill } from '../Icons';
+import { Bell, QuestionCircle } from '../Icons';
 import { UncontrolledTooltip } from 'reactstrap';
 
 export const Header = ({ titulo = "Master U" }: { titulo?: string }) => {
@@ -25,7 +25,7 @@ export const Header = ({ titulo = "Master U" }: { titulo?: string }) => {
           </div>
           <UncontrolledTooltip target={`helpicon`}>Ayuda</UncontrolledTooltip>
           <div className='hover-shadow-sm hover-scale-up' id="helpicon">
-            <QuestionCircleFill size={24} />
+            <QuestionCircle size={24} />
           </div>
           <div className='ms-3 d-flex align-items-center'>
             <Menu>

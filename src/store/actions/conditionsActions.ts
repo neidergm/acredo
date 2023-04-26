@@ -47,7 +47,7 @@ export const getPhasesWithConditions = (id_process: number) => {
             })
 }
 
-export const getConditionsPhases = (id_cond: number) => {
+export const getPhasesAndStagesOfCondition = (id_cond: number) => {
     return (dispatch: T_AppDispatch): T_AsyncResp<any> =>
         AXIOS_REQUEST(STAGES + id_cond).then((resp: any) => {
             let ps: any = (resp.data as any[]).reduce((p, c, idx) => {

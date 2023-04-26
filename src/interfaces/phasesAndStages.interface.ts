@@ -19,7 +19,7 @@ export type T_Action = {
     orden: number;
     rol_accion: T_UserRole;
     rol_nombre: string;
-    usuario?: T_UserOfAction[] | null;
+    usuarios?: T_UserOfAction[] | null;
 }
 
 export type T_Stage = {

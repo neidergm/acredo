@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from "react-router-dom";
-import { InfoCircleFill } from "../../../components/Icons";
-import { Button, CloseButton } from 'reactstrap';
+import { CheckCircleFill, Edit, ExclamationCircleFill, InfoCircle, People, ThreeDotsVertical, XCircle } from "../../../components/Icons";
+import { Badge, Button, CloseButton, DropdownToggle } from 'reactstrap';
 import classnames from 'classnames';
 import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } from "../../../components/Modal";
 import { SubHeader } from "../../../components/SubHeader";
-import { PUT_ACTION } from "../../../services/endPointsService";
+import { DELETE_TASK, PUT_ACTION, UPDATE_TASK } from "../../../services/endPointsService";
 import { AXIOS_REQUEST } from "../../../services/axiosService";
 import Loader from '../../../components/Loader'
 import { useAppSelector } from '../../../hooks/useAppSelector';
@@ -13,11 +13,17 @@ import { useAppDispatch } from '../../../hooks/useAppDispatch';
 import Alert, { I_AlertObject } from '../../../components/Alert';
 import { CurrentPhase, PhasesList } from '../../../components/Phases';
 import FormPannel from './../FormPannel';
-import { jsonToFormData } from '../../../utils/formUtils';
+import { getDifferenceBetweenData, jsonToFormData } from '../../../utils/formUtils';
 import { getProcessList, selectProcess } from '../../../store/actions/processActions';
 import Card from '../../../components/Card';
-import { getConditionsPhases, getContionData, selectCondition, setProcessPhasesWithConditions, setSelectedConditionData } from '../../../store/actions/conditionsActions';
+import { getPhasesAndStagesOfCondition, getContionData, selectCondition, setProcessPhasesWithConditions, setSelectedConditionData } from '../../../store/actions/conditionsActions';
 import { isAdmin, isOnlyView } from '../../../utils/userRolUtils';
+import CustomDropdown from '../../../components/CustomDropdown';
+import { toast, Toaster } from 'react-hot-toast';
+import { taskForm } from '../../../forms/task.form';
+import Form from 'react-ngm-form';
+import TextEditor from '../../../components/TextEditor';
+import { I_JSONObject } from '../../../interfaces/generic.interface';
 
 const ConditionsDetails = () => {
 
@@ -41,14 +47,20 @@ const ConditionsDetails = () => {
 
   const onlyView = isOnlyView(conditionSelected?.rol);
   const is_admin = isAdmin(useAppSelector(state => state.user.userInfo?.rol));
-  const canEndAction = !onlyView;
+  const canEndAction = is_admin || !onlyView && !!(phases.active?.action?.finalizar);
 
   const showConditionDetails = () => {
     setModalData({
       isOpen: true,
       title: "Detalles",
       children: <div className=''>
-        <div dangerouslySetInnerHTML={{ __html: conditionSelected?.detalle || "" }}></div>
+        {/* <div dangerouslySetInnerHTML={{ __html: conditionSelected?.detalle || "" }}></div> */}
+        <TextEditor
+          data={`${conditionSelected?.detalle}`}
+          disabled
+          className="disabled-editor"
+          config={{ toolbar: [] }}
+        />
       </div>,
       size: "xl",
       footer: <ModalFooter>
@@ -66,15 +78,10 @@ const ConditionsDetails = () => {
     }, "[0]."),
       true
     ).then(() => {
-      dispatch(selectProcess(null))
-      dispatch(selectCondition(null))
       dispatch(setProcessPhasesWithConditions(Number(id_process), null))
-
-      dispatch(setSelectedConditionData({
-        active: null,
-        phases: null
-      }))
-
+      dispatch(selectCondition(null));
+      dispatch(selectProcess(null));
+      dispatch(getPhasesAndStagesOfCondition(Number(id_cond)))
     }).catch(() => {
 
       setAlert({
@@ -87,14 +94,104 @@ const ConditionsDetails = () => {
     }).finally(() => setLoader(null))
   }
 
-  useEffect(() => {
-    if (!id_process || !id_cond) {
-      return navigate("/", { replace: true })
+  const deleteTask = () => {
+    setAlert({
+      type: "question",
+      title: "¿Está seguro?",
+      subtitle: "Se eliminará la tarea con las etapas y acciones relacionadas a la misma",
+      isOpen: true,
+      closeButton: { value: "No, cancelar" },
+      submitButton: {
+        value: "Si, eliminar", onClick: () => {
+          setLoader("Eliminando tarea")
+
+          AXIOS_REQUEST(DELETE_TASK + conditionSelected?.id_cond, "DELETE").then(r => {
+            toast.success("Se ha eliminado la tarea", { position: "top-right" });
+            dispatch(setProcessPhasesWithConditions(Number(id_process), null));
+            navigate(-1);
+          }).catch(e => toast.error("No se pudo eliminar la tarea", { position: "top-right" }))
+            .finally(() => setLoader(null))
+        }
+      }
+    })
+  }
+
+  const editTask = () => {
+    let formID = "FORM-EDIT-TASK";
+    let fields = taskForm(false, false);
+
+    let defaultValues = {
+      nomb_cond: conditionSelected?.nomb_cond,
+      cod_cond: conditionSelected?.cod_cond?.toString(),
+      detalle: conditionSelected?.detalle,
+      responsable: conditionSelected?.usuarios?.map(u => ({ cargo: u.id_cargo, user: u.id_rc, role: u.rol }))
     }
+
+    setModalData({
+      isOpen: true,
+      children: <div key={formID}>
+        <Form
+          formProps={{ id: formID }}
+          fields={fields}
+          defaultValues={JSON.parse(JSON.stringify(defaultValues))}
+          onSubmit={(data) => {
+            let diffData = getDifferenceBetweenData(defaultValues, data);
+            let { responsable, ...dataToSend } = diffData;
+
+            let responsablesChanged = responsable.length !== defaultValues.responsable?.length ? responsable :
+              responsable?.filter((r: I_JSONObject) => !(defaultValues.responsable?.find((dr: I_JSONObject) => dr.user.toString() === r.user.toString())))
+
+            let d = jsonToFormData({ ...dataToSend, id_cond: conditionSelected?.id_cond });
+
+            if (!!(responsablesChanged?.length)) {
+              responsable.forEach((r: { user: string, role: string }, i: number) => {
+                d.append(`responsable[${i}].id_rc`, r.user);
+                d.append(`responsable[${i}].rol_cond`, r.role);
+              });
+            } else {
+              if (Object.keys(dataToSend).length === 0) {
+                setLoader(null);
+                return toast("No hay nada para actualizar", { position: "top-right", icon: <i className='text-warning'><ExclamationCircleFill /></i> })
+              }
+            }
+            setAlert({
+              isOpen: true,
+              type: "question",
+              title: "¿Desea guardar los cambios realizados?",
+              closeButton: { value: "no, cancelar" }, submitButton: { value: "Si, guardar", onClick: () => onSubmitEditTask(d) }
+            })
+          }
+          }
+        />
+      </div>,
+      title: `Editar tarea`,
+      size: "xl",
+      footer: <ModalFooter>
+        <Button form={formID} color='primary'>Guardar</Button>
+      </ModalFooter>
+    })
+  }
+
+  const onSubmitEditTask = (d: FormData) => {
+    setLoader("Actualizando tarea");
+
+    AXIOS_REQUEST(UPDATE_TASK, "PUT", d, true).then(r => {
+      toast.success("Se ha actualizado la tarea correctamente", { position: "top-right" });
+
+      dispatch(getContionData(Number(id_cond)))
+      dispatch(setProcessPhasesWithConditions(Number(id_process), null));
+      closeModal(setModalData)
+    }).catch(r => toast.error("No se pudo actualizar la tarea", { position: "top-right" }))
+      .finally(() => setLoader(null))
+  }
+
+  useEffect(() => {
+    if (!id_process || !id_cond) return navigate("/", { replace: true })
 
     if (!processSelected) {
       dispatch(getProcessList(Number(id_process)))
-    } else {
+    }
+    else {
       if (!(conditionSelected)) {
         dispatch(getContionData(Number(id_cond)))
       }
@@ -103,7 +200,7 @@ const ConditionsDetails = () => {
 
   useEffect(() => {
     if (!(phases.all?.length)) {
-      dispatch(getConditionsPhases(Number(id_cond)))
+      dispatch(getPhasesAndStagesOfCondition(Number(id_cond)))
     }
     return () => {
       dispatch(setSelectedConditionData(null))
@@ -125,62 +222,124 @@ const ConditionsDetails = () => {
 
       <Alert isOpen={!!(_alert?.isOpen)}{..._alert} onClosed={() => { setAlert(null) }} />
       <Loader isOpen={!!(loader)} subtitle={loader} />
+      <Toaster />
+      <SubHeader
+        text={conditionSelected?.nomb_cond ?
+          <div className='d-flex gap-3 flex-wrap align-items-center'>
+            {conditionSelected.nomb_cond}
+          </div>
+          : ""
+        }
+        showBackButton={true}
+      />
 
       <div className="container-fluid container-xxxl">
-        <SubHeader
-          text={conditionSelected?.nomb_cond ?
-            <div className='d-flex gap-3 flex-wrap'>
-              {conditionSelected.nomb_cond}
-              <Button size='sm' color="primary" className='rounded-pill py-0' outline onClick={() => showConditionDetails()}>
-                <span className='d-flex align-items-center pe-2'>
-                  <span className='me-1 mb-1'><InfoCircleFill size={16} /></span>Detalles
-                </span>
-              </Button>
-            </div>
-            : ""
-          }
-          showBackButton={true}
-        />
-
         <div className='row'>
           <div className='col-lg-8 mb-4'>
             <Card className='h-100'>
               <div className='d-flex justify-content-between mb-4 align-items-center'>
-                <div className='border-start border-5 border-dark py-1 ps-3 pe-4 bg-secondary bg-opacity-10'
-                  style={{ borderRadius: "2px 10px 10px 2px" }}>
+                <div
+                  className='border-start border-5 border-dark py-1 ps-3 pe-4 bg-secondary bg-opacity-10 mb-2'
+                  style={{ borderRadius: "2px 10px 10px 2px" }}
+                >
                   <small className='fw-bold text-uppercase '>Información</small>
                 </div>
               </div>
               {(!processSelected) ?
                 <div className='mb-3'><Loader isOpen={true} loaderAsModal={false} /></div>
                 :
-                <div className='d-flex flex-column gap-3 mb-2'>
+                <div className='d-flex flex-column gap-3 h-100'>
                   <div>
                     <b>Proceso:</b>
-                    <span className="d-block">{processSelected.nomb_conv}</span>
+                    <span className="d-block">
+                      {processSelected.nomb_conv}
+                      <Badge color='light' className='ms-3 text-muted'>
+                        {processSelected.sede}
+                      </Badge>
+                    </span>
                   </div>
+                  {!!conditionSelected?.condicion && <div>
+                    <b>Condición:</b>
+                    <span className="d-block">{conditionSelected.condicion}</span>
+                  </div>}
                   {!!processSelected.programa && <div>
                     <b>Programa:</b>
                     <span className="d-block">{processSelected.programa}</span>
                   </div>}
-                  <div className='d-flex gap-3 flex-wrap'>
-                    <div>
-                      <b>Tipo:</b>
-                      <span className="d-block">{processSelected.tipo_cond}</span>
+                  <div className='d-flex gap-3 flex-wrap justify-content-between flex-grow-1'>
+                    <div className='d-flex gap-3 flex-wrap'>
+                      <div>
+                        <b>Tipo:</b>
+                        <span className="d-block">{processSelected.tipo_cond}</span>
+                      </div>
+                      {!!(conditionSelected?.rol_nombre) && <div>
+                        <b>Rol:</b>
+                        <span className="d-block">Usted tiene el rol de {conditionSelected?.rol_nombre}</span>
+                      </div>}
                     </div>
-                    <div>
-                      <b>Rol:</b>
-                      <span className="d-block">Usted tiene el rol de {conditionSelected?.rol_nombre}</span>
+                    <div className='d-flex gap-3 mt-auto ms-auto'>
+                      <div>
+                        {is_admin ?
+                          <CustomDropdown options={[
+                            { text: "Ver detalles", icon: <InfoCircle size={16} />, click: showConditionDetails },
+                            { text: "Modificar tarea", icon: <Edit size={16} />, click: editTask },
+                            { text: "Eliminar tarea", icon: <XCircle size={16} />, click: deleteTask },
+                          ]}>
+                            <DropdownToggle size="sm" color='primary' className='rounded-2 opacity-75 pe-3'>
+                              <ThreeDotsVertical size={16} /> Opciones
+                            </DropdownToggle>
+                          </CustomDropdown>
+                          :
+                          <Button size='sm' color="primary" className='rounded-2 py-0 opacity-75' outline onClick={() => showConditionDetails()}>
+                            <span className='d-flex align-items-center pe-2'>
+                              <span className='me-1 mb-1'><InfoCircle size={16} /></span>Detalles
+                            </span>
+                          </Button>
+                        }
+                      </div>
+                      <div>
+                        <CustomDropdown options={
+                          !!(conditionSelected?.usuarios?.length) ?
+                            [{ text: "Asociados a la tarea actual", optionProps: { header: true, className: "mb-2" } },
+                            ...conditionSelected.usuarios.map(u => ({
+                              icon: <span className='d-inline-block text-success align-top opacity-75'><CheckCircleFill size={14} /></span>,
+                              text: <>
+                                {/* <span className='d-inline-block text-success pe-2 align-top opacity-75'><CheckCircleFill size={13} /></span> */}
+                                <span className='d-inline-block'>
+                                  {u.responsable}
+                                  <span className='d-block small fw-semibold'>{u.rol_nombre}</span>
+                                </span>
+                              </>
+                              , optionProps: { className: "d-block pb-2" }
+                            })),
+                            {
+                              icon: <i className='text-primary'><Edit size={14} /></i>,
+                              text: <small className='text-primary'>Modificar usuarios</small>, optionProps: { className: "mt-4" }, click: editTask
+                            }
+                            ]
+                            :
+                            [{
+                              text: <b className='text-danger'>Sin usuarios asociados</b>, optionProps: { disabled: true, className: "fw-bold" }
+                            }, {
+                              text: "Asociar usuarios", optionProps: { className: "mt-3" }, click: editTask
+                            }]
+                        }>
+                          <DropdownToggle size="sm" color='primary' className='rounded-2 opacity-75 pe-3'>
+                            <i className='ps-1 pe-1'><People size={16} /></i>
+                            <span className='ps-1 pe-1'>Usuarios</span>
+                          </DropdownToggle>
+                        </CustomDropdown>
+                      </div>
                     </div>
                   </div>
                 </div>
               }
             </Card>
           </div>
-          <div className='col-lg-4 mb-4 col-md-6'>
+          <div className='col-lg-4 mb-4 col-md'>
             <Card className='h-100'>
               <div className='d-flex justify-content-between mb-4 align-items-center'>
-                <div className='border-start border-5 border-dark py-1 ps-3 pe-4 bg-secondary bg-opacity-10'
+                <div className='border-start border-5 border-dark py-1 ps-3 pe-4 bg-secondary bg-opacity-10 mb-2'
                   style={{ borderRadius: "2px 10px 10px 2px" }}>
                   <small className='fw-bold text-uppercase '>Estado actual</small>
                 </div>
@@ -205,13 +364,13 @@ const ConditionsDetails = () => {
             <div>
               <Card>
                 <div className='d-flex justify-content-between mb-4 align-items-center'>
-                  <div className='border-start border-5 border-dark py-1 ps-3 pe-4 bg-secondary bg-opacity-10'
+                  <div className='border-start border-5 border-dark py-1 ps-3 pe-4 bg-secondary bg-opacity-10 mb-2'
                     style={{ borderRadius: "2px 10px 10px 2px" }}>
-                    <small className='fw-bold text-uppercase '>Fases y etapas</small>
+                    <small className='fw-bold text-uppercase '>Etapas en la fase</small>
                   </div>
                   <CloseButton onClick={() => setShowAllPhases(false)} />
                 </div>
-                <div className='mb-3'>
+                <div>
                   <PhasesList isAdmin={is_admin} />
                 </div>
               </Card>

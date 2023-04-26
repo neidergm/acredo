@@ -4,7 +4,7 @@ import { AXIOS_REQUEST } from "../services/axiosService";
 import { CHARGE, RESPONSIBLES_BY_CHARGE } from "../services/endPointsService";
 import mapField from "../utils/mapField";
 
-export const actionFields = (id_condicion: string | number): T_FieldsTypes[] => [
+export const actionFields = (id_condicion: string | number, id_action?: string | number): T_FieldsTypes[] => [
   {
     "label": "Nombre",
     "name": "nomb_accion",
@@ -32,7 +32,6 @@ export const actionFields = (id_condicion: string | number): T_FieldsTypes[] => 
     "tag": "list",
     "type": "table",
     "validations": {},
-    // wrapperClassName: "row",
     "classNameForEveryItem": "col-12",
     "fields": [
       {
@@ -66,7 +65,7 @@ export const actionFields = (id_condicion: string | number): T_FieldsTypes[] => 
         "options": null,
         "request": {
           method: "GET",
-          params: `{cargo}/${id_condicion}`,
+          params: `{cargo}/${id_condicion}${id_action ? `/${id_action}` : ""}`,
           url: RESPONSIBLES_BY_CHARGE
         },
         "dependsOn": "cargo",

@@ -1,11 +1,29 @@
 import { T_UserRole, T_FieldsTypes } from "./generic.interface";
 
+type T_UserOfTask = {
+    nomb_cargo: string;
+    responsable: string;
+    rol: T_UserRole;
+    rol_nombre: string;
+    id_cargo: number;
+    id_rc: number;
+}
+
 export interface I_Condition {
+    color: string;
     estado: string;
     rol: T_UserRole;
     rol_nombre: string;
     form_cond: string;
+    /**
+     * TASK id
+     */
     id_cond: number;
+    /**
+     * condition relation
+     */
+    cod_cond: number;
+    id_sede: number;
     // form_obse: number;
     id_esta: number;
     marc_update: string;
@@ -14,6 +32,8 @@ export interface I_Condition {
     porcentaje: number;
     num_obs: number;
     detalle: string;
+    usuarios: Array<T_UserOfTask>
+    condicion?: string;
 }
 
 export type T_FileAnswer = { url: string, name: string }

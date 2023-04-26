@@ -7,6 +7,7 @@ import Alert, { I_AlertObject } from '../Alert'
 import { ChatDots, ChatDotsFill, Edit, Link, Quote, ThreeDotsVertical, XCircle } from '../Icons'
 import ObservationChat from '../ObservationChat'
 import toast, { Toaster } from 'react-hot-toast';
+import CustomDropdown from '../CustomDropdown'
 
 type T_Props = {
     list: { [group: string]: T_Form },
@@ -67,8 +68,53 @@ const AttachmentsTable = ({
                             <small>{item.num_obs as number}</small>
                         </div>}
                     </>}
+                    <CustomDropdown
+                        options={[
+                            {
+                                text: "Copiar nombre",
+                                icon: <Quote />,
+                                click: () => toClipboard(`Anexo ${nomb_anexo}`)
+                            },
+                            {
+                                text: "Copiar link",
+                                icon: <Link />,
+                                click: () => toClipboard(respuesta[0].url)
+                            },
+                            {
+                                text: <span>Observaciones
+                                    <small className='ms-4'><Badge pill className='bg-opacity-50'>{item.num_obs as number || 0}</Badge></small>
+                                </span>,
+                                icon: !!(item.num_obs) ?
+                                    <span className='position-relative text-primary text-opacity-75'>
+                                        <ChatDotsFill size={16} />
+                                        <span className="position-absolute top-50 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+                                    </span>
+                                    :
+                                    <ChatDots size={16} />
+                                ,
+                                click: () => showObservations({ item, attachment })
+                            },
+                        ].concat((canEdit && !!(onEdit)) ?
+                            [{
+                                text: "Editar anexo",
+                                icon: <Edit size={16} />,
+                                click: () => () => onEdit(item, "Modificar")
+                            }] : []
+                        ).concat((canEdit && !!(onDelete)) ?
+                            [{
+                                text: "Eliminar anexo",
+                                icon: <XCircle size={16} />,
+                                click: () => deleteAttach(key, item, attachment)
+                            }] : []
+                        )
+                        }
+                    >
+                        <DropdownToggle size="sm" color='link' className='text-dark p-0 position-relative'>
+                            <ThreeDotsVertical />
+                        </DropdownToggle>
+                    </CustomDropdown>
 
-                    <UncontrolledDropdown >
+                    {/* <UncontrolledDropdown >
                         <DropdownToggle size="sm" color='link' className='text-dark p-0 position-relative'>
                             <ThreeDotsVertical />
                         </DropdownToggle>
@@ -111,7 +157,7 @@ const AttachmentsTable = ({
                                 </DropdownItem>}
                             </>}
                         </DropdownMenu>
-                    </UncontrolledDropdown>
+                    </UncontrolledDropdown> */}
                 </div>
                 {!!(attachment) &&
                     <p>

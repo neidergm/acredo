@@ -1,7 +1,7 @@
 import { T_Action } from '../../interfaces/phasesAndStages.interface';
 import Card from '../Card';
 import classnames from 'classnames';
-import { Badge, Button } from 'reactstrap';
+import { Button } from 'reactstrap';
 import { Edit, XCircle } from '../Icons';
 import { getNormalDate } from '../../utils/dateUtils';
 
@@ -90,7 +90,7 @@ const Action = ({
                 <small className='fw-semibold'>Usuarios responsables:</small>
             </p>
             <ul className='ps-3 ms-1 mb-0'>
-                {data.usuario?.map((user, i) => <li className='small cursor-pointer' key={i} title={user.nomb_cargo}>
+                {data.usuarios?.map((user, i) => <li className='small cursor-pointer' key={i} title={user.nomb_cargo}>
                     {user.responsable}<small className='text-secondary'> | {user.rol_nombre}</small>
                     {/* <Badge className='ms-2 text-secondary' color='light'>{user.rol_nombre}</Badge> */}
                 </li>) || <li className='small text-danger fw-semibold'>SIN USUARIOS ASIGNADOS</li>

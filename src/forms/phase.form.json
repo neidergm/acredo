@@ -1,0 +1,32 @@
+[
+    {
+        "name": "nomb_fase",
+        "label": "Nombre",
+        "tag": "input",
+        "type": "text",
+        "wrapperClassName": "col-12",
+        "validations": {
+            "required": true
+        }
+    },
+    {
+        "name": "fecha_inicio",
+        "label": "Fecha de inicio",
+        "tag": "input",
+        "type": "date",
+        "wrapperClassName": "col-6",
+        "validations": {
+            "required": true
+        }
+    },
+    {
+        "name": "fecha_fin",
+        "label": "Fecha de fin",
+        "tag": "input",
+        "type": "date",
+        "wrapperClassName": "col-6",
+        "validations": {
+            "required": true
+        }
+    }
+]

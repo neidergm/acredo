@@ -22,6 +22,7 @@ export interface I_AlertObject {
   subtitle?: string | JSX.Element | JSX.Element[];
   size?: 'sm' | 'md' | 'lg' | 'xl';
   type?: keyof typeof alertType;
+  needFillConfirmation?: boolean;
 };
 
 const alertType = {
@@ -42,7 +43,8 @@ const Alert = ({
   type,
   closeButton,
   submitButton,
-  fullscreen
+  fullscreen, 
+  needFillConfirmation
 }: I_AlertObject) => {
   const [showAlert, setShowAlert] = useState(isOpen);
 
@@ -70,7 +72,7 @@ const Alert = ({
       color="primary"
       {...submitButton}
       onClick={() => {
-        toggle();
+        !needFillConfirmation && toggle();
         submitButton.onClick?.();
       }}>{submitButton.value}</Button>
     )

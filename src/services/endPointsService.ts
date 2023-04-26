@@ -1,149 +1,235 @@
 /**
- * [POST]
- * {token: string, confia: 0}
+ * @method POST
+ * @params { token, confia: 0 }
  */
 export const LOGIN = "auth/autenticar";
+/**
+ * @method GET
+ * @params /[{type}]
+ * @param type? - can be 1 for get A and D roles; 2 for get only B roles
+ */
+export const ROLS = `roles`;
+
+/*---------------------------------------------*/
+// PROCESS
+/*---------------------------------------------*/
 
 /**
- * [GET]
- * /conv
+ * @method GET
  */
 export const PROCESS_LIST = `conv`;
 
 /**
- * [GET]
- * /conv/{id_conv}
+ * @method GET
+ * @params /{ id_conv }
  */
-export const CONVOCATORY_DETAILS = `conv/`;
+export const PROCESS_DETAILS = `conv/`;
+
+
+/*---------------------------------------------*/
+// TASK
+/*---------------------------------------------*/
 
 /**
- * [GET]
- * /cond/{id_cond}
+ * @method GET
+ * @params /{ id_cond }
  */
 export const CONDITION_DETAILS = `cond/`;
 
 /**
- * [GET]
- * /resp/{id_form}
+ * @method DELETE
+ * @params /{ id_cond }
+ */
+export const DELETE_TASK = `cond/`;
+
+/**
+ * @method POST
+ * @params { nomb_cond, sede, googledoc, detalle, cod_cond }
+ */
+export const SAVE_TASK = `cond`;
+
+/**
+ * @method PUT
+ * @params { nomb_cond, sede, googledoc, detalle, cod_cond }
+ */
+export const UPDATE_TASK = `cond`;
+
+
+/*---------------------------------------------*/
+// ANSWERS FORM
+/*---------------------------------------------*/
+
+/**
+ * @method GET
+ * @params /{ id_form }
  */
 export const ANSWER_BY_FORM = `resp/`;
 
 /**
- * [GET]
- * /resp/all/{id_form}
+ * @method GET
+ * @params /{ id_form }
  */
 export const ALL_ANSWERS_BY_FORM = `resp/all/`;
 
 /**
- * [GET]
- * /resp/anexo/{id_form}
+ * @method GET
+ * @params /{ id_form }
  */
 // export const ATTACHMENTS_ANSWER = `resp/anexos/`;
 
 /**
- * [POST]
- * /resp
+ * @method POST
+ * @params 
  */
 export const SAVE_ANSWERS = `resp`;
 
 /**
- * [DELETE]
- * /resp/{f_camp}{grupo_resp}
+ * @method DELETE
+ * @params /{ f_camp }/{ grupo_resp }
  */
 export const DELETE_ANSWER = `resp/`;
 
 /**
- * [GET]
- * /form/{id_form}
+ * @method GET
+ * @params /{ id_cond }
+ */
+export const HISTORIC_BY_CONDITION = `resp/historial/`;
+
+
+/*---------------------------------------------*/
+// FORMS AND FIELDS
+/*---------------------------------------------*/
+
+/**
+ * @method GET
+ * @params /{ id_form }
  */
 export const FORM = `form/`;
 
 /**
- * [GET]
- * /form/campos/{fields}
+ * @method GET
+ * @params /{ fields }
  */
 export const FORM_FIELDS = `form/campos/`;
 
 /**
- * [GET]
- * /resp/historial/{id_cond}
- */
-export const HISTORIC_BY_CONDITION = `resp/historial/`;
-
-/**
- * [GET]
- * obs/{id_fcamp}
+ * @method GET
+ * @params /{ id_fcamp }
  */
 export const OBSERVATION_BY_FORM = `obs/`;
 
 
+/*---------------------------------------------*/
+// OBSERVATIONS
+/*---------------------------------------------*/
+
 /**
- * [GET]
- * obs/{id_fcamp}/{grupo}
+ * @method GET
+ * @params /{ id_fcamp }/{ grupo }
  */
 export const OBSERVATION_BY_ATTACHMENT = `obs/`;
 
 /**
- * [POST]
+ * @method POST
  * Required: {observacion:string, id_cond:string, id_form:string, id_fcamp:string}
  * Optional: {archivos:<Array>, id_camp:string, grupo_resp:string (Only for attachments), id_ref:string (para comenter observación (se guarda id de obs))}
  */
 export const SAVE_OBSERVATION = `obs`;
 
-/**
- * [GET]
- * fases/condiciones/{id_conv}
- */
-export const PHASES_WITH_COND_BY_PROCESS = `fases/condiciones/`;
+
+/*---------------------------------------------*/
+// STAGES
+/*---------------------------------------------*/
 
 /**
- * [GET]
- * etapas/{id_condicion}
+ * @method GET
+ * @params /{ id_condicion }
  */
 export const STAGES = `etapas/`;
 
 /**
- * [PUT]
- * etapas
- * {"id_cond": "", "id_nodo": "", "est_etapa": "" }
+ * @method PUT
+ * @params { id_cond, id_nodo, est_etapa }
  */
 export const PUT_STAGE = `etapas`;
 
 /**
- * [DELETE]
- * etapas
- * /{id_stages}
+ * @method DELETE
+ * @params /{id_stages}
  */
 export const DELETE_STAGE = `etapas/`;
 
+
+/*---------------------------------------------*/
+// ACTIONS
+/*---------------------------------------------*/
+
 /**
- * [PUT]
- * acciones
- * {"id_accion": "", ...JSON  }
+ * @method PUT
+ * @params { id_accion, ...JSON  }
  */
 export const PUT_ACTION = `acciones`;
 
 /**
- * [DELETE]
- * acciones
- * /id_accion
+ * @method DELETE
+ * @params /{ id_accion }
  */
 export const DELETE_ACTION = `acciones/`;
 
-/**
- * [GET]
- * roles
- */
-export const ROLS = `acciones/`;
+
+/*---------------------------------------------*/
+// POSITIONS AND RESPONSIBLE
+/*---------------------------------------------*/
 
 /**
- * [GET]
- * cargos
+ * @method GET
  */
 export const CHARGE = `cargos`;
 
 /**
- * [GET]
- * cargos/responsables/{id_charge}/{id_cond}
+ * @method GET
+ * @params /{ id_charge }/[{ id_cond } for do task modification]/[{id_action} for actions assignation]
  */
 export const RESPONSIBLES_BY_CHARGE = `cargos/responsable/`;
+
+
+/*---------------------------------------------*/
+// PHASES
+/*---------------------------------------------*/
+
+/**
+ * @method GET
+ * @params /{ id_conv }
+ */
+export const PHASES_WITH_COND_BY_PROCESS = `fases/condiciones/`;
+
+/**
+ * @method POST
+ */
+export const SAVE_PHASE = `fases`;
+
+/**
+ * @method DELETE
+ * @params /{ id_phase }
+ */
+export const DELETE_PHASE = `fases/`;
+
+
+/*---------------------------------------------*/
+// CAMPUS
+/*---------------------------------------------*/
+
+/**
+ * @method GET
+ */
+export const CAMPUS_LIST = `sedes`;
+
+
+/*---------------------------------------------*/
+// CONDITIONS
+/*---------------------------------------------*/
+
+/**
+ * @method GET
+ */
+export const CONDITIONS_TYPES = `getinfo/condiciones`;

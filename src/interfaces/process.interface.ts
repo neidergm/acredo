@@ -11,4 +11,5 @@ export interface I_Process {
     programa: null | string,
     tipo_cond: string,
     porcentaje: number,
+    sede: string,
 }
