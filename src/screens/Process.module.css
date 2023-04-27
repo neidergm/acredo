@@ -49,11 +49,15 @@
     box-shadow: inset 0px -80px 30px -70px rgba(0, 0, 0, 0.119) !important;
 }
 
-.process-item.active>div:first-child>button>div:nth-child(2)>span {
+.process-item.active>div:first-child>button>div:nth-child(1)>div:last-child>span {
     color: var(--bs-secondary);
     font-weight: 700 !important;
+}
+.process-item.active>div:first-child>button>div:nth-child(1)>div:last-child>small {
+    font-weight: 500 !important;
 }
 
 .process-item>div:first-child>button {
     gap: 10px;
+    flex-wrap: wrap;
 }

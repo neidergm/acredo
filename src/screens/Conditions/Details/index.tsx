@@ -17,7 +17,7 @@ import { getDifferenceBetweenData, jsonToFormData } from '../../../utils/formUti
 import { getProcessList, selectProcess } from '../../../store/actions/processActions';
 import Card from '../../../components/Card';
 import { getPhasesAndStagesOfCondition, getContionData, selectCondition, setProcessPhasesWithConditions, setSelectedConditionData } from '../../../store/actions/conditionsActions';
-import { isAdmin, isOnlyView } from '../../../utils/userRolUtils';
+import { isAdmin, isLead, isOnlyView } from '../../../utils/userRolUtils';
 import CustomDropdown from '../../../components/CustomDropdown';
 import { toast, Toaster } from 'react-hot-toast';
 import { taskForm } from '../../../forms/task.form';
@@ -47,7 +47,10 @@ const ConditionsDetails = () => {
 
   const onlyView = isOnlyView(conditionSelected?.rol);
   const is_admin = isAdmin(useAppSelector(state => state.user.userInfo?.rol));
-  const canEndAction = is_admin || !onlyView && !!(phases.active?.action?.finalizar);
+  const is_lead = isLead(useAppSelector(state => state.user.userInfo?.rol));
+  const taskIsEnded = conditionSelected?.id_esta === 3;
+
+  const canEditForms = !taskIsEnded && !onlyView && ((is_admin || is_lead) || !!(phases.active?.action?.finalizar));
 
   const showConditionDetails = () => {
     setModalData({
@@ -67,31 +70,6 @@ const ConditionsDetails = () => {
         <Button color="primary" onClick={() => closeModal(setModalData)}>Cerrar</Button>
       </ModalFooter>
     })
-  }
-
-  const markStageAsCompleted = () => {
-    setLoader("Espere");
-
-    AXIOS_REQUEST(PUT_ACTION, "PUT", jsonToFormData({
-      est_accion: 2,
-      id_accion: phases.active!.action!.id_accion
-    }, "[0]."),
-      true
-    ).then(() => {
-      dispatch(setProcessPhasesWithConditions(Number(id_process), null))
-      dispatch(selectCondition(null));
-      dispatch(selectProcess(null));
-      dispatch(getPhasesAndStagesOfCondition(Number(id_cond)))
-    }).catch(() => {
-
-      setAlert({
-        type: "error",
-        title: "Ops...",
-        subtitle: "No se pudo marcar la acción como finalizada, por favor intente nuevamente",
-        isOpen: true,
-        closeButton: { value: "Ok" }
-      })
-    }).finally(() => setLoader(null))
   }
 
   const deleteTask = () => {
@@ -279,7 +257,7 @@ const ConditionsDetails = () => {
                     </div>
                     <div className='d-flex gap-3 mt-auto ms-auto'>
                       <div>
-                        {is_admin ?
+                        {!taskIsEnded && is_admin ?
                           <CustomDropdown options={[
                             { text: "Ver detalles", icon: <InfoCircle size={16} />, click: showConditionDetails },
                             { text: "Modificar tarea", icon: <Edit size={16} />, click: editTask },
@@ -290,9 +268,9 @@ const ConditionsDetails = () => {
                             </DropdownToggle>
                           </CustomDropdown>
                           :
-                          <Button size='sm' color="primary" className='rounded-2 py-0 opacity-75' outline onClick={() => showConditionDetails()}>
+                          <Button size='sm' color="primary" className='rounded-2 opacity-75' outline onClick={() => showConditionDetails()}>
                             <span className='d-flex align-items-center pe-2'>
-                              <span className='me-1 mb-1'><InfoCircle size={16} /></span>Detalles
+                              <span className='me-1'><InfoCircle size={16} /></span>Detalles
                             </span>
                           </Button>
                         }
@@ -312,10 +290,10 @@ const ConditionsDetails = () => {
                               </>
                               , optionProps: { className: "d-block pb-2" }
                             })),
-                            {
+                            ...(!taskIsEnded && is_admin ? [{
                               icon: <i className='text-primary'><Edit size={14} /></i>,
                               text: <small className='text-primary'>Modificar usuarios</small>, optionProps: { className: "mt-4" }, click: editTask
-                            }
+                            }] : [])
                             ]
                             :
                             [{
@@ -345,9 +323,10 @@ const ConditionsDetails = () => {
                 </div>
               </div>
               <CurrentPhase
+                processId={Number(id_process)}
+                task={conditionSelected!}
                 togglePhases={showAllPhases ? undefined : () => setShowAllPhases(true)}
-                callback={canEndAction ? markStageAsCompleted : undefined}
-                conditionProgress={conditionSelected?.porcentaje || 0}
+                taskProgress={conditionSelected?.porcentaje || 0}
               />
             </Card>
           </div>
@@ -356,7 +335,7 @@ const ConditionsDetails = () => {
               {(!conditionSelected) ?
                 <div className='mt-4 pt-2'><Loader isOpen={true} loaderAsModal={false} /></div>
                 :
-                <FormPannel formId={conditionSelected.form_cond} canEdit={!onlyView} />
+                <FormPannel formId={conditionSelected.form_cond} canEdit={canEditForms} />
               }
             </Card>
           </div>
@@ -371,7 +350,7 @@ const ConditionsDetails = () => {
                   <CloseButton onClick={() => setShowAllPhases(false)} />
                 </div>
                 <div>
-                  <PhasesList isAdmin={is_admin} />
+                  <PhasesList isAdmin={!taskIsEnded && is_admin} />
                 </div>
               </Card>
             </div>

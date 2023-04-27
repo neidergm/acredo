@@ -1,17 +1,32 @@
-export const getNormalDate = (value: string | number | Date, options?: Intl.DateTimeFormatOptions) => {
-    let val: any = value;
-    if (typeof val === "string") {
-        val = val.trim().replace(/T/, " ").split(" ");
-        if (!(val[1])) {
-            val.push("00:00")
-        }
+/**
+ * Normalize Dates using options
+ * @param value date as string or number format 
+ * @param options 
+ * @returns date as string transformed with options
+ */
+export const getNormalDate = (value: string | number, options?: Intl.DateTimeFormatOptions) => {
+    let date: Date;
+
+    if (typeof value === "string") {
+        let d:any = value.trim().split(/[-|/ |T :]/);
+        let [d1, d2, d3, ...dx] = d;
+        date = new Date(d1, d2 - 1, d3, ...dx);
+    } else {
+        date = new Date(value);
     }
-    return new Date(val).toLocaleString(
+
+    return date.toLocaleString(
         [], options || { month: '2-digit', day: "2-digit", year: "numeric" }
     )
 }
 
-export const getDateDiff = (from: Date, to: Date) => {
-    let dias = to.getTime() - from.getTime();
+/**
+ * Get Difference in days between 2 dates
+ * @param from start date
+ * @param to end date
+ * @returns number of days
+ */
+export const getDateDiff = (from: Date, to = new Date()): number => {
+    let dias = from.getTime() - to.getTime();
     return Math.ceil(dias / (1000 * 60 * 60 * 24));
 }

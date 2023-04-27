@@ -11,7 +11,7 @@ import CircleProgress from "../../components/CircleProgress";
 import { getProcessList } from "../../store/actions/processActions";
 import Card from "../../components/Card";
 import classnames from 'classnames';
-import { getNormalDate } from "../../utils/dateUtils";
+import { getDateDiff, getNormalDate } from "../../utils/dateUtils";
 import { Clip, Edit, ExclamationCircleFill, PauseFill, Plus, ThreeDotsVertical, XCircle } from "../../components/Icons";
 import styles from './../Process.module.css';
 import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } from "../../components/Modal";
@@ -311,6 +311,7 @@ const Conditions = () => {
                   </SubHeader>
                   <Accordion open={`${accordionOpen}`} {...{ toggle: selectItem }}>
                     {phasesWithConditions[selectedProcess.id_conv].map((phase) => {
+                      let dateDiffInPhase = getDateDiff(new Date(phase.fech_fin));
                       return <AccordionItem
                         key={phase.id_fase}
                         id={`${phase.id_fase}`}
@@ -318,29 +319,36 @@ const Conditions = () => {
                           classnames("d-flex gap-2 flex-column mb-3",
                             styles["process-item"], { [styles["active"]]: accordionOpen === `${phase.id_fase}` })
                         } >
-                        <AccordionHeader targetId={`${phase.id_fase}`} className="p-0 d-flex mb-2" tag={Card}>
-                          <div>
-                            <div className="rounded-circle">
-                              <CircleProgress
-                                progress={phase.porcentaje || 0}
-                                stroke={4}
-                                radius={32}
-                                color="#31ac6a"
-                                content={
-                                  selectedProcess.id_fase === phase.id_fase ?
-                                    <b>{phase.porcentaje || 0}%</b>
-                                    :
-                                    <div className="text-muted"><PauseFill /></div>
-                                }
-                              />
+                        <AccordionHeader targetId={`${phase.id_fase}`} className="p-0 d-flex mb-2 flex-wrap" tag={Card}>
+                          <div className="d-flex gap-2 flex-grow-1 align-content-center">
+                            <div>
+                              <div className="rounded-circle">
+                                <CircleProgress
+                                  progress={phase.porcentaje || 0}
+                                  stroke={4}
+                                  radius={32}
+                                  color="#06a099"
+                                  content={
+                                    selectedProcess.id_fase === phase.id_fase ?
+                                      <b>{phase.porcentaje || 0}%</b>
+                                      :
+                                      <div className="text-muted"><PauseFill /></div>
+                                  }
+                                />
+                              </div>
+                            </div>
+                            <div className="d-flex justify-content-center flex-column">
+                              <span className="d-block mb-1 fw-semibold">{phase.nomb_fase}</span>
+                              <small className="text-dark text-opacity-50">
+                                Desde {getNormalDate(phase.fech_ini, { dateStyle: "long" })} hasta {getNormalDate(phase.fech_fin, { dateStyle: "long" })}
+                              </small>
                             </div>
                           </div>
-                          <div>
-                            <span className="d-block mb-1 fw-semibold">{phase.nomb_fase}</span>
-                            <small className="text-dark text-opacity-50">
-                              Desde {getNormalDate(phase.fech_ini, { dateStyle: "long" })} hasta {getNormalDate(phase.fech_fin, { dateStyle: "long" })}
-                            </small>
-                          </div>
+                          {phase.porcentaje < 100 && <div>
+                            {dateDiffInPhase < 0 && <Badge color="secondary" className="bg-opacity-25 opacity-75 text-danger me-2">
+                              Venció hace {dateDiffInPhase * -1} días
+                            </Badge>}
+                          </div>}
                         </AccordionHeader>
                         <AccordionBody accordionId={`${phase.id_fase}`} tag={Card}>
                           <ListGroup flush tag="div">
@@ -357,9 +365,9 @@ const Conditions = () => {
                                   <div className="float-end ps-md-4">
                                     <CircleProgress
                                       progress={item.porcentaje || 0}
-                                      stroke={4}
-                                      radius={32}
-                                      color={item.porcentaje >= 100 ? "#0d6efd" : undefined}
+                                      stroke={5}
+                                      radius={34}
+                                      color={item.porcentaje >= 100 ? "#31ac69" : undefined}
                                       content={`${item.porcentaje || 0}%`}
                                     />
                                   </div>

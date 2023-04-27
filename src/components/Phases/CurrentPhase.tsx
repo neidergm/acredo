@@ -6,38 +6,163 @@ import classnames from 'classnames';
 import Alert, { I_AlertObject } from '../Alert';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import Loader from '../Loader';
-import { Check, ExclamationCircleFill } from '../Icons';
+import { ArrowCounterclockwise, Check, ExclamationCircleFill } from '../Icons';
+import { AXIOS_REQUEST } from '../../services/axiosService';
+import { PUT_ACTION, UPDATE_TASK } from '../../services/endPointsService';
+import { jsonToFormData } from '../../utils/formUtils';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { getPhasesAndStagesOfCondition, selectCondition, setProcessPhasesWithConditions } from '../../store/actions/conditionsActions';
+import { selectProcess } from '../../store/actions/processActions';
+import { isAdmin, isLead, isOnlyView } from '../../utils/userRolUtils';
+import { I_Condition } from '../../interfaces/conditions.interface';
+import { toast, Toaster } from 'react-hot-toast';
 
 type T_Props = {
-    conditionProgress: number,
+    taskProgress: number,
     callback?: () => void,
     togglePhases?: () => void,
+    processId: number,
+    task: I_Condition
 };
 
 const CurrentPhase = ({
-    conditionProgress,
+    taskProgress,
     togglePhases,
-    callback
+    callback,
+    processId,
+    task
 }: T_Props) => {
-    const [_alert, setAlert] = useState<null | I_AlertObject>(null);
-
-    const active = useAppSelector(state => state.conditions.selectedData.active)
+    const dispatch = useAppDispatch();
+    const { active, phases } = useAppSelector(state => state.conditions.selectedData);
     const { action, phase, stage } = active || {};
 
-    const dateDiff = getDateDiff(new Date(), new Date(action?.fecha_accion || ""));
+    const onlyView = isOnlyView(task?.rol);
+    const is_admin = isAdmin(useAppSelector(state => state.user.userInfo?.rol));
+
+    const canEndAction = is_admin || !onlyView && !!(active?.action?.finalizar);
+    const canEndTask = is_admin || isLead(task?.rol);
+    const taskIsEnded = task?.id_esta === 3;
+
+    const [_alert, setAlert] = useState<null | I_AlertObject>(null);
+    const [loader, setLoader] = useState<null | string>(null);
+
+    const dateDiff = getDateDiff(new Date(action?.fecha_accion || ""));
     const expiredDate = dateDiff < 0;
 
-    const markStageAsCompleted = () => {
+    const completeAction = () => {
+        setLoader("Finalizando acción");
+
+        AXIOS_REQUEST(PUT_ACTION, "PUT", jsonToFormData({
+            est_accion: 2,
+            id_accion: active!.action!.id_accion
+        }, "[0]."),
+            true
+        ).then(() => {
+            toast.success("Se ha finalizado la acción correctamente", { position: "top-right" });
+            dispatch(setProcessPhasesWithConditions(processId, null))
+            dispatch(selectCondition(null));
+            dispatch(selectProcess(null));
+            dispatch(getPhasesAndStagesOfCondition(task.id_cond));
+            callback?.();
+        }).catch(() => {
+            setAlert({
+                type: "error",
+                title: "Ops...",
+                subtitle: "No se pudo marcar la acción como finalizada, por favor intente nuevamente",
+                isOpen: true,
+                closeButton: { value: "Ok" }
+            })
+        }).finally(() => setLoader(null))
+    }
+
+    const undoCompleteTask = () => {
+        setLoader("Espere");
+        AXIOS_REQUEST(UPDATE_TASK, "PUT", jsonToFormData({
+            id_esta: 2,
+            id_cond: task.id_cond
+        }),
+            true
+        ).then(() => {
+            toast.success("Se ha desmarcado la tarea correctamente", { position: "top-right" });
+
+            dispatch(setProcessPhasesWithConditions(processId, null))
+            dispatch(selectCondition(null));
+            dispatch(selectProcess(null));
+            dispatch(getPhasesAndStagesOfCondition(task.id_cond));
+            callback?.();
+        }).catch(() => {
+            setAlert({
+                type: "error",
+                title: "Ops...",
+                subtitle: "No se pudo marcar la tarea como finalizada, por favor intente nuevamente",
+                isOpen: true,
+                closeButton: { value: "Ok" }
+            })
+        }).finally(() => setLoader(null))
+    }
+
+    const completeTask = () => {
+        setLoader("Finalizando tarea");
+        AXIOS_REQUEST(UPDATE_TASK, "PUT", jsonToFormData({
+            id_esta: 3,
+            id_cond: task.id_cond
+        }),
+            true
+        ).then(() => {
+            toast.success("Se ha finalizado la tarea correctamente", { position: "top-right" });
+            dispatch(setProcessPhasesWithConditions(processId, null))
+            dispatch(selectCondition(null));
+            dispatch(selectProcess(null));
+            dispatch(getPhasesAndStagesOfCondition(task.id_cond));
+            callback?.();
+        }).catch(() => {
+            setAlert({
+                type: "error",
+                title: "Ops...",
+                subtitle: "No se pudo marcar la tarea como finalizada, por favor intente nuevamente",
+                isOpen: true,
+                closeButton: { value: "Ok" }
+            })
+        }).finally(() => setLoader(null))
+    }
+
+    const markActionAsCompleted = () => {
         setAlert({
             isOpen: true,
             title: "¿Está seguro?",
-            subtitle: "Esta acción es irrevertible, la acción quedará marcada como finalizada",
+            subtitle: "La acción quedará marcada como finalizada",
             type: "question",
             submitButton: {
                 value: "Sí, finalizar",
-                onClick: () => {
-                    callback!();
-                }
+                onClick: completeAction
+            },
+            closeButton: { value: "No, cancelar" }
+        })
+    }
+
+    const markTaskAsCompleted = () => {
+        setAlert({
+            isOpen: true,
+            title: "¿Está seguro?",
+            subtitle: "La tarea se dará por finalizada, se quitarán los permisos a los gestores y no se podrá realizar ninguna clase de modificaciones",
+            type: "question",
+            submitButton: {
+                value: "Sí, finalizar",
+                onClick: completeTask
+            },
+            closeButton: { value: "No, cancelar" }
+        })
+    }
+
+    const undoMarkTaskAsCompleted = () => {
+        setAlert({
+            isOpen: true,
+            title: "¿Está seguro?",
+            subtitle: "La tarea dejará de estar completada, se restaurarán los permisos a los gestores y se habilitarán las modificaciones",
+            type: "question",
+            submitButton: {
+                value: "Sí, finalizar",
+                onClick: undoCompleteTask
             },
             closeButton: { value: "No, cancelar" }
         })
@@ -45,7 +170,7 @@ const CurrentPhase = ({
 
     if (!(active)) {
         return <div className='mb-3'><Loader isOpen={true} loaderAsModal={false} /></div>
-    } else if (!action) {
+    } else if (!action && phases?.[0]?.stages_completed === 0) {
         return <div className='w-100 h-100 d-flex justify-content-center align-items-center flex-column'>
             <i className='text-warning mb-2'><ExclamationCircleFill size={35} /></i>
             <span className="d-block"> No hay nada para mostar</span>
@@ -53,51 +178,84 @@ const CurrentPhase = ({
     }
 
     return (<>
+        <Toaster />
         <Alert isOpen={!!(_alert?.isOpen)}{..._alert} onClosed={() => { setAlert(null) }} />
-        <div className='d-flex flex-column justify-content-between h-100'>
-
-            <div className='d-flex w-100 align-items-center h-100'>
-                <div className='pe-3 my-auto'>
+        <Loader isOpen={!!(loader)} subtitle={loader} />
+        {
+            (!phase && phases?.[0]?.stages?.length === phases?.[0]?.stages_completed) ?
+                <div className='w-100 h-100 d-flex justify-content-center align-items-center flex-column'>
+                    {taskIsEnded ?
+                        <b className="d-block fw-semibold">Tarea completada</b>
+                        :
+                        <b className="d-block fw-semibold">¡La tarea está casi completada!</b>
+                    }
                     <CircleProgress
-                        progress={conditionProgress}
+                        progress={taskProgress}
                         color={expiredDate ? "#dc3545" : '#198754'}
                         stroke={8}
                         radius={55}
-                        content={<b>{conditionProgress}%</b>}
+                        content={<b>{taskProgress}%</b>}
                     />
-                </div>
-                <div className='flex-grow-1 small'>
-                    <p className="mb-2"><b className='fw-semibold'>Acción:</b> {action?.nomb_accion}</p>
-                    <p className="mb-2"><b className='fw-semibold'>Etapa:</b> {stage?.name}</p>
-                    <p className="mb-2"><b className='fw-semibold'>Fase:</b> {phase?.name}</p>
-                    <p className='mb-0'>
-                        <span><b className='fw-semibold'>Fecha límite: </b></span>
-                        <span className={classnames({ "text-danger fw-semibold": expiredDate })}>
-                            {getNormalDate(action?.fecha_accion || "", { dateStyle: "long" })}
-
-                        </span>
-                        <br />
-                        {expiredDate &&
-                            <Badge color='danger' className='opacity-75'>
-                                {dateDiff < 0 ? `Vencido hace ${dateDiff * -1} días` : dateDiff === 0 ? "Vence hoy" : "Vence dentro de " + dateDiff + " días"}
-                            </Badge>
+                    <div>
+                        {!!(canEndTask) && (
+                            taskIsEnded ?
+                                <Button onClick={undoMarkTaskAsCompleted} size='sm' color='primary' className='rounded-2 opacity-75 ms-auto' disabled={!(taskProgress)}>
+                                    <i className='me-1'><ArrowCounterclockwise /></i>
+                                    Desmarcar tarea como completada
+                                </Button>
+                                :
+                                <Button onClick={markTaskAsCompleted} size='sm' color='primary' className='rounded-2 opacity-75 ms-auto' disabled={!(taskProgress)}>
+                                    <i className='me-1'><Check /></i>
+                                    Marcar tarea como completada
+                                </Button>
+                        )
                         }
-                    </p>
+                    </div>
                 </div>
-            </div>
-            <div className='mt-4 d-flex justify-content-between '>
-                {!!(togglePhases) &&
-                    <Button onClick={togglePhases} size='sm' color='link' className='rounded-2 '>Mostrar fases y etapas</Button>
-                }
-                {!!(callback) &&
-                    // <Button onClick={markStageAsCompleted} size='sm' color='primary' className='rounded-2 opacity-75 ms-auto'>Marcar acción como finalizada</Button>
-                    <Button onClick={markStageAsCompleted} size='sm' color='primary' className='rounded-2 opacity-75 ms-auto'>
-                        <i className='me-1'><Check /></i>
-                        Finalizar esta acción
-                    </Button>
-                }
-            </div>
-        </div>
+                :
+                <div className='d-flex flex-column justify-content-between h-100'>
+                    <div className='d-flex w-100 align-items-center h-100'>
+                        <div className='pe-3 my-auto'>
+                            <CircleProgress
+                                progress={taskProgress}
+                                color={expiredDate ? "#dc3545" : '#198754'}
+                                stroke={8}
+                                radius={55}
+                                content={<b>{taskProgress}%</b>}
+                            />
+                        </div>
+                        <div className='flex-grow-1 small'>
+                            <p className="mb-2"><b className='fw-semibold'>Acción:</b> {action?.nomb_accion}</p>
+                            <p className="mb-2"><b className='fw-semibold'>Etapa:</b> {stage?.name}</p>
+                            <p className="mb-2"><b className='fw-semibold'>Fase:</b> {phase?.name}</p>
+                            <p className='mb-0'>
+                                <span><b className='fw-semibold'>Fecha límite: </b></span>
+                                <span className={classnames({ "text-danger fw-semibold": expiredDate })}>
+                                    {getNormalDate(action?.fecha_accion || "", { dateStyle: "long" })}
+
+                                </span>
+                                <br />
+                                {expiredDate &&
+                                    <Badge color='danger' className='opacity-75'>
+                                        {dateDiff < 0 ? `Vencido hace ${dateDiff * -1} días` : dateDiff === 0 ? "Vence hoy" : "Vence dentro de " + dateDiff + " días"}
+                                    </Badge>
+                                }
+                            </p>
+                        </div>
+                    </div>
+                    <div className='mt-4 d-flex justify-content-between '>
+                        {!!(togglePhases) &&
+                            <Button onClick={togglePhases} size='sm' color='link' className='rounded-2 '>Mostrar fases y etapas</Button>
+                        }
+                        {!!(canEndAction) &&
+                            <Button onClick={markActionAsCompleted} size='sm' color='primary' className='rounded-2 opacity-75 ms-auto'>
+                                <i className='me-1'><Check /></i>
+                                Finalizar esta acción
+                            </Button>
+                        }
+                    </div>
+                </div>
+        }
     </>)
 }
 

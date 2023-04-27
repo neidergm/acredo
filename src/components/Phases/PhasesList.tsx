@@ -30,7 +30,7 @@ const PhasesList = (
   const active = useAppSelector(state => state.conditions.selectedData.active)
 
   const showActionDetails = (action: T_Action, stage: T_Stage, phase: T_Phase) => {
-    let dateDiff = getDateDiff(new Date(), new Date(action.fecha_accion));
+    let dateDiff = getDateDiff(new Date(action.fecha_accion));
 
     setModal({
       isOpen: true,
