@@ -24,6 +24,7 @@ import { taskForm } from '../../../forms/task.form';
 import Form from 'react-ngm-form';
 import TextEditor from '../../../components/TextEditor';
 import { I_JSONObject } from '../../../interfaces/generic.interface';
+import confirmDeleteAlertObject from '../../../utils/confirmDeleteAlertObject';
 
 const ConditionsDetails = () => {
 
@@ -56,8 +57,8 @@ const ConditionsDetails = () => {
     setModalData({
       isOpen: true,
       title: "Detalles",
+      fullscreen: "md",
       children: <div className=''>
-        {/* <div dangerouslySetInnerHTML={{ __html: conditionSelected?.detalle || "" }}></div> */}
         <TextEditor
           data={`${conditionSelected?.detalle}`}
           disabled
@@ -73,14 +74,10 @@ const ConditionsDetails = () => {
   }
 
   const deleteTask = () => {
-    setAlert({
-      type: "question",
-      title: "¿Está seguro?",
-      subtitle: "Se eliminará la tarea con las etapas y acciones relacionadas a la misma",
-      isOpen: true,
-      closeButton: { value: "No, cancelar" },
-      submitButton: {
-        value: "Si, eliminar", onClick: () => {
+    setAlert(
+      confirmDeleteAlertObject(
+        <span>Se eliminará la tarea con las etapas y acciones relacionadas a la misma</span>,
+        () => {
           setLoader("Eliminando tarea")
 
           AXIOS_REQUEST(DELETE_TASK + conditionSelected?.id_cond, "DELETE").then(r => {
@@ -89,9 +86,9 @@ const ConditionsDetails = () => {
             navigate(-1);
           }).catch(e => toast.error("No se pudo eliminar la tarea", { position: "top-right" }))
             .finally(() => setLoader(null))
-        }
-      }
-    })
+        },
+        setAlert
+      ))
   }
 
   const editTask = () => {

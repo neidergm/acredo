@@ -14,6 +14,7 @@ const Login = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Login
 const Conditions = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Conditions" */ './screens/Conditions')));
 const IntitutionalConditions = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "IntitutionalConditions" */ './screens/Conditions/Details')));
 const Process = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Process" */ './screens/Process')));
+const PhasesAttachments = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "PhasesAttachments" */ './screens/PhasesAttachments')));
 
 type T_Props = {}
 
@@ -48,6 +49,7 @@ const App = ({ }: T_Props) => {
               <Route path='/' element={<Process />} />
               <Route path='/proceso/:id_process/:id_cond' element={<IntitutionalConditions />} />
               <Route path='/proceso/:id_process' element={<Conditions />} />
+              <Route path='/proceso/fases/anexos/:id_phase' element={<PhasesAttachments />} />
               <Route path='*' element={<Navigate to="/" />} />
             </Routes>
           </Suspense>

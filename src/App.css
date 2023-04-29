@@ -140,3 +140,11 @@ code {
 .show-overflow-on-hover:hover {
   overflow-y: overlay !important;
 }
+
+.accordion-body-px-0{
+  --bs-accordion-body-padding-x: 0px;
+}
+
+.accordion-body-py-0{
+  --bs-accordion-body-padding-y: 0px;
+}

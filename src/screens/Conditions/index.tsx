@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { SubHeader } from "../../components/SubHeader";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { I_Condition } from "../../interfaces/conditions.interface";
 import { Accordion, AccordionBody, AccordionHeader, AccordionItem, Badge, Button, DropdownToggle, ListGroup, ListGroupItem, Progress } from "reactstrap";
 import Loader from "../../components/Loader";
@@ -28,6 +28,7 @@ import { XCircleFill } from "../../components/Icons";
 import { T_PhasesWithConditions } from "../../interfaces/phasesAndStages.interface";
 import CustomDropdown from "../../components/CustomDropdown";
 import Alert, { I_AlertObject } from "../../components/Alert";
+import confirmDeleteAlertObject from "../../utils/confirmDeleteAlertObject";
 
 let lastAccordionOpen = ``;
 
@@ -61,10 +62,15 @@ const Conditions = () => {
     setModal({
       isOpen: true,
       size: "xl",
-      title: "Anexos del proceso",
+      title: "Anexos por fase",
       children: <>
-        <AllAttachments />
+        <AllAttachments phaseId={phase.id_fase} />
       </>,
+      footer: <ModalFooter>
+        <Button color='primary' className="opacity-75 rounded-2">Cerrar</Button>
+        <Link to={`/proceso/fases/anexos/${phase.id_fase}`} target="_blank"
+          className="opacity-75 rounded-2 btn btn-primary">Abrir en nueva pestaña</Link>
+      </ModalFooter>
     })
   }
 
@@ -163,13 +169,10 @@ const Conditions = () => {
   }
 
   const deletePhase = (phase: T_PhasesWithConditions) => {
-    setAlert({
-      isOpen: true,
-      title: "¿Está seguro?",
-      type: "question",
-      subtitle: <span>Se eliminará la fase <b>{phase.nomb_fase}</b> con todas las tareas y avances en el proceso</span>,
-      submitButton: {
-        onClick: () => {
+    setAlert(
+      confirmDeleteAlertObject(
+        <span>Se eliminará la fase <b>{phase.nomb_fase}</b> con todas las tareas y avances en el proceso</span>,
+        () => {
           closeModal(setAlert)
           setLoading("Eliminando fase")
           AXIOS_REQUEST(DELETE_PHASE + phase.id_fase, "DELETE")
@@ -179,10 +182,29 @@ const Conditions = () => {
             }).catch(r => toast.error("No se pudo eliminar la fase", { position: "top-right" }))
             .finally(() => setLoading(null))
 
-        }, value: "Sí, eliminar"
-      },
-      closeButton: { value: "No, cancelar" }
-    })
+        },
+        setAlert
+      ))
+    // setAlert({
+    //   isOpen: true,
+    //   title: "¿Está seguro?",
+    //   type: "question",
+    //   subtitle: <span>Se eliminará la fase <b>{phase.nomb_fase}</b> con todas las tareas y avances en el proceso</span>,
+    //   submitButton: {
+    //     onClick: () => {
+    //       closeModal(setAlert)
+    //       setLoading("Eliminando fase")
+    //       AXIOS_REQUEST(DELETE_PHASE + phase.id_fase, "DELETE")
+    //         .then(r => {
+    //           toast.success("Se eliminó la fase correctamente", { position: "top-right" });
+    //           dispatch(setProcessPhasesWithConditions(Number(id_process), null))
+    //         }).catch(r => toast.error("No se pudo eliminar la fase", { position: "top-right" }))
+    //         .finally(() => setLoading(null))
+
+    //     }, value: "Sí, eliminar"
+    //   },
+    //   closeButton: { value: "No, cancelar" }
+    // })
   }
 
   const editPhase = (data: any, phase: T_PhasesWithConditions) => {

@@ -72,12 +72,6 @@ export const ANSWER_BY_FORM = `resp/`;
 export const ALL_ANSWERS_BY_FORM = `resp/all/`;
 
 /**
- * @method GET
- * @params /{ id_form }
- */
-// export const ATTACHMENTS_ANSWER = `resp/anexos/`;
-
-/**
  * @method POST
  * @params 
  */
@@ -202,6 +196,11 @@ export const RESPONSIBLES_BY_CHARGE = `cargos/responsable/`;
  * @params /{ id_conv }
  */
 export const PHASES_WITH_COND_BY_PROCESS = `fases/condiciones/`;
+/**
+ * @method GET
+ * @params /{ id_phase }
+ */
+export const PHASE_DETAILS = `fases/`;
 
 /**
  * @method POST
@@ -213,6 +212,13 @@ export const SAVE_PHASE = `fases`;
  * @params /{ id_phase }
  */
 export const DELETE_PHASE = `fases/`;
+
+/**
+ * @method GET
+ * @params /{ id_fase } 
+ */
+export const ATTACHMENTS_BY_PHASE = `resp/anexos/`;
+
 
 
 /*---------------------------------------------*/

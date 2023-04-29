@@ -35,10 +35,10 @@ export const ModalHeader = ({ toggle, textCenter, ...props }: T_ModalHeaderProps
 export const ModalFooter = (props: ModalFooterProps) =>
     <ModalFooterB {...props} style={{ border: 0, justifyContent: Children.count(props.children) > 1 ? "space-between" : "center" }} />
 
-export const Modal = ({ toggle, className, ...props }: ModalHeaderProps & { toggle?: T_ModalToggleAction; }) => {
+export const Modal = ({ toggle, className, fullscreen = "sm", ...props }: ModalHeaderProps & { toggle?: T_ModalToggleAction; }) => {
     return <ModalB
         contentClassName={classnames('p-md-2 p-xl-3 border-0', className)}
-        fullscreen="sm"
+        fullscreen={fullscreen}
         keyboard={false}
         centered
         {...props}

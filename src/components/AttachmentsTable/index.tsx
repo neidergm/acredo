@@ -113,51 +113,6 @@ const AttachmentsTable = ({
                             <ThreeDotsVertical />
                         </DropdownToggle>
                     </CustomDropdown>
-
-                    {/* <UncontrolledDropdown >
-                        <DropdownToggle size="sm" color='link' className='text-dark p-0 position-relative'>
-                            <ThreeDotsVertical />
-                        </DropdownToggle>
-                        <DropdownMenu className='border shadow-3 rounded-3 mt-1 py-3'>
-                            <DropdownItem onClick={() => toClipboard(`Anexo ${nomb_anexo}`)}>
-                                <div className='d-flex gap-3 text-secondary align-items-center'>
-                                    <Quote /><span>Copiar nombre</span>
-                                </div>
-                            </DropdownItem>
-                            <DropdownItem onClick={() => toClipboard(respuesta[0].url)}>
-                                <div className='d-flex gap-3 text-secondary align-items-center'>
-                                    <Link /> <span>Copiar link</span>
-                                </div>
-                            </DropdownItem>
-                            <DropdownItem onClick={() => { showObservations({ item, attachment }) }}>
-                                <div className='d-flex gap-3 text-secondary align-items-center'>
-                                    {!!(item.num_obs) ?
-                                        <span className='position-relative text-primary text-opacity-75'>
-                                            <ChatDotsFill size={16} />
-                                            <span className="position-absolute top-50 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
-                                        </span>
-                                        :
-                                        <ChatDots size={16} />
-                                    }
-                                    <span>Observaciones
-                                        <small className='ms-4'><Badge pill className='bg-opacity-50'>{item.num_obs as number || 0}</Badge></small>
-                                    </span>
-                                </div>
-                            </DropdownItem>
-                            {canEdit && <>
-                                {!!(onEdit) && <DropdownItem onClick={() => { onEdit(item, "Modificar") }}>
-                                    <div className='d-flex gap-3 text-secondary align-items-center'>
-                                        <Edit size={16} /><span>Editar anexo</span>
-                                    </div>
-                                </DropdownItem>}
-                                {!!(onDelete) && <DropdownItem onClick={() => { deleteAttach(key, item, attachment) }}>
-                                    <div className='d-flex gap-3 text-secondary align-items-center'>
-                                        <XCircle size={16} /><span>Eliminar anexo</span>
-                                    </div>
-                                </DropdownItem>}
-                            </>}
-                        </DropdownMenu>
-                    </UncontrolledDropdown> */}
                 </div>
                 {!!(attachment) &&
                     <p>

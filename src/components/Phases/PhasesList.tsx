@@ -108,7 +108,7 @@ const PhasesList = (
                   </span>
                   <p>
                     {action.nomb_accion}
-                    <span className='d-block text-muted'>Vence el {getNormalDate(action.fecha_accion, { dateStyle: "long" })}</span>
+                    <span className='d-block text-muted'>{action.est_accion !== 2 && "Vence el "}{getNormalDate(action.fecha_accion, { dateStyle: "long" })}</span>
                   </p>
                 </div>
               })

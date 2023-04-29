@@ -1,4 +1,4 @@
-import { I_Condition } from "./conditions.interface";
+import { I_Condition, T_FileAnswer } from "./conditions.interface";
 import { T_UserRole } from "./generic.interface";
 
 type T_UserOfAction = {
@@ -55,3 +55,24 @@ export type T_PhasesWithConditions = {
     porcentaje: number;
     orden: number;
 }
+
+export type T_AttachmentInPhase = {
+    grupo_resp: string,
+    nomb_campo: string,
+    nomb_form: string,
+    respuesta: Array<T_FileAnswer>,
+    usuario: string,
+    name_campo: string,
+    nomb_anexo?: string,
+    marc_temp: string,
+    marc_update: string,
+}
+
+export type T_AttachmentsOfPhases = Array<{
+    id_phase: number,
+    id_fcam: number,
+    nomb_cond: string,
+    orden: number,
+    anexos: Array<T_AttachmentInPhase>,
+    anexos_by_group_resp?: { [group: string]: Array<T_AttachmentInPhase> }
+}>

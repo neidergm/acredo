@@ -139,7 +139,7 @@ const CreateStage = ({
         () => {
           onDeleteAction(action);
           closeModal(setAlert)
-        }, 
+        },
         setAlert)
     )
   }
@@ -162,19 +162,15 @@ const CreateStage = ({
         closeButton: { value: "Ok" }
       })
     }
-    setAlert({
-      isOpen: true,
-      title: "¿Está seguro?",
-      type: "question",
-      subtitle: <span>Se eliminará la etapa <b>{stage.name}</b> con todas las acciones relacionadas a la misma</span>,
-      submitButton: {
-        onClick: () => {
+    setAlert(
+      confirmDeleteAlertObject(
+        <span>Se eliminará la etapa <b>{stage.name}</b> con todas las acciones relacionadas a la misma</span>,
+        () => {
           onDeleteStage(stage);
           closeModal(setAlert)
-        }, value: "Sí, eliminar"
-      },
-      closeButton: { value: "No, cancelar" }
-    })
+        },
+        setAlert
+      ))
   }
 
   const onDeleteAction = (action: T_Action) => {
