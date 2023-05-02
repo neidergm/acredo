@@ -12,8 +12,9 @@ import { useParams } from 'react-router-dom';
 import { formToSubmitData, getDifferenceBetweenData } from '../../../utils/formUtils';
 import { closeModal } from '../../../components/Modal';
 import toast, { Toaster } from 'react-hot-toast';
-import { ExclamationCircleFill, Plus } from '../../../components/Icons';
+import { ExclamationCircleFill, Link } from '../../../components/Icons';
 import { Button } from 'reactstrap';
+import FormsTemplatesAssociaton from '../../../components/FormsTemplatesAssociation';
 
 export type T_Form = {
     fields: Array<T_FieldsTypes>;
@@ -32,17 +33,20 @@ export type T_FormPannelActions = {
 type T_Props = {
     formId: string,
     canEdit?: boolean,
+    canAddForms?: boolean,
 }
 
 const FormPannel = ({
     formId,
-    canEdit = false
+    canEdit = false,
+    canAddForms
 }: T_Props) => {
     const { id_cond } = useParams();
 
     const [formList, setFormList] = useState<T_Form[] | null>(null);
     const [loader, setLoader] = useState<string | null>(null);
     const [alertConfirm, setAlertConfirm] = useState<I_AlertObject | null>(null);
+    const [togglePannel, setTogglePannel] = useState(false);
 
     const confirmSubmit = (data: any, formItem: T_Form, callback?: () => void) => {
         setAlertConfirm({
@@ -172,6 +176,10 @@ const FormPannel = ({
         return await d;
     }
 
+    const toggleEditFormsPannel = () => {
+        setTogglePannel(t => !t);
+    }
+
     const getFormWithAnswers = (id_fcamp: string | number): Promise<I_FormFieldWithAnswer[]> =>
         AXIOS_REQUEST(`${ANSWER_BY_FORM}${id_fcamp}`).then(res => res.data)
 
@@ -202,13 +210,11 @@ const FormPannel = ({
     } else if (formList.length === 0) {
         content = <div className="w-100 h-100 d-flex justify-content-center align-items-center flex-column py-5">
             <i className="text-warning mb-2"><ExclamationCircleFill size={35} /></i>
-            <span className="d-block"> No hay formularios asociados para mostrar</span>
-            <div className='mt-4'>
-                <Button size="sm" color="primary" className='rounded-2 opacity-75'>
-                    <i><Plus /></i>
-                    <span>Asociar formulario</span>
-                </Button>
-            </div>
+            <span className="d-block mb-5"> No hay formularios asociados para mostrar</span>
+            {!!(canAddForms) && <Button size="sm" color="primary" className='rounded-2 opacity-75' onClick={toggleEditFormsPannel}>
+                <i className='me-1'><Link /></i>
+                <span>Utilizar plantillas de formularios</span>
+            </Button>}
         </div>
     } else if (formList.length < 4) {
         content = <AsTabs
@@ -218,7 +224,12 @@ const FormPannel = ({
             onPickOne={pickFormItem}
             onSubmit={confirmSubmit}
             onDelete={confirmDelete}
-        />
+        >
+            {!!(canAddForms) && <Button size="sm" color="primary" className='rounded-2 opacity-75' onClick={toggleEditFormsPannel}>
+                <i className='me-1'><Link /></i>
+                <span>Agregar plantillas de formularios</span>
+            </Button>}
+        </AsTabs>
     } else if (formList.length >= 4) {
         content = <AsList
             canEdit={canEdit}
@@ -233,6 +244,7 @@ const FormPannel = ({
     }
 
     return <>
+        {!!(canAddForms) && <FormsTemplatesAssociaton open={togglePannel} toggle={toggleEditFormsPannel} taskId={id_cond!} />}
         <Alert isOpen={!!(alertConfirm?.isOpen)}{...alertConfirm} onClosed={() => { closeModal(setAlertConfirm) }} />
         <Toaster />
         <Loader isOpen={!!loader} subtitle={loader!} />

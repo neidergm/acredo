@@ -50,9 +50,15 @@ export const SAVE_TASK = `cond`;
 
 /**
  * @method PUT
- * @params { nomb_cond, sede, googledoc, detalle, cod_cond }
+ * @params { nomb_cond, sede, googledoc, detalle, cod_cond, id_cond }
  */
 export const UPDATE_TASK = `cond`;
+
+/**
+ * @method PUT
+ * @params { form_cond, id_cond }
+ */
+export const ASOCIATE_FORM_TO_TASK = `cond`;
 
 
 /*---------------------------------------------*/
@@ -239,3 +245,14 @@ export const CAMPUS_LIST = `sedes`;
  * @method GET
  */
 export const CONDITIONS_TYPES = `getinfo/condiciones`;
+
+
+/*---------------------------------------------*/
+// CONDITIONS
+/*---------------------------------------------*/
+
+/**
+ * @method GET
+ * @params /{type} - "form" | "tareas" | "fase" | "etapa" | "accion" 
+ */
+export const GET_TEMPLATES = `plantilla/`;

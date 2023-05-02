@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Children } from 'react'
 import { TabContent, TabPane, Nav, NavItem, NavLink, Button } from 'reactstrap';
 import Loader from '../../../components/Loader';
 import classnames from 'classnames';
@@ -11,6 +11,7 @@ type T_Props = {
     canEdit: boolean,
     id_cond: string,
     formList: T_Form[],
+    children?: JSX.Element | JSX.Element[] | false
 } & T_FormPannelActions
 
 const AsTabs = ({
@@ -19,7 +20,8 @@ const AsTabs = ({
     formList,
     onPickOne,
     onDelete,
-    onSubmit
+    onSubmit,
+    children
 }: T_Props) => {
     const [currentActiveTab, setCurrentActiveTab] = useState(0);
     const [loadedItems, setLoadedItems] = useState<Array<T_Form | null>>(formList.map(i => null));
@@ -105,7 +107,7 @@ const AsTabs = ({
                             return <NavItem key={`ni-${i}`}>
                                 <NavLink onClick={() => { toggleTab(i); }}
                                     className={"sub-item text-muted px-3 pb-3 d-flex align-items-center " + classnames({
-                                        "active fw-bold px-md-5": currentActiveTab === i
+                                        "active fw-bold px-xl-4": currentActiveTab === i
                                     })}
                                 >
                                     {item.nomb_form}
@@ -121,6 +123,21 @@ const AsTabs = ({
                         }
                         )
                     }
+                    {/* <NavLink onClick={() => { toggleTab(i); }}
+                                    className={"sub-item text-muted px-3 pb-3 d-flex align-items-center " + classnames({
+                                        "active fw-bold px-md-5": currentActiveTab === i
+                                    })}
+                                >
+                                    {item.nomb_form}
+                                    {!!(num_obs) &&
+                                        <span className='position-relative ps-2'>
+                                            <span className="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger">
+                                                {num_obs}
+                                            </span>
+                                        </span>
+                                    }
+                                </NavLink> */}
+                    <div className='flex-grow-1 text-end pb-3'>{children}</div>
                 </Nav>
                 <TabContent activeTab={currentActiveTab} className="tab-content-item pt-4">
                     {formList.map((item, i) => {

@@ -1,16 +1,15 @@
 import { useState, useEffect } from 'react';
-import { AccordionBody, AccordionHeader, AccordionItem, Badge, Button, DropdownItem, DropdownMenu, DropdownToggle, Offcanvas, OffcanvasBody, OffcanvasHeader, UncontrolledAccordion, UncontrolledDropdown } from 'reactstrap';
+import { AccordionBody, AccordionHeader, AccordionItem, Badge, Button, Offcanvas, OffcanvasBody, OffcanvasHeader, UncontrolledAccordion } from 'reactstrap';
 import { T_Action, T_Phase, T_Stage } from '../../interfaces/phasesAndStages.interface'
 import styles from './phases.module.css';
 import classnames from 'classnames';
-import { CheckCircleFill, Edit, ExclamationCircleFill, Plus, PlusCircleFill, ThreeDotsVertical, XCircle } from '../Icons';
+import { CheckCircleFill, Edit, ExclamationCircleFill, Plus } from '../Icons';
 import { getDateDiff, getNormalDate } from '../../utils/dateUtils';
 import { closeModal, Modal, ModalBody, ModalHeader, T_ModalJSON } from '../Modal';
 
 import CreateStage from './Create/CreateStage';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import Loader from '../Loader';
-import CustomDropdown from '../CustomDropdown';
 
 type T_Props = {
   isAdmin: boolean

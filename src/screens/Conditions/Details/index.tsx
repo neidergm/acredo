@@ -332,7 +332,10 @@ const ConditionsDetails = () => {
               {(!conditionSelected) ?
                 <div className='mt-4 pt-2'><Loader isOpen={true} loaderAsModal={false} /></div>
                 :
-                <FormPannel formId={conditionSelected.form_cond} canEdit={canEditForms} />
+                <FormPannel formId={conditionSelected.form_cond} canEdit={canEditForms}
+                  canAddForms={conditionSelected.form_cond.split(",").length <= 1 &&
+                    conditionSelected.marc_update === conditionSelected.marc_temp}
+                />
               }
             </Card>
           </div>

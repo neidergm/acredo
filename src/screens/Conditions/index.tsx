@@ -170,41 +170,30 @@ const Conditions = () => {
 
   const deletePhase = (phase: T_PhasesWithConditions) => {
     setAlert(
-      confirmDeleteAlertObject(
-        <span>Se eliminará la fase <b>{phase.nomb_fase}</b> con todas las tareas y avances en el proceso</span>,
-        () => {
-          closeModal(setAlert)
-          setLoading("Eliminando fase")
-          AXIOS_REQUEST(DELETE_PHASE + phase.id_fase, "DELETE")
-            .then(r => {
-              toast.success("Se eliminó la fase correctamente", { position: "top-right" });
-              dispatch(setProcessPhasesWithConditions(Number(id_process), null))
-            }).catch(r => toast.error("No se pudo eliminar la fase", { position: "top-right" }))
-            .finally(() => setLoading(null))
+      !(phase.porcentaje) ?
+        confirmDeleteAlertObject(
+          <span>Se eliminará la fase <b>{phase.nomb_fase}</b> con todas las tareas y avances en el proceso</span>,
+          () => {
+            closeModal(setAlert)
+            setLoading("Eliminando fase")
+            AXIOS_REQUEST(DELETE_PHASE + phase.id_fase, "DELETE")
+              .then(r => {
+                toast.success("Se eliminó la fase correctamente", { position: "top-right" });
+                dispatch(setProcessPhasesWithConditions(Number(id_process), null))
+              }).catch(r => toast.error("No se pudo eliminar la fase", { position: "top-right" }))
+              .finally(() => setLoading(null))
 
-        },
-        setAlert
-      ))
-    // setAlert({
-    //   isOpen: true,
-    //   title: "¿Está seguro?",
-    //   type: "question",
-    //   subtitle: <span>Se eliminará la fase <b>{phase.nomb_fase}</b> con todas las tareas y avances en el proceso</span>,
-    //   submitButton: {
-    //     onClick: () => {
-    //       closeModal(setAlert)
-    //       setLoading("Eliminando fase")
-    //       AXIOS_REQUEST(DELETE_PHASE + phase.id_fase, "DELETE")
-    //         .then(r => {
-    //           toast.success("Se eliminó la fase correctamente", { position: "top-right" });
-    //           dispatch(setProcessPhasesWithConditions(Number(id_process), null))
-    //         }).catch(r => toast.error("No se pudo eliminar la fase", { position: "top-right" }))
-    //         .finally(() => setLoading(null))
-
-    //     }, value: "Sí, eliminar"
-    //   },
-    //   closeButton: { value: "No, cancelar" }
-    // })
+          },
+          setAlert
+        ) :
+        {
+          isOpen: true,
+          title: "Espere",
+          type: "warning",
+          subtitle: <span>No se puede eliminar la fase <b>{phase.nomb_fase}</b> debido a que cuenta con tareas en curso o completadas</span>,
+          closeButton: { value: "Ok, cerrar" }
+        }
+    )
   }
 
   const editPhase = (data: any, phase: T_PhasesWithConditions) => {
@@ -351,7 +340,7 @@ const Conditions = () => {
                                   radius={32}
                                   color="#06a099"
                                   content={
-                                    selectedProcess.id_fase === phase.id_fase ?
+                                   !!(phase.porcentaje) ?
                                       <b>{phase.porcentaje || 0}%</b>
                                       :
                                       <div className="text-muted"><PauseFill /></div>

@@ -27,6 +27,7 @@ export interface I_Condition {
     // form_obse: number;
     id_esta: number;
     marc_update: string;
+    marc_temp: string;
     nomb_cond: string;
     sede: string;
     porcentaje: number;
@@ -108,4 +109,10 @@ export interface I_Form {
 export type T_ObservationsInFormResp = {
     grupo_resp: string;
     num_obs: number
+}
+
+export type T_Template = {
+    desc_plantilla: string;
+    id_plantilla: number;
+    nomb_plantilla: string
 }
