@@ -304,22 +304,22 @@ const Conditions = () => {
 
         <div>
           {!selectedProcess || !phasesWithConditions[selectedProcess.id_conv] ? <Loader isOpen loaderAsModal={false} />
-            : <>{
-              !phasesWithConditions[selectedProcess.id_conv].length ?
-                <p>| No hay tareas registradas en el proceso</p>
-                :
-                <>
-                  <SubHeader
-                    text={`Fases del proceso`}
-                    className="p-0 align-items-center gap-3"
-                  >
-                    {is_admin && <div className='text-end'>
-                      <Button onClick={() => modalToCreatePhase()} size='sm' color='primary' className='rounded-2 opacity-75 ms-auto'>
-                        <i><Plus /></i>
-                        Crear nueva fase
-                      </Button>
-                    </div>}
-                  </SubHeader>
+            : <>
+              <SubHeader
+                text={`Fases del proceso`}
+                className="p-0 align-items-center gap-3"
+              >
+                {is_admin && <div className='text-end'>
+                  <Button onClick={() => modalToCreatePhase()} size='sm' color='primary' className='rounded-2 opacity-75 ms-auto'>
+                    <i><Plus /></i>
+                    Crear nueva fase
+                  </Button>
+                </div>}
+              </SubHeader>
+              {
+                !phasesWithConditions[selectedProcess.id_conv].length ?
+                  <p className="text-secondary">No hay fases y tareas registradas en el proceso</p>
+                  :
                   <Accordion open={`${accordionOpen}`} {...{ toggle: selectItem }}>
                     {phasesWithConditions[selectedProcess.id_conv].map((phase) => {
                       let dateDiffInPhase = getDateDiff(new Date(phase.fech_fin));
@@ -340,7 +340,7 @@ const Conditions = () => {
                                   radius={32}
                                   color="#06a099"
                                   content={
-                                   !!(phase.porcentaje) ?
+                                    !!(phase.porcentaje) ?
                                       <b>{phase.porcentaje || 0}%</b>
                                       :
                                       <div className="text-muted"><PauseFill /></div>
@@ -468,8 +468,7 @@ const Conditions = () => {
                     })
                     }
                   </Accordion>
-                </>
-            }
+              }
             </>
           }
         </div>
