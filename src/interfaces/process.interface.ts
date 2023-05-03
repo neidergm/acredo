@@ -1,7 +1,7 @@
 export interface I_Process {
     est_conv: number,
     fase_actual: string,
-    id_fase: number,
+    id_fase: null | number,
     id_conv: number,
     id_prog: null | number,
     id_tcond: number,
@@ -10,6 +10,7 @@ export interface I_Process {
     nomb_conv: string,
     programa: null | string,
     tipo_cond: string,
-    porcentaje: number,
     sede: string,
+    id_sede: number,
+    porcentaje: number,
 }

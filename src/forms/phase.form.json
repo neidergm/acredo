@@ -12,7 +12,7 @@
     {
         "name": "fecha_inicio",
         "label": "Fecha de inicio",
-        "tag": "input",
+        "tag": "date",
         "type": "date",
         "wrapperClassName": "col-6",
         "validations": {
@@ -22,7 +22,7 @@
     {
         "name": "fecha_fin",
         "label": "Fecha de fin",
-        "tag": "input",
+        "tag": "date",
         "type": "date",
         "wrapperClassName": "col-6",
         "validations": {

@@ -144,7 +144,7 @@ const CurrentPhase = ({
         setAlert({
             isOpen: true,
             title: "¿Está seguro?",
-            subtitle: "La tarea se dará por finalizada, se quitarán los permisos a los gestores y no se podrá realizar ninguna clase de modificaciones",
+            subtitle: "La tarea se dará por finalizada, se quitarán los permisos a los responsables y no se podrá realizar ninguna clase de modificaciones",
             type: "question",
             submitButton: {
                 value: "Sí, finalizar",
@@ -158,7 +158,7 @@ const CurrentPhase = ({
         setAlert({
             isOpen: true,
             title: "¿Está seguro?",
-            subtitle: "La tarea dejará de estar completada, se restaurarán los permisos a los gestores y se habilitarán las modificaciones",
+            subtitle: "La tarea dejará de estar completada, se restaurarán los permisos a los responsables y se habilitarán las modificaciones",
             type: "question",
             submitButton: {
                 value: "Sí, finalizar",

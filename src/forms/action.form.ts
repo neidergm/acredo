@@ -26,7 +26,7 @@ export const actionFields = (id_condicion: string | number, id_action?: string |
     }
   },
   {
-    "label": "<br/>Gestor(es) responsable(s)",
+    "label": "<br/>Usuarios responsable(s)",
     "help": "No puede modificar los usuarios que son líderes o solo lectura",
     "name": "responsible",
     "tag": "list",
@@ -70,7 +70,6 @@ export const actionFields = (id_condicion: string | number, id_action?: string |
         },
         "dependsOn": "cargo",
         doRequest: ({ method, params, url }: I_JSONObject) => {
-          console.log(params)
           return AXIOS_REQUEST(url, method, params).then(resp => {
             return { options: resp.data.map((i: I_JSONObject) => ({ value: i.id_rc, label: i.nomb_resp })) };
           })

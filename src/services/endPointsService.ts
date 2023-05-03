@@ -25,6 +25,24 @@ export const PROCESS_LIST = `conv`;
  */
 export const PROCESS_DETAILS = `conv/`;
 
+/**
+ * @method GET
+ * @params /{ id_conv }
+ */
+export const DELETE_PROCESS = `conv/`;
+
+/**
+ * @method POST
+ * @params { id_prog, id_tcond, id_sede, id_prog }
+ */
+export const CREATE_PROCESS = `conv`;
+
+/**
+ * @method PUT
+ * @params { id_conv, id_prog, id_tcond, id_sede, id_prog }
+ */
+export const UPDATE_PROCESS = `conv`;
+
 
 /*---------------------------------------------*/
 // TASK
@@ -256,3 +274,14 @@ export const CONDITIONS_TYPES = `getinfo/condiciones`;
  * @params /{type} - "form" | "tareas" | "fase" | "etapa" | "accion" 
  */
 export const GET_TEMPLATES = `plantilla/`;
+
+
+/*---------------------------------------------*/
+// PROGRAMS
+/*---------------------------------------------*/
+
+/**
+ * @method GET
+ */
+export const GET_PROGRAMS_LIST = `programas`;
+
