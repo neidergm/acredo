@@ -9,6 +9,7 @@ import { useAppDispatch } from './hooks/useAppDispatch';
 import { setUnauthorized } from './store/actions/userActions';
 import Footer from './components/Footer';
 import './App.css';
+import './custom-colors.css';
 
 const Login = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Login" */ './screens/Login')));
 const Conditions = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Conditions" */ './screens/Conditions')));

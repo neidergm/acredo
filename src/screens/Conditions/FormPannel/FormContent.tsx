@@ -32,7 +32,7 @@ const FormContent = ({ canEdit, formItem, onSubmit, onDelete }: T_Props) => {
                 formProps={{ id: FORM_ID }}
             />,
             footer: canEdit && <ModalFooter>
-                <Button color="primary" onClick={() => closeModal(setModal)}>Cancelar</Button>
+                <Button color="primary2" onClick={() => closeModal(setModal)}>Cancelar</Button>
                 <Button color="primary" form={FORM_ID}>Guardar</Button>
             </ModalFooter>
         })

@@ -56,8 +56,8 @@ const Process = () => {
         />
       </>,
       footer: <ModalFooter className='justify-content-between'>
-        <Button color='primary' className="opacity-75 rounded-2">Cancelar</Button>
-        <Button color='primary' className="opacity-75 rounded-2" form={FORMID}>Continuar</Button>
+        <Button color='primary2'>Cancelar</Button>
+        <Button color='primary' form={FORMID}>Continuar</Button>
       </ModalFooter>
     })
   }
@@ -84,8 +84,8 @@ const Process = () => {
         />
       </>,
       footer: <ModalFooter className='justify-content-between'>
-        <Button color='primary' className="opacity-75 rounded-2">Cancelar</Button>
-        <Button color='primary' className="opacity-75 rounded-2" form={FORMID}>Continuar</Button>
+        <Button color='primary2'>Cancelar</Button>
+        <Button color='primary' form={FORMID}>Continuar</Button>
       </ModalFooter>
     })
   }
@@ -194,7 +194,8 @@ const Process = () => {
     <>
       <SubHeader text={'Procesos'} className="container">
         <div className='d-flex align-items-center'>
-          {is_admin && <Button color='primary' size='sm' className='opacity-75 rounded-2' onClick={modalToCreateNewProcess}>
+          {/* {is_admin && <Button color='primary' size='sm' className='opacity-75 rounded-2' onClick={modalToCreateNewProcess}> */}
+          {is_admin && <Button color='primary' size='sm' onClick={modalToCreateNewProcess}>
             <i><Plus /></i>
             Crear nuevo proceso
           </Button>}

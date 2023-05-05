@@ -57,7 +57,7 @@ const Alert = ({
   if (closeButton) {
     buttons.push(<Button
       key="closeButton"
-      color="primary"
+      color="primary2"
       {...closeButton}
       onClick={() => {
         toggle();
@@ -93,7 +93,7 @@ const Alert = ({
       </ModalHeader>
       <ModalBody className="text-center">
         {title && <h3 className='mb-4'>{title}</h3>}
-        {subtitle && <p className='mb-0 text-secondary'>{subtitle}</p>}
+        {subtitle && <p className='mb-0 text-muted'>{subtitle}</p>}
       </ModalBody>
       <ModalFooter>{buttons}</ModalFooter>
     </Modal>

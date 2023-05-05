@@ -100,13 +100,13 @@ const AsTabs = ({
             </ObservationChat>
 
             <div>
-                <Nav tabs className="group-subtitle p-0 mb-3 border-bottom justify-content-md-start d-md-flex d-block align-items-center">
+                <Nav tabs className="group-subtitle p-0 mb-3 border-bottom justify-content-md-start d-flex flex-nowrap align-items-center">
                     {
                         formList.map((item, i) => {
                             let num_obs = item.tipo_obs !== 0 ? getNumObs(item) : 0;
                             return <NavItem key={`ni-${i}`}>
                                 <NavLink onClick={() => { toggleTab(i); }}
-                                    className={"sub-item text-muted px-3 pb-3 d-flex align-items-center " + classnames({
+                                    className={"sub-item text-muted px-3 pb-2 d-flex align-items-center " + classnames({
                                         "active fw-bold px-xl-4": currentActiveTab === i
                                     })}
                                 >

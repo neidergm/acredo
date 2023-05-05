@@ -68,7 +68,7 @@ const ConditionsDetails = () => {
       </div>,
       size: "xl",
       footer: <ModalFooter>
-        <Button color="primary" onClick={() => closeModal(setModalData)}>Cerrar</Button>
+        <Button color="primary2" onClick={() => closeModal(setModalData)}>Cerrar</Button>
       </ModalFooter>
     })
   }
@@ -260,12 +260,12 @@ const ConditionsDetails = () => {
                             { text: "Modificar tarea", icon: <Edit size={16} />, click: editTask },
                             { text: "Eliminar tarea", icon: <XCircle size={16} />, click: deleteTask },
                           ]}>
-                            <DropdownToggle size="sm" color='primary' className='rounded-2 opacity-75 pe-3'>
+                            <DropdownToggle size="sm" color='primary' className='pe-3'>
                               <ThreeDotsVertical size={16} /> Opciones
                             </DropdownToggle>
                           </CustomDropdown>
                           :
-                          <Button size='sm' color="primary" className='rounded-2 opacity-75' outline onClick={() => showConditionDetails()}>
+                          <Button size='sm' color="primary" outline onClick={() => showConditionDetails()}>
                             <span className='d-flex align-items-center pe-2'>
                               <span className='me-1'><InfoCircle size={16} /></span>Detalles
                             </span>
@@ -299,7 +299,7 @@ const ConditionsDetails = () => {
                               text: "Asociar usuarios", optionProps: { className: "mt-3" }, click: editTask
                             }]
                         }>
-                          <DropdownToggle size="sm" color='primary' className='rounded-2 opacity-75 pe-3'>
+                          <DropdownToggle size="sm" color='primary' className='pe-3'>
                             <i className='ps-1 pe-1'><People size={16} /></i>
                             <span className='ps-1 pe-1'>Usuarios</span>
                           </DropdownToggle>

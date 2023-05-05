@@ -75,7 +75,7 @@ const AllAttachments = ({
                                 </p>
                             }
                         </div>
-                        <div className='text-secondary'>
+                        <div className='text-muted'>
                             <div>
                                 <small><Calendar2Event size={13}/> Última modificación {getNormalDate(attachs[0].marc_update, { dateStyle: 'long' })}</small>
                             </div>

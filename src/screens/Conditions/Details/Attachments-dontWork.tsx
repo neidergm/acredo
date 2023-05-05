@@ -298,7 +298,7 @@
 //                                                                     </p>
 //                                                                 )
 //                                                             } else if (item.json_campo.type === "url") {
-//                                                                 return <p key={`attach-${i}`} className="text-truncate text-secondary">
+//                                                                 return <p key={`attach-${i}`} className="text-truncate text-muted">
 //                                                                     <i><Link size={18} /></i> {item.respuesta}
 //                                                                 </p>
 //                                                             } else {

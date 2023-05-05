@@ -32,7 +32,7 @@ const PhasesAttachments = () => {
         <>
             <SubHeader text={'Anexos de fase'} className="container">
                 <div className=''>
-                    <Button color='primary' size='sm' className='pe-3 opacity-75 rounded-2 rounded-pill d-flex align-items-center gap-2'
+                    <Button color='primary' size='sm' className='pe-3 rounded-pill d-flex align-items-center gap-2'
                         onClick={() => {
                             window.close()
                         }}>

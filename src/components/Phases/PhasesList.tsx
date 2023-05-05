@@ -57,7 +57,7 @@ const PhasesList = (
           <b className='d-block'>Responsables: </b>
           <ul>
             {action.usuarios?.map((u, i) => <li key={i} title={u.nomb_cargo}>
-              {u.responsable} <small className='text-secondary'> | {u.rol_nombre}</small></li>) || <li>Sin responsables</li>}
+              {u.responsable} <small className='text-muted'> | {u.rol_nombre}</small></li>) || <li>Sin responsables</li>}
           </ul>
         </p>
       </div>
@@ -133,7 +133,7 @@ const PhasesList = (
 
   const createStageButton = <div className='text-end mt-3'>
     {isAdmin && !!list &&
-      <Button color='primary' className='opacity-75 rounded-2' size='sm' onClick={() => createNewStage(list[0])}>
+      <Button color='primary' size='sm' onClick={() => createNewStage(list[0])}>
         <i><Plus /></i>
         Crear nueva etapa
         </Button>
@@ -196,7 +196,7 @@ const PhasesList = (
             key={key}
           >
             <div className={classnames('d-flex align-items-center', { 'justify-content-between': isAdmin })}>
-              <div className={classnames(styles["phase-header"], "mb-3 fw-semibold text-secondary")}>
+              <div className={classnames(styles["phase-header"], "mb-3 fw-semibold text-muted")}>
                 <span>- {item.name}</span>
               </div>
             </div>

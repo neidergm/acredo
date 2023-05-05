@@ -56,7 +56,7 @@ const Menu = ({ children }: I_MenuProps) => {
                         </p>
                     </DropdownItem>
                     <DropdownItem disabled tag="div" style={{ "pointerEvents": "initial" }} className="mt-3 text-center">
-                        <Button color='primary' onClick={confirmLogout} size='sm' className='rounded-2 opacity-75'>Cerrar sesión</Button>
+                        <Button color='primary' onClick={confirmLogout} size='sm'>Cerrar sesión</Button>
                     </DropdownItem>
                 </DropdownMenu>
             </UncontrolledDropdown>

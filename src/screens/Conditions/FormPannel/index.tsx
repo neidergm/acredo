@@ -211,7 +211,7 @@ const FormPannel = ({
         content = <div className="w-100 h-100 d-flex justify-content-center align-items-center flex-column py-5">
             <i className="text-warning mb-2"><ExclamationCircleFill size={35} /></i>
             <span className="d-block mb-5"> No hay formularios asociados para mostrar</span>
-            {!!(canAddForms) && <Button size="sm" color="primary" className='rounded-2 opacity-75' onClick={toggleEditFormsPannel}>
+            {!!(canAddForms) && <Button size="sm" color="primary" onClick={toggleEditFormsPannel}>
                 <i className='me-1'><Link /></i>
                 <span>Utilizar plantillas de formularios</span>
             </Button>}
@@ -225,7 +225,7 @@ const FormPannel = ({
             onSubmit={confirmSubmit}
             onDelete={confirmDelete}
         >
-            {!!(canAddForms) && <Button size="sm" color="primary" className='rounded-2 opacity-75' onClick={toggleEditFormsPannel}>
+            {!!(canAddForms) && <Button size="sm" color="primary" onClick={toggleEditFormsPannel}>
                 <i className='me-1'><Link /></i>
                 <span>Agregar plantillas de formularios</span>
             </Button>}

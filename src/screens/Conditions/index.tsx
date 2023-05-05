@@ -67,9 +67,9 @@ const Conditions = () => {
         <AllAttachments phaseId={phase.id_fase} />
       </>,
       footer: <ModalFooter>
-        <Button color='primary' className="opacity-75 rounded-2">Cerrar</Button>
+        <Button color='primary2'>Cerrar</Button>
         <Link to={`/proceso/fases/anexos/${phase.id_fase}`} target="_blank"
-          className="opacity-75 rounded-2 btn btn-primary">Abrir en nueva pestaña</Link>
+          className="btn btn-primary">Abrir en nueva pestaña</Link>
       </ModalFooter>
     })
   }
@@ -310,7 +310,7 @@ const Conditions = () => {
                 className="p-0 align-items-center gap-3"
               >
                 {is_admin && <div className='text-end'>
-                  <Button onClick={() => modalToCreatePhase()} size='sm' color='primary' className='rounded-2 opacity-75 ms-auto'>
+                  <Button onClick={() => modalToCreatePhase()} size='sm' color='primary' className='ms-auto'>
                     <i><Plus /></i>
                     Crear nueva fase
                   </Button>
@@ -318,7 +318,7 @@ const Conditions = () => {
               </SubHeader>
               {
                 !phasesWithConditions[selectedProcess.id_conv].length ?
-                  <p className="text-secondary">No hay fases y tareas registradas en el proceso</p>
+                  <p className="text-muted">No hay fases y tareas registradas en el proceso</p>
                   :
                   <Accordion open={`${accordionOpen}`} {...{ toggle: selectItem }}>
                     {phasesWithConditions[selectedProcess.id_conv].map((phase) => {
@@ -394,7 +394,7 @@ const Conditions = () => {
                                       <Badge
                                         pill
                                         color="light"
-                                        className="px-3 text-secondary"
+                                        className="px-3 text-muted"
                                       >
                                         {item.num_obs} Observaciones
                                       </Badge>
@@ -420,7 +420,7 @@ const Conditions = () => {
                             >
                               <span className="text-warning align-text-bottom me-2">
                                 <ExclamationCircleFill /> </span>
-                              <span className="text-secondary">
+                              <span className="text-muted">
                                 No hay tareas registradas para mostrar
                               </span>
                             </ListGroupItem>}
@@ -433,7 +433,6 @@ const Conditions = () => {
                                 <Button
                                   size='sm'
                                   color='primary'
-                                  className='rounded-2 opacity-75'
                                   onClick={() => modalToCreateTask(phase)}
                                 >
                                   <i><Plus /></i>
@@ -445,7 +444,7 @@ const Conditions = () => {
                                   { text: "Modificar fase", icon: <Edit size={16} />, click: () => modalToEditPhase(phase) },
                                   { text: "Eliminar fase", icon: <XCircle size={16} />, click: () => deletePhase(phase) },
                                 ]}>
-                                  <DropdownToggle size="sm" color='primary' className='rounded-2 opacity-75'>
+                                  <DropdownToggle size="sm" color='primary'>
                                     <ThreeDotsVertical />
                                   </DropdownToggle>
                                 </CustomDropdown>
@@ -454,7 +453,6 @@ const Conditions = () => {
                                 <Button
                                   size='sm'
                                   color='primary'
-                                  className='rounded-2 opacity-75'
                                   onClick={() => showAllAttachment(phase)}
                                 >
                                   <i><Clip /></i>

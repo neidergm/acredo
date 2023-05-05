@@ -120,7 +120,7 @@ const FormsTemplatesAssociaton = ({
                                                 />
                                                 <label className="ps-2 form-check-label stretched-link" htmlFor={`item-${item.id_plantilla}`}>
                                                     <span>{item.nomb_plantilla}</span>
-                                                    <p className='text-secondary mt-2'>
+                                                    <p className='text-muted mt-2'>
                                                         <b className='small d-block fw-semibold'>Descripción:</b>
                                                         <small>{item.desc_plantilla || "Sin descripción"}</small>
                                                     </p>
@@ -140,10 +140,10 @@ const FormsTemplatesAssociaton = ({
                 <div className='pb-3 pt-4 px-3'>
                     <div className='d-flex justify-content-between'>
                         <div>
-                            <Button color='primary' className='opacity-75 rounded-2 ms-auto' onClick={() => toggle()}>Cerrar</Button>
+                            <Button color='primary2' className='ms-auto' onClick={() => toggle()}>Cerrar</Button>
                         </div>
                         <div>
-                            <Button color='primary' className='opacity-75 rounded-2 ms-auto' form={FORMID}>Continuar</Button>
+                            <Button color='primary' className='ms-auto' form={FORMID}>Continuar</Button>
                         </div>
                     </div>
                 </div>}

@@ -199,12 +199,12 @@ const CurrentPhase = ({
                     <div>
                         {!!(canEndTask) && (
                             taskIsEnded ?
-                                <Button onClick={undoMarkTaskAsCompleted} size='sm' color='primary' className='rounded-2 opacity-75 ms-auto' disabled={!(taskProgress)}>
+                                <Button onClick={undoMarkTaskAsCompleted} size='sm' color='primary' className='ms-auto' disabled={!(taskProgress)}>
                                     <i className='me-1'><ArrowCounterclockwise /></i>
                                     Desmarcar tarea como completada
                                 </Button>
                                 :
-                                <Button onClick={markTaskAsCompleted} size='sm' color='primary' className='rounded-2 opacity-75 ms-auto' disabled={!(taskProgress)}>
+                                <Button onClick={markTaskAsCompleted} size='sm' color='primary' className='ms-auto' disabled={!(taskProgress)}>
                                     <i className='me-1'><Check /></i>
                                     Marcar tarea como completada
                                 </Button>
@@ -248,7 +248,7 @@ const CurrentPhase = ({
                             <Button onClick={togglePhases} size='sm' color='link' className='rounded-2 '>Mostrar fases y etapas</Button>
                         }
                         {!!(canEndAction) &&
-                            <Button onClick={markActionAsCompleted} size='sm' color='primary' className='rounded-2 opacity-75 ms-auto'>
+                            <Button onClick={markActionAsCompleted} size='sm' color='primary' className='ms-auto'>
                                 <i className='me-1'><Check /></i>
                                 Finalizar esta acción
                             </Button>

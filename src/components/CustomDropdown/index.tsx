@@ -25,7 +25,7 @@ const CustomDropdown = ({
                 {
                     options.map(({ optionProps, ...option }, idx) => {
                         return <DropdownItem onClick={() => option.click?.()} {...optionProps} key={idx}>
-                            <div className='d-flex gap-3 text-secondary align-items-center'>
+                            <div className='d-flex gap-3 text-muted align-items-center'>
                                 {option.icon} <span className='flex-grow-1'>{option.text}</span>
                             </div>
                         </DropdownItem>

@@ -25,7 +25,7 @@ const Action = ({
                     <div className={
                         classnames(
                             'd-flex rounded-pill align-items-center pe-4 gap-2 bg-opacity-25',
-                            data.est_accion === 2 ? "bg-success text-success" : "bg-secondary text-secondary"
+                            data.est_accion === 2 ? "bg-success text-success" : "bg-secondary text-muted"
                         )
                     }>
                         <div
@@ -91,8 +91,8 @@ const Action = ({
             </p>
             <ul className='ps-3 ms-1 mb-0'>
                 {data.usuarios?.map((user, i) => <li className='small cursor-pointer' key={i} title={user.nomb_cargo}>
-                    {user.responsable}<small className='text-secondary'> | {user.rol_nombre}</small>
-                    {/* <Badge className='ms-2 text-secondary' color='light'>{user.rol_nombre}</Badge> */}
+                    {user.responsable}<small className='text-muted'> | {user.rol_nombre}</small>
+                    {/* <Badge className='ms-2 text-muted' color='light'>{user.rol_nombre}</Badge> */}
                 </li>) || <li className='small text-danger fw-semibold'>SIN USUARIOS ASIGNADOS</li>
                 }
             </ul>

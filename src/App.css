@@ -6,15 +6,20 @@
 html {
   scroll-behavior: smooth;
   --bs-body-bg: #f3f4f6 !important;
-  --progress-circle-color: #ff9400;
-  --bs-warning: #ff9400 !important;
+  --progress-circle-color: #ff8c00;
   --bs-warning-rgb: 255, 148, 0 !important;
   --bs-info-rgb: 6, 160, 153 !important;
   --bs-info: #06a099 !important;
   --bs-success-rgb: 49, 172, 105 !important;
   --bs-success: #31ac69 !important;
 
-  /* --bs-btn-border-radius: var(--bs-border-radius)0.25rem; */
+  /* WARNINGS */
+  --bs-warning: #ff8c00 !important;
+  --bs-warning-rgb: 255, 140, 0 !important;
+
+  /* PRIMARY */
+  /* --bs-primary: #156ff1 !important;
+  --bs-primary-rgb: 21, 111, 241 !important; */
 }
 
 .main *,
@@ -131,6 +136,10 @@ code {
   }
 }
 
+.accordion-button *{
+  color: var(--bs-gray) !important;
+}
+
 
 
 
@@ -142,10 +151,10 @@ code {
   overflow-y: overlay !important;
 }
 
-.accordion-body-px-0{
+.accordion-body-px-0 {
   --bs-accordion-body-padding-x: 0px;
 }
 
-.accordion-body-py-0{
+.accordion-body-py-0 {
   --bs-accordion-body-padding-y: 0px;
 }
