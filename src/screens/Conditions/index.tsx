@@ -67,7 +67,7 @@ const Conditions = () => {
         <AllAttachments phaseId={phase.id_fase} />
       </>,
       footer: <ModalFooter>
-        <Button color='primary2'>Cerrar</Button>
+        <Button color='primary2' onClick={() => closeModal(setModal)}>Cerrar</Button>
         <Link to={`/proceso/fases/anexos/${phase.id_fase}`} target="_blank"
           className="btn btn-primary">Abrir en nueva pestaña</Link>
       </ModalFooter>
@@ -93,7 +93,8 @@ const Conditions = () => {
       </div>,
       title: `${type} fase`,
       size: "md",
-      footer: <ModalFooter>
+      footer: <ModalFooter className='justify-content-between'>
+        <Button color='primary2' onClick={() => closeModal(setModal)}>Cancelar</Button>
         <Button form={formID} color='primary'>Guardar {type !== "Crear" && "cambios"}</Button>
       </ModalFooter>
     })
@@ -122,7 +123,8 @@ const Conditions = () => {
       </div>,
       title: `Crear nueva tarea`,
       size: "xl",
-      footer: <ModalFooter>
+      footer: <ModalFooter className='justify-content-between'>
+        <Button color='primary2' onClick={() => closeModal(setModal)}>Cancelar</Button>
         <Button form={formID} color='primary'>Guardar</Button>
       </ModalFooter>
     })
@@ -278,6 +280,10 @@ const Conditions = () => {
                       <span className="d-block">{selectedProcess.sede}</span>
                     </div>
                   </div>
+                  {selectedProcess.coment_conv && <div className="flex-grow-1">
+                    <b>Comentarios:</b>
+                    <span className="d-block">{selectedProcess.coment_conv}</span>
+                  </div>}
                 </div>
                 <div className="h-100 d-flex flex-column gap-4">
                   <div>

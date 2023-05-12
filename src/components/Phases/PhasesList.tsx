@@ -36,10 +36,16 @@ const PhasesList = (
       size: "lg",
       title: action.nomb_accion,
       children: <div>
+        {action.est_accion === 2 && <p>
+          <b className='d-block'>Fecha de realización: </b>
+          <span>
+            {getNormalDate(action.marc_update, { dateStyle: "full", timeStyle: "short" })}
+          </span>
+        </p>}
         <p>
           <b className='d-block'>Fecha límite: </b>
           <span>
-            {getNormalDate(action.fecha_accion, { dateStyle: "long" })}
+            {getNormalDate(action.fecha_accion, { dateStyle: "full" })}
             {action.est_accion === 0 && <Badge pill color={dateDiff < 0 ? "danger" : "primary"} className='float-end d-line-block'>
               {dateDiff < 0 ? `Vencido hace ${dateDiff * -1} días` : `Vence ${dateDiff === 0 ? "hoy" : "en " + dateDiff + " días"}`}
             </Badge>}
@@ -107,7 +113,11 @@ const PhasesList = (
                   </span>
                   <p>
                     {action.nomb_accion}
-                    <span className='d-block text-muted'>{action.est_accion !== 2 && "Vence el "}{getNormalDate(action.fecha_accion, { dateStyle: "long" })}</span>
+                    {action.est_accion !== 2 ?
+                      <span className='d-block text-muted'>Vence el {getNormalDate(action.fecha_accion, { dateStyle: "long" })}</span>
+                      :
+                      <span className='d-block text-muted'>Realizada el {getNormalDate(action.marc_update, { dateStyle: "long", timeStyle: "short" })}</span>
+                    }
                   </p>
                 </div>
               })
@@ -136,7 +146,7 @@ const PhasesList = (
       <Button color='primary' size='sm' onClick={() => createNewStage(list[0])}>
         <i><Plus /></i>
         Crear nueva etapa
-        </Button>
+      </Button>
     }
   </div>
 

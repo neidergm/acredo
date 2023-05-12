@@ -141,7 +141,8 @@ const ConditionsDetails = () => {
       </div>,
       title: `Editar tarea`,
       size: "xl",
-      footer: <ModalFooter>
+      footer: <ModalFooter className='justify-content-between'>
+        <Button color='primary2' onClick={() => closeModal(setModalData)}>Cancelar</Button>
         <Button form={formID} color='primary'>Guardar</Button>
       </ModalFooter>
     })

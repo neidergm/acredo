@@ -13,4 +13,5 @@ export interface I_Process {
     sede: string,
     id_sede: number,
     porcentaje: number,
+    coment_conv: string;
 }

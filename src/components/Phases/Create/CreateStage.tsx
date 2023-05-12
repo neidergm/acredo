@@ -63,6 +63,7 @@ const CreateStage = ({
       title: `${type} acción`,
       size: "lg",
       footer: <ModalFooter>
+        <Button color='primary2' onClick={() => closeModal(setModal)}>Cancelar</Button>
         <Button form={formID} color='primary'>Guardar{type === "Modificar" ? " cambios" : ""}</Button>
       </ModalFooter>
     })

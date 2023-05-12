@@ -11,8 +11,7 @@ import CircleProgress from '../components/CircleProgress';
 import Card from '../components/Card';
 import { Edit, ExclamationCircleFill, Folder2Open, People, Plus, ThreeDotsVertical, XCircle } from '../components/Icons';
 import { Modal, ModalBody, ModalHeader, T_ModalJSON, closeModal, ModalFooter } from '../components/Modal';
-import processForm from './../forms/process.form';
-import Form from 'react-ngm-form';
+// import processForm from './../forms/process.form';
 import Alert, { I_AlertObject } from '../components/Alert';
 import { AXIOS_REQUEST } from '../services/axiosService';
 import { CREATE_PROCESS, DELETE_PROCESS, UPDATE_PROCESS } from '../services/endPointsService';
@@ -22,6 +21,7 @@ import { isAdmin } from '../utils/userRolUtils';
 import CustomDropdown from '../components/CustomDropdown';
 import { I_JSONObject } from '../interfaces/generic.interface';
 import confirmDeleteAlertObject from '../utils/confirmDeleteAlertObject';
+import ProcessForm from '../forms/ProcessForm';
 
 const Process = () => {
 
@@ -41,50 +41,48 @@ const Process = () => {
   }
 
   const modalToCreateNewProcess = () => {
-    const fields = processForm;
     const FORMID = "CREATE-PROCESS";
     setModal({
       isOpen: true,
       size: "lg",
       title: "Crear nuevo proceso",
       children: <>
-        <Form
+        <ProcessForm
           formProps={{ id: FORMID }}
-          fields={fields}
           defaultValues={{}}
           onSubmit={createNewProces}
         />
       </>,
       footer: <ModalFooter className='justify-content-between'>
-        <Button color='primary2'>Cancelar</Button>
+        <Button color='primary2' onClick={() => closeModal(setModal)}>Cancelar</Button>
         <Button color='primary' form={FORMID}>Continuar</Button>
       </ModalFooter>
     })
   }
 
   const modalToEditProcess = (process: I_Process) => {
-    const fields = processForm.map(i => ({ ...i }));
+    // const fields = processForm.map(i => ({ ...i }));
     const FORMID = "EDIT-PROCESS";
     const defaultData = {
       nomb_conv: process.nomb_conv,
       id_tcond: process.id_tcond.toString(),
       id_sede: process.id_sede.toString(),
-      id_prog: process.id_prog?.toString()
+      id_prog: process.id_prog?.toString(),
+      coment_conv: process.coment_conv
     }
     setModal({
       isOpen: true,
       size: "lg",
       title: "Modificar proceso",
       children: <>
-        <Form
+        <ProcessForm
           formProps={{ id: FORMID }}
-          fields={fields}
           defaultValues={defaultData}
-          onSubmit={data => editProcess(process, data, defaultData)}
+          onSubmit={(data: any) => editProcess(process, data, defaultData)}
         />
       </>,
       footer: <ModalFooter className='justify-content-between'>
-        <Button color='primary2'>Cancelar</Button>
+        <Button color='primary2' onClick={() => closeModal(setModal)}>Cancelar</Button>
         <Button color='primary' form={FORMID}>Continuar</Button>
       </ModalFooter>
     })

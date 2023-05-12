@@ -21,6 +21,11 @@ export const PROCESS_LIST = `conv`;
 
 /**
  * @method GET
+ */
+export const GET_PROCESS_TYPE = `cond/tipos`;
+
+/**
+ * @method GET
  * @params /{ id_conv }
  */
 export const PROCESS_DETAILS = `conv/`;

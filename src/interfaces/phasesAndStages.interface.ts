@@ -14,6 +14,8 @@ export type T_Action = {
     est_accion: 0 | 1 | 2; //0: created; 1: Notificated; 2: Completed
     finalizar: 0 | 1;
     fecha_accion: string;
+    marc_update: string;
+    marc_temp: string;
     id_accion: number;
     nomb_accion: string;
     orden: number;

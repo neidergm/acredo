@@ -136,9 +136,9 @@ code {
   }
 }
 
-.accordion-button *{
-  color: var(--bs-gray) !important;
-}
+/* .accordion-button *{
+  color: var(--bs-gray);
+} */
 
 
 
