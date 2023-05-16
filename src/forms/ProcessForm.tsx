@@ -21,7 +21,8 @@ const ProcessForm = ({
 
     const [form, setForm] = useState<T_FieldsTypes[]>([]);
     // const [selectProgram, setSelectProgram] = useState<any>();
-    const fetchedProcessType = useRef<any>([]);
+    const fetchedProcessTypeRef = useRef<any>([]);
+    const [_, setFP] = useState<any>([]);
 
     const processForm: T_FieldsTypes[] = [
         {
@@ -43,8 +44,8 @@ const ProcessForm = ({
             doRequest: ({ method, params, url }: I_JSONObject) => {
                 return AXIOS_REQUEST(url, method, params).then(resp => {
                     let options = resp.data.map((i: I_JSONObject) => ({ value: i.id_tcond, label: i.nomb_tcond }))
-                    resp.data[1].programa = true;
-                    fetchedProcessType.current = resp.data;
+                    fetchedProcessTypeRef.current = resp.data;
+                    setFP(resp.data)
                     return { options };
                 })
             },
@@ -58,8 +59,8 @@ const ProcessForm = ({
                 {
                     name: 'id_prog',
                     showWhenValue: (val: any) => {
-                        if (defaultValues.id_tcond && !fetchedProcessType.current.length) { return true }
-                        return !!fetchedProcessType.current.find((i: any) => `${i.id_tcond}` === val && i.programa)
+                        // if (defaultValues.id_tcond && !fetchedProcessType.current.length) { return true }
+                        return !!fetchedProcessTypeRef.current.find((i: any) => `${i.id_tcond}` === val && i.camp_prog === 1)
                     }
                 }
             ],
@@ -120,10 +121,6 @@ const ProcessForm = ({
             "validations": {}
         }
     ]
-
-    console.log({
-        defaultValues, processForm
-    })
 
     useEffect(() => {
         setForm(
