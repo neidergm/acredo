@@ -23,7 +23,7 @@ export const getProcessList = (id_process?: number) => {
             return res.data;
         })
         .catch(err => {
-            dispatch(setProcessList([]))
+            // dispatch(setProcessList([]))
             return null
         })
 }

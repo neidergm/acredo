@@ -70,7 +70,7 @@ const FormsTemplatesAssociaton = ({
                     AXIOS_REQUEST(ASOCIATE_FORM_TO_TASK, "PUT", data, true)
                         .then((resp) => {
                             toggle();
-                            toast.success("Se ha eliminado la tarea", { position: "top-right" });
+                            toast.success("Formularios asociados correctamente", { position: "top-right" });
                             dispatch(selectCondition(null))
                             dispatch(getContionData(Number(taskId!)))
                         }).catch(() => {

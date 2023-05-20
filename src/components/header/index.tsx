@@ -25,7 +25,9 @@ export const Header = ({ titulo = "Master U" }: { titulo?: string }) => {
           </div>
           <UncontrolledTooltip target={`helpicon`}>Ayuda</UncontrolledTooltip>
           <div className='hover-shadow-sm hover-scale-up' id="helpicon">
-            <QuestionCircle size={24} />
+            <a target="_blank" className='text-white' href="https://sites.google.com/curn.edu.co/masterhelp">
+              <QuestionCircle size={24} />
+            </a>
           </div>
           <div className='ms-3 d-flex align-items-center'>
             <Menu>
