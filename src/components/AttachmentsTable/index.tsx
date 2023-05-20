@@ -98,7 +98,7 @@ const AttachmentsTable = ({
                             [{
                                 text: "Editar anexo",
                                 icon: <Edit size={16} />,
-                                click: () => () => onEdit(item, "Modificar")
+                                click: () => onEdit(item, "Modificar")
                             }] : []
                         ).concat((canEdit && !!(onDelete)) ?
                             [{

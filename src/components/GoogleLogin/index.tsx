@@ -53,13 +53,13 @@ const GoogleLogin = (props: I_Props) => {
     const showOneTapPrompt = () => {
         window.google.accounts.id.prompt((notification: any) => {
             // console.log(notification)
-            if (notification.isNotDisplayed()) {
-                console.log(notification.getNotDisplayedReason())
-            } else if (notification.isSkippedMoment()) {
-                console.log(notification.getSkippedReason())
-            } else if (notification.isDismissedMoment()) {
-                console.log(notification.getDismissedReason())
-            }
+            // if (notification.isNotDisplayed()) {
+            //     console.log(notification.getNotDisplayedReason())
+            // } else if (notification.isSkippedMoment()) {
+            //     console.log(notification.getSkippedReason())
+            // } else if (notification.isDismissedMoment()) {
+            //     console.log(notification.getDismissedReason())
+            // }
         });
     }
 

@@ -154,12 +154,12 @@ const CreateStage = ({
         subtitle: <span>No se puede eliminar debido a que la tarea quedaría sin etapas</span>,
         closeButton: { value: "Ok" }
       })
-    } else if (stage.actions_completed !== 0) {
+    } else if (stage.actions_completed! > 0) {
       return setAlert({
         isOpen: true,
         title: "Espere",
         type: "warning",
-        subtitle: <span>No se puede eliminar debido a que la tarea cuenta con acciones realizadas</span>,
+        subtitle: <span>No se puede eliminar debido a que la etapa cuenta con acciones realizadas</span>,
         closeButton: { value: "Ok" }
       })
     }
@@ -230,8 +230,10 @@ const CreateStage = ({
     setLoader("Registrando nueva etapa");
 
     AXIOS_REQUEST(PUT_STAGE, "POST", data, true).then(r => {
-      // dispatch(getPhasesAndStagesOfCondition(Number(id_cond)));
       toast.success("Se ha registrado la etapa correctamente", { position: "top-right" });
+      updateDataOnUnmount.current = true;
+      dispatch(getPhasesAndStagesOfCondition(Number(id_cond)));
+      // dispatch(getPhasesAndStagesOfCondition(Number(id_cond)));
     }).catch(e => {
       toast.error("No se pudo registrar la etapa", { position: "top-right" })
     }).finally(() => setLoader(null))

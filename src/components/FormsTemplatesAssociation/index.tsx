@@ -10,7 +10,8 @@ import Alert, { I_AlertObject } from '../Alert';
 import Loader from '../Loader';
 import { closeModal } from '../Modal';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
-import { getContionData, selectCondition } from '../../store/actions/conditionsActions';
+import { getContionData, selectCondition, setProcessPhasesWithConditions } from '../../store/actions/conditionsActions';
+import { useAppSelector } from '../../hooks/useAppSelector';
 
 type T_Props = {
     open: boolean;
@@ -28,6 +29,7 @@ const FormsTemplatesAssociaton = ({
     const [loader, setLoader] = useState<string | null>(null);
     const [alertConfirm, setAlertConfirm] = useState<I_AlertObject | null>(null);
     const dispatch = useAppDispatch();
+    const process = useAppSelector(s => s.process.selected);
 
     const formRef = useRef<HTMLFormElement>(null);
 
@@ -73,6 +75,7 @@ const FormsTemplatesAssociaton = ({
                             toast.success("Formularios asociados correctamente", { position: "top-right" });
                             dispatch(selectCondition(null))
                             dispatch(getContionData(Number(taskId!)))
+                            dispatch(setProcessPhasesWithConditions(process!.id_conv, null))
                         }).catch(() => {
                             toast.error("No se pudo asociar", { position: "top-right" });
                         }).finally(() => setLoader(null))
@@ -81,7 +84,6 @@ const FormsTemplatesAssociaton = ({
             closeButton: { value: "Cancelar" }
         })
     }
-
     const onSelectItem = (id: number, isSelected: boolean) => {
         setSelectedList(l => isSelected ? l.filter(i => i !== id) : [...l, id])
     }
@@ -89,7 +91,6 @@ const FormsTemplatesAssociaton = ({
     useEffect(() => {
         getFormsTemplates()
     }, [])
-
     return (<>
         <Offcanvas isOpen={open} style={{ minWidth: "65%" }}>
             <OffcanvasHeader toggle={() => toggle()}>

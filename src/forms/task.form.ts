@@ -109,7 +109,6 @@ export const taskForm = (showGoogleDocField = true, showConditionTypeField = tru
                     },
                     "dependsOn": "cargo",
                     doRequest: ({ method, params, url }: I_JSONObject) => {
-                        console.log(params)
                         return AXIOS_REQUEST(url, method, params).then(resp => {
                             return { options: resp.data.map((i: I_JSONObject) => ({ value: i.id_rc, label: i.nomb_resp })) };
                         })

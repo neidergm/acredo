@@ -30,7 +30,7 @@ export default function TextEditor({ data, config, disabled, style, className, .
             displayCharacters: true,
             displayWords: true,
             onUpdate: (stats: any) => {
-                console.log("states", stats);
+                // console.log("states", stats);
             }
     });
 
@@ -86,7 +86,7 @@ export default function TextEditor({ data, config, disabled, style, className, .
 
 
     const onError = (phase: 'initialization' | 'runtime', willEditorRestart: boolean) => {
-        console.log({ phase, willEditorRestart })
+        // console.log({ phase, willEditorRestart })
     }
 
     const CKProps = {
