@@ -9,30 +9,38 @@ type T_UserOfTask = {
     id_rc: number;
 }
 
+type T_UserInResume = {
+    accion: null | string,
+    nomb_resp: string,
+    nomb_rol: string,
+    rol_cond: T_UserRole
+}
+
 export interface I_Condition {
-    color: string;
-    estado: string;
-    rol: T_UserRole;
-    rol_nombre: string;
-    form_cond: string;
-    /**
-     * TASK id
-     */
-    id_cond: number;
     /**
      * condition relation
      */
     cod_cond: number;
+    color: string;
+    detalle: string;
+    estado: string;
+    form_cond: string;
+    /**
+     * TASK id
+    */
+    id_cond: number;
+    id_esta: number;
     id_sede: number;
     // form_obse: number;
-    id_esta: number;
-    marc_update: string;
     marc_temp: string;
+    marc_update: string;
     nomb_cond: string;
-    sede: string;
-    porcentaje: number;
     num_obs: number;
-    detalle: string;
+    porcentaje: number;
+    resumen_usuario: T_UserInResume[],
+    rol: T_UserRole;
+    rol_nombre: string;
+    sede: string;
     usuarios: Array<T_UserOfTask>
     condicion?: string;
 }

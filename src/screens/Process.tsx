@@ -178,10 +178,6 @@ const Process = () => {
     })
   }
 
-  const showUsers = () => {
-
-  }
-
   useEffect(() => {
     if (!(processList?.length)) {
       dispatch(getProcessList())
@@ -279,7 +275,6 @@ const Process = () => {
                 </div>
                 {is_admin && <div className='text-end'>
                   <CustomDropdown options={[
-                    { text: "Ver usuarios", icon: <People size={16} />, click: () => { } },
                     { text: "Modificar proceso", icon: <Edit size={16} />, click: () => modalToEditProcess(process) },
                     { text: "Eliminar proceso", icon: <XCircle size={16} />, click: () => confirmDeleteProcess(process) },
                   ]}>

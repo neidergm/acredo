@@ -5,7 +5,7 @@ import { Badge, Button, CloseButton, DropdownToggle } from 'reactstrap';
 import classnames from 'classnames';
 import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } from "../../../components/Modal";
 import { SubHeader } from "../../../components/SubHeader";
-import { DELETE_TASK, PUT_ACTION, UPDATE_TASK } from "../../../services/endPointsService";
+import { DELETE_TASK, UPDATE_TASK } from "../../../services/endPointsService";
 import { AXIOS_REQUEST } from "../../../services/axiosService";
 import Loader from '../../../components/Loader'
 import { useAppSelector } from '../../../hooks/useAppSelector';
@@ -14,9 +14,9 @@ import Alert, { I_AlertObject } from '../../../components/Alert';
 import { CurrentPhase, PhasesList } from '../../../components/Phases';
 import FormPannel from './../FormPannel';
 import { getDifferenceBetweenData, jsonToFormData } from '../../../utils/formUtils';
-import { getProcessList, selectProcess } from '../../../store/actions/processActions';
+import { getProcessList } from '../../../store/actions/processActions';
 import Card from '../../../components/Card';
-import { getPhasesAndStagesOfCondition, getContionData, selectCondition, setProcessPhasesWithConditions, setSelectedConditionData } from '../../../store/actions/conditionsActions';
+import { getPhasesAndStagesOfCondition, getContionData, setProcessPhasesWithConditions, setSelectedConditionData } from '../../../store/actions/conditionsActions';
 import { isAdmin, isLead, isOnlyView } from '../../../utils/userRolUtils';
 import CustomDropdown from '../../../components/CustomDropdown';
 import { toast, Toaster } from 'react-hot-toast';
@@ -276,29 +276,32 @@ const ConditionsDetails = () => {
                       <div>
                         <CustomDropdown options={
                           !!(conditionSelected?.usuarios?.length) ?
-                            [{ text: "Asociados a la tarea actual", optionProps: { header: true, className: "mb-2" } },
-                            ...conditionSelected.usuarios.map(u => ({
-                              icon: <span className='d-inline-block text-success align-top opacity-75'><CheckCircleFill size={14} /></span>,
-                              text: <>
-                                {/* <span className='d-inline-block text-success pe-2 align-top opacity-75'><CheckCircleFill size={13} /></span> */}
-                                <span className='d-inline-block'>
-                                  {u.responsable}
-                                  <span className='d-block small fw-semibold'>{u.rol_nombre}</span>
-                                </span>
-                              </>
-                              , optionProps: { className: "d-block pb-2" }
-                            })),
-                            ...(!taskIsEnded && is_admin ? [{
-                              icon: <i className='text-primary'><Edit size={14} /></i>,
-                              text: <small className='text-primary'>Modificar usuarios</small>, optionProps: { className: "mt-4" }, click: editTask
-                            }] : [])
+                            [
+                              { text: "Asociados a la tarea actual", optionProps: { header: true, className: "mb-2" } },
+                              ...conditionSelected.usuarios.map(u => ({
+                                icon: <span className='d-inline-block text-success align-top opacity-75'><CheckCircleFill size={14} /></span>,
+                                text: <>
+                                  {/* <span className='d-inline-block text-success pe-2 align-top opacity-75'><CheckCircleFill size={13} /></span> */}
+                                  <span className='d-inline-block'>
+                                    {u.responsable}
+                                    <span className='d-block small fw-semibold'>{u.rol_nombre}</span>
+                                  </span>
+                                </>
+                                , optionProps: { className: "d-block pb-2" }
+                              })),
+                              ...(!taskIsEnded && is_admin ? [{
+                                icon: <i className='text-primary'><Edit size={14} /></i>,
+                                text: <small className='text-primary'>Modificar usuarios</small>, optionProps: { className: "mt-4" }, click: editTask
+                              }] : [])
                             ]
                             :
-                            [{
-                              text: <b className='text-danger'>Sin usuarios asociados</b>, optionProps: { disabled: true, className: "fw-bold" }
-                            }, {
-                              text: "Asociar usuarios", optionProps: { className: "mt-3" }, click: editTask
-                            }]
+                            [
+                              {
+                                text: <b className='text-danger'>Sin usuarios asociados</b>, optionProps: { disabled: true, className: "fw-bold" }
+                              }, {
+                                text: "Asociar usuarios", optionProps: { className: "mt-3" }, click: editTask
+                              }
+                            ]
                         }>
                           <DropdownToggle size="sm" color='primary' className='pe-3'>
                             <i className='ps-1 pe-1'><People size={16} /></i>

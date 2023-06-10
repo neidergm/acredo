@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { SubHeader } from "../../components/SubHeader";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { I_Condition } from "../../interfaces/conditions.interface";
-import { Accordion, AccordionBody, AccordionHeader, AccordionItem, Badge, Button, DropdownToggle, ListGroup, ListGroupItem, Progress } from "reactstrap";
+import { Accordion, AccordionBody, AccordionHeader, AccordionItem, Badge, Button, DropdownToggle, ListGroup, ListGroupItem, Progress, Table } from "reactstrap";
 import Loader from "../../components/Loader";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
@@ -29,6 +29,7 @@ import { T_PhasesWithConditions } from "../../interfaces/phasesAndStages.interfa
 import CustomDropdown from "../../components/CustomDropdown";
 import Alert, { I_AlertObject } from "../../components/Alert";
 import confirmDeleteAlertObject from "../../utils/confirmDeleteAlertObject";
+import UserResume from "../../components/UserResume";
 
 let lastAccordionOpen = ``;
 
@@ -198,6 +199,25 @@ const Conditions = () => {
     )
   }
 
+  const showUserResume = () => {
+    setModal({
+      isOpen: true,
+      fullscreen: "lg",
+      title: "Resumen de usuarios",
+      size: "xl",
+      footer: <ModalFooter className='justify-content-between'>
+        <Button color='primary2' onClick={() => closeModal(setModal)}>Cerrar</Button>
+      </ModalFooter>,
+      children: <>
+        <p className="mb-5">Este es el listado de los usuarios que se encuentran asociados a tareas y/o acciones, agrupados por fases y tareas</p>
+        <UserResume
+          list={phasesWithConditions[selectedProcess!.id_conv]}
+          goToConditionDetailsScreen={goToConditionDetailsScreen}
+        />
+      </>
+    })
+  }
+
   const editPhase = (data: any, phase: T_PhasesWithConditions) => {
     setLoading("Modificando fase");
 
@@ -251,6 +271,7 @@ const Conditions = () => {
         isOpen={!!(modal?.isOpen)}
         onClosed={() => { setModal(null) }}
         toggle={() => closeModal(setModal)}
+        fullscreen={modal?.fullscreen}
       >
         <ModalHeader textCenter toggle={() => closeModal(setModal)}>{modal?.title}</ModalHeader>
         <ModalBody>{modal?.children}</ModalBody>
@@ -263,7 +284,7 @@ const Conditions = () => {
       <div className="container pb-5">
         <div className="mb-5">
           {!selectedProcess ? <Loader isOpen loaderAsModal={false} /> :
-            <Card className="py-4">
+            <Card className="pt-4 pb-3">
               <div className="d-flex gap-4 flex-wrap flex-lg-nowrap">
                 <div className="flex-grow-1 d-flex gap-4 flex-column">
                   {selectedProcess.programa && <div className="flex-grow-1">
@@ -302,7 +323,16 @@ const Conditions = () => {
                     <b className="d-block">Fase actual:</b>
                     <span>{selectedProcess.fase_actual}</span>
                   </div>
+                  {/* <div>
+                    <b className="d-block">Resumen de usuarios:</b>
+                    <span>3 usuarios asociados</span>
+                  </div> */}
                 </div>
+              </div>
+              <div className="text-end">
+                <span className="btn btn-link small p-0" style={{ marginBottom: "-10px" }} onClick={() => showUserResume()}>
+                  <small>Ver resumen de usuarios</small>
+                </span>
               </div>
             </Card>
           }
