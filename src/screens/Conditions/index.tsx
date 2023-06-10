@@ -330,9 +330,9 @@ const Conditions = () => {
                 </div>
               </div>
               <div className="text-end">
-                <span className="btn btn-link small p-0" style={{ marginBottom: "-10px" }} onClick={() => showUserResume()}>
+                {is_admin && <span className="btn btn-link small p-0" style={{ marginBottom: "-10px" }} onClick={() => showUserResume()}>
                   <small>Ver resumen de usuarios</small>
-                </span>
+                </span>}
               </div>
             </Card>
           }
