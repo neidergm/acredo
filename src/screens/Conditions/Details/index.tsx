@@ -19,7 +19,7 @@ import Card from '../../../components/Card';
 import { getPhasesAndStagesOfCondition, getContionData, setProcessPhasesWithConditions, setSelectedConditionData } from '../../../store/actions/conditionsActions';
 import { isAdmin, isLead, isOnlyView } from '../../../utils/userRolUtils';
 import CustomDropdown from '../../../components/CustomDropdown';
-import { toast, Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { taskForm } from '../../../forms/task.form';
 import Form from 'react-ngm-form';
 import TextEditor from '../../../components/TextEditor';
@@ -198,7 +198,6 @@ const ConditionsDetails = () => {
 
       <Alert isOpen={!!(_alert?.isOpen)}{..._alert} onClosed={() => { setAlert(null) }} />
       <Loader isOpen={!!(loader)} subtitle={loader} />
-      <Toaster />
       <SubHeader
         text={conditionSelected?.nomb_cond ?
           <div className='d-flex gap-3 flex-wrap align-items-center'>

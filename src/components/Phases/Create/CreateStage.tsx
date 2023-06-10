@@ -14,7 +14,7 @@ import { useAppDispatch } from '../../../hooks/useAppDispatch';
 import { getContionData, getPhasesAndStagesOfCondition, setProcessPhasesWithConditions, setSelectedConditionData } from '../../../store/actions/conditionsActions';
 import { useParams } from 'react-router-dom';
 import Action from '../Action';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { jsonToFormData } from '../../../utils/formUtils';
 import { getNormalDate } from '../../../utils/dateUtils';
 import { selectProcess } from '../../../store/actions/processActions';
@@ -253,7 +253,6 @@ const CreateStage = ({
 
   return (
     <>
-      <Toaster />
       <Modal backdrop="static" size={modal?.size}
         isOpen={!!(modal?.isOpen)}
         onClosed={() => { setModal(null) }}

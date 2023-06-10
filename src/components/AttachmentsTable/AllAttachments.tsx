@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { AXIOS_REQUEST } from '../../services/axiosService'
 import { ATTACHMENTS_BY_PHASE } from '../../services/endPointsService'
-import { T_AttachmentInPhase, T_AttachmentsOfPhases, T_PhasesWithConditions } from '../../interfaces/phasesAndStages.interface'
-import { AccordionBody, AccordionHeader, AccordionItem, Badge, DropdownToggle, Table, UncontrolledAccordion } from 'reactstrap'
+import { T_AttachmentInPhase, T_AttachmentsOfPhases } from '../../interfaces/phasesAndStages.interface'
+import { AccordionBody, AccordionHeader, AccordionItem, DropdownToggle, Table, UncontrolledAccordion } from 'reactstrap'
 import CustomDropdown from '../CustomDropdown'
-import { Toaster, toast } from 'react-hot-toast'
+import { toast } from 'react-hot-toast'
 import { Calendar2Event, Link, People, Quote, ThreeDotsVertical } from '../Icons'
 import { I_JSONObject } from '../../interfaces/generic.interface'
 import Loader from '../Loader'
@@ -130,7 +130,6 @@ const AllAttachments = ({
 
     return (
         <div className='attach'>
-            <Toaster />
             <UncontrolledAccordion stayOpen flush >
                 {groups?.map((item, tid) =>
                     <AccordionItem key={tid}>

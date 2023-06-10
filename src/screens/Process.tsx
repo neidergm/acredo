@@ -15,7 +15,7 @@ import { Modal, ModalBody, ModalHeader, T_ModalJSON, closeModal, ModalFooter } f
 import Alert, { I_AlertObject } from '../components/Alert';
 import { AXIOS_REQUEST } from '../services/axiosService';
 import { CREATE_PROCESS, DELETE_PROCESS, UPDATE_PROCESS } from '../services/endPointsService';
-import { Toaster, toast } from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 import { getDifferenceBetweenData, jsonToFormData } from '../utils/formUtils';
 import { isAdmin } from '../utils/userRolUtils';
 import CustomDropdown from '../components/CustomDropdown';
@@ -208,7 +208,6 @@ const Process = () => {
       <Alert isOpen={!!(alert?.isOpen)}{...alert} onClosed={() => { setAlert(null) }} />
 
       <Loader isOpen={!!loading} subtitle={loading} />
-      <Toaster />
       <div className="container pt-3 pb-5">
         {!(processList) ?
           <Loader loaderAsModal={false} isOpen />

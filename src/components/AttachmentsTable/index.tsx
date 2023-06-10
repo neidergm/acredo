@@ -6,7 +6,7 @@ import { T_Form, T_FormPannelActions } from './../../screens/Conditions/FormPann
 import Alert, { I_AlertObject } from '../Alert'
 import { ChatDots, ChatDotsFill, Edit, Link, Quote, ThreeDotsVertical, XCircle } from '../Icons'
 import ObservationChat from '../ObservationChat'
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import CustomDropdown from '../CustomDropdown'
 
 type T_Props = {
@@ -128,7 +128,6 @@ const AttachmentsTable = ({
     }
 
     return (<>
-        <Toaster />
         <ObservationChat
             onlyRead={!canEdit}
             grupo={observationsIsOpen?.attachment.grupo_resp}

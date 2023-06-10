@@ -15,7 +15,7 @@ import { getPhasesAndStagesOfCondition, selectCondition, setProcessPhasesWithCon
 import { selectProcess } from '../../store/actions/processActions';
 import { isAdmin, isLead, isOnlyView } from '../../utils/userRolUtils';
 import { I_Condition } from '../../interfaces/conditions.interface';
-import { toast, Toaster } from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 
 type T_Props = {
     taskProgress: number,
@@ -178,7 +178,6 @@ const CurrentPhase = ({
     }
 
     return (<>
-        <Toaster />
         <Alert isOpen={!!(_alert?.isOpen)}{..._alert} onClosed={() => { setAlert(null) }} />
         <Loader isOpen={!!(loader)} subtitle={loader} />
         {

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { SubHeader } from "../../components/SubHeader";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { I_Condition } from "../../interfaces/conditions.interface";
-import { Accordion, AccordionBody, AccordionHeader, AccordionItem, Badge, Button, DropdownToggle, ListGroup, ListGroupItem, Progress, Table } from "reactstrap";
+import { Accordion, AccordionBody, AccordionHeader, AccordionItem, Badge, Button, DropdownToggle, ListGroup, ListGroupItem, Progress } from "reactstrap";
 import Loader from "../../components/Loader";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
@@ -23,8 +23,7 @@ import { taskForm } from "../../forms/task.form";
 import { AXIOS_REQUEST } from "../../services/axiosService";
 import { jsonToFormData } from "../../utils/formUtils";
 import { DELETE_PHASE, SAVE_PHASE, SAVE_TASK } from "../../services/endPointsService";
-import toast, { Toaster } from 'react-hot-toast';
-import { XCircleFill } from "../../components/Icons";
+import toast from 'react-hot-toast';
 import { T_PhasesWithConditions } from "../../interfaces/phasesAndStages.interface";
 import CustomDropdown from "../../components/CustomDropdown";
 import Alert, { I_AlertObject } from "../../components/Alert";
@@ -279,7 +278,6 @@ const Conditions = () => {
       </Modal>
       <Alert isOpen={!!(alert?.isOpen)}{...alert} onClosed={() => { setAlert(null) }} />
       <Loader isOpen={!!(loading)} subtitle={loading} />
-      <Toaster />
 
       <div className="container pb-5">
         <div className="mb-5">

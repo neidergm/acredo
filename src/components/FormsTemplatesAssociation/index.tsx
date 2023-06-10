@@ -4,7 +4,7 @@ import { AXIOS_REQUEST } from '../../services/axiosService';
 import { ASOCIATE_FORM_TO_TASK, GET_TEMPLATES } from '../../services/endPointsService';
 import { T_Template } from '../../interfaces/conditions.interface';
 import { jsonToFormData } from '../../utils/formUtils';
-import { Toaster, toast } from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 import { ExclamationCircleFill } from '../Icons';
 import Alert, { I_AlertObject } from '../Alert';
 import Loader from '../Loader';
@@ -151,7 +151,6 @@ const FormsTemplatesAssociaton = ({
         </Offcanvas>
         <Alert isOpen={!!(alertConfirm?.isOpen)}{...alertConfirm} onClosed={() => { closeModal(setAlertConfirm) }} />
         <Loader isOpen={!!loader} subtitle={loader!} />
-        <Toaster />
     </>)
 }
 

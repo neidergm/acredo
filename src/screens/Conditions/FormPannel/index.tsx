@@ -11,7 +11,7 @@ import AsTabs from './AsTabs';
 import { useParams } from 'react-router-dom';
 import { formToSubmitData, getDifferenceBetweenData } from '../../../utils/formUtils';
 import { closeModal } from '../../../components/Modal';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { ExclamationCircleFill, Link } from '../../../components/Icons';
 import { Button } from 'reactstrap';
 import FormsTemplatesAssociaton from '../../../components/FormsTemplatesAssociation';
@@ -246,7 +246,6 @@ const FormPannel = ({
     return <>
         {!!(canAddForms) && <FormsTemplatesAssociaton open={togglePannel} toggle={toggleEditFormsPannel} taskId={id_cond!} />}
         <Alert isOpen={!!(alertConfirm?.isOpen)}{...alertConfirm} onClosed={() => { closeModal(setAlertConfirm) }} />
-        <Toaster />
         <Loader isOpen={!!loader} subtitle={loader!} />
         {content}
     </>

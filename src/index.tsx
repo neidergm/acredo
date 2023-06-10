@@ -4,11 +4,12 @@ import App from './App';
 import { Provider } from 'react-redux';
 import store from './store';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import { Toaster } from 'react-hot-toast';
 
 declare global {
   interface Window {
     location: Location;
-    [x:string]: any;
+    [x: string]: any;
   }
 }
 
@@ -19,6 +20,7 @@ root.render(
   // <React.StrictMode>
   <Provider store={store}>
     <ErrorHandler>
+      <Toaster />
       <App />
     </ErrorHandler>
   </Provider>
