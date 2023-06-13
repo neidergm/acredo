@@ -72,7 +72,7 @@ const UserResume = ({ list: _list, goToConditionDetailsScreen }: T_Props) => {
                                     cond.resumen_usuario?.length ?
                                         cond.resumen_usuario.map((u, i) => {
                                             return <tr
-                                                key={i}
+                                                key={`${phase.id_fase}-${i}`}
                                                 className={classnames("small", i + 1 === cond.resumen_usuario.length ? "border-bottom" : "border-light")}
                                             >
                                                 {i === 0 &&
@@ -85,7 +85,7 @@ const UserResume = ({ list: _list, goToConditionDetailsScreen }: T_Props) => {
                                                 <td className="">{u.nomb_rol}</td>
                                                 <td className="">{u.accion}</td>
                                             </tr>
-                                        }) : <tr className="small" >
+                                        }) : <tr className="small"  key={`${phase.id_fase}-${cond.cod_cond}`}>
                                             <td className="fw-semibold bg-light cursor-pointer border-bottom"
                                                 onClick={() => goToConditionDetailsScreen?.(cond)}>{cond.nomb_cond}
                                             </td>
