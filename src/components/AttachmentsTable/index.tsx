@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Badge, DropdownItem, DropdownMenu, DropdownToggle, Table, UncontrolledDropdown } from 'reactstrap'
+import { Badge, DropdownToggle, Table } from 'reactstrap'
 import { useAppSelector } from '../../hooks/useAppSelector'
 import { I_FormFieldWithAnswer } from '../../interfaces/conditions.interface'
 import { T_Form, T_FormPannelActions } from './../../screens/Conditions/FormPannel'
@@ -13,13 +13,14 @@ type T_Props = {
     list: { [group: string]: T_Form },
     canEdit?: boolean,
     onEdit?: (form: T_Form, action: string) => void,
-} & Pick<T_FormPannelActions, "onDelete">
+} & Pick<T_FormPannelActions, "onDelete" | "onObservationsDone">
 
 const AttachmentsTable = ({
     list,
     onDelete,
     onEdit,
-    canEdit
+    canEdit,
+    onObservationsDone
 }: T_Props) => {
     const [alertConfirm, setAlertConfirm] = useState<I_AlertObject | null>(null);
     const [observationsIsOpen, setObservationsIsOpen] = useState<{
@@ -133,6 +134,7 @@ const AttachmentsTable = ({
             grupo={observationsIsOpen?.attachment.grupo_resp}
             toggle={() => showObservations(null)}
             isOpen={!!(observationsIsOpen)}
+            callbackOnUnmount={(res) => { if (res) { onObservationsDone() } }}
             id_fcamp={observationsIsOpen?.attachment.id_fcamp}
             extra_data_to_send={{
                 id_cond: conditionSelected?.id_cond,

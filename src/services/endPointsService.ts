@@ -67,13 +67,13 @@ export const DELETE_TASK = `cond/`;
 
 /**
  * @method POST
- * @params { nomb_cond, sede, googledoc, detalle, cod_cond }
+ * @params { nomb_cond, sede, detalle, cod_cond }
  */
 export const SAVE_TASK = `cond`;
 
 /**
  * @method PUT
- * @params { nomb_cond, sede, googledoc, detalle, cod_cond, id_cond }
+ * @params { nomb_cond, sede, detalle, cod_cond, id_cond }
  */
 export const UPDATE_TASK = `cond`;
 

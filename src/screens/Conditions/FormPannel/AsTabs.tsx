@@ -21,7 +21,8 @@ const AsTabs = ({
     onPickOne,
     onDelete,
     onSubmit,
-    children
+    children,
+    onObservationsDone
 }: T_Props) => {
     const [currentActiveTab, setCurrentActiveTab] = useState(0);
     const [loadedItems, setLoadedItems] = useState<Array<T_Form | null>>(formList.map(i => null));
@@ -41,7 +42,7 @@ const AsTabs = ({
             form.fields = [];
             setLoadedItems(items);
         }
-        onPickOne(form || formList[currentActiveTab], !!(form))
+        return onPickOne(form || formList[currentActiveTab], !!(form))
             .then(resp => {
                 items[currentActiveTab] = resp;
                 setLoadedItems([...items]);
@@ -90,6 +91,7 @@ const AsTabs = ({
                 onlyRead={!canEdit}
                 toggle={showObservations}
                 isOpen={!!(observationsIsOpen)}
+                callbackOnUnmount={(res) => { if (res) { onObservationsDone() } }}
                 id_fcamp={observationsIsOpen?.id_fcamp}
                 extra_data_to_send={{ id_cond }}
             >
@@ -165,6 +167,7 @@ const AsTabs = ({
                                             canEdit={canEdit}
                                             onSubmit={submit}
                                             onDelete={onDelete ? deleteHandle : undefined}
+                                            onObservationsDone={() => { onObservationsDone() }}
                                             formItem={loadedItems[i]!}
                                         />
                                     }

@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Button, CloseButton, Input, Offcanvas, OffcanvasBody, OffcanvasHeader } from 'reactstrap';
 import { AXIOS_REQUEST } from '../../services/axiosService';
 import { OBSERVATION_BY_ATTACHMENT, SAVE_OBSERVATION } from '../../services/endPointsService';
-import { Check, Clip, ReplyFill, Send } from '../Icons';
+import { ReplyFill, Send } from '../Icons';
 import Loader from '../Loader';
 import style from './style.module.css';
 import classnames from 'classnames';
@@ -11,6 +11,9 @@ import { I_JSONObject } from '../../interfaces/generic.interface';
 import { jsonToFormData } from '../../utils/formUtils';
 import { I_Observation } from '../../interfaces/observations.interface';
 import { useAppSelector } from '../../hooks/useAppSelector';
+import { toast } from 'react-hot-toast';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { getPhasesWithConditions } from '../../store/actions/conditionsActions';
 
 interface I_props {
     isOpen: boolean;
@@ -20,7 +23,8 @@ interface I_props {
     grupo?: string | undefined | null;
     children?: JSX.Element | JSX.Element[];
     title?: string;
-    extra_data_to_send?: I_JSONObject
+    extra_data_to_send?: I_JSONObject;
+    callbackOnUnmount?: (shouldCall: boolean) => void
 }
 
 type T_Message = {
@@ -46,13 +50,18 @@ const ObservationChat = ({
     children,
     onlyRead,
     extra_data_to_send = {},
+    callbackOnUnmount,
     title = "Observaciones"
 }: I_props) => {
 
+    const shouldRequestOnUnmount = useRef(false);
     const [messages, setMessages] = useState<null | undefined | { [date: string]: T_Message[] }>(null);
     const [messageToReply, setMessageToReply] = useState<null | T_Message>(null);
     const { onInput, ref, reset, getHTMLValue } = useAutoGrowField({ maxHeight: 500 });
-    const userInfo = useAppSelector(state => state.user.userInfo!)
+    const userInfo = useAppSelector(state => state.user.userInfo!);
+    const selectedProcess = useAppSelector(state => state.process.selected);
+
+    const dispatch = useAppDispatch();
 
     const selectMessageToReply = (message: typeof messageToReply) => {
         setMessageToReply(message);
@@ -136,9 +145,9 @@ const ObservationChat = ({
         let fd = jsonToFormData(data)
 
         AXIOS_REQUEST(SAVE_OBSERVATION, "POST", fd, true).then(resp => {
-            console.log(resp)
+            toast.success("Se ha registrado la observación", { position: 'top-right' })
+            shouldRequestOnUnmount.current = true;
         })
-
     }
 
     const printMessagge = (message: T_Message, idx: number) => {
@@ -182,7 +191,6 @@ const ObservationChat = ({
             }).catch(err => {
                 setMessages(undefined)
             })
-
     }
 
     const scrollTo = (id: string) => {
@@ -194,6 +202,13 @@ const ObservationChat = ({
         if (messages) {
             let cont = document.getElementById("main-messages-container")
             if (cont) cont.scrollTo(0, cont.scrollHeight)
+        }
+
+        return () => {
+            if (shouldRequestOnUnmount.current) {
+                callbackOnUnmount?.(shouldRequestOnUnmount.current);
+                dispatch(getPhasesWithConditions(selectedProcess?.id_conv!));
+            }
         }
     }, [messages])
 

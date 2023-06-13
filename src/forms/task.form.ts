@@ -4,7 +4,8 @@ import { AXIOS_REQUEST } from "../services/axiosService";
 import { CHARGE, CONDITIONS_TYPES, RESPONSIBLES_BY_CHARGE, ROLS } from "../services/endPointsService";
 import mapField from "../utils/mapField";
 
-export const taskForm = (showGoogleDocField = true, showConditionTypeField = true): T_FieldsTypes[] => {
+// export const taskForm = (showGoogleDocField = true, showConditionTypeField = true): T_FieldsTypes[] => {
+export const taskForm = (showConditionTypeField = true): T_FieldsTypes[] => {
     let f: T_FieldsTypes[] = [
         {
             "name": "nomb_cond",
@@ -154,18 +155,18 @@ export const taskForm = (showGoogleDocField = true, showConditionTypeField = tru
         } as unknown as I_FormField)
     )
 
-    if (showGoogleDocField) {
-        f.push({
-            "name": "googledoc",
-            "label": "Requiere crear documento de Google",
-            "tag": "checkbox",
-            "type": "simple",
-            "wrapperClassName": "col-12",
-            "validations": {
-                required: false
-            }
-        })
-    }
+    // if (showGoogleDocField) {
+    //     f.push({
+    //         "name": "googledoc",
+    //         "label": "Requiere crear documento de Google",
+    //         "tag": "checkbox",
+    //         "type": "simple",
+    //         "wrapperClassName": "col-12",
+    //         "validations": {
+    //             required: false
+    //         }
+    //     })
+    // }
 
     return f;
 }

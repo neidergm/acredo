@@ -9,9 +9,9 @@ import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } f
 type T_Props = {
     canEdit: boolean,
     formItem: T_Form,
-} & Pick<T_FormPannelActions, "onDelete" | "onSubmit">
+} & Pick<T_FormPannelActions, "onDelete" | "onSubmit" | "onObservationsDone">
 
-const FormContent = ({ canEdit, formItem, onSubmit, onDelete }: T_Props) => {
+const FormContent = ({ canEdit, formItem, onSubmit, onDelete, onObservationsDone }: T_Props) => {
     const [modal, setModal] = useState<T_ModalJSON | null>(null);
 
     const openFormAsModal = (form: T_Form, action = "Agregar") => {
@@ -111,7 +111,13 @@ const FormContent = ({ canEdit, formItem, onSubmit, onDelete }: T_Props) => {
                             })
                         }
                     </> : <>
-                        <AttachmentsTable list={formItem.multiplesValues!} onEdit={openFormAsModal} onDelete={onDelete} canEdit={canEdit} />
+                        <AttachmentsTable
+                            list={formItem.multiplesValues!}
+                            onEdit={openFormAsModal}
+                            onDelete={onDelete}
+                            canEdit={canEdit}
+                            onObservationsDone={onObservationsDone}
+                        />
                     </>
                 )
             }

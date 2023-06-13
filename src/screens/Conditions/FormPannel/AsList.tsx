@@ -20,7 +20,8 @@ const AsList = ({
     formList,
     onPickOne,
     onSubmit,
-    onDelete
+    onDelete,
+    onObservationsDone
 }: T_Props) => {
 
 
@@ -92,6 +93,7 @@ const AsList = ({
                 toggle={showObservations}
                 isOpen={!!(observationsIsOpen)}
                 id_fcamp={observationsIsOpen?.id_fcamp}
+                callbackOnUnmount={(res) => { if (res) { onObservationsDone() } }}
                 extra_data_to_send={{
                     id_cond: id_cond,
                 }}
@@ -172,6 +174,7 @@ const AsList = ({
                                 <Loader loaderAsModal={false} isOpen />
                                 :
                                 <FormContent
+                                    onObservationsDone={() => { onObservationsDone() }}
                                     canEdit={canEdit}
                                     onSubmit={submit}
                                     onDelete={onDelete ? deleteHandle : undefined}

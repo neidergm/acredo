@@ -93,7 +93,7 @@ const ConditionsDetails = () => {
 
   const editTask = () => {
     let formID = "FORM-EDIT-TASK";
-    let fields = taskForm(false, false);
+    let fields = taskForm(false);
 
     let defaultValues = {
       nomb_cond: conditionSelected?.nomb_cond,

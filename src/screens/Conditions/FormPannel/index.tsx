@@ -28,6 +28,7 @@ export type T_FormPannelActions = {
     onPickOne: (f: T_Form, onlyGetAnswer?: boolean) => Promise<T_Form>;
     onSubmit: (data: any, formItem: T_Form, callback?: () => void) => void;
     onDelete?: (item: string, title?: string, subtitle?: any, callback?: () => void) => void;
+    onObservationsDone: () => void;
 }
 
 type T_Props = {
@@ -221,6 +222,7 @@ const FormPannel = ({
             canEdit={canEdit}
             formList={formList}
             id_cond={id_cond!}
+            onObservationsDone={getForms}
             onPickOne={pickFormItem}
             onSubmit={confirmSubmit}
             onDelete={confirmDelete}
@@ -235,6 +237,7 @@ const FormPannel = ({
             canEdit={canEdit}
             formList={formList}
             id_cond={id_cond!}
+            onObservationsDone={getForms}
             onPickOne={pickFormItem}
             onSubmit={confirmSubmit}
             onDelete={confirmDelete}
