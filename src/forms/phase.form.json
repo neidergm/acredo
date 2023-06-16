@@ -14,6 +14,10 @@
         "label": "Fecha de inicio",
         "tag": "date",
         "type": "date",
+        "nested": {
+            "name":"fecha_fin",
+            "type": "max"
+        },
         "wrapperClassName": "col-6",
         "validations": {
             "required": true
@@ -24,6 +28,10 @@
         "label": "Fecha de fin",
         "tag": "date",
         "type": "date",
+        "nested": {
+            "name":"fecha_inicio",
+            "type": "min"
+        },
         "wrapperClassName": "col-6",
         "validations": {
             "required": true

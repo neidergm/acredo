@@ -3,7 +3,7 @@ import { DropdownItem, DropdownItemProps, DropdownMenu, UncontrolledDropdown } f
 
 type T_Option = {
     text: string | JSX.Element,
-    click?: Function,
+    click?: () => void,
     className?: string,
     icon?: any,
     optionProps?: Omit<DropdownItemProps, "onClick">

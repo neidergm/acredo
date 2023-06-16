@@ -9,7 +9,7 @@ import { useAppSelector } from '../hooks/useAppSelector';
 import { getProcessList, selectProcess, setProcessList } from '../store/actions/processActions';
 import CircleProgress from '../components/CircleProgress';
 import Card from '../components/Card';
-import { Edit, ExclamationCircleFill, Folder2Open, People, Plus, ThreeDotsVertical, XCircle } from '../components/Icons';
+import { Edit, ExclamationCircleFill, Folder2Open, Plus, ThreeDotsVertical, XCircle } from '../components/Icons';
 import { Modal, ModalBody, ModalHeader, T_ModalJSON, closeModal, ModalFooter } from '../components/Modal';
 // import processForm from './../forms/process.form';
 import Alert, { I_AlertObject } from '../components/Alert';

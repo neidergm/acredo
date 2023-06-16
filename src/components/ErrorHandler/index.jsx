@@ -4,7 +4,7 @@ import { ERROR_REPORTING_URL, localstorageItemPrefix } from '../../services/cons
 
 let timerValue = 15;
 
-export const sendReport = (_data, successCallback = () => { }, errorCallback = () => { }, progressCallback) => {
+export const sendReport = (_data, successCallback, errorCallback, progressCallback) => {
     if (!(/^http[s]?:\/\/localhost.*$/.test(window.location.href))) {
         _data.device = navigator.userAgent;
 
@@ -28,12 +28,12 @@ export const sendReport = (_data, successCallback = () => { }, errorCallback = (
         if (send) {
             return AXIOS_REQUEST(null, "post", data, false, ERROR_REPORTING_URL, progressCallback).then(() => {
                 sessionStorage.setItem(`${localstorageItemPrefix}NG_lastReported`, new Date().getTime())
-                return successCallback()
+                return successCallback?.()
             }).catch(err => {
-                return errorCallback()
+                return errorCallback?.()
             })
         } else {
-            return successCallback();
+            return successCallback?.();
         }
     }
 }

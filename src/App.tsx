@@ -17,9 +17,7 @@ const IntitutionalConditions = lazy(lazyLoaderComponents(() => import(/* webpack
 const Process = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Process" */ './screens/Process')));
 const PhasesAttachments = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "PhasesAttachments" */ './screens/PhasesAttachments')));
 
-type T_Props = {}
-
-const App = ({ }: T_Props) => {
+const App = () => {
 
   const user = useAppSelector(state => state.user);
   const dispatch = useAppDispatch();

@@ -47,9 +47,9 @@ const AttachmentsTable = ({
     }
 
     const doRowByItem = (item: T_Form, key: string) => {
-        let original = item.originalFieldsObject as I_FormFieldWithAnswer[];
-        let attachment = original.find(i => !!i.nomb_anexo)!;
-        let { nomb_anexo, respuesta } = attachment || {};
+        const original = item.originalFieldsObject as I_FormFieldWithAnswer[];
+        const attachment = original.find(i => !!i.nomb_anexo)!;
+        const { nomb_anexo, respuesta } = attachment || {};
         if (!item.defaultValues.ceanexo?.length) return null
 
         return item.defaultValues.ceanexo.map((i: any, idx: number) => <tr key={`row-${key}-${idx}`}>
@@ -85,13 +85,13 @@ const AttachmentsTable = ({
                                 text: <span>Observaciones
                                     <small className='ms-4'><Badge pill className='bg-opacity-50'>{item.num_obs as number || 0}</Badge></small>
                                 </span>,
-                                icon: !!(item.num_obs) ?
+                                icon: !(item.num_obs) ?
+                                    <ChatDots size={16} />
+                                    :
                                     <span className='position-relative text-primary text-opacity-75'>
                                         <ChatDotsFill size={16} />
                                         <span className="position-absolute top-50 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
                                     </span>
-                                    :
-                                    <ChatDots size={16} />
                                 ,
                                 click: () => showObservations({ item, attachment })
                             },

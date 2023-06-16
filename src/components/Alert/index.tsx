@@ -23,7 +23,7 @@ export interface I_AlertObject {
   size?: 'sm' | 'md' | 'lg' | 'xl';
   type?: keyof typeof alertType;
   needFillConfirmation?: boolean;
-};
+}
 
 const alertType = {
   info: <i className='text-primary'><InfoCircleFill size={55} /></i>,
@@ -38,7 +38,7 @@ const Alert = ({
   showCloseX,
   isOpen = false,
   subtitle,
-  onClosed = () => { },
+  onClosed,
   size = 'md',
   type,
   closeButton,

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AXIOS_REQUEST } from '../../services/axiosService'
 import { ATTACHMENTS_BY_PHASE } from '../../services/endPointsService'
 import { T_AttachmentInPhase, T_AttachmentsOfPhases } from '../../interfaces/phasesAndStages.interface'
@@ -25,7 +25,7 @@ const AllAttachments = ({
 
         let nomb_anexo = "";
 
-        let data: I_JSONObject = attachs.reduce((p, c) => {
+        const data: I_JSONObject = attachs.reduce((p, c) => {
             if (c.nomb_anexo) nomb_anexo = c.nomb_anexo;
             return { ...p, [c.name_campo]: c.respuesta }
         }, {})
@@ -77,7 +77,7 @@ const AllAttachments = ({
                         </div>
                         <div className='text-muted'>
                             <div>
-                                <small><Calendar2Event size={13}/> Última modificación {getNormalDate(attachs[0].marc_update, { dateStyle: 'long' })}</small>
+                                <small><Calendar2Event size={13} /> Última modificación {getNormalDate(attachs[0].marc_update, { dateStyle: 'long' })}</small>
                             </div>
                             <div>
                                 <small><People size={13} /> {attachs[0].usuario}</small>
@@ -106,8 +106,8 @@ const AllAttachments = ({
 
     useEffect(() => {
         AXIOS_REQUEST(ATTACHMENTS_BY_PHASE + phaseId).then(({ data }: { data: T_AttachmentsOfPhases }) => {
-            let g = data.map((item) => {
-                let anexos_by_group_resp = item.anexos.reduce((p: any, c) => {
+            const g = data.map((item) => {
+                const anexos_by_group_resp = item.anexos.reduce((p: any, c) => {
                     p[c.grupo_resp] = [...(p[c.grupo_resp] || []), c]
                     return p;
                 }, {})
@@ -118,7 +118,6 @@ const AllAttachments = ({
         }).catch(() => {
             setGroups([]);
         })
-        return () => { }
     }, [])
 
     if (!groups) {
