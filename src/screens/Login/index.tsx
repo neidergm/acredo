@@ -11,7 +11,7 @@ import Footer from "../../components/Footer";
 const GoogleLogin = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "GoogleLogin" */ './../../components/GoogleLogin')));
 
 interface I_Props {
-    callback: (data: I_User, toekn: string) => {};
+    callback: (data: I_User, toekn: string) => void;
 }
 
 const Login = (props: I_Props) => {
@@ -28,7 +28,7 @@ const Login = (props: I_Props) => {
     const loginWithGoogle = async (credential: string) => {
         setLoader(true);
 
-        let resp = await dispatch(login(credential))
+        const resp = await dispatch(login(credential))
 
         if (!resp) {
             setLoader(false);

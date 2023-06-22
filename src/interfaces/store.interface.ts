@@ -1,4 +1,5 @@
 import { I_Condition } from "./conditions.interface";
+import { I_Notification } from "./notification.interface";
 import { T_ActivePhase, T_Phase, T_PhasesWithConditions } from "./phasesAndStages.interface";
 import { I_Process } from "./process.interface";
 import { I_User } from "./user.interface";
@@ -8,6 +9,11 @@ export interface I_AppAction<T = any> { type: string, payload: T }
 export interface I_UserState {
     userInfo: I_User | null,
     unauthorized: string,
+}
+
+export interface I_NotificationsState {
+    list: I_Notification[] | null,
+    unreadCount: number,
 }
 
 export interface I_ProcessState {

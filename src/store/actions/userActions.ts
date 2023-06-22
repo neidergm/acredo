@@ -30,13 +30,13 @@ export type T_LoginData = {
 }
 
 export const login = (credential: string) => {
-    let data = { token: credential, confia: 0 }
+    const data = { token: credential, confia: 0 }
 
     return (dispatch: T_AppDispatch) => {
         return AXIOS_REQUEST(AUTH, "post", data).then(resp => {
             if (!resp || !(resp?.rpt)) throw new Error();
 
-            let user = resp.rpt.data;
+            const user = resp.rpt.data;
 
             localStorageService.setItems({
                 "user": JSON.stringify(user),

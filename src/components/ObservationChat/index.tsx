@@ -69,7 +69,7 @@ const ObservationChat = ({
     }
 
     const doMessageObj = (item: I_Observation): T_Message => {
-        let t = new Date(item.marc_temp);
+        const t = new Date(item.marc_temp);
         return {
             id: `${item.id_obs}`,
             date: t.toLocaleString([], { dateStyle: 'long' }),
@@ -89,9 +89,9 @@ const ObservationChat = ({
     const getMessageID = (id: string, datetime: number | string = "msg") => `${datetime}_${id}`;
 
     const buildMessages = (list: I_Observation[]) => {
-        let msgs = list.reduce((p, c) => {
-            let msg = doMessageObj(c);
-            let obj = p[msg.date] || [];
+        const msgs = list.reduce((p, c) => {
+            const msg = doMessageObj(c);
+            const obj = p[msg.date] || [];
 
             return {
                 ...p,
@@ -103,10 +103,10 @@ const ObservationChat = ({
     }
 
     const send = () => {
-        let val = getHTMLValue();
+        const val = getHTMLValue();
         if (!(val)) return false;
-        let now = new Date();
-        let newMessage: T_Message = {
+        const now = new Date();
+        const newMessage: T_Message = {
             id: `${now.getTime()}`,
             date: now.toLocaleString([], { dateStyle: 'long' }),
             time: now.toLocaleString([], { timeStyle: 'short' }),
@@ -133,18 +133,18 @@ const ObservationChat = ({
         setMessageToReply(null);
         reset();
 
-        let data: I_JSONObject = {
+        const data: I_JSONObject = {
             ...extra_data_to_send,
             observacion: val,
             id_fcamp
         };
 
-        if (!!(newMessage.reply)) data.id_ref = newMessage.reply.id;
-        if (!!(grupo)) data.grupo_resp = grupo;
+        if ((newMessage.reply)) data.id_ref = newMessage.reply.id;
+        if ((grupo)) data.grupo_resp = grupo;
 
-        let fd = jsonToFormData(data)
+        const fd = jsonToFormData(data)
 
-        AXIOS_REQUEST(SAVE_OBSERVATION, "POST", fd, true).then(resp => {
+        AXIOS_REQUEST(SAVE_OBSERVATION, "POST", fd).then(resp => {
             toast.success("Se ha registrado la observación", { position: 'top-right' })
             shouldRequestOnUnmount.current = true;
         })
@@ -200,14 +200,14 @@ const ObservationChat = ({
 
     useEffect(() => {
         if (messages) {
-            let cont = document.getElementById("main-messages-container")
+            const cont = document.getElementById("main-messages-container")
             if (cont) cont.scrollTo(0, cont.scrollHeight)
         }
 
         return () => {
             if (shouldRequestOnUnmount.current) {
                 callbackOnUnmount?.(shouldRequestOnUnmount.current);
-                dispatch(getPhasesWithConditions(selectedProcess?.id_conv!));
+                selectedProcess?.id_conv && dispatch(getPhasesWithConditions(selectedProcess.id_conv));
             }
         }
     }, [messages])

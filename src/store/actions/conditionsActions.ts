@@ -50,16 +50,16 @@ export const getPhasesWithConditions = (id_process: number) => {
 export const getPhasesAndStagesOfCondition = (id_cond: number) => {
     return (dispatch: T_AppDispatch): T_AsyncResp<any> =>
         AXIOS_REQUEST(STAGES + id_cond).then((resp: any) => {
-            let ps: any = (resp.data as any[]).reduce((p, c, idx) => {
-                let stage: T_Stage = {
+            const ps: any = (resp.data as any[]).reduce((p, c, idx) => {
+                const stage: T_Stage = {
                     name: c.nomb_etapa,
                     id: c.id_etapa,
                     actions: c.acciones,
-                    status: !!(c.acciones) ? c.est_etapa : 0,
+                    status: !(c.acciones) ? 0 : c.est_etapa,
                     actions_completed: c.acciones?.reduce((p: number, c: I_JSONObject) => c.est_accion === 2 ? p += 1 : p, 0)
                 }
 
-                let phase = p[c.id_fase];
+                const phase = p[c.id_fase];
 
                 if (phase) {
                     phase.stages.push(stage);
@@ -75,10 +75,10 @@ export const getPhasesAndStagesOfCondition = (id_cond: number) => {
                 return p;
             }, {});
 
-            let all: T_Phase[] = Object.values(ps);
-            let phase = all.find(i => !(i.stages_completed === i.stages?.length));
-            let stage = phase?.stages?.find(i => i.status === 0);
-            let action = stage?.actions?.find(i => i.est_accion === 1 || i.est_accion === 0);
+            const all: T_Phase[] = Object.values(ps);
+            const phase = all.find(i => !(i.stages_completed === i.stages?.length));
+            const stage = phase?.stages?.find(i => i.status === 0);
+            const action = stage?.actions?.find(i => i.est_accion === 1 || i.est_accion === 0);
 
             dispatch(
                 setSelectedConditionData({

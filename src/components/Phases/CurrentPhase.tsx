@@ -55,8 +55,7 @@ const CurrentPhase = ({
         AXIOS_REQUEST(PUT_ACTION, "PUT", jsonToFormData({
             est_accion: 2,
             id_accion: active!.action!.id_accion
-        }, "[0]."),
-            true
+        }, "[0].")
         ).then(() => {
             toast.success("Se ha finalizado la acción correctamente", { position: "top-right" });
             dispatch(setProcessPhasesWithConditions(processId, null))
@@ -80,8 +79,7 @@ const CurrentPhase = ({
         AXIOS_REQUEST(UPDATE_TASK, "PUT", jsonToFormData({
             id_esta: 2,
             id_cond: task.id_cond
-        }),
-            true
+        })
         ).then(() => {
             toast.success("Se ha desmarcado la tarea correctamente", { position: "top-right" });
 
@@ -106,8 +104,7 @@ const CurrentPhase = ({
         AXIOS_REQUEST(UPDATE_TASK, "PUT", jsonToFormData({
             id_esta: 3,
             id_cond: task.id_cond
-        }),
-            true
+        })
         ).then(() => {
             toast.success("Se ha finalizado la tarea correctamente", { position: "top-right" });
             dispatch(setProcessPhasesWithConditions(processId, null))

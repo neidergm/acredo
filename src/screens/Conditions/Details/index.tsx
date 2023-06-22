@@ -92,10 +92,10 @@ const ConditionsDetails = () => {
   }
 
   const editTask = () => {
-    let formID = "FORM-EDIT-TASK";
-    let fields = taskForm(false);
+    const formID = "FORM-EDIT-TASK";
+    const fields = taskForm(false);
 
-    let defaultValues = {
+    const defaultValues = {
       nomb_cond: conditionSelected?.nomb_cond,
       cod_cond: conditionSelected?.cod_cond?.toString(),
       detalle: conditionSelected?.detalle,
@@ -108,26 +108,26 @@ const ConditionsDetails = () => {
         <Form
           formProps={{ id: formID }}
           fields={fields}
-          defaultValues={JSON.parse(JSON.stringify(defaultValues))}
+          defaultValues={structuredClone(defaultValues)}
           onSubmit={(data) => {
-            let diffData = getDifferenceBetweenData(defaultValues, data);
-            let { responsable, ...dataToSend } = diffData;
+            const diffData = getDifferenceBetweenData(defaultValues, data);
+            const { responsable, ...dataToSend } = diffData;
 
-            let responsablesChanged = responsable.length !== defaultValues.responsable?.length ? responsable :
+            const responsablesChanged = responsable.length !== defaultValues.responsable?.length ? responsable :
               responsable?.filter((r: I_JSONObject) => !(defaultValues.responsable?.find((dr: I_JSONObject) => dr.user.toString() === r.user.toString())))
 
-            let d = jsonToFormData({ ...dataToSend, id_cond: conditionSelected?.id_cond });
+            const d = jsonToFormData({ ...dataToSend, id_cond: conditionSelected?.id_cond });
 
-            if (!!(responsablesChanged?.length)) {
-              responsable.forEach((r: { user: string, role: string }, i: number) => {
-                d.append(`responsable[${i}].id_rc`, r.user);
-                d.append(`responsable[${i}].rol_cond`, r.role);
-              });
-            } else {
+            if (!(responsablesChanged?.length)) {
               if (Object.keys(dataToSend).length === 0) {
                 setLoader(null);
                 return toast("No hay nada para actualizar", { position: "top-right", icon: <i className='text-warning'><ExclamationCircleFill /></i> })
               }
+            } else {
+              responsable.forEach((r: { user: string, role: string }, i: number) => {
+                d.append(`responsable[${i}].id_rc`, r.user);
+                d.append(`responsable[${i}].rol_cond`, r.role);
+              });
             }
             setAlert({
               isOpen: true,
@@ -151,7 +151,7 @@ const ConditionsDetails = () => {
   const onSubmitEditTask = (d: FormData) => {
     setLoader("Actualizando tarea");
 
-    AXIOS_REQUEST(UPDATE_TASK, "PUT", d, true).then(r => {
+    AXIOS_REQUEST(UPDATE_TASK, "PUT", d).then(r => {
       toast.success("Se ha actualizado la tarea correctamente", { position: "top-right" });
 
       dispatch(getContionData(Number(id_cond)))
@@ -205,6 +205,7 @@ const ConditionsDetails = () => {
           </div>
           : ""
         }
+        className='container-xxxl'
         showBackButton={true}
       />
 
@@ -274,7 +275,15 @@ const ConditionsDetails = () => {
                       </div>
                       <div>
                         <CustomDropdown options={
-                          !!(conditionSelected?.usuarios?.length) ?
+                          !(conditionSelected?.usuarios?.length) ?
+                            [
+                              {
+                                text: <b className='text-danger'>Sin usuarios asociados</b>, optionProps: { disabled: true, className: "fw-bold" }
+                              }, {
+                                text: "Asociar usuarios", optionProps: { className: "mt-3" }, click: editTask
+                              }
+                            ]
+                            :
                             [
                               { text: "Asociados a la tarea actual", optionProps: { header: true, className: "mb-2" } },
                               ...conditionSelected.usuarios.map(u => ({
@@ -293,14 +302,7 @@ const ConditionsDetails = () => {
                                 text: <small className='text-primary'>Modificar usuarios</small>, optionProps: { className: "mt-4" }, click: editTask
                               }] : [])
                             ]
-                            :
-                            [
-                              {
-                                text: <b className='text-danger'>Sin usuarios asociados</b>, optionProps: { disabled: true, className: "fw-bold" }
-                              }, {
-                                text: "Asociar usuarios", optionProps: { className: "mt-3" }, click: editTask
-                              }
-                            ]
+
                         }>
                           <DropdownToggle size="sm" color='primary' className='pe-3'>
                             <i className='ps-1 pe-1'><People size={16} /></i>

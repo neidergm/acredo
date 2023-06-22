@@ -36,13 +36,13 @@ const AsList = ({
         setCurrentActiveTab(item);
     }
 
-    const submit = (data: any, form: T_Form, callback = () => { }) => {
+    const submit = (data: any, form: T_Form, callback?: () => void) => {
         onSubmit(
             data,
             form,
             () => {
                 getFormFields()
-                callback();
+                callback?.();
             }
         )
     }
@@ -60,9 +60,9 @@ const AsList = ({
 
     const getFormFields = () => {
         if (currentActiveTab === null) return;
-        let items = loadedItems;
-        let form = items[currentActiveTab];
-        if (!!(form)) {
+        const items = loadedItems;
+        const form = items[currentActiveTab];
+        if ((form)) {
             form.fields = [];
             setLoadedItems(items);
         }
@@ -105,8 +105,8 @@ const AsList = ({
             </ObservationChat>
             <div className="row flex-column-reverse flex-md-row">
                 <div
-                    className={classnames("custom-scrollbar overflow-auto pb-5 col-12 mt-3", !!(selectedItem) ? "col-xxl-3 d-none d-xxl-block" : "col-md-12")}
-                    style={{ maxHeight: !!(selectedItem) ? "90vh" : "unset" }}
+                    className={classnames("custom-scrollbar overflow-auto pb-5 col-12 mt-3", !(selectedItem) ? "col-md-12" : "col-xxl-3 d-none d-xxl-block")}
+                    style={{ maxHeight: !(selectedItem) ? "unset" : "90vh" }}
                 >
                     <div className='vstack gap-3 pt-1'>
                         {formList.map((f, i) =>

@@ -29,7 +29,7 @@ const PhasesList = (
   const active = useAppSelector(state => state.conditions.selectedData.active)
 
   const showActionDetails = (action: T_Action, stage: T_Stage, phase: T_Phase) => {
-    let dateDiff = getDateDiff(new Date(action.fecha_accion));
+    const dateDiff = getDateDiff(new Date(action.fecha_accion));
 
     setModal({
       isOpen: true,
@@ -72,7 +72,7 @@ const PhasesList = (
 
   const doStages = (stages: T_Stage[], phase: T_Phase) => {
     return stages.map(item => {
-      let key = `stage-${item.id}`;
+      const key = `stage-${item.id}`;
       return <AccordionItem className={styles.stage} key={key}>
         <div className={classnames('d-flex align-items-center', { 'justify-content-between': isAdmin })}>
           <AccordionHeader targetId={key}
@@ -94,7 +94,7 @@ const PhasesList = (
           {
             item.actions ?
               item.actions.map((action, idx) => {
-                let key = `action-${action.id_accion}`
+                const key = `action-${action.id_accion}`
                 return <div key={key}
                   className={classnames(
                     `${styles.action} hover-scale-up`, { [styles.active]: action.id_accion === active?.action?.id_accion }
@@ -151,11 +151,11 @@ const PhasesList = (
   </div>
 
   useEffect(() => {
-    if (!!(selectStage)) {
+    if ((selectStage)) {
       setSelectStage((c) => {
-        let p = list?.find(i => i.id === c!.phase.id)!;
+        const p = list?.find(i => i.id === c!.phase.id);
         return p ? {
-          stage: c!.stage.id ? p.stages?.find(i => i.id === c!.stage.id)! : p.stages?.at(-1)!,
+          stage: c!.stage.id ? (p.stages || []).find(i => i.id === c!.stage.id)! : (p.stages || []).at(-1)!,
           phase: p
         } : null;
       })
@@ -200,7 +200,7 @@ const PhasesList = (
       </Offcanvas>
       {
         list?.map(item => {
-          let key = `phase-${item.id}`;
+          const key = `phase-${item.id}`;
           return <div
             className={classnames(styles.phase)}
             key={key}

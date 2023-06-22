@@ -1,7 +1,7 @@
 import { I_AppAction, I_ProcessState } from "../../interfaces/store.interface";
 import { SET_PROCESS_LIST, SELECT_PROCESS } from "../actions/processActions";
 
-let initialState: I_ProcessState = {
+const initialState: I_ProcessState = {
     list: null,
     selected: null
 }

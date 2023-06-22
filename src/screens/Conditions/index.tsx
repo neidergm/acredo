@@ -18,7 +18,6 @@ import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } f
 import AllAttachments from "../../components/AttachmentsTable/AllAttachments";
 import { isAdmin } from "../../utils/userRolUtils";
 import Form from "react-ngm-form";
-import phaseForm from "./../../forms/phase.form.json";
 import { taskForm } from "../../forms/task.form";
 import { AXIOS_REQUEST } from "../../services/axiosService";
 import { jsonToFormData } from "../../utils/formUtils";
@@ -29,6 +28,7 @@ import CustomDropdown from "../../components/CustomDropdown";
 import Alert, { I_AlertObject } from "../../components/Alert";
 import confirmDeleteAlertObject from "../../utils/confirmDeleteAlertObject";
 import UserResume from "../../components/UserResume";
+import phaseForm from "../../forms/phase.form";
 
 let lastAccordionOpen = ``;
 
@@ -75,8 +75,8 @@ const Conditions = () => {
   }
 
   const modalToCreatePhase = (phase?: T_PhasesWithConditions, type = "Crear") => {
-    let formID = "FORM-CREATE-PHASE";
-    let fields = JSON.parse(JSON.stringify(phaseForm));
+    const formID = "FORM-CREATE-PHASE";
+    const fields = structuredClone(phaseForm);
     setModal({
       isOpen: true,
       children: <div key={formID}>
@@ -105,8 +105,8 @@ const Conditions = () => {
   }
 
   const modalToCreateTask = (phase: T_PhasesWithConditions) => {
-    let formID = "FORM-CREATE-TASK";
-    let fields = taskForm();
+    const formID = "FORM-CREATE-TASK";
+    const fields = taskForm();
     setModal({
       isOpen: true,
       children: <div key={formID}>
@@ -133,14 +133,14 @@ const Conditions = () => {
   const createPhase = (data: any) => {
     setLoading("Creando fase");
 
-    let d = jsonToFormData({
+    const d = jsonToFormData({
       "[0].nomb_fase": data.nomb_fase,
       "[0].id_conv": id_process,
       "[0].fech_ini": getNormalDate(data.fecha_inicio).split("/").reverse().join("-"),
       "[0].fech_fin": getNormalDate(data.fecha_fin).split("/").reverse().join("-"),
     });
 
-    AXIOS_REQUEST(SAVE_PHASE, "POST", d, true).then(r => {
+    AXIOS_REQUEST(SAVE_PHASE, "POST", d).then(r => {
       toast.success("Se ha creado la fase correctamente", { position: "top-right" });
       closeModal(setModal);
       dispatch(setProcessPhasesWithConditions(Number(id_process), null))
@@ -151,7 +151,7 @@ const Conditions = () => {
 
   const createTask = ({ responsable, ...data }: any, phase: T_PhasesWithConditions) => {
     setLoading("Creando nueva tarea");
-    let d = jsonToFormData({
+    const d = jsonToFormData({
       ...data,
       id_conv: id_process,
       id_fase: phase.id_fase
@@ -162,7 +162,7 @@ const Conditions = () => {
       d.append(`responsable[${i}].rol_cond`, r.role);
     })
 
-    AXIOS_REQUEST(SAVE_TASK, "POST", d, true).then(r => {
+    AXIOS_REQUEST(SAVE_TASK, "POST", d).then(r => {
       toast.success("Se ha creado la tarea correctamente", { position: "top-right" });
       dispatch(setProcessPhasesWithConditions(Number(id_process), null));
       closeModal(setModal)
@@ -220,14 +220,14 @@ const Conditions = () => {
   const editPhase = (data: any, phase: T_PhasesWithConditions) => {
     setLoading("Modificando fase");
 
-    let d = jsonToFormData({
+    const d = jsonToFormData({
       "[0].nomb_fase": data.nomb_fase,
       "[0].id_fase": phase.id_fase,
       "[0].fech_ini": getNormalDate(data.fecha_inicio).split("/").reverse().join("-"),
       "[0].fech_fin": getNormalDate(data.fecha_fin).split("/").reverse().join("-"),
     });
 
-    AXIOS_REQUEST(SAVE_PHASE, "PUT", d, true).then(r => {
+    AXIOS_REQUEST(SAVE_PHASE, "PUT", d).then(r => {
       toast.success("Se ha modificado la fase correctamente", { position: "top-right" });
       closeModal(setModal);
       dispatch(setProcessPhasesWithConditions(Number(id_process), null))
@@ -251,8 +251,8 @@ const Conditions = () => {
         if (accordionOpen === "") {
           selectItem(`${lastAccordionOpen || selectedProcess.id_fase}`);
         } else {
-          let element = document.getElementById(`${accordionOpen}`)
-          !!(element) ? element.scrollIntoView() : selectItem(`${selectedProcess.id_fase}`);;
+          const element = document.getElementById(`${accordionOpen}`)
+          !(element) ? selectItem(`${selectedProcess.id_fase}`) : element.scrollIntoView();
         }
       }
     }
@@ -263,7 +263,7 @@ const Conditions = () => {
       <SubHeader
         showBackButton
         text={`${selectedProcess?.nomb_conv || ""}`}
-        className="container"
+        className="container-xl"
       />
 
       <Modal backdrop="static" size={modal?.size}
@@ -279,7 +279,7 @@ const Conditions = () => {
       <Alert isOpen={!!(alert?.isOpen)}{...alert} onClosed={() => { setAlert(null) }} />
       <Loader isOpen={!!(loading)} subtitle={loading} />
 
-      <div className="container pb-5">
+      <div className="container-xl">
         <div className="mb-5">
           {!selectedProcess ? <Loader isOpen loaderAsModal={false} /> :
             <Card className="pt-4 pb-3">
@@ -356,7 +356,7 @@ const Conditions = () => {
                   :
                   <Accordion open={`${accordionOpen}`} {...{ toggle: selectItem }}>
                     {phasesWithConditions[selectedProcess.id_conv].map((phase) => {
-                      let dateDiffInPhase = getDateDiff(new Date(phase.fech_fin));
+                      const dateDiffInPhase = getDateDiff(new Date(phase.fech_fin));
                       return <AccordionItem
                         key={phase.id_fase}
                         id={`${phase.id_fase}`}
@@ -374,10 +374,10 @@ const Conditions = () => {
                                   radius={32}
                                   color="#06a099"
                                   content={
-                                    !!(phase.porcentaje) ?
-                                      <b>{phase.porcentaje || 0}%</b>
-                                      :
+                                    !(phase.porcentaje) ?
                                       <div className="text-muted"><PauseFill /></div>
+                                      :
+                                      <b>{phase.porcentaje || 0}%</b>
                                   }
                                 />
                               </div>
@@ -397,67 +397,71 @@ const Conditions = () => {
                         </AccordionHeader>
                         <AccordionBody accordionId={`${phase.id_fase}`} tag={Card}>
                           <ListGroup flush tag="div">
-                            {!!(phase.condiciones?.length) ? phase.condiciones?.map((item) =>
+                            {!(phase.condiciones?.length) ?
                               <ListGroupItem
-                                key={item.id_cond}
                                 tag="div"
-                                className="d-flex gap-3"
+                                className="pt-4 pb-4 bg-transparent px-0 px-xl-3"
                               >
-                                <div
-                                  className="pt-3 pb-3 hover-scale-up bg-transparent px-0 px-xl-3 flex-grow-1"
-                                  onClick={() => goToConditionDetailsScreen(item)}
+                                <span className="text-warning align-text-bottom me-2">
+                                  <ExclamationCircleFill /> </span>
+                                <span className="text-muted">
+                                  No hay tareas registradas para mostrar
+                                </span>
+                              </ListGroupItem>
+                              :
+                              phase.condiciones?.map((item) =>
+                                <ListGroupItem
+                                  key={item.id_cond}
+                                  tag="div"
+                                  className="d-flex gap-3"
                                 >
-                                  <div className="float-end ps-md-4">
-                                    <CircleProgress
-                                      progress={item.porcentaje || 0}
-                                      stroke={5}
-                                      radius={34}
-                                      color={item.porcentaje >= 100 ? "#31ac69" : undefined}
-                                      content={`${item.porcentaje || 0}%`}
-                                    />
-                                  </div>
+                                  <div
+                                    className="pt-3 pb-3 hover-scale-up bg-transparent px-0 px-xl-3 flex-grow-1"
+                                    onClick={() => goToConditionDetailsScreen(item)}
+                                  >
+                                    <div className="float-end ps-md-4">
+                                      <CircleProgress
+                                        progress={item.porcentaje || 0}
+                                        stroke={5}
+                                        radius={34}
+                                        color={item.porcentaje >= 100 ? "#31ac69" : undefined}
+                                        content={`${item.porcentaje || 0}%`}
+                                      />
+                                    </div>
 
-                                  <div className="float-md-end d-flex flex-md-column gap-2 mb-3 mb-md-0 flex-wrap">
-                                    <div className="text-end">
-                                      <div className="px-3 rounded-pill badge opacity-75"
-                                        style={{ backgroundColor: `${item.color}` }}>
-                                        {item.estado}
+                                    <div className="float-md-end d-flex flex-md-column gap-2 mb-3 mb-md-0 flex-wrap">
+                                      <div className="text-end">
+                                        <div className="px-3 rounded-pill badge opacity-75"
+                                          style={{ backgroundColor: `${item.color}` }}>
+                                          {item.estado}
+                                        </div>
+                                      </div>
+                                      {Number(item.num_obs) > 0 && <div className="text-end">
+                                        <Badge
+                                          pill
+                                          color="light"
+                                          className="px-3 text-muted"
+                                        >
+                                          {item.num_obs} Observaciones
+                                        </Badge>
+                                      </div>}
+                                    </div>
+
+                                    <div className="d-flex gap-3">
+                                      <div className="flex-grow-1">
+                                        <p className="mb-1">{item.nomb_cond}</p>
                                       </div>
                                     </div>
-                                    {Number(item.num_obs) > 0 && <div className="text-end">
-                                      <Badge
-                                        pill
-                                        color="light"
-                                        className="px-3 text-muted"
-                                      >
-                                        {item.num_obs} Observaciones
-                                      </Badge>
-                                    </div>}
-                                  </div>
 
-                                  <div className="d-flex gap-3">
-                                    <div className="flex-grow-1">
-                                      <p className="mb-1">{item.nomb_cond}</p>
-                                    </div>
+                                    <p className="card-text mt-2 mt-md-2 d-inline-block">
+                                      <small className="text-muted">
+                                        - Última actualización el {new Date(item.marc_update).toLocaleString([], { dateStyle: "long", timeStyle: "short" })}
+                                      </small>
+                                    </p>
                                   </div>
-
-                                  <p className="card-text mt-2 mt-md-2 d-inline-block">
-                                    <small className="text-muted">
-                                      - Última actualización el {new Date(item.marc_update).toLocaleString([], { dateStyle: "long", timeStyle: "short" })}
-                                    </small>
-                                  </p>
-                                </div>
-                              </ListGroupItem>
-                            ) : <ListGroupItem
-                              tag="div"
-                              className="pt-4 pb-4 bg-transparent px-0 px-xl-3"
-                            >
-                              <span className="text-warning align-text-bottom me-2">
-                                <ExclamationCircleFill /> </span>
-                              <span className="text-muted">
-                                No hay tareas registradas para mostrar
-                              </span>
-                            </ListGroupItem>}
+                                </ListGroupItem>
+                              )
+                            }
 
                             <ListGroupItem
                               tag="div"

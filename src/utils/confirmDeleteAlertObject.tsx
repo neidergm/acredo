@@ -6,7 +6,7 @@ export default (subtitle: any, onSubmit: () => void, stateFunction: React.Dispat
     return {
         needFillConfirmation: true,
         isOpen: true,
-        onClosed: () => { },
+        // onClosed: () => { },
         title: "¿Está seguro?",
         type: "question",
         subtitle: <>
@@ -36,7 +36,7 @@ export default (subtitle: any, onSubmit: () => void, stateFunction: React.Dispat
         submitButton: {
             form: "DELETE-CONFIRM-ALERT",
             type: "submit",
-            onClick: () => { }, value: "Sí, eliminar"
+            value: "Sí, eliminar"
         },
         closeButton: { value: "No, cancelar", onClick: () => closeModal(stateFunction) }
     }

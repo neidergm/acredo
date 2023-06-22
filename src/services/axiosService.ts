@@ -1,6 +1,7 @@
 import axios from 'axios';
-import { baseUrl } from './constantsService';
+import { BASE_URL } from './constantsService';
 import localStorageService from './localStorageService';
+import { I_JSONObject } from '../interfaces/generic.interface';
 
 let token_storaged = "";
 let otherConfig = {
@@ -25,12 +26,11 @@ const setOtherAxiosConfig = (config = {}) => { otherConfig = { ...otherConfig, .
  * @param {String} endpoint End point of API
  * @param {String} method post, get, put, delete
  * @param {any} data Data to send
- * @param {boolean} formData if request must be used as formData
- * @param {String} completeUrl URL complete 
  * @param {Object} header custom headers params 
  * @param {String} token token for a particular request 
  */
-const AXIOS_REQUEST = (url: string, method = "get", data: any = null, formData = false, header = {}, onUploadProgress = (p: any) => { }) => {
+// const AXIOS_REQUEST = (url: string, method = "get", data: any = null, header = {}, onUploadProgress?: (p: any) => void) => {
+const AXIOS_REQUEST = (url: string, method = "get", data: null | FormData | I_JSONObject | string = null, header = {}, onUploadProgress?: (p: any) => void) => {
     method = method.toLowerCase();
 
     if (!(token_storaged)) {
@@ -42,7 +42,7 @@ const AXIOS_REQUEST = (url: string, method = "get", data: any = null, formData =
         'Content-Type': 'application/json'
     }
     let params = null;
-    if (method !== "get" && method !== "delete" && formData) {
+    if (method !== "get" && method !== "delete" && data instanceof FormData) {
         headers = {
             ...headers,
             'Process-Data': false,
@@ -58,7 +58,7 @@ const AXIOS_REQUEST = (url: string, method = "get", data: any = null, formData =
 
     return axios({
         method,
-        url: /^http(s)?:\/{2}.+/.test(url) ? url : `${baseUrl}/${url}`,
+        url: /^http(s)?:\/{2}.+/.test(url) ? url : `${BASE_URL}/${url}`,
         data,
         params,
         headers,

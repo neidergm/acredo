@@ -1,0 +1,117 @@
+.noti-list {}
+
+.noti-item {
+    padding-left: 0px;
+    padding-right: 0px;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.noti-item:not(.active) {
+    position: relative;
+}
+
+.noti-item:hover:not(.active) {
+    background-color: #f3f3f3;
+    border-bottom-color: transparent;
+    border-radius: 3px;
+}
+
+.noti-item.active {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    background-color: #f4f4f4;
+}
+
+.noti-item.active .resume {
+    color: #000 !important;
+}
+
+.noti-item.active .avatar {
+    /* border-top-left-radius: 0px !important;
+    border-bottom-left-radius: 0px !important; */
+    background-color: #ffffff;
+    color: #000;
+    border: 1px solid #fff;
+    font-weight: bold !important;
+    border-left-color: transparent;
+    box-shadow: 0px 0px 10px -5px #00000069;
+}
+
+
+/* .noti-item.active::before {
+    content: " ";
+    position: absolute;
+    border: 8px solid transparent;
+    top: calc(50% - 8px);
+    border-left-color: #ffffff;
+    left: 0px;
+    border-radius: 5px;
+} */
+
+.noti-item .avatar {
+    height: 35px;
+    width: 35px;
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #d9d9d9;
+    line-height: 0px;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: #7d7d7d;
+}
+
+.noti-date {
+    min-width: 130px;
+    max-width: 130px;
+}
+
+.noti-unread .resume {
+    color: #1c1c1c !important;
+}
+
+.noti-unread .avatar {
+    position: relative;
+    background: linear-gradient(to right, #06A099 0%, #31AC69 100%);
+    color: #fff;
+}
+
+@media screen and (max-width: 768px) {
+    .noti-date {
+        min-width: 75px;
+        max-width: 75px;
+    }
+}
+
+
+.noti-item .notification-html {
+    display: inline;
+}
+
+.noti-item .notification-html * {
+    border: none !important;
+    vertical-align: inherit !important;
+    color: var(--bs-secondary) !important;
+    display: inline !important;
+    font-weight: normal !important;
+    font-size: medium !important;
+    background-color: inherit !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+    width: auto !important;
+    height: auto !important;
+    font-style: normal !important;
+    text-decoration: none !important;
+    opacity: inherit !important;
+    position: inherit !important;
+}
+
+/* .notification-html .table>:not(caption)>*>* {
+    border-width: 0 var(--bs-border-width);
+}
+
+.notification-html .table>:not(caption)>*>* {
+    box-shadow: inset 0 0 0 9999px var(--bs-table-bg-state,var(--bs-table-bg-type,var(--bs-table-accent-bg)));
+} */

@@ -1,15 +1,28 @@
+import { useEffect } from 'react';
 import Avatar from './Avatar';
 import Menu from './Menu';
 import logo from './../../images/logo-master-w.svg';
 import './header.css';
-import { useNavigate } from 'react-router-dom';
-import { Bell, QuestionCircle } from '../Icons';
+import { Link, useNavigate } from 'react-router-dom';
+import { Bell, BellFill, QuestionCircle } from '../Icons';
 import { UncontrolledTooltip } from 'reactstrap';
+import { useAppSelector } from '../../hooks/useAppSelector';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { getNotificationsReport } from '../../store/actions/notificationsActions';
 
 export const Header = ({ titulo = "Master U" }: { titulo?: string }) => {
+
+  const unreadCount = useAppSelector(s => s.notifications.unreadCount);
+  const dispatch = useAppDispatch();
+
   const navigate = useNavigate();
 
-  const goToHome = () => navigate("/")
+  const goToHome = () => navigate("/");
+
+  useEffect(() => {
+    dispatch(getNotificationsReport())
+  }, [])
+
 
   return (
     <div className="header py-3">
@@ -20,8 +33,13 @@ export const Header = ({ titulo = "Master U" }: { titulo?: string }) => {
             <span className='d-block text-nowrap title text-light'>{titulo}</span>
           </div>
           <UncontrolledTooltip target={`notifyicon`}>Notificaciones</UncontrolledTooltip>
-          <div className='hover-shadow-sm hover-scale-up' id="notifyicon">
-            <Bell size={24} />
+          <div className='hover-shadow-sm hover-scale-up position-relative' id="notifyicon" >
+            <Link to={"/notificaciones"} className='text-white'>
+              {unreadCount === 0 ? <Bell size={24} /> : <BellFill size={24} />}
+              {unreadCount !== 0 && <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                <small>{unreadCount > 99 ? "99+" : unreadCount}</small>
+              </span>}
+            </Link>
           </div>
           <UncontrolledTooltip target={`helpicon`}>Ayuda</UncontrolledTooltip>
           <div className='hover-shadow-sm hover-scale-up' id="helpicon">

@@ -1,20 +1,21 @@
 import { Component } from 'react';
 import { AXIOS_REQUEST } from '../../services/axiosService';
-import { ERROR_REPORTING_URL, localstorageItemPrefix } from '../../services/constantsService';
+import { ERROR_REPORTING_URL } from '../../services/constantsService';
+import localStorageService, { sessionStorageService } from '../../services/localStorageService';
 
-let timerValue = 15;
+let timerValue = 2;
 
 export const sendReport = (_data, successCallback, errorCallback, progressCallback) => {
     if (!(/^http[s]?:\/\/localhost.*$/.test(window.location.href))) {
         _data.device = navigator.userAgent;
 
         let data = {
-            app: window.document.title || "SeguimientoCondiciones",
+            app: window.document.title,
             msgerror: JSON.stringify(_data),
-            user: localStorage.getItem(`${localstorageItemPrefix}user`) || localStorage.getItem(`${localstorageItemPrefix}token`) || "WITHOUT USER INFO"
+            user: localStorageService.getItem(`user`) || localStorageService.getItem(`token`) || "WITHOUT USER INFO"
         }
 
-        let lr = sessionStorage.getItem(`${localstorageItemPrefix}NG_lastReported`);
+        let lr = sessionStorageService.getItem(`NG_lastReported`);
         let send = false;
         if (!lr) {
             send = true;
@@ -26,8 +27,8 @@ export const sendReport = (_data, successCallback, errorCallback, progressCallba
             }
         }
         if (send) {
-            return AXIOS_REQUEST(null, "post", data, false, ERROR_REPORTING_URL, progressCallback).then(() => {
-                sessionStorage.setItem(`${localstorageItemPrefix}NG_lastReported`, new Date().getTime())
+            return AXIOS_REQUEST(null, "post", data, ERROR_REPORTING_URL, progressCallback).then(() => {
+                sessionStorageService.setItem(`NG_lastReported`, new Date().getTime())
                 return successCallback?.()
             }).catch(err => {
                 return errorCallback?.()

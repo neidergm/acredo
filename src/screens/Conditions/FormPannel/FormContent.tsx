@@ -15,7 +15,7 @@ const FormContent = ({ canEdit, formItem, onSubmit, onDelete, onObservationsDone
     const [modal, setModal] = useState<T_ModalJSON | null>(null);
 
     const openFormAsModal = (form: T_Form, action = "Agregar") => {
-        let FORM_ID = `FORM-MODAL-${form.id_fcamp}`;
+        const FORM_ID = `FORM-MODAL-${form.id_fcamp}`;
         if (action === "Agregar") {
             form.est_resp = 0;
         }
@@ -98,14 +98,14 @@ const FormContent = ({ canEdit, formItem, onSubmit, onDelete, onObservationsDone
                         <p className='ws-bold'>Respuestas registradas:</p>
                         {
                             Object.keys(formItem.multiplesValues!).map(r => {
-                                let respItem = formItem.multiplesValues![r];
+                                const respItem = formItem.multiplesValues![r];
                                 return <div className="bg-light p-3 mb-5 rounded-3" key={r}>
                                     <Form
                                         key={`form_${r}`}
                                         disabled={true}
                                         fields={respItem.fields}
                                         defaultValues={respItem.defaultValues}
-                                        onSubmit={data => { }}
+                                        onSubmit={() => { console.log() }}
                                     />
                                 </div>
                             })

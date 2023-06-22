@@ -36,9 +36,9 @@ const AsTabs = ({
 
     const getFormFields = () => {
         if (currentActiveTab === null) return;
-        let items = [...loadedItems];
-        let form = items[currentActiveTab];
-        if (!!(form)) {
+        const items = [...loadedItems];
+        const form = items[currentActiveTab];
+        if ((form)) {
             form.fields = [];
             setLoadedItems(items);
         }
@@ -49,13 +49,13 @@ const AsTabs = ({
             })
     }
 
-    const submit = (data: any, form: T_Form, callback = () => { }) => {
+    const submit = (data: any, form: T_Form, callback?: () => void) => {
         onSubmit(
             data,
             form,
             () => {
                 getFormFields();
-                callback();
+                callback?.();
             }
         )
     }
@@ -105,7 +105,7 @@ const AsTabs = ({
                 <Nav tabs className="group-subtitle p-0 mb-3 border-bottom justify-content-md-start d-flex flex-nowrap align-items-center">
                     {
                         formList.map((item, i) => {
-                            let num_obs = item.tipo_obs !== 0 ? getNumObs(item) : 0;
+                            const num_obs = item.tipo_obs !== 0 ? getNumObs(item) : 0;
                             return <NavItem key={`ni-${i}`}>
                                 <NavLink onClick={() => { toggleTab(i); }}
                                     className={"sub-item text-muted px-3 pb-2 d-flex align-items-center " + classnames({

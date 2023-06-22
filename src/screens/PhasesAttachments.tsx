@@ -18,8 +18,7 @@ const PhasesAttachments = () => {
     useEffect(() => {
         AXIOS_REQUEST(PHASE_DETAILS + id_phase).then(resp => {
             setDetails(resp.data?.[0])
-        }).catch(() => {
-        })
+        }).catch()
     }, [])
 
     if (!details) {
@@ -30,7 +29,7 @@ const PhasesAttachments = () => {
     }
     return (
         <>
-            <SubHeader text={'Anexos de fase'} className="container">
+            <SubHeader text={'Anexos de fase'} className="container-xl">
                 <div className=''>
                     <Button color='primary' size='sm' className='pe-3 rounded-pill d-flex align-items-center gap-2'
                         onClick={() => {
@@ -42,7 +41,7 @@ const PhasesAttachments = () => {
                 </div>
             </SubHeader>
 
-            <div className="container pt-3 pb-5">
+            <div className="container-xl pt-3 pb-5">
                 <Card className='mb-4'>
                     <div>
                         <b>Fase:</b>

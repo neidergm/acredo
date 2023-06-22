@@ -1,11 +1,8 @@
-export const BASE_API = process.env.NODE_ENV ==="production" ? "https://axis.curn.edu.co/apisiac": "https://axis.curn.edu.co/apisiac";
-export const baseUrl = `${BASE_API}/api`;
+export const BASE_URL = process.env.NODE_ENV === "production" ? window._NGconfig.api_base_url : window._NGconfig.api_base_url;
 
-export const localstorageItemPrefix = "CONDITIONS_/";
+export const GOOGLE_CLIENT_ID = window._NGconfig.google_client.id;
 
-export const GOOGLE_CLIENT_ID = "227610805652-c451askq3usbv82f8e7v6g3qd6i1vdpq.apps.googleusercontent.com";
-
-export const ERROR_REPORTING_URL = "https://axis.curn.edu.co/apildap/api/log/errorwrite";
+export const ERROR_REPORTING_URL = window._NGconfig.error_reporting_url;
 
 export const stringBase64 = (str: string | null, decrypt?: boolean) => {
     if (!str) return str;

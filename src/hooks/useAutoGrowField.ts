@@ -18,7 +18,7 @@ const useAutoGrowField = ({ maxHeight = 120 }: T_Props) => {
     };
 
     const getHTMLValue = () => {
-        let text_input = textAreaRef.current?.value.trim();
+        const text_input = textAreaRef.current?.value.trim();
         let output_html = "";
         if (text_input && text_input.length > 0) {
             output_html += "<p>"; //begin by creating paragraph

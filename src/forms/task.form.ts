@@ -6,7 +6,7 @@ import mapField from "../utils/mapField";
 
 // export const taskForm = (showGoogleDocField = true, showConditionTypeField = true): T_FieldsTypes[] => {
 export const taskForm = (showConditionTypeField = true): T_FieldsTypes[] => {
-    let f: T_FieldsTypes[] = [
+    const f: T_FieldsTypes[] = [
         {
             "name": "nomb_cond",
             "label": "Nombre",

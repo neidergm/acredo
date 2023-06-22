@@ -44,8 +44,8 @@ const CreateStage = ({
   const dispatch = useAppDispatch();
 
   const modalToEditAction = (action?: T_Action, type = "Modificar") => {
-    let formID = `${type}-ACTION-FORM`;
-    let fields = actionFields(id_cond!, action?.id_accion || '0')
+    const formID = `${type}-ACTION-FORM`;
+    const fields = actionFields(id_cond!, action?.id_accion || '0')
     setModal({
       isOpen: true,
       children: <div key={formID}>
@@ -74,7 +74,7 @@ const CreateStage = ({
   }
 
   const onCreateAction = (data: any) => {
-    let d = jsonToFormData({
+    const d = jsonToFormData({
       "[0].nomb_accion": data.nomb_accion,
       "[0].fecha_accion": getNormalDate(data.fecha_accion).split("/").reverse().join("-"),
       "[0].id_etapa": stage?.id,
@@ -88,7 +88,7 @@ const CreateStage = ({
 
     setLoader("Creando nueva acción")
 
-    AXIOS_REQUEST(PUT_ACTION, "POST", d, true).then(r => {
+    AXIOS_REQUEST(PUT_ACTION, "POST", d).then(r => {
       toast.success("Se ha creado la acción correctamente", {
         position: "top-right"
       });
@@ -104,7 +104,7 @@ const CreateStage = ({
 
   const onEditAction = (data: any, action: T_Action) => {
 
-    let d = jsonToFormData({
+    const d = jsonToFormData({
       "[0].id_accion": action.id_accion,
       "[0].nomb_accion": data.nomb_accion,
       "[0].fecha_accion": getNormalDate(data.fecha_accion).split("/").reverse().join("-"),
@@ -119,7 +119,7 @@ const CreateStage = ({
 
     setLoader("Actualizando acción")
 
-    AXIOS_REQUEST(PUT_ACTION, "PUT", d, true).then(r => {
+    AXIOS_REQUEST(PUT_ACTION, "PUT", d).then(r => {
       toast.success("Se actualizó la acción correctamente", {
         position: "top-right"
       })
@@ -201,7 +201,7 @@ const CreateStage = ({
 
   const updateStage = ({ nomb_etapa }: any) => {
 
-    let data = jsonToFormData({
+    const data = jsonToFormData({
       "[0].id_fase": phase?.id,
       "[0].id_etapa": stage?.id,
       "[0].id_cond": Number(id_cond),
@@ -210,7 +210,7 @@ const CreateStage = ({
 
     setLoader("Actualizando etapa");
 
-    AXIOS_REQUEST(PUT_STAGE, "PUT", data, true).then(r => {
+    AXIOS_REQUEST(PUT_STAGE, "PUT", data).then(r => {
       updateDataOnUnmount.current = true;
       dispatch(getPhasesAndStagesOfCondition(Number(id_cond)));
       toast.success("Se actualizó la etapa correctamente", { position: "top-right" });
@@ -221,7 +221,7 @@ const CreateStage = ({
 
   const createStage = ({ nomb_etapa }: any) => {
 
-    let data = jsonToFormData({
+    const data = jsonToFormData({
       "[0].id_fase": phase?.id,
       "[0].id_cond": Number(id_cond),
       "[0].nomb_etapa": nomb_etapa
@@ -229,7 +229,7 @@ const CreateStage = ({
 
     setLoader("Registrando nueva etapa");
 
-    AXIOS_REQUEST(PUT_STAGE, "POST", data, true).then(r => {
+    AXIOS_REQUEST(PUT_STAGE, "POST", data).then(r => {
       toast.success("Se ha registrado la etapa correctamente", { position: "top-right" });
       updateDataOnUnmount.current = true;
       dispatch(getPhasesAndStagesOfCondition(Number(id_cond)));
@@ -269,7 +269,8 @@ const CreateStage = ({
           <div className='d-flex justify-content-between gap-4 flex-wrap'>
             <div className='flex-grow-1 '>
               <Form
-                fields={JSON.parse(JSON.stringify(stageformfields)) as T_FieldsTypes[]}
+                // fields={JSON.parse(JSON.stringify(stageformfields)) as T_FieldsTypes[]}
+                fields={structuredClone(stageformfields) as T_FieldsTypes[]}
                 defaultValues={{ nomb_etapa: stage?.name }}
                 onSubmit={stageIsRegistered ? updateStage : createStage}
                 formProps={{ id: "STAGE-FORM" }}

@@ -2,7 +2,7 @@ import { I_AppAction, I_UserState } from '../../interfaces/store.interface';
 import localStorageService from '../../services/localStorageService';
 import { LOGOUT, SET_UNAUTHORIZED, SET_USERINFO } from '../actions/userActions';
 
-let initialState: I_UserState = {
+const initialState: I_UserState = {
     userInfo: localStorageService.getItem("user"),
     unauthorized: "",
 }

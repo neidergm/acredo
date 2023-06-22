@@ -38,7 +38,7 @@ const mapField = (item: I_FormField, defaultValue?: any) => {
             }
         } else if (field.type === "googledocs") {
             field.render = ({ field: { ref, onChange, onBlur, value, ...f } }: any) => {
-                let url = `https://docs.google.com/document/d/${value}?embedded=true`;
+                const url = `https://docs.google.com/document/d/${value}?embedded=true`;
                 return <>
                     <div className="text-end">
                         <Button
@@ -106,7 +106,7 @@ const mapField = (item: I_FormField, defaultValue?: any) => {
  * @returns {I_JSONObject} 
  */
 export const mapFieldAndDefaultValues = (list: Array<I_FormFieldWithAnswer | I_FormField>, list2?: Array<I_FormFieldWithAnswer> | null) => {
-    let defaultValues = (list2 || []).reduce((p, c) => ({ ...p, [c.json_campo.name]: getFormItemDefaultValue(c) }), {} as I_JSONObject);
+    const defaultValues = (list2 || []).reduce((p, c) => ({ ...p, [c.json_campo.name]: getFormItemDefaultValue(c) }), {} as I_JSONObject);
     return {
         defaultValues,
         fields: list.map(c => mapField(c, defaultValues[c.json_campo.name])) as T_FieldsTypes[]

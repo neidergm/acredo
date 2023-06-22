@@ -1,0 +1,44 @@
+import { T_FieldsTypes } from '../interfaces/generic.interface';
+
+const phaseForm: T_FieldsTypes[] = [
+    {
+        "name": "nomb_fase",
+        "label": "Nombre",
+        "tag": "input",
+        "type": "text",
+        "wrapperClassName": "col-12",
+        "validations": {
+            "required": true
+        }
+    },
+    {
+        "name": "fecha_inicio",
+        "label": "Fecha de inicio",
+        "tag": "date",
+        "type": "date",
+        "nested": {
+            "name": "fecha_fin",
+            "type": "max"
+        },
+        "wrapperClassName": "col-6",
+        "validations": {
+            "required": true
+        }
+    },
+    {
+        "name": "fecha_fin",
+        "label": "Fecha de fin",
+        "tag": "date",
+        "type": "date",
+        "nested": {
+            "name": "fecha_inicio",
+            "type": "min"
+        },
+        "wrapperClassName": "col-6",
+        "validations": {
+            "required": true
+        }
+    }
+]
+
+export default phaseForm;

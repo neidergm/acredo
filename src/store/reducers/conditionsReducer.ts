@@ -1,7 +1,7 @@
 import { I_AppAction, I_ConditionsState } from "../../interfaces/store.interface";
 import { SELECTED_CONDITION_DATA, SELECT_CONDITION, SET_PHASES_CONDITIONS } from "../actions/conditionsActions";
 
-let initialState: I_ConditionsState = {
+const initialState: I_ConditionsState = {
     selectedData: {},
     phasesWithConditions: {},
     selected: null

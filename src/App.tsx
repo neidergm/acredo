@@ -16,6 +16,7 @@ const Conditions = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "
 const IntitutionalConditions = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "IntitutionalConditions" */ './screens/Conditions/Details')));
 const Process = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Process" */ './screens/Process')));
 const PhasesAttachments = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "PhasesAttachments" */ './screens/PhasesAttachments')));
+const Notifications = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Notifications" */ './screens/Notifications')));
 
 const App = () => {
 
@@ -49,6 +50,7 @@ const App = () => {
               <Route path='/proceso/:id_process/:id_cond' element={<IntitutionalConditions />} />
               <Route path='/proceso/:id_process' element={<Conditions />} />
               <Route path='/proceso/fases/anexos/:id_phase' element={<PhasesAttachments />} />
+              <Route path='/notificaciones' element={<Notifications />} />
               <Route path='*' element={<Navigate to="/" />} />
             </Routes>
           </Suspense>

@@ -21,7 +21,7 @@ const UserResume = ({ list: _list, goToConditionDetailsScreen }: T_Props) => {
         else
             setList(
                 _list.reduce((p, { condiciones, ...ph }) => {
-                    let cond = condiciones?.map(cond => {
+                    const cond = condiciones?.map(cond => {
                         return {
                             ...cond,
                             resumen_usuario: cond.resumen_usuario?.filter((i) => new RegExp(`${val}`, "gi").test(`${i.nomb_resp} | ${i.nomb_rol} | ${i.accion}`))
@@ -52,7 +52,7 @@ const UserResume = ({ list: _list, goToConditionDetailsScreen }: T_Props) => {
                     No nada para mostrar con el filtro "<i className='fw-semibold'>{filter}</i>"
                 </Alert>
             }
-            {(!!(filter) ? list : _list)
+            {(!(filter) ? _list : list)
                 .map((phase) => {
                     return <div className="pb-5" key={phase.id_fase}>
                         <Table responsive className="align-middle">
@@ -85,7 +85,7 @@ const UserResume = ({ list: _list, goToConditionDetailsScreen }: T_Props) => {
                                                 <td className="">{u.nomb_rol}</td>
                                                 <td className="">{u.accion}</td>
                                             </tr>
-                                        }) : <tr className="small"  key={`${phase.id_fase}-${cond.cod_cond}`}>
+                                        }) : <tr className="small" key={`${phase.id_fase}-${cond.cod_cond}`}>
                                             <td className="fw-semibold bg-light cursor-pointer border-bottom"
                                                 onClick={() => goToConditionDetailsScreen?.(cond)}>{cond.nomb_cond}
                                             </td>

@@ -46,7 +46,7 @@ const FormsTemplatesAssociaton = ({
             return toast.error("Debe seleccionar al menos 1", { position: "top-right", icon: <i className='text-warning'><ExclamationCircleFill /> </i> })
         }
 
-        let temp = selectedList.map(i => templatesList?.find(e => e.id_plantilla === i))
+        const temp = selectedList.map(i => templatesList?.find(e => e.id_plantilla === i))
 
         setAlertConfirm({
             isOpen: true,
@@ -67,9 +67,9 @@ const FormsTemplatesAssociaton = ({
             submitButton: {
                 value: "Ok, asociar", onClick: () => {
                     setLoader("Asociando plantillas");
-                    let data = jsonToFormData({ form_cond: selectedList.join(","), id_cond: taskId })
+                    const data = jsonToFormData({ form_cond: selectedList.join(","), id_cond: taskId })
 
-                    AXIOS_REQUEST(ASOCIATE_FORM_TO_TASK, "PUT", data, true)
+                    AXIOS_REQUEST(ASOCIATE_FORM_TO_TASK, "PUT", data)
                         .then((resp) => {
                             toggle();
                             toast.success("Formularios asociados correctamente", { position: "top-right" });
@@ -106,8 +106,8 @@ const FormsTemplatesAssociaton = ({
                             <ListGroup flush>
                                 {
                                     templatesList?.map((item, idx) => {
-                                        let selectedIdx = selectedList.indexOf(item.id_plantilla);
-                                        let selected = selectedIdx >= 0;
+                                        const selectedIdx = selectedList.indexOf(item.id_plantilla);
+                                        const selected = selectedIdx >= 0;
                                         return <ListGroupItem className='cursor-pointer px-0 px-lg-2' action key={idx}>
                                             <div>
                                                 <input

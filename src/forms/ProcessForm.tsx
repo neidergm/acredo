@@ -43,7 +43,7 @@ const ProcessForm = ({
             "wrapperClassName": "col-md-6",
             doRequest: ({ method, params, url }: I_JSONObject) => {
                 return AXIOS_REQUEST(url, method, params).then(resp => {
-                    let options = resp.data.map((i: I_JSONObject) => ({ value: i.id_tcond, label: i.nomb_tcond }))
+                    const options = resp.data.map((i: I_JSONObject) => ({ value: i.id_tcond, label: i.nomb_tcond }))
                     fetchedProcessTypeRef.current = resp.data;
                     setFP(resp.data)
                     return { options };

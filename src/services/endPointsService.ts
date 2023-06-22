@@ -290,3 +290,24 @@ export const GET_TEMPLATES = `plantilla/`;
  */
 export const GET_PROGRAMS_LIST = `programas`;
 
+
+/*---------------------------------------------*/
+// NOTIFICATIONS
+/*---------------------------------------------*/
+
+/**
+ * @method GET
+ */
+export const GET_NOTIFICATIONS = `noti`;
+
+/**
+ * @method PUT
+ * @params {id_noti}
+ */
+export const MARK_AS_READ_NOTIFICATION = `noti`;
+
+/**
+ * @method GET
+ */
+export const GET_NOTIFICATIONS_REPORT = `noti/reporte`;
+

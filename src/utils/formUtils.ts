@@ -53,26 +53,26 @@ export const formToSubmitData = (
     extraData: I_JSONObject = {},
     dataPrefix = "resp"
 ) => {
-    let form = new FormData();
+    const form = new FormData();
     let i = 0;
 
-    let fieldsAsJson = fields.reduce((p, c: any) => {
-        let jc: any = !(c.hasOwnProperty("json_campo")) ? { json_campo: c } : c;
+    const fieldsAsJson = fields.reduce((p, c: any) => {
+        const jc: any = !(Object.prototype.hasOwnProperty.call(c,"json_campo")) ? { json_campo: c } : c;
         return { ...p, [jc.json_campo.name]: jc }
     }, {} as { [name: string]: { json_campo: I_JSONObject } & I_JSONObject })
 
     Object.keys(data).forEach((e) => {
-        let prefix = `${dataPrefix}[${i}]`;
-        let currentData = data[e];
+        const prefix = `${dataPrefix}[${i}]`;
+        const currentData = data[e];
 
-        if (!!(currentData)) {
+        if ((currentData)) {
             // let fieldProps = fields.find((f) => f.json_campo.name === e)
-            let fieldProps = fieldsAsJson[e];
-            if (!!(fieldProps)) {
+            const fieldProps = fieldsAsJson[e];
+            if ((fieldProps)) {
                 if (fieldProps.json_campo.tag === "file" && (currentData instanceof FileList)) {
                     if (currentData.length > 0) {
                         keysOnField.forEach((p) => form.append(`${prefix}.${p}`, `${fieldProps![p]}`))
-                        let files = setFileAnswer(currentData);
+                        const files = setFileAnswer(currentData);
                         files.forEach(f => form.append(`${prefix}.archivos`, f))
                     }
                 } else if (fieldProps.json_campo.tag === "list") {
@@ -80,10 +80,10 @@ export const formToSubmitData = (
 
                     currentData.forEach((row: any, rowID: number) => {
                         fieldProps!.json_campo.fields.forEach((item: I_JSONObject, idx: number) => {
-                            let itemid = `${prefix}.item[${rowID}].campo[${idx}]`;
+                            const itemid = `${prefix}.item[${rowID}].campo[${idx}]`;
                             form.append(`${itemid}.nombre`, item.name);
                             if (item.tag === "file" && (row[item.name] instanceof FileList)) {
-                                let files = setFileAnswer(row[item.name]);
+                                const files = setFileAnswer(row[item.name]);
                                 files.forEach(f => form.append(`${itemid}.archivos`, f))
                             } else {
                                 form.append(`${itemid}.respuesta`, typeof row[item.name] === "object" ? JSON.stringify(row[item.name]) : (row[item.name] || null));
@@ -114,7 +114,7 @@ export const formToSubmitData = (
  * @returns Array<file>
  */
 const setFileAnswer = (data: FileList) => {
-    let array = [];
+    const array = [];
     for (let f_i = 0; f_i < data.length; f_i++) { array.push(data[f_i]); }
     return array;
 }
@@ -148,8 +148,8 @@ export const getFormItemDefaultValue = ({ respuesta, json_campo }: I_FormFieldWi
     if (json_campo.tag === "file" && respuesta) {
         rta = transformFileValue(rta)
     } else if (json_campo.tag === "list") {
-        let filesFields = json_campo.fields.reduce((p, c) => c.tag === "file" ? [...p, c.name] : p, [] as string[]);
-        if (!!(filesFields.length)) {
+        const filesFields = json_campo.fields.reduce((p, c) => c.tag === "file" ? [...p, c.name] : p, [] as string[]);
+        if ((filesFields.length)) {
             rta = respuesta.map((r: I_JSONObject) => {
                 filesFields.forEach(t => { r[t] = transformFileValue(r[t]) })
                 return r;
@@ -161,11 +161,11 @@ export const getFormItemDefaultValue = ({ respuesta, json_campo }: I_FormFieldWi
 
 export const getDifferenceBetweenData = (oldValues: I_JSONObject, newValues: I_JSONObject) => {
 
-    let diff: I_JSONObject = {};
+    const diff: I_JSONObject = {};
 
     for (const key in newValues) {
         let ov: any = oldValues[key];
-        let nv: any = newValues[key];
+        const nv: any = newValues[key];
         let nvs: any = newValues[key];
 
         if (typeof nv === "object") nvs = JSON.stringify(nvs);

@@ -84,24 +84,24 @@ const FormPannel = ({
     }
 
     const submitAll = (data: any, formItem: T_Form, callback?: () => void) => {
-        let method = formItem.est_resp === 1 ? "PUT" : "POST";
+        const method = formItem.est_resp === 1 ? "PUT" : "POST";
         data = getDifferenceBetweenData(formItem.defaultValues, data);
         setLoader("Guardando datos");
-        let keysOnField = ["id_campo"];
+        const keysOnField = ["id_campo"];
         if (method === "PUT") {
             keysOnField.push("id_resp", "grupo_resp");
         }
-        let formData = formToSubmitData(data,
+        const formData = formToSubmitData(data,
             formItem!.originalFieldsObject,
             keysOnField,
             { "id_fcamp": formItem.id_fcamp },
             { id_cond }
         );
 
-        return AXIOS_REQUEST(SAVE_ANSWERS, method, formData, true)
+        return AXIOS_REQUEST(SAVE_ANSWERS, method, formData)
             .then(res => {
                 method === "POST" && formItem.est_resp === 0 && setFormList(e => {
-                    let current = e!.findIndex(i => i.id_fcamp === formItem.id_fcamp);
+                    const current = e!.findIndex(i => i.id_fcamp === formItem.id_fcamp);
                     if (current) e![current] = { ...e![current], est_resp: 1 }
                     return [...e!]
                 });
@@ -124,7 +124,7 @@ const FormPannel = ({
         let fields: null | Array<I_FormField | I_FormFieldWithAnswer> = item.originalFieldsObject;
         let multiplesAnswers: { [x: string]: Array<I_FormFieldWithAnswer> } = {};
 
-        let multiplesValues: { [x: string]: T_Form } = {};
+        const multiplesValues: { [x: string]: T_Form } = {};
         let isAttachmentsTable = false;
         if (item.est_resp === 1 || onlyGetAnswer) answers = await getFormWithAnswers(item.id_fcamp);
 
@@ -140,7 +140,7 @@ const FormPannel = ({
             if (item.tipo_form !== 0) {
 
                 multiplesAnswers = answers.reduce((p, c) => {
-                    if (!!(c.nomb_anexo)) isAttachmentsTable = true;
+                    if (c.nomb_anexo) isAttachmentsTable = true;
                     p[c.grupo_resp] = [...(p[c.grupo_resp] || []), c];
                     return { ...p }
                 }, multiplesAnswers);
@@ -165,9 +165,9 @@ const FormPannel = ({
             }
         }
 
-        let fieldAndValues = mapFieldAndDefaultValues(fields, answers)
+        const fieldAndValues = mapFieldAndDefaultValues(fields, answers)
 
-        let d: T_Form = {
+        const d: T_Form = {
             ...item,
             ...fieldAndValues,
             isAttachmentsTable,
@@ -188,14 +188,14 @@ const FormPannel = ({
         AXIOS_REQUEST(`${FORM_FIELDS}${fields}`).then(res => res.data)
 
     const getForms = () => {
-        !!(formId) ? AXIOS_REQUEST(FORM + formId)
+        !(formId) ? setFormList([]) : AXIOS_REQUEST(FORM + formId)
             .then(res => {
                 setFormList(res.data)
             }).catch(err => {
                 setFormList([])
             })
-            :
-            setFormList([])
+
+
     }
 
     useEffect(() => {

@@ -7,12 +7,14 @@ import processReducer from './reducers/processReducer'
 import { LOGOUT, setUnauthorized, SET_UNAUTHORIZED } from './actions/userActions';
 import { setOtherAxiosConfig } from '../services/axiosService';
 import conditionsReducer from './reducers/conditionsReducer';
+import notificationsReducer from './reducers/notificationsReducer';
 
 // Create deducer all in one
 const allReducers = combineReducers({
     user: userReducer,
     process: processReducer,
     conditions: conditionsReducer,
+    notifications: notificationsReducer,
 });
 
 declare global {

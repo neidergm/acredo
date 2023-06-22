@@ -74,11 +74,11 @@ const GoogleLogin = (props: I_Props) => {
     }
 
     const responseGoogle = (data: I_Google_response) => {
-        if (!!(data?.credential)) {
-            props.successCallback(data.credential);
-        } else {
+        if (!(data?.credential)) {
             props.failureCallback?.('Hubo un error, intenta nuevamente');
             showOneTapPrompt();
+        } else {
+            props.successCallback(data.credential);
         }
     }
 

@@ -16,7 +16,7 @@ export const getProcessList = (id_process?: number) => {
         .then((res: { data: I_Process[] } & I_JSONObject) => {
             dispatch(setProcessList([...res.data]));
             if (id_process) {
-                let process = res.data.find(p => p.id_conv === id_process) || null;
+                const process = res.data.find(p => p.id_conv === id_process) || null;
                 dispatch(selectProcess(process));
             }
 

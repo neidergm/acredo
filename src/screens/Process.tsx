@@ -89,7 +89,7 @@ const Process = () => {
   }
 
   const confirmDeleteProcess = (process: I_Process) => {
-    if (!!(process.porcentaje)) {
+    if (!(process.porcentaje) === false) {
       return setAlert({
         type: "warning",
         "title": "Espere",
@@ -137,8 +137,8 @@ const Process = () => {
         value: "Si, modificar", onClick: () => {
           setLoading("Modificando proceso");
 
-          let d = jsonToFormData({ id_conv: process.id_conv, ...data });
-          AXIOS_REQUEST(UPDATE_PROCESS, "PUT", d, true)
+          const d = jsonToFormData({ id_conv: process.id_conv, ...data });
+          AXIOS_REQUEST(UPDATE_PROCESS, "PUT", d)
             .then(r => {
               dispatch(setProcessList(null))
               closeModal(setModal);
@@ -162,9 +162,9 @@ const Process = () => {
         value: "Si, crear", onClick: () => {
           setLoading("Creando proceso");
 
-          let d = jsonToFormData(data);
+          const d = jsonToFormData(data);
 
-          AXIOS_REQUEST(CREATE_PROCESS, "POST", d, true)
+          AXIOS_REQUEST(CREATE_PROCESS, "POST", d)
             .then(r => {
               dispatch(setProcessList(null))
               closeModal(setModal);
@@ -186,7 +186,7 @@ const Process = () => {
 
   return (
     <>
-      <SubHeader text={'Procesos'} className="container">
+      <SubHeader text={'Procesos'} className="container-xl">
         <div className='d-flex align-items-center'>
           {/* {is_admin && <Button color='primary' size='sm' className='opacity-75 rounded-2' onClick={modalToCreateNewProcess}> */}
           {is_admin && <Button color='primary' size='sm' onClick={modalToCreateNewProcess}>
@@ -208,7 +208,7 @@ const Process = () => {
       <Alert isOpen={!!(alert?.isOpen)}{...alert} onClosed={() => { setAlert(null) }} />
 
       <Loader isOpen={!!loading} subtitle={loading} />
-      <div className="container pt-3 pb-5">
+      <div className="container-xl pt-3 pb-5">
         {!(processList) ?
           <Loader loaderAsModal={false} isOpen />
           :
