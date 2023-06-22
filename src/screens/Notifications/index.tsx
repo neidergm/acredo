@@ -13,6 +13,7 @@ import { AXIOS_REQUEST } from "../../services/axiosService"
 import { GET_NOTIFICATIONS, MARK_AS_READ_NOTIFICATION } from "../../services/endPointsService"
 import Loader from "../../components/Loader";
 import { jsonToFormData } from "../../utils/formUtils"
+import { Bell } from "../../components/Icons"
 
 const notitypes = {
     "0": "Resumen",
@@ -116,54 +117,64 @@ const Notifications = () => {
                                     </Loader>
                                 </div>
                                 :
-                                <div className={classnames("overflow-auto", style["noti-list"])}>
-                                    <ListGroup flush className="me-3">
-                                        {
-                                            list?.map(item => {
-                                                const active = selectedNotification?.id_noti === item.id_noti
-                                                const wasToday = getDateDiff(item.marc_temp) === 0;
-                                                return <ListGroupItem className={classnames(style["noti-item"], "px-1",
-                                                    {
-                                                        [style["noti-unread"]]: !item.est_noti,
-                                                        [style["active"]]: active,
-                                                    }
-                                                )}
-                                                    key={item.id_noti}
-                                                    onClick={() => pickNotification(item)}>
-                                                    <div className="d-flex gap-4 align-items-center">
-                                                        <div>
-                                                            <div className={style['avatar']}>
-                                                                {!item.est_noti &&
-                                                                    <span className="position-absolute bottom-0 start-100 translate-middle p-1 border-2 bg-danger border border-white rounded-circle"></span>
-                                                                }
-                                                                <span>{item.desc_tipo_noti[0]}</span>
-                                                            </div>
-                                                        </div>
-                                                        <div className="overflow-hidden flex-grow-1">
-                                                            <div className={classnames("w-100 text-secondary", style['resume'])}>
-                                                                <div>
-                                                                    <Badge color="secondary" className="bg-opacity-25 text-dark my-1 opacity-50">
-                                                                        {item.desc_tipo_noti}
-                                                                    </Badge>
-                                                                </div>
-                                                                <div className="text-truncate mb-0">
-                                                                    <div className="d-inline">{item.asun_noti} - </div>
-                                                                    {item.html_content}
+                                (list.length === 0 ?
+                                    <div className="w-100 d-flex flex-column justify-content-center align-items-center text-secondary text-opacity-50 gap-4" style={{ minHeight: "inherit" }}>
+                                        <h4>
+                                            <Bell size={40}/>
+                                        </h4>
+                                        <h4 className="">No hay nada para mostrar</h4>
+                                    </div>
+                                    :
+                                    <div className={classnames("overflow-auto", style["noti-list"])}>
+                                        <ListGroup flush className="me-3">
+                                            {
+                                                list?.map(item => {
+                                                    const active = selectedNotification?.id_noti === item.id_noti
+                                                    const wasToday = getDateDiff(item.marc_temp) === 0;
+                                                    return <ListGroupItem className={classnames(style["noti-item"], "px-1",
+                                                        {
+                                                            [style["noti-unread"]]: !item.est_noti,
+                                                            [style["active"]]: active,
+                                                        }
+                                                    )}
+                                                        key={item.id_noti}
+                                                        onClick={() => pickNotification(item)}>
+                                                        <div className="d-flex gap-4 align-items-center">
+                                                            <div>
+                                                                <div className={style['avatar']}>
+                                                                    {!item.est_noti &&
+                                                                        <span className="position-absolute bottom-0 start-100 translate-middle p-1 border-2 bg-danger border border-white rounded-circle"></span>
+                                                                    }
+                                                                    <span>{item.desc_tipo_noti[0]}</span>
                                                                 </div>
                                                             </div>
+                                                            <div className="overflow-hidden flex-grow-1">
+                                                                <div className={classnames("w-100 text-secondary", style['resume'])}>
+                                                                    <div>
+                                                                        <Badge color="secondary" className="bg-opacity-25 text-dark my-1 opacity-50">
+                                                                            {item.desc_tipo_noti}
+                                                                        </Badge>
+                                                                    </div>
+                                                                    <div className="text-truncate mb-0">
+                                                                        <div className="d-inline">{item.asun_noti} - </div>
+                                                                        {item.html_content}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            {!selectedNotification && <div className={classnames("small text-end", style["noti-date"])}>
+                                                                <small className="text-secondary text-opacity-75">
+                                                                    {wasToday && <span className="d-block d-md-inline-block">Hoy,&nbsp;</span>}
+                                                                    {getNormalDate(item.marc_temp, { timeStyle: "short", ...(wasToday ? {} : { dateStyle: "medium" }) })}
+                                                                </small>
+                                                            </div>}
                                                         </div>
-                                                        {!selectedNotification && <div className={classnames("small text-end", style["noti-date"])}>
-                                                            <small className="text-secondary text-opacity-75">
-                                                                {wasToday && <span className="d-block d-md-inline-block">Hoy,&nbsp;</span>}
-                                                                {getNormalDate(item.marc_temp, { timeStyle: "short", ...(wasToday ? {} : { dateStyle: "medium" }) })}
-                                                            </small>
-                                                        </div>}
-                                                    </div>
-                                                </ListGroupItem>
-                                            })
-                                        }
-                                    </ListGroup>
-                                </div>}
+                                                    </ListGroupItem>
+                                                })
+                                            }
+                                        </ListGroup>
+                                    </div>
+                                )
+                            }
                         </Card>
                     </div>
                     {selectedNotification && <div className={classnames("col", !selectedNotification ? "d-none" : "d-block")}>
