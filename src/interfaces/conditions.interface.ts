@@ -119,6 +119,12 @@ export type T_ObservationsInFormResp = {
     num_obs: number
 }
 
+export type T_TemplateCategories = {
+    id_pcate: number,
+    nomb_pcate: string,
+    cantidad: number;
+}
+
 export type T_Template = {
     desc_plantilla: string;
     id_plantilla: number;

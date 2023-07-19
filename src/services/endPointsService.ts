@@ -271,12 +271,17 @@ export const CONDITIONS_TYPES = `getinfo/condiciones`;
 
 
 /*---------------------------------------------*/
-// CONDITIONS
+// FORMS TEMPLATE
 /*---------------------------------------------*/
 
 /**
  * @method GET
- * @params /{type} - "form" | "tareas" | "fase" | "etapa" | "accion" 
+ */
+export const GET_TEMPLATES_CATEGORIES = `plantilla/categorias`;
+
+/**
+ * @method GET
+ * @params /{type: "form" | "tareas" | "fase" | "etapa" | "accion"}/{id_category}
  */
 export const GET_TEMPLATES = `plantilla/`;
 

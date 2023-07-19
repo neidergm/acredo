@@ -1,0 +1,36 @@
+const _CONFIG = {
+    /**
+     * @type REQUIRED
+     * @description For browser storage
+     */
+    storage_prefix: "masteru",
+
+    /**
+     * @type REQUIRED
+     */
+    api_base_url: 'https://apiexample/api',
+
+    /**
+     * @type OPTIONAL
+     */
+    error_reporting_url: "https://apiexample/errorreporting",
+
+    /**
+     * @type OPTIONAL
+     * @description This object have to contain the gsi configuration
+     */
+    google_client: {
+        active: true,
+        method_name: "google",
+        id: 'CLIENT_ID.apps.googleusercontent.com',
+        show_one_tap: true,
+    },
+
+    /**
+     * @type OPTIONAL
+     * @description Used if you want check if your app is in maintenance (Have to return a link to redirect if the app is in maintenance)
+     */
+    maintenance_url: "https://apiexample/maintenance/activau",
+}
+
+window._NGconfig = _CONFIG;
