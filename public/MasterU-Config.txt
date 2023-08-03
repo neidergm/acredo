@@ -1,0 +1,35 @@
+-------------------------------------------------------------------------------------------
+* CONFIGURATIONS - FRONTEND CODE
+-------------------------------------------------------------------------------------------
+
+
+1. SET ANALITICS SCRIPT (Optional)
+
+	- Configure it in "index.html" file (at the end of body)
+
+
+2. APP DESCRIPTION
+	- Configure it in "index.html" file in head section using a meta:description tag
+
+
+3. APP NAME
+	- Configure it in "manifest.json" file.
+	- Set "short_name" and "name" values.
+
+
+4. SET FAVICON
+	- Replace "favicon.ico" file with the same name.
+
+
+5. APP ICON FOR WPA
+	- Replace "logo512.png" and "logo192.png" for another files with the same name.
+
+
+6: RENAME FILES
+	- You have to rename all files with ".org" extention, only quit the ".org" word 
+	- EXAMPLE: Rename "_config.js.org" to "_config.js"
+
+
+7: APP CONFIGURATION FILE
+	- Set configurations in "_config.js" file.
+	- Here you have to config parameters and login methods (GSI, MSLA, Email), maintenance url, etc...

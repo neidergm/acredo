@@ -34,13 +34,15 @@ export type T_FormPannelActions = {
 type T_Props = {
     formId: string,
     canEdit?: boolean,
+    codCond?: number,
     canAddForms?: boolean,
 }
 
 const FormPannel = ({
     formId,
     canEdit = false,
-    canAddForms
+    canAddForms,
+    codCond
 }: T_Props) => {
     const { id_cond } = useParams();
 
@@ -135,7 +137,7 @@ const FormPannel = ({
                 fields = answers || [];
             }
         }
-
+console.log({fields})
         if (answers) {
             if (item.tipo_form !== 0) {
 
@@ -158,9 +160,26 @@ const FormPannel = ({
                         originalFieldsObject: multiplesAnswers[key]
                     }
                 }
+                //  if (codCond) {
+                //     fields.unshift({
+                //         json_campo: {
+                //             name: "ng_get_information",
+                //             label: "HOLA",
+                //             tag: "input",
+                //             type: 'text',
+                //             validations: {},
+                //         },
+                //         id_campo: 0,
+                //         marc_temp: '',
+                //         marc_update: '',
+                //         nomb_campo: ''
+                //     })
+                // }
                 // item.est_resp = 0;
                 answers = null;
+               
             } else {
+               
                 fields = fields.map(f => ({ ...(answers?.find(i => i.id_campo === f.id_campo) || {}), ...f }))
             }
         }

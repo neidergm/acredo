@@ -41,7 +41,10 @@
       "eslint:recommended",
       "plugin:@typescript-eslint/eslint-recommended",
       "plugin:@typescript-eslint/recommended"
-    ]
+    ],
+    "rules": {
+       "react/no-debugger": "off"
+    }
   },
   "browserslist": {
     "production": [

@@ -28,9 +28,9 @@ export const Header = ({ titulo = "Master U" }: { titulo?: string }) => {
     <div className="header py-3">
       <div className="container-fluid container-xxxl text-white">
         <div className='d-flex justify-content-between gap-3 align-items-center'>
-          <div className='fs-3 d-flex align-items-end justify-content-center gap-4 cursor-pointer flex-grow-1' onClick={goToHome}>
+          <div className='fs-3 d-flex align-items-end justify-content-md-center gap-4 cursor-pointer flex-grow-1' onClick={goToHome}>
             <img alt='MasterU' src={logo} height={52} />
-            <span className='d-block text-nowrap title text-light'>{titulo}</span>
+            <span className='text-nowrap title text-light d-none d-sm-block'>{titulo}</span>
           </div>
           <UncontrolledTooltip target={`notifyicon`}>Notificaciones</UncontrolledTooltip>
           <div className='hover-shadow-sm hover-scale-up position-relative' id="notifyicon" >

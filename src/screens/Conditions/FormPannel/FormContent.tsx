@@ -5,6 +5,7 @@ import { T_Form, T_FormPannelActions } from '.'
 import AttachmentsTable from '../../../components/AttachmentsTable'
 import { PlusCircleFill } from '../../../components/Icons'
 import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } from '../../../components/Modal'
+import { isAGoogleDocField } from '../../../utils/mapField'
 
 type T_Props = {
     canEdit: boolean,
@@ -80,7 +81,7 @@ const FormContent = ({ canEdit, formItem, onSubmit, onDelete, onObservationsDone
                     defaultValues={formItem.defaultValues}
                     onSubmit={data => submit(data)}
                 >
-                    {!(formItem.fields[0].type === "googledocs") &&
+                    {!(isAGoogleDocField(formItem.fields[0].type)) &&
                         canEdit ?
                         <div className='text-center mt-5'>
                             <button type='submit' className='btn btn-success px-5'>
