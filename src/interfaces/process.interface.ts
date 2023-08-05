@@ -1,17 +1,17 @@
 export interface I_Process {
+    coment_conv: string;
     est_conv: number,
     fase_actual: string,
-    id_fase: null | number,
     id_conv: number,
+    id_fase: null | number,
     id_prog: null | number,
+    id_sede: number,
     id_tcond: number,
     marc_temp: string,
     marc_update: string,
     nomb_conv: string,
-    programa: null | string,
-    tipo_cond: string,
-    sede: string,
-    id_sede: number,
     porcentaje: number,
-    coment_conv: string;
+    programa: null | string,
+    sede: string,
+    tipo_cond: string,
 }

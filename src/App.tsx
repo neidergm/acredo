@@ -17,6 +17,10 @@ const IntitutionalConditions = lazy(lazyLoaderComponents(() => import(/* webpack
 const Process = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Process" */ './screens/Process')));
 const PhasesAttachments = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "PhasesAttachments" */ './screens/PhasesAttachments')));
 const Notifications = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Notifications" */ './screens/Notifications')));
+const Dashboard = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Dashboard" */ './screens/Dashboard')));
+const UsersManagement = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "UsersManagement" */ './screens/UsersManagement')));
+const Programs = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Programs" */ './screens/Programs')));
+const ProgramDetails = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "ProgramDetails" */ './screens/Programs/Details')));
 
 const App = () => {
 
@@ -46,11 +50,15 @@ const App = () => {
         <main className="main">
           <Suspense fallback={<FallbackComponen1 />}>
             <Routes >
-              <Route path='/' element={<Process />} />
+              <Route path='/' element={<Dashboard />} />
+              <Route path='/proceso' element={<Process />} />
               <Route path='/proceso/:id_process/:id_cond' element={<IntitutionalConditions />} />
               <Route path='/proceso/:id_process' element={<Conditions />} />
               <Route path='/proceso/fases/anexos/:id_phase' element={<PhasesAttachments />} />
               <Route path='/notificaciones' element={<Notifications />} />
+              <Route path='/usuarios' element={<UsersManagement />} />
+              <Route path='/programa/:id_program' element={<ProgramDetails />} />
+              <Route path='/programa' element={<Programs />} />
               <Route path='*' element={<Navigate to="/" />} />
             </Routes>
           </Suspense>

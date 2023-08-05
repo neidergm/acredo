@@ -295,6 +295,12 @@ export const GET_TEMPLATES = `plantilla/`;
  */
 export const GET_PROGRAMS_LIST = `programas`;
 
+/**
+ * @method GET
+ * @params /[state]?
+ */
+export const GET_PROGRAMS_BY_STATE = `programas/`;
+
 
 /*---------------------------------------------*/
 // NOTIFICATIONS
@@ -315,4 +321,30 @@ export const MARK_AS_READ_NOTIFICATION = `noti`;
  * @method GET
  */
 export const GET_NOTIFICATIONS_REPORT = `noti/reporte`;
+
+
+/*---------------------------------------------*/
+// DASHBOARD
+/*---------------------------------------------*/
+
+/**
+ * @method GET
+ */
+export const GET_RESUME = `admin/resumen`;
+
+/**
+ * @method GET
+ */
+export const GET_PROCESS_INDICATORS = `conv/estados`;
+
+/**
+ * @method GET
+ */
+export const GET_PROGRAMS_INDICATORS = `programas/estado`;
+
+/**
+ * @method GET
+ * @params /[state]?
+ */
+export const GET_PROCESS_BY_STATE = `conv/all/`;
 

@@ -1,0 +1,12 @@
+.tab {
+    display: none;
+}
+
+@media screen and (min-width: 991px) {
+    .tab {
+        display: block !important;
+    }
+    .toggler-container {
+        display: none !important;
+    }
+}
