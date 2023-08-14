@@ -10,6 +10,43 @@ import CircleProgress from "../../components/CircleProgress";
 import { ExclamationCircleFill } from "../../components/Icons";
 import { useNavigate } from "react-router-dom";
 
+export const ProcessResumeItem = ({ process, pickItem }: { process: I_Process, pickItem: (process: I_Process) => void }) => {
+    return <div className="cursor hover-scale-up" onClick={() => pickItem(process)}>
+        <div className='mb-2'>
+            <small>{process.nomb_conv}</small>
+        </div>
+        <div className="gap-3 d-flex flex-column flex-md-row">
+            <div>
+                <CircleProgress
+                    progress={process.porcentaje || 0}
+                    stroke={5}
+                    radius={30}
+                    color={process.porcentaje >= 100 ? "#0d6efd" : undefined}
+                    content={<small>{process.porcentaje || 0}%</small>}
+                />
+            </div>
+            <div className="flex-grow-1">
+                <div className='d-flex flex-column text-secondary text-opacity-75'>
+                    <div>
+                        <b className="small">Sede: </b>
+                        <small>{process.sede}</small>
+                    </div>
+                    {!!(process.id_prog) && <div>
+                        <b className="small">Programa: </b>
+                        <small>{process.programa}</small>
+                    </div>
+                    }
+                    {!!(process.fase_actual) && <div>
+                        <b className="small">Fase actual: </b>
+                        <small>{process.fase_actual}</small>
+                    </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 const ProcessResume = () => {
 
     const [indicators, setIndicators] = useState<I_ProcessIndicators[] | null>(null);
@@ -41,39 +78,8 @@ const ProcessResume = () => {
     const doItem = (process: I_Process, idx: number) => {
         return <React.Fragment key={`${process.id_conv}-${idx}`}>
             {idx !== 0 && <div className='mx-3 opacity-50'><hr className='border-secondary' /></div>}
-            <div className="mx-3 cursor hover-scale-up" onClick={() => pickItem(process)}>
-                <div className='mb-2'>
-                    <small>{process.nomb_conv}</small>
-                </div>
-                <div className="gap-3 d-flex flex-column flex-md-row">
-                    <div>
-                        <CircleProgress
-                            progress={process.porcentaje || 0}
-                            stroke={5}
-                            radius={30}
-                            color={process.porcentaje >= 100 ? "#0d6efd" : undefined}
-                            content={<small>{process.porcentaje || 0}%</small>}
-                        />
-                    </div>
-                    <div className="flex-grow-1">
-                        <div className='d-flex flex-column text-secondary text-opacity-75'>
-                            <div>
-                                <b className="small">Sede: </b>
-                                <small>{process.sede}</small>
-                            </div>
-                            {!!(process.id_prog) && <div>
-                                <b className="small">Programa: </b>
-                                <small>{process.programa}</small>
-                            </div>
-                            }
-                            {!!(process.fase_actual) && <div>
-                                <b className="small">Fase actual: </b>
-                                <small>{process.fase_actual}</small>
-                            </div>
-                            }
-                        </div>
-                    </div>
-                </div>
+            <div className="mx-3">
+                <ProcessResumeItem process={process} pickItem={pickItem} />
             </div>
         </React.Fragment>
     }

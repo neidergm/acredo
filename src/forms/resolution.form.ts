@@ -1,0 +1,122 @@
+import { T_FieldsTypes } from '../interfaces/generic.interface';
+
+const resolutionForm: T_FieldsTypes[] = [
+    {
+        "name": "cod_snies",
+        "label": "Código SNIES",
+        "tag": "input",
+        "type": "number",
+        "wrapperClassName": "col-6",
+        "validations": {
+            "required": true
+        }
+    },
+    {
+        "name": "freg_snies",
+        "label": "Fecha de registro SNIES",
+        "tag": "date",
+        "type": "date",
+        "wrapperClassName": "col-6",
+        "validations": {
+            "required": true
+        }
+    },
+    {
+        "name": "peri_acad",
+        "label": "Periodo académico",
+        "tag": "select",
+        "type": "simple",
+        "options": ["Semestral", "Mensual", "Trimestral", "Anual"],
+        "wrapperClassName": "col-6",
+        "validations": {
+            "required": true
+        }
+    },
+    {
+        "name": "nper_snies",
+        "label": "Número de periodos",
+        "tag": "input",
+        "type": "number",
+        "wrapperClassName": "col-6 col-lg-3",
+        "validations": {
+            "required": true
+        }
+    }, {
+        "name": "ncre_snies",
+        "label": "Número de créditos",
+        "tag": "input",
+        "type": "number",
+        "wrapperClassName": "col-6 col-lg-3",
+        "validations": {
+            "required": true
+        }
+    },
+    {
+        "name": "fech_reso",
+        "label": "Fecha de resolución",
+        "tag": "date",
+        "type": "date",
+        "wrapperClassName": "col-6",
+        "validations": {
+            "required": true
+        }
+    },
+    {
+        "name": "fech_ejec",
+        "label": "Fecha de ejecución",
+        "tag": "date",
+        "type": "date",
+        "wrapperClassName": "col-6",
+        "validations": {
+            "required": true
+        }
+    },
+    {
+        "name": "reso_apro",
+        "label": "Resolución de aprobación",
+        "tag": "input",
+        "type": "text",
+        "wrapperClassName": "col-6",
+        "validations": {
+            "required": true
+        }
+    },
+    {
+        "name": "vige_reso",
+        "label": "Vigencia",
+        "tag": "input",
+        "type": "number",
+        "wrapperClassName": "col-6",
+        "validations": {
+            "required": true
+        }
+    },
+    {
+        "name": "reco_min",
+        "label": "Reconocimiento del ministerio",
+        "tag": "input",
+        "type": "text",
+        "wrapperClassName": "col-12 col-md-6",
+        "validations": {
+            "required": true
+        }
+    },
+    {
+        "name": "just_reso",
+        "label": "Justificación de resolución",
+        "tag": "input",
+        "type": "text",
+        "wrapperClassName": "col-12 col-lg-6",
+        "validations": {}
+    },
+    {
+        "name": "deta_reso",
+        "label": "Justificación detallada",
+        "tag": "input",
+        "type": "textarea",
+        "wrapperClassName": "col-12",
+        "validations": {}
+    },
+]
+
+export default resolutionForm;

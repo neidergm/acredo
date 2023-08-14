@@ -9,6 +9,15 @@ const stringToDate = (date: string) => {
     return d1.length === 4 ? new Date(d1, d2 - 1, d3, ...dx) : new Date(d3, d2 - 1, d1, ...dx);
 }
 
+export const dateToString = (date: Date, join = "-", reverse = false) => {
+    let d = date.toLocaleString([], { month: '2-digit', day: "2-digit", year: "numeric" }).split(/[-|/ |T :]/)
+
+    if (reverse) d = d.reverse()
+
+    return d.join(join)
+}
+
+
 /**
  * Normalize Dates using options
  * @param value date as string or number format 

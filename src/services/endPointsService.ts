@@ -299,7 +299,7 @@ export const GET_PROGRAMS_LIST = `programas`;
  * @method GET
  * @params /[state]?
  */
-export const GET_PROGRAMS_BY_STATE = `programas/`;
+export const GET_PROGRAMS_BY_STATE = `programas/all/`;
 
 
 /*---------------------------------------------*/
@@ -347,4 +347,40 @@ export const GET_PROGRAMS_INDICATORS = `programas/estado`;
  * @params /[state]?
  */
 export const GET_PROCESS_BY_STATE = `conv/all/`;
+
+
+/*---------------------------------------------*/
+// EVENTS
+/*---------------------------------------------*/
+
+/**
+ * @method POST
+ * @param [/event_id] for update
+ * @params {[0].nomb_evento, [0].desc_evento, [0].reco_evento[], [0].id_prog, [0].fech_evento}
+ */
+export const SAVE_PROGRAM_EVENT = `eventos`;
+
+/**
+ * @method DELETE
+ * @params /event_id
+ */
+export const DELETE_PROGRAM_EVENT = `eventos/`;
+
+
+/*---------------------------------------------*/
+// RESOLUTIONS
+/*---------------------------------------------*/
+
+/**
+ * @method POST
+ * @params {[0].nomb_evento, [0].desc_evento, [0].reco_evento[], [0].id_prog, [0].fech_evento}
+ */
+export const SAVE_PROGRAM_RESOLUTION = `resolucion`;
+
+/**
+ * @method DELETE
+ * @params /reso_apro
+ */
+export const DELETE_PROGRAM_RESOLUTION = `resolucion/`;
+
 

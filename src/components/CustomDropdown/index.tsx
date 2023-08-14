@@ -6,7 +6,7 @@ type T_Option = {
     click?: () => void,
     className?: string,
     icon?: any,
-    optionProps?: Omit<DropdownItemProps, "onClick">
+    optionProps?: Partial<DropdownItemProps>
     disabled?: boolean,
 }
 

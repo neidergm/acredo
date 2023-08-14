@@ -136,8 +136,8 @@ const Conditions = () => {
     const d = jsonToFormData({
       "[0].nomb_fase": data.nomb_fase,
       "[0].id_conv": id_process,
-      "[0].fech_ini": getNormalDate(data.fecha_inicio).split("/").reverse().join("-"),
-      "[0].fech_fin": getNormalDate(data.fecha_fin).split("/").reverse().join("-"),
+      "[0].fech_ini": data.fecha_inicio,
+      "[0].fech_fin": data.fecha_fin
     });
 
     AXIOS_REQUEST(SAVE_PHASE, "POST", d).then(r => {
@@ -223,8 +223,8 @@ const Conditions = () => {
     const d = jsonToFormData({
       "[0].nomb_fase": data.nomb_fase,
       "[0].id_fase": phase.id_fase,
-      "[0].fech_ini": getNormalDate(data.fecha_inicio).split("/").reverse().join("-"),
-      "[0].fech_fin": getNormalDate(data.fecha_fin).split("/").reverse().join("-"),
+      "[0].fech_ini": data.fecha_inicio,
+      "[0].fech_fin": data.fecha_fin
     });
 
     AXIOS_REQUEST(SAVE_PHASE, "PUT", d).then(r => {

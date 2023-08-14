@@ -32,7 +32,8 @@ const ProgramsResume = () => {
   }
 
   const getPrograms = (_filter: typeof filter) => {
-    const url = (indicators && _filter?.estado !== indicators?.[0].estado) ? `${GET_PROGRAMS_BY_STATE}${_filter?.estado}` : GET_PROGRAMS_LIST
+    // const url = (indicators && _filter?.estado !== indicators?.[0].estado) ? `${GET_PROGRAMS_BY_STATE}${_filter?.estado}` : GET_PROGRAMS_LIST
+    const url = `${GET_PROGRAMS_BY_STATE}${_filter?.estado}`
     AXIOS_REQUEST(url).then(resp => {
       setProgramsList(resp.data)
     })
@@ -51,29 +52,28 @@ const ProgramsResume = () => {
           <i className='me-2 text-primary opacity-50'>
             <Stack size={15} />
           </i>
-          <small>{program.nomb_prog}</small>
+          <small>{program.nomb_prog} <span className='opacity-50 fw-semibold small'>({program.id_prog})</span></small>
         </div>
         <div className="gap-3 d-flex flex-column flex-md-row">
           <div className="flex-grow-1">
-            <div className='d-flex text-secondary text-opacity-75 gap-3'>
+            <div className='d-flex text-secondary text-opacity-75 gap-3 small'>
               <div>
                 <b className="small d-block">Estado: </b>
                 <small>{program.estado}</small>
               </div>
-              {!!(program.ciud_prog) && <div>
-                <b className="small d-block">Sede: </b>
-                <small>{program.ciud_prog}</small>
-              </div>}
+               <div>
+                <b className="small d-block">SNIES: </b>
+                <small>{program.resoluciones?.[0]?.cod_snies || "00000"}</small>
+              </div>
               {!!(program.nivel_prog) && <div>
                 <b className="small d-block">Nivel: </b>
                 <small>{program.nivel_prog}</small>
               </div>
               }
-              {!!(program.snies_prog) && <div>
-                <b className="small d-block">SNIES: </b>
-                <small>{program.snies_prog}</small>
-              </div>
-              }
+             {!!(program.ciud_prog) && <div>
+                <b className="small d-block">Sede: </b>
+                <small>{program.ciud_prog} | {program.depa_prog}</small>
+              </div>}
             </div>
           </div>
           <div>
@@ -130,13 +130,13 @@ const ProgramsResume = () => {
         <Card className="px-0">
           <div className='ps-3'>
             {filter && <div
-              className='border-start border-5 border-dark py-1 ps-3 pe-4 bg-secondary bg-opacity-10 mb-3 d-inline-block'
+              className='border-start border-5 border-dark py-1 ps-3 pe-4 bg-secondary bg-opacity-10 mb-2 d-inline-block'
               style={{ borderRadius: "2px 10px 10px 2px" }}
             >
               <small className='fw-bold text-uppercase  text-uppercase'>{filter?.texto}</small>
             </div>}
           </div>
-          <div className="pt-3 pb-2" style={{ minHeight: "37vh", overflowY: "auto", overflowX: "hidden" }}>
+          <div className="pt-4 pb-2" style={{ minHeight: "37vh", overflowY: "auto", overflowX: "hidden" }}>
             {programsList ?
               (programsList.length ?
                 <div style={{ maxHeight: "80vh" }}>

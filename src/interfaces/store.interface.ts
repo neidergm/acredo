@@ -38,3 +38,9 @@ export interface I_ConditionsState {
     selected: I_Condition | null;
     selectedData: T_SelectedConditionData;
 }
+
+export interface I_DashboardState {
+    processList: Array<any>;
+    processFilter: Array<any>;
+    processIndicators: Array<any>;
+}

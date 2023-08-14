@@ -1,5 +1,6 @@
 import { I_FormField, I_FormFieldWithAnswer, T_FileAnswer } from "../interfaces/conditions.interface"
 import { I_JSONObject, T_FieldsTypes } from "../interfaces/generic.interface"
+import { dateToString } from "./dateUtils";
 import mapField from "./mapField";
 
 export type T_FetchedFormData = {
@@ -57,7 +58,7 @@ export const formToSubmitData = (
     let i = 0;
 
     const fieldsAsJson = fields.reduce((p, c: any) => {
-        const jc: any = !(Object.prototype.hasOwnProperty.call(c,"json_campo")) ? { json_campo: c } : c;
+        const jc: any = !(Object.prototype.hasOwnProperty.call(c, "json_campo")) ? { json_campo: c } : c;
         return { ...p, [jc.json_campo.name]: jc }
     }, {} as { [name: string]: { json_campo: I_JSONObject } & I_JSONObject })
 
@@ -125,8 +126,11 @@ const setFileAnswer = (data: FileList) => {
  * @returns FormData
  */
 export const jsonToFormData = (json: I_JSONObject, prefix = "", formData = new FormData()): FormData => {
+
     for (const key in json) {
-        formData.append(`${prefix}${key}`, json[key]);
+        let val = json[key]
+        if (json[key] instanceof Date) val = dateToString(val, undefined, true)
+        formData.append(`${prefix}${key}`, val);
     }
     return formData;
 }

@@ -76,7 +76,7 @@ const CreateStage = ({
   const onCreateAction = (data: any) => {
     const d = jsonToFormData({
       "[0].nomb_accion": data.nomb_accion,
-      "[0].fecha_accion": getNormalDate(data.fecha_accion).split("/").reverse().join("-"),
+      "[0].fecha_accion": data.fecha_accion,
       "[0].id_etapa": stage?.id,
     });
 
@@ -107,7 +107,7 @@ const CreateStage = ({
     const d = jsonToFormData({
       "[0].id_accion": action.id_accion,
       "[0].nomb_accion": data.nomb_accion,
-      "[0].fecha_accion": getNormalDate(data.fecha_accion).split("/").reverse().join("-"),
+      "[0].fecha_accion": data.fecha_accion,
       "[0].id_etapa": stage?.id,
     });
 
