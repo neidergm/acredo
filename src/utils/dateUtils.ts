@@ -3,7 +3,7 @@
  * @param date string fate
  * @returns Date from string
  */
-const stringToDate = (date: string) => {
+export const stringToDate = (date: string) => {
     const d: any = date.trim().split(/[-|/ |T :]/);
     const [d1, d2, d3, ...dx] = d;
     return d1.length === 4 ? new Date(d1, d2 - 1, d3, ...dx) : new Date(d3, d2 - 1, d1, ...dx);

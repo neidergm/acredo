@@ -63,7 +63,7 @@ export const taskForm = (showConditionTypeField = true): T_FieldsTypes[] => {
     });
 
     f.push({
-        "label": "Usuarios Líderes y de solo lectura",
+        "label": "Usuarios líderes y de solo lectura",
         "name": "responsable",
         "tag": "list",
         "type": "table",
@@ -149,7 +149,6 @@ export const taskForm = (showConditionTypeField = true): T_FieldsTypes[] => {
                 "type": "ckeditor",
                 "wrapperClassName": "col-12",
                 "validations": {
-                    "required": true
                 }
             }
         } as unknown as I_FormField)

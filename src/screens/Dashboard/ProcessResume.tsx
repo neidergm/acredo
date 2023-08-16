@@ -7,7 +7,7 @@ import { AXIOS_REQUEST } from "../../services/axiosService";
 import { GET_PROCESS_BY_STATE, GET_PROCESS_INDICATORS, PROCESS_LIST } from "../../services/endPointsService";
 import { I_Process } from "../../interfaces/process.interface";
 import CircleProgress from "../../components/CircleProgress";
-import { ExclamationCircleFill } from "../../components/Icons";
+import { ExclamationCircleFill, Kanban } from "../../components/Icons";
 import { useNavigate } from "react-router-dom";
 
 export const ProcessResumeItem = ({ process, pickItem }: { process: I_Process, pickItem: (process: I_Process) => void }) => {
@@ -56,9 +56,11 @@ const ProcessResume = () => {
     const navigate = useNavigate();
 
     const chooseFilter = (_filter: typeof filter) => {
-        setProcessList(null)
-        setFilter(_filter)
-        getProcess(_filter)
+        if(_filter?.estado !== filter?.estado){
+            setProcessList(null)
+            getProcess(_filter)
+            setFilter(_filter)
+        }
     }
 
     const getIndicators = () => {
@@ -69,7 +71,7 @@ const ProcessResume = () => {
     }
 
     const getProcess = (_filter: typeof filter) => {
-        const url = (indicators && _filter?.estado !== indicators?.[0].estado) ? `${GET_PROCESS_BY_STATE}${_filter?.estado}` : PROCESS_LIST
+        const url = _filter?.estado !== "Todos" ? `${GET_PROCESS_BY_STATE}${_filter?.estado}` : PROCESS_LIST
         AXIOS_REQUEST(url).then(resp => {
             setProcessList(resp.data)
         })
@@ -93,6 +95,13 @@ const ProcessResume = () => {
     }, [])
 
     return (<>
+        <div className="pb-2 ps-2">
+        <span className="text-secondary fw-semibold opacity-50">
+          <span className="">
+            RESUMEN DE PROCESOS
+          </span>
+        </span>
+      </div>
         <div>
             <Card className="px-4">
                 <div className='row h-100'>

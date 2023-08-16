@@ -32,13 +32,6 @@ const ProgramEvents = ({ events, limit, program_id, callback, children, canEdit 
     const [alert, setAlert] = useState<I_AlertObject | null>(null)
     const [loader, setLoader] = useState<string | null>(null)
 
-    if (!events) {
-        return <div className='p-5 text-center text-secondary'>
-            <p className='text-secondary'><Calendar2Event size={30} /></p>
-            <span>No tiene eventos</span>
-        </div>
-    }
-
     const deleteEvent = (event: I_ProgramEvent) => {
         setAlert({
             isOpen: true,
@@ -126,7 +119,7 @@ const ProgramEvents = ({ events, limit, program_id, callback, children, canEdit 
 
         <Alert isOpen={!!alert} {...alert} />
 
-        <div className={styles["events-container"]}>
+        {events ? <div className={styles["events-container"]}>
             {events.slice(0, limit).map(event =>
                 <div key={event.id_evento} className={styles["event-item"]}>
                     <div className='d-flex justify-content-between'>
@@ -177,6 +170,12 @@ const ProgramEvents = ({ events, limit, program_id, callback, children, canEdit 
                 </div>
             </div>}
         </div>
+            :
+            <div className='p-5 text-center text-secondary opacity-50'>
+                <p className='text-secondary'><Calendar2Event size={30} /></p>
+                <span>No tiene eventos</span>
+            </div>
+        }
         {children?.(addEvent)}
     </>)
 }

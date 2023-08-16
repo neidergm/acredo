@@ -1,19 +1,74 @@
-import { T_FieldsTypes } from '../interfaces/generic.interface';
+import { I_FormField } from '../interfaces/conditions.interface';
+import { I_JSONObject, T_FieldsTypes } from '../interfaces/generic.interface';
+import { CITIES_BY_DEPARTMENT, DEPARTMENT_LIST } from '../services/endPointsService';
+import mapField from '../utils/mapField';
 
-const programForm: T_FieldsTypes[] = [
+const programForm = (defaultValues: I_JSONObject): T_FieldsTypes[] => [
     {
-        "name": "estado",
-        "label": "Estado",
-        "tag": "select",
-        "type": "simple",
-        "options": ["Activo", "Cerrado"],
+        "name": "nomb_prog",
+        "label": "Nombre del programa",
+        "tag": "input",
+        "type": "text",
         "wrapperClassName": "col-6",
         "validations": {
             "required": true
         }
     },
     {
-        "name": "nivel",
+        "name": "cod_prog",
+        "label": "Código interno de programa",
+        "tag": "input",
+        "placeholder": "Opcional",
+        "type": "text",
+        "wrapperClassName": "col-6",
+        "validations": {}
+    },
+    {
+        "name": "est_prog",
+        "label": "Estado",
+        "tag": "select",
+        "type": "simple",
+        "options": [{ label: "Activo", value: "1" }, { label: "Cerrado", value: "0" }],
+        "wrapperClassName": "col-6",
+        "validations": {
+            "required": true
+        }
+    },
+    {
+        "name": "departamento",
+        "label": "Departamento",
+        "tag": "select",
+        "type": "simple",
+        "options": null,
+        "request": {
+            method: "GET",
+            params: {},
+            url: DEPARTMENT_LIST
+        },
+        "wrapperClassName": "col-6",
+        "validations": {
+            "required": true
+        }
+    },
+    {
+        "name": "ciud_prog",
+        "label": "Ciudad",
+        "tag": "select",
+        "type": "simple",
+        "options": null,
+        "request": {
+            method: "GET",
+            params: { "departamento": null },
+            url: CITIES_BY_DEPARTMENT
+        },
+        "dependsOn": "departamento",
+        "wrapperClassName": "col-6",
+        "validations": {
+            "required": true
+        }
+    },
+    {
+        "name": "nivel_prog",
         "label": "Nivel de formación",
         "tag": "select",
         "type": "simple",
@@ -24,7 +79,7 @@ const programForm: T_FieldsTypes[] = [
         }
     },
     {
-        "name": "modalidad",
+        "name": "moda_prog",
         "label": "Modalidad",
         "tag": "select",
         "type": "simple",
@@ -35,7 +90,7 @@ const programForm: T_FieldsTypes[] = [
         }
     },
     {
-        "name": "tipo_formacion",
+        "name": "tform_prog",
         "label": "Tipo de formación",
         "tag": "select",
         "type": "simple",
@@ -46,7 +101,7 @@ const programForm: T_FieldsTypes[] = [
         }
     },
     {
-        "name": "titulo",
+        "name": "titu_prog",
         "label": "Título otorgado",
         "tag": "input",
         "type": "text",
@@ -55,6 +110,26 @@ const programForm: T_FieldsTypes[] = [
             "required": true
         }
     },
-]
+    {
+        "name": "cod_snies",
+        "label": "Código SNIES",
+        "tag": "input",
+        "type": "number",
+        "wrapperClassName": "col-6",
+        "validations": {
+            // "required": true
+        }
+    },
+    {
+        "name": "freg_snies",
+        "label": "Fecha de registro SNIES",
+        "tag": "date",
+        "type": "date",
+        "wrapperClassName": "col-6",
+        "validations": {
+            // "required": true
+        }
+    }
+].map(i => mapField({ json_campo: i } as I_FormField))
 
 export default programForm;

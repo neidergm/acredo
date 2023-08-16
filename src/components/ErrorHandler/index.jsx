@@ -3,7 +3,7 @@ import { AXIOS_REQUEST } from '../../services/axiosService';
 import { ERROR_REPORTING_URL } from '../../services/constantsService';
 import localStorageService, { sessionStorageService } from '../../services/localStorageService';
 
-let timerValue = 2;
+let timerValue = 1;
 
 export const sendReport = (_data, successCallback, errorCallback, progressCallback) => {
     if (!(/^http[s]?:\/\/localhost.*$/.test(window.location.href))) {
@@ -90,7 +90,11 @@ class ErrorHandler extends Component {
                     window.location.reload(true);
                 } else {
                     this.setState({ hasError: false, error: null, timer: null, loading: null });
-                    timerValue = (timerValue * 2 < 60) ? timerValue * 2 : 60;
+                    // timerValue = (timerValue * 2 < 60) ? timerValue * 2 : 60;
+                    timerValue = timerValue * 3
+                    if(timerValue > 10){
+                        window.location.href = window.location.origin
+                    }
                 }
             }
         }, 1000)

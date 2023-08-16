@@ -4,10 +4,10 @@ import classnames from "classnames";
 import Loader from '../../components/Loader';
 import { I_ProgramsIndicators } from '../../interfaces/dashboard.interface';
 import { AXIOS_REQUEST } from '../../services/axiosService';
-import { GET_PROGRAMS_BY_STATE, GET_PROGRAMS_INDICATORS, GET_PROGRAMS_LIST } from '../../services/endPointsService';
+import { GET_PROGRAMS_BY_STATE, GET_PROGRAMS_INDICATORS } from '../../services/endPointsService';
 import { I_Program } from '../../interfaces/programs.interface';
 import { Badge } from 'reactstrap';
-import { ExclamationCircleFill, Stack } from '../../components/Icons';
+import { ExclamationCircleFill, JournalBoomark, Stack } from '../../components/Icons';
 import { useNavigate } from 'react-router-dom';
 
 const ProgramsResume = () => {
@@ -19,9 +19,11 @@ const ProgramsResume = () => {
   const navigate = useNavigate();
 
   const chooseFilter = (_filter: typeof filter) => {
-    setProgramsList(null)
-    setFilter(_filter)
-    getPrograms(_filter)
+    if (_filter?.estado !== filter?.estado) {
+      setProgramsList(null)
+      setFilter(_filter)
+      getPrograms(_filter)
+    }
   }
 
   const getIndicators = () => {
@@ -40,7 +42,6 @@ const ProgramsResume = () => {
   }
 
   const pickItem = (program: I_Program) => {
-    console.log(program)
     navigate(`programa/${program.id_prog}`)
   }
 
@@ -52,7 +53,7 @@ const ProgramsResume = () => {
           <i className='me-2 text-primary opacity-50'>
             <Stack size={15} />
           </i>
-          <small>{program.nomb_prog} <span className='opacity-50 fw-semibold small'>({program.id_prog})</span></small>
+          <small>{program.nomb_prog} <span className='opacity-50 fw-semibold small'>({program.cod_prog})</span></small>
         </div>
         <div className="gap-3 d-flex flex-column flex-md-row">
           <div className="flex-grow-1">
@@ -61,18 +62,18 @@ const ProgramsResume = () => {
                 <b className="small d-block">Estado: </b>
                 <small>{program.estado}</small>
               </div>
-               <div>
+              <div>
                 <b className="small d-block">SNIES: </b>
-                <small>{program.resoluciones?.[0]?.cod_snies || "00000"}</small>
+                <small>{program.cod_snies || "00000"}</small>
               </div>
               {!!(program.nivel_prog) && <div>
                 <b className="small d-block">Nivel: </b>
                 <small>{program.nivel_prog}</small>
               </div>
               }
-             {!!(program.ciud_prog) && <div>
+              {!!(program.ciud_prog) && <div>
                 <b className="small d-block">Sede: </b>
-                <small>{program.ciud_prog} | {program.depa_prog}</small>
+                <small>{program.nomb_ciud} | {program.nomb_depa}</small>
               </div>}
             </div>
           </div>
@@ -95,8 +96,15 @@ const ProgramsResume = () => {
 
   return (
     <>
+      <div className="pb-2 ps-2">
+        <span className="text-secondary fw-semibold opacity-50">
+          <span className="">
+            RESUMEN DE PROGRAMAS
+          </span>
+        </span>
+      </div>
       <div>
-        <Card className="px-4">
+        <Card className="px-4 position-relative">
           <div className='row h-100'>
             {indicators ?
               indicators.map(i => {

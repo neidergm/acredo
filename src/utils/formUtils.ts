@@ -1,6 +1,6 @@
 import { I_FormField, I_FormFieldWithAnswer, T_FileAnswer } from "../interfaces/conditions.interface"
 import { I_JSONObject, T_FieldsTypes } from "../interfaces/generic.interface"
-import { dateToString } from "./dateUtils";
+import { dateToString, stringToDate } from "./dateUtils";
 import mapField from "./mapField";
 
 export type T_FetchedFormData = {
@@ -130,7 +130,7 @@ export const jsonToFormData = (json: I_JSONObject, prefix = "", formData = new F
     for (const key in json) {
         let val = json[key]
         if (json[key] instanceof Date) val = dateToString(val, undefined, true)
-        formData.append(`${prefix}${key}`, val);
+        formData.append(`${prefix}${key}`, val || "");
     }
     return formData;
 }
@@ -168,14 +168,25 @@ export const getDifferenceBetweenData = (oldValues: I_JSONObject, newValues: I_J
     const diff: I_JSONObject = {};
 
     for (const key in newValues) {
+
         let ov: any = oldValues[key];
         const nv: any = newValues[key];
         let nvs: any = newValues[key];
 
+        if (
+            (nv === "")
+            &&
+            (ov === null || ov === undefined)
+        ) continue
+
+        if (nvs instanceof Date) {
+            ov = stringToDate(ov)
+        }
+
         if (typeof nv === "object") nvs = JSON.stringify(nvs);
         if (typeof ov === "object") ov = JSON.stringify(ov);
 
-        if (ov !== nvs) diff[key] = nv;
+        if (ov != nvs) diff[key] = nv;
     }
     return diff;
 }

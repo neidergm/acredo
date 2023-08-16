@@ -34,7 +34,6 @@ const Menu = () => {
     </div>
 }
 
-
 const Dashboard = () => {
 
     const [tab, setTab] = useState(1);
@@ -43,14 +42,12 @@ const Dashboard = () => {
         setTab(tab)
     }
 
-
     return (
         <>
             <SubHeader text={'Panel principal'} className="container-xxxl" >
                 <div className='d-none d-lg-block mt-1'><Menu /></div>
             </SubHeader>
             <div className="container-fluid container-xxxl">
-
                 <div className='d-flex justify-content-between gap-4 flex-wrap mb-5 align-items-center d-lg-none'>
                     <div className='d-block d-lg-none'>
                         <Menu />
@@ -73,14 +70,10 @@ const Dashboard = () => {
 
                 <div className='row'>
                     <div className={classnames(styles['tab'], 'mb-4 col-12 col-md', { 'd-block': tab === 1 })}>
-
                         <ProcessResume />
-
                     </div>
                     <div className={classnames(styles['tab'], 'tab mb-4 col', { 'd-block': tab === 2 })}>
-
                         <ProgramsResume />
-
                     </div>
                 </div>
             </div>

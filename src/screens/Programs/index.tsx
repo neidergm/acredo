@@ -4,11 +4,19 @@ import { I_Program } from '../../interfaces/programs.interface';
 import Loader from '../../components/Loader';
 import { ExclamationCircleFill } from '../../components/Icons';
 import { AXIOS_REQUEST } from '../../services/axiosService';
-import { GET_PROGRAMS_LIST } from '../../services/endPointsService';
+import { GET_PROGRAMS_LIST, SAVE_PROGRAM_DATA } from '../../services/endPointsService';
 import Card from '../../components/Card';
-import { Badge, CardBody, CardHeader } from 'reactstrap';
+import { Badge, Button, CardBody, CardHeader } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
-import { getNormalDate } from '../../utils/dateUtils';
+import { getDateDiff, getNormalDate } from '../../utils/dateUtils';
+import { Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON, closeModal } from '../../components/Modal';
+import Alert, { I_AlertObject } from '../../components/Alert';
+import Form from 'react-ngm-form';
+import programForm from '../../forms/program.form';
+import { jsonToFormData } from '../../utils/formUtils';
+import { I_JSONObject } from '../../interfaces/generic.interface';
+import { toast } from 'react-hot-toast';
+import classnames from 'classnames';
 
 type T_Filter = {
     [key: string]: {
@@ -24,9 +32,18 @@ const Programs = () => {
     const fetchedList = useRef<I_Program[]>([])
     const navigate = useNavigate();
 
+    const [modal, setModal] = useState<T_ModalJSON | null>(null)
+    const [alert, setAlert] = useState<I_AlertObject | null>(null)
+    const [loader, setLoader] = useState<string | null>(null)
+
     const [filter, setFilter] = useState<T_Filter>({
         nomb_prog: {
             label: "Buscar por nombre",
+            selectedValue: ""
+        },
+        est_resolution: {
+            label: "Resolución",
+            values: [],
             selectedValue: ""
         },
         estado: {
@@ -34,11 +51,21 @@ const Programs = () => {
             values: [],
             selectedValue: ""
         },
-        ciud_prog: {
+        nomb_ciud: {
             label: "Ciudad",
             values: [],
             selectedValue: ""
-        }
+        },
+        nivel_prog: {
+            label: "Nivel",
+            values: [],
+            selectedValue: ""
+        },
+        moda_prog: {
+            label: "Modalidad",
+            values: [],
+            selectedValue: ""
+        },
     })
 
     const doFilter = (value: string, property: string, list = fetchedList.current) => {
@@ -55,15 +82,70 @@ const Programs = () => {
         setProgramsList(doFilter(value, property))
     }
 
-    useEffect(() => {
+    const newProgram = () => {
+        const FORM_ID = "PROGRAM_FORM";
+        const defaultValues = {};
+
+        const form = programForm(defaultValues)
+
+        setModal({
+            isOpen: true,
+            title: "Modificar programa",
+            size: "lg",
+            children: <>
+                <Form
+                    formProps={{ id: FORM_ID }}
+                    defaultValues={defaultValues}
+                    onSubmit={data => {
+                        setAlert({
+                            isOpen: true,
+                            type: "question",
+                            title: `¿Está seguro?`,
+                            subtitle: "Se registrará un nuevo programa",
+                            closeButton: { value: "No, cancelar" },
+                            onClosed: () => closeModal(setAlert),
+                            submitButton: {
+                                value: "Sí, registrar", onClick: () => {
+                                    saveProgramData(data);
+                                    closeModal(setAlert)
+                                }
+                            }
+                        })
+                    }}
+                    fields={form}
+                />
+            </>,
+            footer: <ModalFooter>
+                <Button color='primary2' onClick={() => closeModal(setModal)}>Cancelar</Button>
+                <Button form={FORM_ID} color='primary'>Guardar cambios</Button>
+            </ModalFooter>
+        })
+    }
+
+    const saveProgramData = ({ departamento, ...data }: I_JSONObject) => {
+        setLoader("Registrando programa")
+        departamento && (data.depa_prog = departamento);
+
+        AXIOS_REQUEST(SAVE_PROGRAM_DATA, "POST", jsonToFormData(data, "[0].")).then(resp => {
+            toast.success("Programa registrado correctamente", { position: 'top-right' })
+            closeModal(setModal);
+            getPrograms();
+        }).catch(err => {
+            toast.error("No se pudo registrar el programa", { position: 'top-right' })
+        }).finally(() => {
+            setLoader(null)
+        })
+    }
+
+    const getPrograms = () => {
         AXIOS_REQUEST(GET_PROGRAMS_LIST).then(resp => {
             fetchedList.current = resp.data;
             setProgramsList(resp.data)
 
             const f = filter;
             for (let i = 0; i < resp.data.length; i++) {
-                const p = resp.data[i];
-
+                const p: I_Program = resp.data[i];
+                p.est_resolution = p.fech_reso ? (getDateDiff(p.fech_reso, new Date()) < 0 ? "Vencida" : "Activa") : "Sin resolución";
                 for (const key in filter) {
                     if (f[key].values) {
                         const val = (p as any)[`${key}`];
@@ -74,6 +156,10 @@ const Programs = () => {
             }
             setFilter(f)
         })
+    }
+
+    useEffect(() => {
+        getPrograms()
     }, [])
 
     return (
@@ -81,34 +167,60 @@ const Programs = () => {
             <SubHeader
                 showBackButton
                 text="Programas"
-                className="container-xl"
+                className="container-xxxl"
             />
 
-            <div className="container-xl">
-                <div className='d-flex gap-3 mb-4 align-items-center flex-wrap'>
-                    {Object.keys(filter)
-                        .map(f => <div key={f}>
-                            <label htmlFor={f} className="form-label small">{filter[f].label}</label>
+            <Loader isOpen={!!(loader)} subtitle={loader}></Loader>
+            <Modal isOpen={modal?.isOpen} size={modal?.size}>
+                <ModalHeader textCenter toggle={() => closeModal(setModal)}>{modal?.title}</ModalHeader>
+                <ModalBody>{modal?.children}</ModalBody>
+                {modal?.footer}
+            </Modal>
+
+            <Alert isOpen={!!alert} {...alert} />
+
+            <div className="container-fluid container-xxxl">
+                {programsList?.length && <> <div className='d-flex flex-column-reverse flex-xl-row'>
+                    <div className='d-flex gap-3 mb-3 align-items-center flex-wrap'>
+                        {Object.keys(filter).map(f => <div key={f}>
                             {!filter[f].values ?
-                                <input
-                                    placeholder='Búsqueda'
-                                    className='form-control'
-                                    type='search'
-                                    style={{ width: "200px" }}
-                                    onChange={e => searchByFilter(e.target.value, f)}
-                                />
+                                <>
+                                    <label htmlFor={f} className="form-label small mb-1">{filter[f].label}</label>
+                                    <input
+                                        placeholder='Búsqueda'
+                                        className='form-control'
+                                        type='search'
+                                        style={{ width: "200px" }}
+                                        onChange={e => searchByFilter(e.target.value, f)}
+                                    />
+                                </>
                                 :
-                                <select id={f} className='form-select w-auto border text-secondary' onChange={e => searchByFilter(e.target.value, f)}>
-                                    <option value="">Filtrar</option>
-                                    {filter[f].values!.map(o => <option key={o} value={o}>{o}</option>)}
-                                </select>
+                                !!((filter[f].values?.length || 0) > 1) && <>
+                                    <label htmlFor={f} className="form-label small mb-1">{filter[f].label}</label>
+                                    <select id={f} className='form-select w-auto border text-secondary' onChange={e => searchByFilter(e.target.value, f)}>
+                                        <option value="">Filtrar</option>
+                                        {filter[f].values!.map(o => <option key={o} value={o}>{o}</option>)}
+                                    </select>
+                                </>
                             }
-                        </div>)}
-                    <div className='flex-grow-1 small text-secondary text-end'>
-                        <b className='d-block'>{programsList?.length}</b>
-                        <span>programas</span>
+                        </div>)
+                        }
+                    </div>
+                    <div className='flex-grow-1 mb-2 text-end'>
+                        <Button color='primary' size='sm' onClick={() => newProgram()}>+ Nuevo programa</Button>
                     </div>
                 </div>
+                    <div className='mb-4 pt-2'>
+                        <div>
+                            <div
+                                className='border-start border-5 border-dark py-1 ps-3 pe-4 bg-secondary bg-opacity-10 mb-2 d-inline-block'
+                                style={{ borderRadius: "2px 10px 10px 2px" }}
+                            >
+                                <small className='fw-semibold'>{programsList?.length} Programas filtrados</small>
+                            </div>
+                        </div>
+                    </div>
+                </>}
                 <div className="mb-5">
                     {programsList ?
                         (programsList.length ?
@@ -116,7 +228,10 @@ const Programs = () => {
                                 {programsList
                                     .map((item, i) => <div className='col-12 col-sm-6 col-xl-4 mb-4' key={`${item.id_prog}-${i}`}>
                                         <Card className='h-100 p-0 hover-scale-up' onClick={() => navigate(`${item.id_prog}`)}>
-                                            <CardHeader className='bg-success text-white border-0 py-3'>
+                                            <CardHeader className={classnames('bg-opacity-75 bg-success text-white border-0 py-3', {
+                                                'bg-danger': item.est_resolution === "Vencida",
+                                                'bg-warning': item.est_resolution === "Sin resolución",
+                                            })}>
                                                 <div style={{ minHeight: "2rem" }} className='d-flex align-items-center'>
                                                     <h6 className='lh-1 m-0 align-middle'>{item.nomb_prog}</h6>
                                                 </div>
@@ -126,11 +241,11 @@ const Programs = () => {
                                                     <div className='col-auto small text-secondary text-center text-wrap'>
                                                         <div className='mb-2'>
                                                             <b className='d-block'>Código</b>
-                                                            <span>{item.id_prog}</span>
+                                                            <span>{item.cod_prog}</span>
                                                         </div>
                                                         <div className='mb-2'>
                                                             <b className='d-block'>SNIES</b>
-                                                            <span>{item.resoluciones?.[0]?.cod_snies || "00000"}</span>
+                                                            <span>{item.cod_snies || "00000"}</span>
                                                         </div>
                                                         <div className='mb-2'>
                                                             <b className='d-block'>Estado</b>
@@ -143,7 +258,7 @@ const Programs = () => {
                                                     <div className='col small'>
                                                         <div className='mb-1'>
                                                             <b>Ciudad: </b>
-                                                            <span>{item.ciud_prog} | {item.depa_prog}</span>
+                                                            <span>{item.nomb_ciud} | {item.nomb_depa}</span>
                                                         </div>
                                                         <div className='mb-1'>
                                                             <b>Nivel: </b>
@@ -158,8 +273,24 @@ const Programs = () => {
                                                             <span>{item.moda_prog}</span>
                                                         </div>
                                                         <div className='mb-1'>
-                                                            <b>Resolución: </b>
-                                                            <span >{getNormalDate(item.fech_reso, { dateStyle: "long" })}</span>
+                                                            <b
+                                                                className={classnames({
+                                                                    'text-danger': item.est_resolution === "Vencida",
+                                                                })}
+                                                            >
+                                                                Resolución hasta: </b>
+                                                            <span>{
+                                                                item.fech_reso ?
+                                                                    <span className={classnames({
+                                                                        'text-danger': item.est_resolution === "Vencida"
+                                                                    })}>
+                                                                        {getNormalDate(item.fech_reso, { dateStyle: "long" })} &nbsp;
+                                                                        {item.est_resolution === "Vencida" && <Badge color='danger'>Vencida</Badge>}
+                                                                    </span>
+                                                                    :
+                                                                    <span className='text-warning'>{item.est_resolution}</span>
+                                                            }
+                                                            </span>
                                                         </div>
                                                         <div className='text-end'>
                                                             {item.eventos?.length && <Badge color='primary' className='me-1'>
@@ -173,7 +304,9 @@ const Programs = () => {
                                                 </div>
                                             </CardBody>
                                         </Card>
-                                    </div>)}
+                                    </div>
+                                    )
+                                }
                             </div>
                             :
                             <div className='py-5 text-center text-secondary'>

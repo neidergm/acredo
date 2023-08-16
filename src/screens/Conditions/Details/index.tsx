@@ -353,7 +353,7 @@ const ConditionsDetails = () => {
                 <div className='d-flex justify-content-between mb-4 align-items-center'>
                   <div className='border-start border-5 border-dark py-1 ps-3 pe-4 bg-secondary bg-opacity-10 mb-2'
                     style={{ borderRadius: "2px 10px 10px 2px" }}>
-                    <small className='fw-bold text-uppercase '>Etapas en la fase</small>
+                    <small className='fw-bold text-uppercase '>Etapas de la tarea</small>
                   </div>
                   <CloseButton onClick={() => setShowAllPhases(false)} />
                 </div>

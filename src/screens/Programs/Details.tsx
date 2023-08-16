@@ -3,17 +3,25 @@ import { SubHeader } from '../../components/SubHeader'
 import { useNavigate, useParams } from 'react-router-dom'
 import Card from '../../components/Card';
 import { AXIOS_REQUEST } from '../../services/axiosService';
-import { GET_PROGRAMS_LIST } from '../../services/endPointsService';
+import { DELETE_PROGRAM, GET_PROGRAMS_LIST, SAVE_PROGRAM_DATA } from '../../services/endPointsService';
 import { I_Program } from '../../interfaces/programs.interface';
 import Loader from '../../components/Loader';
 import { Button, Col, Offcanvas, OffcanvasBody, OffcanvasHeader, Row, Table } from 'reactstrap';
 import { getNormalDate } from '../../utils/dateUtils';
-import { ArrowRightShort, Edit, Kanban, Plus } from '../../components/Icons';
+import { ArrowRightShort, Edit, ExclamationCircleFill, Kanban, Plus, XCircle } from '../../components/Icons';
 import { isAdmin } from '../../utils/userRolUtils';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { ProcessResumeItem } from '../Dashboard/ProcessResume';
 import ProgramEvent from '../../components/ProgramEvents';
 import Resolutions from '../../components/Resolutions';
+import { Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON, closeModal } from '../../components/Modal';
+import Alert, { I_AlertObject } from '../../components/Alert';
+import Form from 'react-ngm-form';
+import programForm from '../../forms/program.form';
+import { I_JSONObject } from '../../interfaces/generic.interface';
+import { getDifferenceBetweenData, jsonToFormData } from '../../utils/formUtils';
+import { toast } from 'react-hot-toast';
+import confirmDeleteAlertObject from '../../utils/confirmDeleteAlertObject';
 
 const EVENT_LIMITS_SHOW = 3;
 
@@ -22,10 +30,13 @@ const Details = () => {
     const navigate = useNavigate();
     const is_admin = isAdmin(useAppSelector(state => state.user.userInfo?.rol));
 
+    const [modal, setModal] = useState<T_ModalJSON | null>(null)
+    const [alert, setAlert] = useState<I_AlertObject | null>(null)
+    const [loader, setLoader] = useState<string | null>(null)
+
     const { id_program } = useParams();
     const [program, setProgram] = useState<I_Program | null>(null);
     const [showSidePanel, setShowSidePanel] = useState<null | { title: string; body: any; toggler: (close: boolean) => void }>(null);
-
 
     const getProgramInfo = () => {
         AXIOS_REQUEST(`${GET_PROGRAMS_LIST}/${id_program}`).then(resp => {
@@ -33,8 +44,117 @@ const Details = () => {
         })
     }
 
+    const deleteProgram = () => {
+        const hasProcess = program?.procesos?.length;
+        const hastReso = program?.resoluciones?.length;
+
+        if (hastReso || hasProcess) {
+            let subtitle = "El programa no puede ser eliminado ";
+
+            if (hastReso) {
+                subtitle += "debido a que cuenta con resoluciones"
+                if (hasProcess) { subtitle += " y " }
+            } else { subtitle += "debido a que " }
+            if (hasProcess) { subtitle += "tiene procesos en curso" }
+
+            return setAlert({
+                subtitle,
+                isOpen: true,
+                title: "No se puede eliminar",
+                type: "error",
+                onClosed: () => closeModal(setAlert),
+                closeButton: { value: "Ok, cerrar" }
+            });
+        }
+        setAlert(
+            confirmDeleteAlertObject(
+                <span>Se eliminará permanentemente el programa <b>{program!.nomb_prog}</b></span>,
+                () => {
+                    setLoader("Eliminando resolución")
+                    AXIOS_REQUEST(`${DELETE_PROGRAM}`, "PUT", jsonToFormData({ est_prog: -1, id_prog: program?.id_prog })).then(res => {
+                        toast.success("Programa eliminado correctamente", { position: "top-right" });
+                    }).catch(e => {
+                        toast.error("No se pudo eliminar el programa", { position: "top-right" });
+                    }).finally(() => {
+                        setLoader(null)
+                    })
+                    closeModal(setAlert)
+                },
+                setAlert
+            )
+        )
+    }
+
+
     const updateProgramData = () => {
-        console.log(program)
+
+        const FORM_ID = "PROGRAM_FORM";
+        let defaultValues = {};
+        if (program) {
+            const { ciud_prog, est_prog, moda_prog, nivel_prog, nomb_prog, tform_prog, titu_prog, cod_snies, freg_snies, cod_prog } = program;
+
+            defaultValues = {
+                departamento: program?.depa_prog,
+                ciud_prog, est_prog, moda_prog, nivel_prog, nomb_prog, tform_prog, titu_prog, cod_snies, freg_snies, cod_prog
+            }
+        }
+
+        const form = programForm(defaultValues)
+
+        setModal({
+            isOpen: true,
+            title: "Modificar programa",
+            size: "lg",
+            children: <>
+                <Form
+                    formProps={{ id: FORM_ID }}
+                    defaultValues={defaultValues}
+                    onSubmit={data => {
+                        data = getDifferenceBetweenData(defaultValues, data)
+                        if (Object.keys(data).length) {
+                            setAlert({
+                                isOpen: true,
+                                type: "question",
+                                title: `¿Está seguro?`,
+                                subtitle: "Se actualizarán los datos de este programa",
+                                closeButton: { value: "No, cancelar" },
+                                onClosed: () => closeModal(setAlert),
+                                submitButton: {
+                                    value: "Sí, actualizar", onClick: () => {
+                                        saveProgramData(data);
+                                        closeModal(setAlert)
+                                    }
+                                }
+                            })
+                        } else {
+                            toast.error("No hay cambios para actualizar", { position: "top-right", icon: <i className='text-warning'><ExclamationCircleFill /> </i> })
+                        }
+                    }}
+                    fields={form}
+                />
+            </>,
+            footer: <ModalFooter>
+                <Button color='primary2' onClick={() => closeModal(setModal)}>Cancelar</Button>
+                <Button form={FORM_ID} color='primary'>Guardar cambios</Button>
+            </ModalFooter>
+        })
+    }
+
+    const saveProgramData = ({ departamento, ...data }: I_JSONObject) => {
+
+        setLoader("Actualizando datos")
+        departamento && (data.depa_prog = departamento);
+        data.id_prog = program?.id_prog;
+
+        AXIOS_REQUEST(SAVE_PROGRAM_DATA, "PUT", jsonToFormData(data, "[0].")).then(resp => {
+            toast.success("Datos del programa actualizados correctamente", { position: 'top-right' })
+            closeModal(setModal);
+            getProgramInfo()
+        }).catch(err => {
+            toast.error("No se pudo actualizar datos del programa", { position: 'top-right' })
+        }).finally(() => {
+            setLoader(null)
+        })
     }
 
     const showAllEvents = (show = true) => {
@@ -77,6 +197,15 @@ const Details = () => {
                 className="container-xl"
             />
 
+            <Loader isOpen={!!(loader)} subtitle={loader}></Loader>
+            <Modal isOpen={modal?.isOpen} size={modal?.size}>
+                <ModalHeader textCenter toggle={() => closeModal(setModal)}>{modal?.title}</ModalHeader>
+                <ModalBody>{modal?.children}</ModalBody>
+                {modal?.footer}
+            </Modal>
+
+            <Alert isOpen={!!alert} {...alert} />
+
             <div className="container-xl">
                 <div>
                     {!program ? <div className='p-5 mt-5'><Loader loaderAsModal={false} isOpen /></div>
@@ -104,7 +233,7 @@ const Details = () => {
                                                     <tbody className='border-top'>
                                                         <tr>
                                                             <td><b className="fw-semibold">Código de programa</b></td>
-                                                            <td>{program.id_prog}</td>
+                                                            <td>{program.cod_prog}</td>
                                                         </tr>
                                                         <tr>
                                                             <td><b className="fw-semibold">Estado</b></td>
@@ -112,11 +241,11 @@ const Details = () => {
                                                         </tr>
                                                         <tr>
                                                             <td><b className="fw-semibold">Ciudad</b></td>
-                                                            <td>{program.ciud_prog}</td>
+                                                            <td>{program.nomb_ciud} - <small className='text-muted'>{program.nomb_depa}</small></td>
                                                         </tr>
                                                         <tr>
-                                                            <td><b className="fw-semibold">Departamento</b></td>
-                                                            <td>{program.depa_prog}</td>
+                                                            <td><b className="fw-semibold">SNIES</b></td>
+                                                            <td>{program.cod_snies} <small className='text-muted'>({getNormalDate(program.freg_snies, { dateStyle: "long" })})</small></td>
                                                         </tr>
                                                         <tr>
                                                             <td><b className="fw-semibold">Nivel de formación</b></td>
@@ -142,11 +271,19 @@ const Details = () => {
                                                 </Table>
                                             </div>
                                         </div>
-                                        {is_admin && <div className='text-end mt-3'>
-                                            <Button size='sm' color='primary' onClick={() => updateProgramData()}>
-                                                <i className='me-1'><Edit size={15} /></i> Actualizar información
-                                            </Button>
-                                        </div>}
+                                        {is_admin && <div className='d-flex justify-content-between gap-3'>
+                                            <div className='text-end mt-3'>
+                                                <Button size='sm' color='danger' onClick={() => deleteProgram()}>
+                                                    <i className='me-1'><XCircle size={15} /></i> Eliminar
+                                                </Button>
+                                            </div>
+                                            <div className='text-end mt-3'>
+                                                <Button size='sm' color='primary' onClick={() => updateProgramData()}>
+                                                    <i className='me-1'><Edit size={15} /></i> Actualizar información
+                                                </Button>
+                                            </div>
+                                        </div>
+                                        }
                                     </Card>
                                 </Col>
                                 <Col md="6" className='mb-4'>
@@ -161,21 +298,21 @@ const Details = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <Resolutions current={program.resoluciones[0]} program_id={program.id_prog} canEdit={is_admin}>
+                                        <Resolutions current={program.resoluciones?.[0]} program_id={program.id_prog} canEdit={is_admin}>
                                             {(add, edit) => (
                                                 <div className='flex-grow-1 mt-3 d-flex justify-content-between gap-1 align-items-end'>
                                                     <div className='d-inline-block'>
-                                                        <Button size='sm' color='link' onClick={() => showAllResolutions()}>
+                                                        {program.resoluciones?.[0] && <Button size='sm' color='link' onClick={() => showAllResolutions()}>
                                                             Ver todas las resoluciones <ArrowRightShort size={16} />
-                                                        </Button>
+                                                        </Button>}
                                                     </div>
                                                     {is_admin && <>
-                                                        <div className='ms-auto d-inline-block'>
+                                                        {program.resoluciones?.[0] && <div className='ms-auto d-inline-block'>
                                                             <Button size='sm' color='primary' onClick={() => edit()}>
                                                                 <i className='me-1'><Edit size={15} /></i> Editar
                                                             </Button>
-                                                        </div>
-                                                        <div className='d-inline-block'>
+                                                        </div>}
+                                                        <div className='d-inline-block text-end'>
                                                             <Button size='sm' color='primary' onClick={() => add()}>
                                                                 <i className='me-1'><Plus size={16} /></i> Nueva resolución
                                                             </Button>
@@ -203,11 +340,17 @@ const Details = () => {
                                                     <ProcessResumeItem process={p as any} pickItem={() => navigate(`/proceso/${p.id_conv}`)} />
                                                 </React.Fragment>)
                                                 :
-                                                <div className='p-5 text-center text-secondary'>
+                                                <div className='p-5 text-center text-secondary opacity-50'>
                                                     <p className='text-secondary'><Kanban size={30} /></p>
                                                     <span>No tiene procesos en curso</span>
                                                 </div>
                                             }
+                                        </div>
+                                        <div className='h-100 d-flex align-items-end'>
+                                            <Button size='sm' color='primary' className='ms-auto' onClick={() => navigate("/proceso")}>
+                                                <Plus size={16} />
+                                                Crear proceso para el programa
+                                            </Button>
                                         </div>
                                     </Card>
                                 </Col>

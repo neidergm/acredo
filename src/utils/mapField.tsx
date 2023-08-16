@@ -123,6 +123,8 @@ const mapField = (item: I_FormField, defaultValue?: any) => {
         }
         if (field.dependsOn) {
             field.watchingCallback = (value, callback, formMethods) => {
+                // console.log(field)
+                // formMethods?.setValue(field.name, "")
                 if (!value) {
                     callback({ options: [] })
                 }

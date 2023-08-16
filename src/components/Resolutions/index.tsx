@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { I_Resolutions } from '../../interfaces/programs.interface'
 import Card from '../Card'
 import classnames from 'classnames'
-import { Button } from 'reactstrap'
-import { Edit, XCircle } from '../Icons'
+import { Button, Table } from 'reactstrap'
+import { Edit, ExclamationCircleFill, Folder2Open, XCircle } from '../Icons'
 import { getNormalDate } from '../../utils/dateUtils'
 import { Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON, closeModal } from '../Modal'
 import Alert, { I_AlertObject } from '../Alert'
@@ -15,7 +15,7 @@ import confirmDeleteAlertObject from '../../utils/confirmDeleteAlertObject'
 import Form from 'react-ngm-form'
 import resolutionForm from '../../forms/resolution.form'
 import { I_JSONObject } from '../../interfaces/generic.interface'
-import { jsonToFormData } from '../../utils/formUtils'
+import { getDifferenceBetweenData, jsonToFormData } from '../../utils/formUtils'
 
 type T_Props = {
     list?: I_Resolutions[] | null,
@@ -35,7 +35,7 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, current, chi
     const confirmDelete = (item: I_Resolutions) => {
         setAlertConfirm(
             confirmDeleteAlertObject(
-                <span>Se eliminará la permanentemente la resolución <b>{item.reso_apro}</b></span>,
+                <span>Se eliminará permanentemente la resolución <b>{item.reso_apro}</b></span>,
                 () => {
                     onDelete(item.reso_apro);
                     closeModal(setAlertConfirm)
@@ -62,13 +62,14 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, current, chi
     }
 
     const onEdit = (reso?: I_Resolutions) => {
-        const FORM_ID = "FORM_EVENT";
+        const FORM_ID = "FORM_RESO";
         const form = structuredClone(resolutionForm);
         let defaultValues = {};
 
         if (reso) {
-            const { cod_snies, fech_ejec, fech_reso, freg_snies, ncre_snies, nper_snies, reso_apro, vige_reso, peri_acad, reco_min } = reso;
-            defaultValues = { cod_snies, fech_ejec, fech_reso, freg_snies, ncre_snies, nper_snies, reso_apro, vige_reso, peri_acad, reco_min }
+            form.shift();
+            const { fech_ejec, fech_reso, ncre_snies, nper_snies, vige_reso, peri_acad, reco_min } = reso;
+            defaultValues = { fech_ejec, fech_reso, ncre_snies, nper_snies, vige_reso, peri_acad, reco_min }
         }
 
         setModal({
@@ -79,7 +80,15 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, current, chi
                 <Form
                     formProps={{ id: FORM_ID }}
                     defaultValues={defaultValues}
-                    onSubmit={data => saveResolutionData(data, reso ? "PUT" : "POST")}
+                    onSubmit={data => {
+                        data = getDifferenceBetweenData(defaultValues, data)
+                        if (Object.keys(data).length) {
+                            data.reso_apro ||= reso!.reso_apro;
+                            saveResolutionData(data, reso ? "PUT" : "POST")
+                        } else {
+                            toast.error("No hay cambios para actualizar", { position: "top-right", icon: <i className='text-warning'><ExclamationCircleFill /> </i> })
+                        }
+                    }}
                     fields={form}
                 />
             </>,
@@ -93,14 +102,13 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, current, chi
     const saveResolutionData = (data: I_JSONObject, type: string) => {
         setLoader(type === "PUT" ? "Actualizando resolución" : "Registrando resolución")
 
-        data.reco_evento = data.reco_evento.map(({ days }: { days: number }) => days)
         AXIOS_REQUEST(SAVE_PROGRAM_RESOLUTION, type, jsonToFormData({ ...data, id_prog: program_id }, "[0]."))
             .then(res => {
-                toast.success("Resolución creada correctamente", { position: "top-right" });
+                toast.success(`Resolución ${type === "PUT" ? "actualizada" : "registrada"} correctamente`, { position: "top-right" });
                 callback?.();
             })
             .catch(err => {
-                toast.error("No se pudo crear la resolución", { position: "top-right" });
+                toast.error(`No se pudo ${type === "PUT" ? "actualizar" : "registrar"} la resolución`, { position: "top-right" });
             })
             .finally(() => {
                 setLoader(null)
@@ -118,56 +126,54 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, current, chi
 
             <Alert isOpen={!!alertConfirm} {...alertConfirm} />
 
+            {!current && !list && <div className='text-center p-5 text-muted opacity-50'>
+                <p><Folder2Open size={30} /></p>
+                No tiene resoluciones registradas
+            </div>}
+
             {current && <div>
-                <div className="hstack gap-3 mb-3 pb-3 text-center justify-content-between">
-                    <div className="py-1">
-                        <b className='d-block small'>SNIES</b>
-                        <span>{current.cod_snies}</span>
-                    </div>
-                    <div className='vr'></div>
-                    <div className="py-1">
-                        <b className='d-block small'>Fecha de registro</b>
-                        <span>{getNormalDate(current.freg_snies, { dateStyle: "long" })}</span>
-                    </div>
-                    <div className='vr'></div>
-                    <div className="py-1">
-                        <b className='d-block small'>Nro. periodos</b>
-                        <span>{current.nper_snies}</span>
-                    </div>
-                    <div className='vr'></div>
-                    <div className="py-1">
-                        <b className='d-block small'>Nro. Créditos</b>
-                        <span>{current.ncre_snies}</span>
-                    </div>
-                </div>
-                <div>
-                    <p>
-                        <b className='fw-semibold'>Fecha de ejecución: </b>
-                        <span className='text-secondary'>{getNormalDate(current.fech_ejec, { dateStyle: "long" })}</span>
-                    </p>
-                    <p>
-                        <b className='fw-semibold'>Reconocimiento del ministerio: </b>
-                        <span className='text-secondary'>{current.reco_min}</span>
-                    </p>
-                    <p>
-                        <b className='fw-semibold'>Resolución de aprobación: </b>
-                        <span className='text-secondary'>{current.reso_apro}</span>
-                    </p>
-                    <p>
-                        <b className='fw-semibold'>Vigencia: </b>
-                        <span className='text-secondary'>{current.vige_reso} años</span>
-                    </p>
-                </div>
-                <div>
-                    <p>
-                        <b className='fw-semibold'>Justificación de resolución: </b>
-                        <span className='text-secondary'>{current.just_reso || "No tiene"}</span>
-                    </p>
-                    <p>
-                        <b className='fw-semibold'>Justificación detallada: </b>
-                        <span className='text-secondary'>{current.jres_deta || "No tiene"}</span>
-                    </p>
-                </div>
+                <Table>
+                    <tbody className='border-top'>
+                        <tr>
+                            <td><b className="fw-semibold">Aprobación</b></td>
+                            <td>{current.reso_apro}
+                                <small className='text-secondary ms-2'>({getNormalDate(current.fech_reso, { dateStyle: "long" })})</small>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b className="fw-semibold">Fecha de ejecución</b></td>
+                            <td>{getNormalDate(current.fech_ejec, { dateStyle: "long" })}</td>
+                        </tr>
+                        <tr>
+                            <td><b className="fw-semibold">Vigencia</b></td>
+                            <td>{current.vige_reso} años</td>
+                        </tr>
+                        <tr>
+                            <td><b className="fw-semibold">Nro. Periodos</b></td>
+                            <td>{current.nper_snies} periodos</td>
+                        </tr>
+                        <tr>
+                            <td><b className="fw-semibold">Periodos académicos</b></td>
+                            <td>{current.peri_acad}</td>
+                        </tr>
+                        <tr>
+                            <td><b className="fw-semibold">Nro. Créditos</b></td>
+                            <td>{current.ncre_snies} créditos</td>
+                        </tr>
+                        <tr>
+                            <td><b className="fw-semibold">Reconocimiento del ministerio</b></td>
+                            <td>{current.reco_min}</td>
+                        </tr>
+                        <tr>
+                            <td><b className="fw-semibold">Justificación de resolución</b></td>
+                            <td>{current.just_reso}</td>
+                        </tr>
+                        <tr>
+                            <td><b className="fw-semibold">Justificación detallada</b></td>
+                            <td>{current.jres_deta}</td>
+                        </tr>
+                    </tbody>
+                </Table>
             </div>}
 
             {list?.map((r, idx) => <div key={r.reso_apro}>
@@ -218,11 +224,7 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, current, chi
                     </div>
                     <div className='d-flex gap-3 mt-3 small mb-3 flex-wrap'>
                         <div>
-                            <b className='d-block'>SNIES</b>
-                            <span>{r.cod_snies}</span>
-                        </div>
-                        <div>
-                            <b className='d-block'>Fecha de registro</b>
+                            <b className='d-block'>Fecha de resolución</b>
                             <span>{r.fech_reso}</span>
                         </div>
                         <div>

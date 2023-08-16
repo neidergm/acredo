@@ -261,13 +261,24 @@ export const CAMPUS_LIST = `sedes`;
 
 
 /*---------------------------------------------*/
-// CONDITIONS
+// INFO
 /*---------------------------------------------*/
 
 /**
  * @method GET
  */
 export const CONDITIONS_TYPES = `getinfo/condiciones`;
+
+/**
+ * @method GET
+ */
+export const DEPARTMENT_LIST = `getinfo/departamentos`;
+
+/**
+ * @method GET
+ * @params {departamento}
+ */
+export const CITIES_BY_DEPARTMENT = `getinfo/ciudades`;
 
 
 /*---------------------------------------------*/
@@ -291,6 +302,11 @@ export const GET_TEMPLATES = `plantilla/`;
 /*---------------------------------------------*/
 
 /**
+ * @method POST | PUT
+ * @params {[0].nomb_prog, [0].titu_prog, [0].depa_prog, [0].ciud_prog, [0].nivel_prog, [0].tform_prog, [0].moda_prog}
+ */
+export const SAVE_PROGRAM_DATA = `programas`;
+/**
  * @method GET
  */
 export const GET_PROGRAMS_LIST = `programas`;
@@ -300,6 +316,12 @@ export const GET_PROGRAMS_LIST = `programas`;
  * @params /[state]?
  */
 export const GET_PROGRAMS_BY_STATE = `programas/all/`;
+
+/**
+ * @method PUT
+ * @params {est_prog: -1, cid_prog}
+ */
+export const DELETE_PROGRAM = `programas`;
 
 
 /*---------------------------------------------*/
@@ -375,12 +397,18 @@ export const DELETE_PROGRAM_EVENT = `eventos/`;
  * @method POST
  * @params {[0].nomb_evento, [0].desc_evento, [0].reco_evento[], [0].id_prog, [0].fech_evento}
  */
-export const SAVE_PROGRAM_RESOLUTION = `resolucion`;
+export const SAVE_PROGRAM_RESOLUTION = `programas/resolucion`;
+
+/**
+ * @method PUT
+ * @params {[0].nomb_evento, [0].desc_evento, [0].reco_evento[], [0].id_prog, [0].fech_evento}
+ */
+export const UPDATE_PROGRAM_RESOLUTION = `programas/resolucion`;
 
 /**
  * @method DELETE
  * @params /reso_apro
  */
-export const DELETE_PROGRAM_RESOLUTION = `resolucion/`;
+export const DELETE_PROGRAM_RESOLUTION = `programas/resolucion/`;
 
 

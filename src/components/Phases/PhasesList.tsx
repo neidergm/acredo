@@ -205,11 +205,11 @@ const PhasesList = (
             className={classnames(styles.phase)}
             key={key}
           >
-            <div className={classnames('d-flex align-items-center', { 'justify-content-between': isAdmin })}>
+            {/* <div className={classnames('d-flex align-items-center', { 'justify-content-between': isAdmin })}>
               <div className={classnames(styles["phase-header"], "mb-3 fw-semibold text-muted")}>
                 <span>- {item.name}</span>
               </div>
-            </div>
+            </div> */}
             <div className={classnames(styles["phase-body"], "ms-3")}>
               <UncontrolledAccordion stayOpen flush defaultOpen={[`stage-${active?.stage?.id}`]}>
                 {item.stages ? doStages(item.stages, item) : <p>Sin etapas registradas</p>}

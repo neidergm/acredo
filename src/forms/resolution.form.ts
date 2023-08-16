@@ -2,20 +2,40 @@ import { T_FieldsTypes } from '../interfaces/generic.interface';
 
 const resolutionForm: T_FieldsTypes[] = [
     {
-        "name": "cod_snies",
-        "label": "Código SNIES",
+        "name": "reso_apro",
+        "label": "Resolución de aprobación",
         "tag": "input",
-        "type": "number",
+        "type": "text",
         "wrapperClassName": "col-6",
         "validations": {
             "required": true
         }
     },
     {
-        "name": "freg_snies",
-        "label": "Fecha de registro SNIES",
+        "name": "fech_reso",
+        "label": "Fecha de resolución",
         "tag": "date",
         "type": "date",
+        "wrapperClassName": "col-6",
+        "validations": {
+            "required": true
+        }
+    },
+    {
+        "name": "fech_ejec",
+        "label": "Fecha de ejecución",
+        "tag": "date",
+        "type": "date",
+        "wrapperClassName": "col-6",
+        "validations": {
+            "required": true
+        }
+    },
+    {
+        "name": "vige_reso",
+        "label": "Vigencia (años)",
+        "tag": "input",
+        "type": "number",
         "wrapperClassName": "col-6",
         "validations": {
             "required": true
@@ -52,46 +72,6 @@ const resolutionForm: T_FieldsTypes[] = [
         }
     },
     {
-        "name": "fech_reso",
-        "label": "Fecha de resolución",
-        "tag": "date",
-        "type": "date",
-        "wrapperClassName": "col-6",
-        "validations": {
-            "required": true
-        }
-    },
-    {
-        "name": "fech_ejec",
-        "label": "Fecha de ejecución",
-        "tag": "date",
-        "type": "date",
-        "wrapperClassName": "col-6",
-        "validations": {
-            "required": true
-        }
-    },
-    {
-        "name": "reso_apro",
-        "label": "Resolución de aprobación",
-        "tag": "input",
-        "type": "text",
-        "wrapperClassName": "col-6",
-        "validations": {
-            "required": true
-        }
-    },
-    {
-        "name": "vige_reso",
-        "label": "Vigencia",
-        "tag": "input",
-        "type": "number",
-        "wrapperClassName": "col-6",
-        "validations": {
-            "required": true
-        }
-    },
-    {
         "name": "reco_min",
         "label": "Reconocimiento del ministerio",
         "tag": "input",
@@ -106,7 +86,7 @@ const resolutionForm: T_FieldsTypes[] = [
         "label": "Justificación de resolución",
         "tag": "input",
         "type": "text",
-        "wrapperClassName": "col-12 col-lg-6",
+        "wrapperClassName": "col-12 col-md",
         "validations": {}
     },
     {

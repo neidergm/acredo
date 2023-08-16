@@ -38,19 +38,25 @@ export interface I_Resolutions {
 }
 
 export interface I_Program {
+    cod_snies: string;
     ciud_prog: string;
     depa_prog: string;
+    nomb_ciud: string;
+    nomb_depa: string;
     est_prog: 0 | 1;
     estado: string;
     eventos: null | I_ProgramEvent[];
     fech_reso: string;
+    freg_snies: string;
     id_prog: number;
+    cod_prog: string;
     moda_prog: string;
     nivel_prog: string;
     nomb_prog: string;
     procesos: null | I_ProgramProcess[];
-    resoluciones: I_Resolutions[]
+    resoluciones: I_Resolutions[] | null;
     tform_prog: string;
     titu_prog: string;
+    est_resolution: "Activa" | "Sin resolución" | "Vencida";
 }
 
