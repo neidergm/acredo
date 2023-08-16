@@ -78,7 +78,7 @@ const resolutionForm: T_FieldsTypes[] = [
         "type": "text",
         "wrapperClassName": "col-12 col-md-6",
         "validations": {
-            "required": true
+            // "required": true
         }
     },
     {
@@ -90,7 +90,7 @@ const resolutionForm: T_FieldsTypes[] = [
         "validations": {}
     },
     {
-        "name": "deta_reso",
+        "name": "jres_deta",
         "label": "Justificación detallada",
         "tag": "input",
         "type": "textarea",

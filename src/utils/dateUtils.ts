@@ -1,6 +1,6 @@
 /**
  * Convert String date to Date Object
- * @param date string fate
+ * @param date string date
  * @returns Date from string
  */
 export const stringToDate = (date: string) => {
@@ -26,6 +26,8 @@ export const dateToString = (date: Date, join = "-", reverse = false) => {
  */
 export const getNormalDate = (value: string | number, options?: Intl.DateTimeFormatOptions) => {
     let date: Date;
+
+    if(!value) return ""
 
     if (typeof value === "string") {
         date = stringToDate(value);

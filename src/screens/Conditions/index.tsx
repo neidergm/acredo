@@ -16,7 +16,7 @@ import { Clip, Edit, ExclamationCircleFill, PauseFill, Plus, ThreeDotsVertical, 
 import styles from './../Process.module.css';
 import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } from "../../components/Modal";
 import AllAttachments from "../../components/AttachmentsTable/AllAttachments";
-import { isAdmin } from "../../utils/userRolUtils";
+import { isAdmin, isSupervisor } from "../../utils/userRolUtils";
 import Form from "react-ngm-form";
 import { taskForm } from "../../forms/task.form";
 import { AXIOS_REQUEST } from "../../services/axiosService";
@@ -38,8 +38,10 @@ const Conditions = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
+  const userRol = useAppSelector(state => state.user.userInfo?.rol)
+
   const selectedProcess = useAppSelector(state => state.process.selected);
-  const is_admin = isAdmin(useAppSelector(state => state.user.userInfo?.rol));
+  const is_admin = !isSupervisor(userRol) && isAdmin(userRol);
   const phasesWithConditions = useAppSelector(state => state.conditions.phasesWithConditions);
   const [accordionOpen, setAccordionOpen] = useState(lastAccordionOpen);
   const [modal, setModal] = useState<null | T_ModalJSON>(null);

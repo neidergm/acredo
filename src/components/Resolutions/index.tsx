@@ -47,7 +47,11 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, current, chi
 
     const onDelete = (reso_apro: string) => {
         setLoader("Eliminando resolución")
-        AXIOS_REQUEST(`${DELETE_PROGRAM_RESOLUTION}${reso_apro}`, "DELETE").then(res => {
+
+        const d = jsonToFormData({ reso_apro, estado: -1 }, "resoluciones[0].");
+        d.append(`id_prog`, `${program_id}`)
+
+        AXIOS_REQUEST(`${DELETE_PROGRAM_RESOLUTION}`, "PUT", d).then(res => {
             toast.success("Resolución eliminada correctamente", { position: "top-right" });
             callback?.();
         }).catch(e => {
@@ -68,8 +72,8 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, current, chi
 
         if (reso) {
             form.shift();
-            const { fech_ejec, fech_reso, ncre_snies, nper_snies, vige_reso, peri_acad, reco_min } = reso;
-            defaultValues = { fech_ejec, fech_reso, ncre_snies, nper_snies, vige_reso, peri_acad, reco_min }
+            const { fech_ejec, fech_reso, ncre_snies, nper_snies, vige_reso, peri_acad, reco_min, jres_deta, just_reso } = reso;
+            defaultValues = { fech_ejec, fech_reso, ncre_snies, nper_snies, vige_reso, peri_acad, reco_min, jres_deta, just_reso }
         }
 
         setModal({
@@ -102,9 +106,13 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, current, chi
     const saveResolutionData = (data: I_JSONObject, type: string) => {
         setLoader(type === "PUT" ? "Actualizando resolución" : "Registrando resolución")
 
-        AXIOS_REQUEST(SAVE_PROGRAM_RESOLUTION, type, jsonToFormData({ ...data, id_prog: program_id }, "[0]."))
+        const d = jsonToFormData(data, "resoluciones[0].");
+        d.append("id_prog", `${program_id}`)
+
+        AXIOS_REQUEST(SAVE_PROGRAM_RESOLUTION, type, d)
             .then(res => {
                 toast.success(`Resolución ${type === "PUT" ? "actualizada" : "registrada"} correctamente`, { position: "top-right" });
+                closeModal(setModal)
                 callback?.();
             })
             .catch(err => {

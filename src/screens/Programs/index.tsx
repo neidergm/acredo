@@ -6,7 +6,7 @@ import { ExclamationCircleFill } from '../../components/Icons';
 import { AXIOS_REQUEST } from '../../services/axiosService';
 import { GET_PROGRAMS_LIST, SAVE_PROGRAM_DATA } from '../../services/endPointsService';
 import Card from '../../components/Card';
-import { Badge, Button, CardBody, CardHeader } from 'reactstrap';
+import { Badge, Button, CardBody, CardHeader, UncontrolledTooltip } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import { getDateDiff, getNormalDate } from '../../utils/dateUtils';
 import { Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON, closeModal } from '../../components/Modal';
@@ -17,6 +17,8 @@ import { jsonToFormData } from '../../utils/formUtils';
 import { I_JSONObject } from '../../interfaces/generic.interface';
 import { toast } from 'react-hot-toast';
 import classnames from 'classnames';
+import { isAdmin, isSupervisor } from '../../utils/userRolUtils';
+import { useAppSelector } from '../../hooks/useAppSelector';
 
 type T_Filter = {
     [key: string]: {
@@ -26,11 +28,19 @@ type T_Filter = {
     }
 }
 
+const est_resolution_colors: any = {
+    "Vencida": "danger",
+    "Sin resolución": "warning",
+    "Activa": "success"
+};
+
 const Programs = () => {
 
     const [programsList, setProgramsList] = useState<null | I_Program[]>();
     const fetchedList = useRef<I_Program[]>([])
     const navigate = useNavigate();
+
+    const is_admin = isAdmin(useAppSelector(s => s.user.userInfo?.rol));
 
     const [modal, setModal] = useState<T_ModalJSON | null>(null)
     const [alert, setAlert] = useState<I_AlertObject | null>(null)
@@ -75,6 +85,7 @@ const Programs = () => {
         const keys = Object.keys(f).filter(i => !!(f[i].selectedValue));
 
         if (!keys.length) return list;
+        setFilter({ ...f })
         return list.filter(p => keys.every(k => f[k].values ? !!((p as any)[k] === f[k].selectedValue) : new RegExp(f[k].selectedValue, "i").test((p as any)[k])))
     }
 
@@ -138,6 +149,7 @@ const Programs = () => {
     }
 
     const getPrograms = () => {
+        setProgramsList(null)
         AXIOS_REQUEST(GET_PROGRAMS_LIST).then(resp => {
             fetchedList.current = resp.data;
             setProgramsList(resp.data)
@@ -180,7 +192,7 @@ const Programs = () => {
             <Alert isOpen={!!alert} {...alert} />
 
             <div className="container-fluid container-xxxl">
-                {programsList?.length && <> <div className='d-flex flex-column-reverse flex-xl-row'>
+                {!!(fetchedList.current.length) && !!(programsList) && <> <div className='d-flex flex-column-reverse flex-xl-row'>
                     <div className='d-flex gap-3 mb-3 align-items-center flex-wrap'>
                         {Object.keys(filter).map(f => <div key={f}>
                             {!filter[f].values ?
@@ -197,7 +209,7 @@ const Programs = () => {
                                 :
                                 !!((filter[f].values?.length || 0) > 1) && <>
                                     <label htmlFor={f} className="form-label small mb-1">{filter[f].label}</label>
-                                    <select id={f} className='form-select w-auto border text-secondary' onChange={e => searchByFilter(e.target.value, f)}>
+                                    <select value={filter[f].selectedValue} id={f} className='form-select w-auto border text-secondary' onChange={e => searchByFilter(e.target.value, f)}>
                                         <option value="">Filtrar</option>
                                         {filter[f].values!.map(o => <option key={o} value={o}>{o}</option>)}
                                     </select>
@@ -206,19 +218,28 @@ const Programs = () => {
                         </div>)
                         }
                     </div>
-                    <div className='flex-grow-1 mb-2 text-end'>
+                    {is_admin && <div className='flex-grow-1 mb-2 text-end'>
                         <Button color='primary' size='sm' onClick={() => newProgram()}>+ Nuevo programa</Button>
-                    </div>
+                    </div>}
                 </div>
-                    <div className='mb-4 pt-2'>
-                        <div>
+                    <div className='mb-4 pt-2 d-inline-flex align-items-center gap-3 mb-2'>
+                        <div className='d-inline-block'>
                             <div
-                                className='border-start border-5 border-dark py-1 ps-3 pe-4 bg-secondary bg-opacity-10 mb-2 d-inline-block'
+                                className='border-start border-5 border-dark py-1 ps-3 pe-4 bg-secondary bg-opacity-10 d-inline-block'
                                 style={{ borderRadius: "2px 10px 10px 2px" }}
                             >
                                 <small className='fw-semibold'>{programsList?.length} Programas filtrados</small>
                             </div>
                         </div>
+                        {filter.est_resolution.values?.length && <div className='d-inline-flex gap-1'>
+                            {filter.est_resolution.values.map((e, i) => <div key={i}>
+                                <UncontrolledTooltip target={`BTN_ID_${i}`}>Estado de resolución: {e}</UncontrolledTooltip>
+                                <Button className="opacity-75 p-2 rounded-circle" active={e === filter.est_resolution.selectedValue}
+                                    onClick={() => searchByFilter(e, "est_resolution")}
+                                    id={`BTN_ID_${i}`} color={`${est_resolution_colors[e]}`}></Button>
+                            </div>
+                            )}
+                        </div>}
                     </div>
                 </>}
                 <div className="mb-5">

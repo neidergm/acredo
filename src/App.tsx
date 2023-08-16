@@ -10,6 +10,7 @@ import { setUnauthorized } from './store/actions/userActions';
 import Footer from './components/Footer';
 import './App.css';
 import './custom-colors.css';
+import { isAdmin, isSupervisor } from './utils/userRolUtils';
 
 const Login = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Login" */ './screens/Login')));
 const Conditions = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Conditions" */ './screens/Conditions')));
@@ -22,10 +23,19 @@ const UsersManagement = lazy(lazyLoaderComponents(() => import(/* webpackChunkNa
 const Programs = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "Programs" */ './screens/Programs')));
 const ProgramDetails = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "ProgramDetails" */ './screens/Programs/Details')));
 
+const screenAvalaible = (Comp: JSX.Element, userIsAdmin: boolean) => {
+  if (userIsAdmin) {
+    return Comp
+  }
+  return <Navigate to="/proceso" />
+}
+
 const App = () => {
 
   const user = useAppSelector(state => state.user);
   const dispatch = useAppDispatch();
+
+  const is_admin = isAdmin(user.userInfo?.rol) || isSupervisor(user.userInfo?.rol)
 
   if (!!(user.unauthorized) || !(user.userInfo)) {
     return <Suspense fallback={<FallbackComponen1 />}>
@@ -50,15 +60,15 @@ const App = () => {
         <main className="main">
           <Suspense fallback={<FallbackComponen1 />}>
             <Routes >
-              <Route path='/' element={<Dashboard />} />
+              <Route path='/' element={screenAvalaible(<Dashboard />, is_admin)} />
               <Route path='/proceso' element={<Process />} />
               <Route path='/proceso/:id_process/:id_cond' element={<IntitutionalConditions />} />
               <Route path='/proceso/:id_process' element={<Conditions />} />
               <Route path='/proceso/fases/anexos/:id_phase' element={<PhasesAttachments />} />
               <Route path='/notificaciones' element={<Notifications />} />
-              <Route path='/usuarios' element={<UsersManagement />} />
+              <Route path='/usuarios' element={screenAvalaible(<UsersManagement />, is_admin)} />
               <Route path='/programa/:id_program' element={<ProgramDetails />} />
-              <Route path='/programa' element={<Programs />} />
+              <Route path='/programa' element={screenAvalaible(<Programs />, is_admin)} />
               <Route path='*' element={<Navigate to="/" />} />
             </Routes>
           </Suspense>

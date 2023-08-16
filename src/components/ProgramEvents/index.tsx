@@ -176,7 +176,7 @@ const ProgramEvents = ({ events, limit, program_id, callback, children, canEdit 
                 <span>No tiene eventos</span>
             </div>
         }
-        {children?.(addEvent)}
+        {canEdit && children?.(addEvent)}
     </>)
 }
 

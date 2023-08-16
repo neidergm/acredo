@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { SubHeader } from "../components/SubHeader";
 import { Badge, Button, DropdownToggle } from 'reactstrap';
@@ -17,7 +17,7 @@ import { AXIOS_REQUEST } from '../services/axiosService';
 import { CREATE_PROCESS, DELETE_PROCESS, UPDATE_PROCESS } from '../services/endPointsService';
 import { toast } from 'react-hot-toast';
 import { getDifferenceBetweenData, jsonToFormData } from '../utils/formUtils';
-import { isAdmin } from '../utils/userRolUtils';
+import { isAdmin, isSupervisor } from '../utils/userRolUtils';
 import CustomDropdown from '../components/CustomDropdown';
 import { I_JSONObject } from '../interfaces/generic.interface';
 import confirmDeleteAlertObject from '../utils/confirmDeleteAlertObject';
@@ -32,8 +32,9 @@ const Process = () => {
   const [modal, setModal] = useState<null | T_ModalJSON>(null);
   const [loading, setLoading] = useState<null | string>(null);
   const [alert, setAlert] = useState<I_AlertObject | null>(null);
+  const hasLoaded = useRef(false);
 
-  const is_admin = isAdmin(userInfo?.rol)
+  const is_admin = !isSupervisor(userInfo?.rol) && isAdmin(userInfo?.rol)
 
   const goToConditionsScreen = (process: I_Process) => {
     dispatch(selectProcess(process));
@@ -179,7 +180,8 @@ const Process = () => {
   }
 
   useEffect(() => {
-    if (!(processList?.length)) {
+    if (!(processList?.length) && !hasLoaded.current) {
+      hasLoaded.current = true;
       dispatch(getProcessList())
     }
   }, [processList])

@@ -2,6 +2,26 @@
   background: linear-gradient(to right, #06A099 0%, #31AC69 100%);
 }
 
+.header a {
+  position: relative;
+  text-decoration: none;
+  opacity: 0.7;
+}
+
+.header .active{
+  opacity: 1 !important;
+}
+
+.header .active::after{
+  position: absolute;
+  content: " ";
+  width: 100%;
+  background-color: #f3f4f6;
+  height: 4px;
+  bottom: -0.5rem;
+  border-radius: 20px;
+}
+
 .title{
   font-family: 'FredokaOne', sans-serif;
   font-size: 30px;
@@ -39,3 +59,4 @@
   border: 2px solid #fff;
   border-radius: inherit;
 }
+

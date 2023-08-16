@@ -9,7 +9,7 @@ import Loader from '../../components/Loader';
 import { Button, Col, Offcanvas, OffcanvasBody, OffcanvasHeader, Row, Table } from 'reactstrap';
 import { getNormalDate } from '../../utils/dateUtils';
 import { ArrowRightShort, Edit, ExclamationCircleFill, Kanban, Plus, XCircle } from '../../components/Icons';
-import { isAdmin } from '../../utils/userRolUtils';
+import { isAdmin, isSupervisor } from '../../utils/userRolUtils';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { ProcessResumeItem } from '../Dashboard/ProcessResume';
 import ProgramEvent from '../../components/ProgramEvents';
@@ -28,7 +28,8 @@ const EVENT_LIMITS_SHOW = 3;
 const Details = () => {
 
     const navigate = useNavigate();
-    const is_admin = isAdmin(useAppSelector(state => state.user.userInfo?.rol));
+    const userRol = useAppSelector(state => state.user.userInfo?.rol);
+    const is_admin = !isSupervisor(userRol) && isAdmin(userRol);
 
     const [modal, setModal] = useState<T_ModalJSON | null>(null)
     const [alert, setAlert] = useState<I_AlertObject | null>(null)
@@ -71,7 +72,7 @@ const Details = () => {
                 <span>Se eliminará permanentemente el programa <b>{program!.nomb_prog}</b></span>,
                 () => {
                     setLoader("Eliminando resolución")
-                    AXIOS_REQUEST(`${DELETE_PROGRAM}`, "PUT", jsonToFormData({ est_prog: -1, id_prog: program?.id_prog })).then(res => {
+                    AXIOS_REQUEST(`${DELETE_PROGRAM}`, "PUT", jsonToFormData({ est_prog: -1, id_prog: program?.id_prog }, "[0].")).then(res => {
                         toast.success("Programa eliminado correctamente", { position: "top-right" });
                     }).catch(e => {
                         toast.error("No se pudo eliminar el programa", { position: "top-right" });
@@ -173,7 +174,7 @@ const Details = () => {
         if (program && show) {
             setShowSidePanel({
                 title: "Resoluciones del programa",
-                body: <Resolutions list={program.resoluciones} program_id={program.id_prog} canEdit={is_admin} />,
+                body: <Resolutions list={program.resoluciones} program_id={program.id_prog} canEdit={is_admin} callback={getProgramInfo} />,
                 toggler: showAllResolutions
             })
         } else {
@@ -298,7 +299,7 @@ const Details = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <Resolutions current={program.resoluciones?.[0]} program_id={program.id_prog} canEdit={is_admin}>
+                                        <Resolutions current={program.resoluciones?.[0]} program_id={program.id_prog} canEdit={is_admin} callback={getProgramInfo}>
                                             {(add, edit) => (
                                                 <div className='flex-grow-1 mt-3 d-flex justify-content-between gap-1 align-items-end'>
                                                     <div className='d-inline-block'>
@@ -346,12 +347,12 @@ const Details = () => {
                                                 </div>
                                             }
                                         </div>
-                                        <div className='h-100 d-flex align-items-end'>
+                                        {is_admin && <div className='h-100 d-flex align-items-end'>
                                             <Button size='sm' color='primary' className='ms-auto' onClick={() => navigate("/proceso")}>
                                                 <Plus size={16} />
                                                 Crear proceso para el programa
                                             </Button>
-                                        </div>
+                                        </div>}
                                     </Card>
                                 </Col>
                                 <Col md="6" className='mb-4'>

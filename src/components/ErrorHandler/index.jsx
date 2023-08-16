@@ -3,7 +3,7 @@ import { AXIOS_REQUEST } from '../../services/axiosService';
 import { ERROR_REPORTING_URL } from '../../services/constantsService';
 import localStorageService, { sessionStorageService } from '../../services/localStorageService';
 
-let timerValue = 1;
+let timerValue = 0;
 
 export const sendReport = (_data, successCallback, errorCallback, progressCallback) => {
     if (!(/^http[s]?:\/\/localhost.*$/.test(window.location.href))) {
@@ -55,27 +55,27 @@ class ErrorHandler extends Component {
     componentDidCatch(error, errorInfo) {
         // Registrar el error en un servicio de reporte de errores
         // logErrorToMyService(error, errorInfo);
-
-        console.log("========ERROR========");
-        console.log({ error, errorInfo });
-        console.log("=====================");
-        if ((error?.message && /Loading [A-Z\s]*chunk [\d]+ failed/ig.test(error.message))
-            || (error?.stack && /Loading [A-Z]*chunk [\d]+ failed/ig.test(error.stack))) {
-            console.log("chunk failed");
+        if (timerValue === 0) {
+            timerValue = 1;
             window.location.reload(true);
         } else {
-            this.setState({ error, loading: 1 });
+            if ((error?.message && /Loading [A-Z\s]*chunk [\d]+ failed/ig.test(error.message))
+                || (error?.stack && /Loading [A-Z]*chunk [\d]+ failed/ig.test(error.stack))) {
+                window.location.reload(true);
+            } else {
+                this.setState({ error, loading: 1 });
 
-            let data = {
-                error,
-                stack: error.stack || "NG",
-                errorInfo,
-                path: window.location.href
+                let data = {
+                    error,
+                    stack: error.stack || "NG",
+                    errorInfo,
+                    path: window.location.href
+                }
+
+                sendReport(data, this.reloadWithTimer, this.reloadWithTimer, (progress) => {
+                    this.setState({ loading: Math.round((progress.loaded * 100) / progress.total) })
+                })
             }
-
-            sendReport(data, this.reloadWithTimer, this.reloadWithTimer, (progress) => {
-                this.setState({ loading: Math.round((progress.loaded * 100) / progress.total) })
-            })
         }
     }
 
@@ -92,7 +92,7 @@ class ErrorHandler extends Component {
                     this.setState({ hasError: false, error: null, timer: null, loading: null });
                     // timerValue = (timerValue * 2 < 60) ? timerValue * 2 : 60;
                     timerValue = timerValue * 3
-                    if(timerValue > 10){
+                    if (timerValue > 10) {
                         window.location.href = window.location.origin
                     }
                 }

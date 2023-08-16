@@ -179,7 +179,7 @@ export const getDifferenceBetweenData = (oldValues: I_JSONObject, newValues: I_J
             (ov === null || ov === undefined)
         ) continue
 
-        if (nvs instanceof Date) {
+        if (nvs instanceof Date && ov) {
             ov = stringToDate(ov)
         }
 

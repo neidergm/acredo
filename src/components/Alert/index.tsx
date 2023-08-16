@@ -93,7 +93,7 @@ const Alert = ({
       </ModalHeader>
       <ModalBody className="text-center">
         {title && <h3 className='mb-4'>{title}</h3>}
-        {subtitle && <p className='mb-0 text-muted'>{subtitle}</p>}
+        {subtitle && <div className='mb-0 text-muted'>{subtitle}</div>}
       </ModalBody>
       <ModalFooter>{buttons}</ModalFooter>
     </Modal>

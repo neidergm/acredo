@@ -13,7 +13,7 @@ import { jsonToFormData } from '../../utils/formUtils';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { getPhasesAndStagesOfCondition, selectCondition, setProcessPhasesWithConditions } from '../../store/actions/conditionsActions';
 import { selectProcess } from '../../store/actions/processActions';
-import { isAdmin, isLead, isOnlyView } from '../../utils/userRolUtils';
+import { isAdmin, isLead, isOnlyView, isSupervisor } from '../../utils/userRolUtils';
 import { I_Condition } from '../../interfaces/conditions.interface';
 import { toast } from 'react-hot-toast';
 
@@ -36,11 +36,14 @@ const CurrentPhase = ({
     const { active, phases } = useAppSelector(state => state.conditions.selectedData);
     const { action, phase, stage } = active || {};
 
-    const onlyView = isOnlyView(task?.rol);
-    const is_admin = isAdmin(useAppSelector(state => state.user.userInfo?.rol));
+    const userRol = useAppSelector(state => state.user.userInfo?.rol)
 
-    const canEndAction = is_admin || !onlyView && !!(active?.action?.finalizar);
-    const canEndTask = is_admin || isLead(task?.rol);
+    const onlyView = isOnlyView(task?.rol);
+    const is_admin = isAdmin(userRol);
+    const is_supervisor = isSupervisor(userRol);
+
+    const canEndAction = !is_supervisor && (is_admin || !onlyView && !!(active?.action?.finalizar));
+    const canEndTask = !is_supervisor && (is_admin || isLead(task?.rol));
     const taskIsEnded = task?.id_esta === 3;
 
     const [_alert, setAlert] = useState<null | I_AlertObject>(null);

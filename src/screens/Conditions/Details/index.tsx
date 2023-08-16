@@ -17,7 +17,7 @@ import { getDifferenceBetweenData, jsonToFormData } from '../../../utils/formUti
 import { getProcessList } from '../../../store/actions/processActions';
 import Card from '../../../components/Card';
 import { getPhasesAndStagesOfCondition, getContionData, setProcessPhasesWithConditions, setSelectedConditionData } from '../../../store/actions/conditionsActions';
-import { isAdmin, isLead, isOnlyView } from '../../../utils/userRolUtils';
+import { isAdmin, isLead, isOnlyView, isSupervisor } from '../../../utils/userRolUtils';
 import CustomDropdown from '../../../components/CustomDropdown';
 import toast from 'react-hot-toast';
 import { taskForm } from '../../../forms/task.form';
@@ -46,12 +46,15 @@ const ConditionsDetails = () => {
   const [loader, setLoader] = useState<null | string>(null);
   const [modalData, setModalData] = useState<T_ModalJSON | null>(null);
 
+  const userRol = useAppSelector(state => state.user.userInfo?.rol)
+
   const onlyView = isOnlyView(conditionSelected?.rol);
-  const is_admin = isAdmin(useAppSelector(state => state.user.userInfo?.rol));
-  const is_lead = isLead(useAppSelector(state => state.user.userInfo?.rol));
+  const is_admin = isAdmin(userRol);
+  const is_supervisor = isSupervisor(userRol);
+  const is_lead = isLead(userRol);
   const taskIsEnded = conditionSelected?.id_esta === 3;
 
-  const canEditForms = !taskIsEnded && !onlyView && ((is_admin || is_lead) || !!(phases.active?.action?.finalizar));
+  const canEditForms = !is_supervisor && (!taskIsEnded && !onlyView && ((is_admin || is_lead) || !!(phases.active?.action?.finalizar)));
 
   const showConditionDetails = () => {
     setModalData({

@@ -406,9 +406,9 @@ export const SAVE_PROGRAM_RESOLUTION = `programas/resolucion`;
 export const UPDATE_PROGRAM_RESOLUTION = `programas/resolucion`;
 
 /**
- * @method DELETE
- * @params /reso_apro
+ * @method PUT
+ * @params {resoluciones[0].reso_apro, id_prog}
  */
-export const DELETE_PROGRAM_RESOLUTION = `programas/resolucion/`;
+export const DELETE_PROGRAM_RESOLUTION = `programas/resolucion`;
 
 

@@ -3,9 +3,9 @@ export type T_FieldsTypes = FT;
 export interface I_JSONObject { [key: string]: any }
 
 /**
- * A = Lider; B = Revisor; C = Admin; D = Solo lectura
+ * A = Lider; B = Revisor; C = Admin; D = Solo lectura; E = Supervisor
  */
-export type T_UserRole = "A" | "B" | "C" | "D";
+export type T_UserRole = "A" | "B" | "C" | "D" | "E";
 
 // export interface I_FieldProps extends I_JSONObject {
 //     name: string;
