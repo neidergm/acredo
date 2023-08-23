@@ -56,8 +56,10 @@ class ErrorHandler extends Component {
         // Registrar el error en un servicio de reporte de errores
         // logErrorToMyService(error, errorInfo);
         if (timerValue === 0) {
-            timerValue = 1;
-            window.location.reload(true);
+            if (!(/^http[s]?:\/\/localhost.*$/.test(window.location.href))) {
+                timerValue = 1;
+                window.location.reload(true);
+            }
         } else {
             if ((error?.message && /Loading [A-Z\s]*chunk [\d]+ failed/ig.test(error.message))
                 || (error?.stack && /Loading [A-Z]*chunk [\d]+ failed/ig.test(error.stack))) {

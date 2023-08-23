@@ -54,7 +54,7 @@ const AllAttachments = ({
                                         {
                                             text: "Copiar nombre",
                                             icon: <Quote />,
-                                            click: () => toClipboard(`Anexo ${nomb_anexo}`)
+                                            click: () => toClipboard(`Anexo ${nomb_anexo}-${data.anexo_nombre}`)
                                         },
                                         {
                                             text: "Copiar link",
@@ -85,9 +85,16 @@ const AllAttachments = ({
                         </div>
                     </div>
                 </td>}
-                <td>{i.criterio}</td>
-                <td style={{ maxWidth: "300px" }}>{i.evidencias}</td>
                 <td>{i.ubianexo}</td>
+                <td>
+                    <div className='mb-2'>
+                        <b>Criterio:</b> <span>{i.criterio}</span>
+                    </div>
+                    <div>
+                        <b>Evidencia:</b> <span>{i.evidencias}</span>
+                    </div>
+                </td>
+                {/* <td style={{ maxWidth: "300px" }}>{i.evidencias}</td> */}
             </tr>)
         } catch (error) {
             return <tr className='bg-danger bg-opacity-25'>
@@ -148,9 +155,9 @@ const AllAttachments = ({
                                     <thead className='small'>
                                         <tr className="table-primary">
                                             <th>Anexo</th>
-                                            <th>Criterio</th>
-                                            <th>Evidencia</th>
                                             <th>Ubicación evidencia</th>
+                                            <th>Criterios y evidencias</th>
+                                            {/* <th>Evidencia</th> */}
                                         </tr>
                                     </thead>
                                     <tbody className='small'>

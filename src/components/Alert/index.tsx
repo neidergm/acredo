@@ -84,7 +84,7 @@ const Alert = ({
       isOpen={showAlert}
       onClosed={onClosed}
       backdrop="static"
-      fullscreen={fullscreen}
+      fullscreen={fullscreen || false}
     >
       <ModalHeader className='border-0 pb-0 flex-column-reverse'
         toggle={showCloseX ? toggle : undefined}

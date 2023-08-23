@@ -1,28 +1,52 @@
-import React, { useState } from 'react'
-import { Badge, DropdownToggle, Table } from 'reactstrap'
+import { useEffect, useRef, useState } from 'react'
+import { Badge, Button, DropdownToggle, Table } from 'reactstrap'
 import { useAppSelector } from '../../hooks/useAppSelector'
 import { I_FormFieldWithAnswer } from '../../interfaces/conditions.interface'
 import { T_Form, T_FormPannelActions } from './../../screens/Conditions/FormPannel'
 import Alert, { I_AlertObject } from '../Alert'
-import { ChatDots, ChatDotsFill, Edit, Link, Quote, ThreeDotsVertical, XCircle } from '../Icons'
+import { ArrowDownUp, ChatDots, ChatDotsFill, Edit, ExclamationCircleFill, Link, Quote, ThreeDotsVertical, XCircle } from '../Icons'
 import ObservationChat from '../ObservationChat'
 import toast from 'react-hot-toast';
 import CustomDropdown from '../CustomDropdown'
+import { Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON, closeModal } from '../Modal'
+import Loader from '../Loader'
+import Ordering from './Ordering'
+import { AXIOS_REQUEST } from '../../services/axiosService'
+import { ORDERING_ANSWERS } from '../../services/endPointsService'
+import { jsonToFormData } from '../../utils/formUtils'
 
 type T_Props = {
     list: { [group: string]: T_Form },
     canEdit?: boolean,
     onEdit?: (form: T_Form, action: string) => void,
+    orderingCallback?: () => void,
 } & Pick<T_FormPannelActions, "onDelete" | "onObservationsDone">
+
+export type T_MapedItemList = {
+    item: T_Form,
+    attachment: any,
+    criterio: any,
+    evidencias: any,
+    nomb_anexo: any,
+    respuesta: any,
+    id: number
+}
 
 const AttachmentsTable = ({
     list,
     onDelete,
     onEdit,
     canEdit,
-    onObservationsDone
+    onObservationsDone,
+    orderingCallback
 }: T_Props) => {
     const [alertConfirm, setAlertConfirm] = useState<I_AlertObject | null>(null);
+
+    const [mapedList, setMapedList] = useState<Array<T_MapedItemList>>([]);
+    const orderRef = useRef<typeof mapedList>([]);
+    const [modal, setModal] = useState<null | T_ModalJSON>(null)
+    const [loader, setLoader] = useState<null | string>(null)
+
     const [observationsIsOpen, setObservationsIsOpen] = useState<{
         item: T_Form,
         attachment: I_FormFieldWithAnswer
@@ -42,15 +66,11 @@ const AttachmentsTable = ({
         )
     }
 
-    const showObservations = (data: typeof observationsIsOpen) => {
-        setObservationsIsOpen(data)
-    }
+    const showObservations = (data: typeof observationsIsOpen) => setObservationsIsOpen(data)
 
-    const doRowByItem = (item: T_Form, key: string) => {
-        const original = item.originalFieldsObject as I_FormFieldWithAnswer[];
-        const attachment = original.find(i => !!i.nomb_anexo)!;
-        const { nomb_anexo, respuesta } = attachment || {};
-        if (!item.defaultValues.ceanexo?.length) return null
+    const doRowByItem = (list_item: T_MapedItemList, key: string) => {
+
+        const { item, attachment, criterio, evidencias, nomb_anexo, respuesta } = list_item;
 
         return item.defaultValues.ceanexo.map((i: any, idx: number) => <tr key={`row-${key}-${idx}`}>
             {idx === 0 && <td
@@ -74,7 +94,7 @@ const AttachmentsTable = ({
                             {
                                 text: "Copiar nombre",
                                 icon: <Quote />,
-                                click: () => toClipboard(`Anexo ${nomb_anexo}`)
+                                click: () => toClipboard(`Anexo ${nomb_anexo}-${item.defaultValues.anexo_nombre}`)
                             },
                             {
                                 text: "Copiar link",
@@ -121,12 +141,103 @@ const AttachmentsTable = ({
                     </p>
                 }
             </td>}
-            <td>{i.criterio}</td>
-            <td style={{ maxWidth: "300px" }}>{i.evidencias}</td>
             <td>{i.ubianexo}</td>
-        </tr >
+            <td>
+                <div className='mb-2'>
+                    <b>Criterio:</b> <span>{criterio}</span>
+                </div>
+                <div>
+                    <b>Evidencia:</b> <span>{evidencias}</span>
+                </div>
+            </td>
+            {/* <td style={{ maxWidth: "300px" }}>{evidencias}</td> */}
+        </tr>
         )
     }
+
+    const changeOrder = () => {
+        orderRef.current = [];
+        setModal({
+            isOpen: true,
+            size: "lg",
+            title: "Cambiar orden de los anexos",
+            children: mapedList && <Ordering list={mapedList} orderRef={orderRef} />,
+            footer: canEdit && <ModalFooter>
+                <Button color="primary2" onClick={() => closeModal(setModal)}>Cancelar</Button>
+                <Button color="primary" onClick={() => {
+                    if (!orderRef.current.length) {
+                        return toast.error("No hay cambios para guardar", { position: "top-right", icon: <i className='text-warning'><ExclamationCircleFill /> </i> })
+                    }
+                    setAlertConfirm({
+                        isOpen: true,
+                        type: "warning",
+                        title: "¿Está seguro?",
+                        subtitle: "Se cambiará el orden de los anexos, tenga en cuenta que la codificación y numeración cambiará",
+                        closeButton: { value: "No, cancelar" },
+                        submitButton: {
+                            value: "Sí, guardar",
+                            onClick: () => saveNewOrder()
+                        }
+                    })
+                }}>Guardar</Button>
+            </ModalFooter>
+        })
+    }
+
+    const saveNewOrder = () => {
+        const o = orderRef.current;
+
+        const d = jsonToFormData({
+            orden: o.map(i => i.attachment.grupo_resp).join(","),
+            id_fcamp: o[0].attachment.id_fcamp
+        })
+
+        setLoader("Modificando orden");
+
+        AXIOS_REQUEST(ORDERING_ANSWERS, "PUT", d).then(r => {
+            toast.success("Orden actualizado", { position: "top-right" })
+            orderingCallback?.();
+            setMapedList([]);
+        }).catch(() => {
+            toast.error("No se pudo actualizar el orden", { position: "top-right" })
+        }).finally(() => {
+            setLoader(null)
+        })
+
+        closeModal(setModal)
+    }
+
+    const mapList = (l: typeof list) => {
+        const _list: T_MapedItemList[] = [];
+
+        Object.keys(l).forEach((li, idx) => {
+            const item = l[`${li}`];
+            const original = item.originalFieldsObject as I_FormFieldWithAnswer[];
+            const attachment: any = original.find(i => !!i.nomb_anexo)!;
+            const { nomb_anexo, respuesta } = attachment || {};
+
+            if (item.defaultValues.ceanexo?.length) {
+                const { criterio }: any = original.find((i: any) => !!i.criterio) || {};
+                const { evidencias }: any = original.find((i: any) => !!i.evidencias) || {};
+
+                _list.push({
+                    item,
+                    attachment,
+                    criterio,
+                    evidencias,
+                    nomb_anexo,
+                    respuesta,
+                    id: idx + 1
+                })
+            }
+        })
+
+        return _list;
+    }
+
+    useEffect(() => {
+        setMapedList(mapList(list))
+    }, [list])
 
     return (<>
         <ObservationChat
@@ -145,21 +256,41 @@ const AttachmentsTable = ({
                 {observationsIsOpen && `${observationsIsOpen.attachment.nomb_anexo}`}
             </small>
         </ObservationChat>
-        <div>
+        <Loader isOpen={!!(loader)} subtitle={loader} />
+
+        <Modal isOpen={modal?.isOpen} size={modal?.size}>
+            <ModalHeader textCenter toggle={() => closeModal(setModal)}>{modal?.title}</ModalHeader>
+            <ModalBody>{modal?.children}</ModalBody>
+            {modal?.footer}
+        </Modal>
+
+        <div className='position-relative'>
             <Alert isOpen={!!(alertConfirm?.isOpen)}{...alertConfirm} onClosed={() => { setAlertConfirm(null) }} />
-            <Table bordered responsive>
+            <Table bordered responsive="md" className='pb-5'>
                 <thead className='small'>
-                    <tr className="table-primary">
-                        <th>Anexo</th>
-                        <th>Criterio</th>
-                        <th>Evidencia</th>
+                    <tr className="table-primary align-middle">
+                        <th>
+                            <div className='d-flex align-items-center justify-content-between'>
+                                {
+                                    canEdit && mapedList.length ?
+                                        <div onClick={() => changeOrder()} className='cursor-pointer'>
+                                            Anexo
+                                            {/* <Button color='primary2' size='sm' className='ms-auto' >
+                                                <ArrowDownUp size={14} /> Ordenar
+                                            </Button> */}
+                                        </div>
+                                        :
+                                        "Anexo"
+                                }
+                            </div>
+                        </th>
+                        {/* <th>Evidencia</th> */}
                         <th>Ubicación evidencia</th>
+                        <th>Criterio y evidencia</th>
                     </tr>
                 </thead>
                 <tbody className='small'>
-                    {
-                        Object.keys(list).map(i => doRowByItem(list[i], i))
-                    }
+                    {mapedList.map((i) => !!(i) && doRowByItem(i, i.nomb_anexo))}
                 </tbody>
             </Table>
         </div>

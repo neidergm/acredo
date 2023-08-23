@@ -49,15 +49,18 @@ const AsTabs = ({
             })
     }
 
-    const submit = (data: any, form: T_Form, callback?: () => void) => {
-        onSubmit(
-            data,
-            form,
-            () => {
-                getFormFields();
-                callback?.();
-            }
-        )
+    const submit = (data: any, form: T_Form, callback?: () => void, onlyRefreshForm = false) => {
+        onlyRefreshForm ?
+            getFormFields()
+            :
+            onSubmit(
+                data,
+                form,
+                () => {
+                    getFormFields();
+                    callback?.();
+                }
+            )
     }
 
     const deleteHandle = (item: string, title?: string, subtitle?: any) => {

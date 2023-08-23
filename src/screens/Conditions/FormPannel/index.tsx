@@ -26,7 +26,7 @@ export type T_Form = {
 
 export type T_FormPannelActions = {
     onPickOne: (f: T_Form, onlyGetAnswer?: boolean) => Promise<T_Form>;
-    onSubmit: (data: any, formItem: T_Form, callback?: () => void) => void;
+    onSubmit: (data: any, formItem: T_Form, callback?: () => void, onlyRefreshForm?: boolean) => void;
     onDelete?: (item: string, title?: string, subtitle?: any, callback?: () => void) => void;
     onObservationsDone: () => void;
 }
@@ -137,7 +137,7 @@ const FormPannel = ({
                 fields = answers || [];
             }
         }
-console.log({fields})
+
         if (answers) {
             if (item.tipo_form !== 0) {
 
@@ -213,8 +213,6 @@ console.log({fields})
             }).catch(err => {
                 setFormList([])
             })
-
-
     }
 
     useEffect(() => {

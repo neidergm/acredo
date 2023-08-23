@@ -40,7 +40,7 @@ const Details = () => {
     const [showSidePanel, setShowSidePanel] = useState<null | { title: string; body: any; toggler: (close: boolean) => void }>(null);
 
     const getProgramInfo = () => {
-        AXIOS_REQUEST(`${GET_PROGRAMS_LIST}/${id_program}`).then(resp => {
+        return AXIOS_REQUEST(`${GET_PROGRAMS_LIST}/${id_program}`).then(resp => {
             setProgram(resp.data[0])
         })
     }
@@ -85,7 +85,6 @@ const Details = () => {
             )
         )
     }
-
 
     const updateProgramData = () => {
 
@@ -174,7 +173,14 @@ const Details = () => {
         if (program && show) {
             setShowSidePanel({
                 title: "Resoluciones del programa",
-                body: <Resolutions list={program.resoluciones} program_id={program.id_prog} canEdit={is_admin} callback={getProgramInfo} />,
+                body: <Resolutions list={program.resoluciones} program_id={program.id_prog} canEdit={is_admin}
+                    callback={() => {
+                        setShowSidePanel({ ...showSidePanel!, body: <><Loader isOpen subtitle={"Espere"} /></> })
+                        getProgramInfo().finally(() => {
+                            showAllResolutions()
+                        })
+                    }}
+                />,
                 toggler: showAllResolutions
             })
         } else {
@@ -198,7 +204,7 @@ const Details = () => {
                 className="container-xl"
             />
 
-            <Loader isOpen={!!(loader)} subtitle={loader}></Loader>
+            <Loader isOpen={!!(loader)} subtitle={loader} />
             <Modal isOpen={modal?.isOpen} size={modal?.size}>
                 <ModalHeader textCenter toggle={() => closeModal(setModal)}>{modal?.title}</ModalHeader>
                 <ModalBody>{modal?.children}</ModalBody>
@@ -211,7 +217,7 @@ const Details = () => {
                 <div>
                     {!program ? <div className='p-5 mt-5'><Loader loaderAsModal={false} isOpen /></div>
                         : <>
-                            <Offcanvas isOpen={!!(showSidePanel)} style={{ minWidth: "40%" }}>
+                            <Offcanvas isOpen={!!(showSidePanel)} style={{ minWidth: "40%" }} >
                                 <OffcanvasHeader toggle={() => { showAllEvents(false) }}>
                                     <span className='ps-3 border-start border-success border-4 py-1'>{showSidePanel?.title}</span>
                                 </OffcanvasHeader>

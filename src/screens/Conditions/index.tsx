@@ -12,7 +12,7 @@ import { getProcessList } from "../../store/actions/processActions";
 import Card from "../../components/Card";
 import classnames from 'classnames';
 import { getDateDiff, getNormalDate } from "../../utils/dateUtils";
-import { Clip, Edit, ExclamationCircleFill, PauseFill, Plus, ThreeDotsVertical, XCircle } from "../../components/Icons";
+import { Clip, Edit, ExclamationCircleFill, LinkIcon, PauseFill, Plus, ThreeDotsVertical, XCircle } from "../../components/Icons";
 import styles from './../Process.module.css';
 import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } from "../../components/Modal";
 import AllAttachments from "../../components/AttachmentsTable/AllAttachments";
@@ -288,8 +288,12 @@ const Conditions = () => {
               <div className="d-flex gap-4 flex-wrap flex-lg-nowrap">
                 <div className="flex-grow-1 d-flex gap-4 flex-column">
                   {selectedProcess.programa && <div className="flex-grow-1">
-                    <b>Programa:</b>
-                    <span className="d-block">{selectedProcess.programa}</span>
+                    <b>Programa: </b>
+                    <span className="d-block">
+                      <Link className="link-dark" to={`/programa/${selectedProcess.id_prog}`}>{selectedProcess.programa}
+                        <i className="link-primary ms-1"><LinkIcon /></i>
+                      </Link>
+                    </span>
                   </div>}
                   <div className="d-flex gap-4 flex-wrap">
                     <div>

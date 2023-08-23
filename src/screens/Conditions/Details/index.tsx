@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { useParams, useNavigate } from "react-router-dom";
-import { CheckCircleFill, Edit, ExclamationCircleFill, InfoCircle, People, ThreeDotsVertical, XCircle } from "../../../components/Icons";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import { CheckCircleFill, Edit, ExclamationCircleFill, Eye, InfoCircle, LinkIcon, People, ThreeDotsVertical, XCircle } from "../../../components/Icons";
 import { Badge, Button, CloseButton, DropdownToggle } from 'reactstrap';
 import classnames from 'classnames';
 import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } from "../../../components/Modal";
@@ -243,7 +243,11 @@ const ConditionsDetails = () => {
                   </div>}
                   {!!processSelected.programa && <div>
                     <b>Programa:</b>
-                    <span className="d-block">{processSelected.programa}</span>
+                    <span className="d-block">
+                      <Link className="link-dark" to={`/programa/${processSelected.id_prog}`}>{processSelected.programa}
+                        <i className="link-primary ms-1"><LinkIcon /></i>
+                      </Link>
+                    </span>
                   </div>}
                   <div className='d-flex gap-3 flex-wrap justify-content-between flex-grow-1'>
                     <div className='d-flex gap-3 flex-wrap'>

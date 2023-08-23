@@ -118,6 +118,12 @@ export const DELETE_ANSWER = `resp/`;
  */
 export const HISTORIC_BY_CONDITION = `resp/historial/`;
 
+/**
+ * @method PUT
+ * @params { id_fcamp, orden }
+ */
+export const ORDERING_ANSWERS = `resp/ordenar`;
+
 
 /*---------------------------------------------*/
 // FORMS AND FIELDS

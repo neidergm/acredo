@@ -28,11 +28,11 @@ type T_Filter = {
     }
 }
 
-const est_resolution_colors: any = {
-    "Vencida": "danger",
-    "Sin resolución": "warning",
-    "Activa": "success"
-};
+// const est_resolution_colors: any = {
+//     "Vencida": "danger",
+//     "Sin resolución": "warning",
+//     "Activa": "success"
+// };
 
 const Programs = () => {
 
@@ -101,7 +101,7 @@ const Programs = () => {
 
         setModal({
             isOpen: true,
-            title: "Modificar programa",
+            title: "Registrar programa",
             size: "lg",
             children: <>
                 <Form
@@ -231,7 +231,7 @@ const Programs = () => {
                                 <small className='fw-semibold'>{programsList?.length} Programas filtrados</small>
                             </div>
                         </div>
-                        {filter.est_resolution.values?.length && <div className='d-inline-flex gap-1'>
+                        {/* {filter.est_resolution.values?.length && <div className='d-inline-flex gap-1'>
                             {filter.est_resolution.values.map((e, i) => <div key={i}>
                                 <UncontrolledTooltip target={`BTN_ID_${i}`}>Estado de resolución: {e}</UncontrolledTooltip>
                                 <Button className="opacity-75 p-2 rounded-circle" active={e === filter.est_resolution.selectedValue}
@@ -239,7 +239,7 @@ const Programs = () => {
                                     id={`BTN_ID_${i}`} color={`${est_resolution_colors[e]}`}></Button>
                             </div>
                             )}
-                        </div>}
+                        </div>} */}
                     </div>
                 </>}
                 <div className="mb-5">
@@ -249,10 +249,11 @@ const Programs = () => {
                                 {programsList
                                     .map((item, i) => <div className='col-12 col-sm-6 col-xl-4 mb-4' key={`${item.id_prog}-${i}`}>
                                         <Card className='h-100 p-0 hover-scale-up' onClick={() => navigate(`${item.id_prog}`)}>
-                                            <CardHeader className={classnames('bg-opacity-75 bg-success text-white border-0 py-3', {
-                                                'bg-danger': item.est_resolution === "Vencida",
-                                                'bg-warning': item.est_resolution === "Sin resolución",
-                                            })}>
+                                            <CardHeader className={classnames('text-white border-0 py-3',
+                                                {
+                                                    "bg-success bg-opacity-75": item.est_prog === 1,
+                                                    'bg-dark bg-opacity-25': item.est_prog === 0,
+                                                })}>
                                                 <div style={{ minHeight: "2rem" }} className='d-flex align-items-center'>
                                                     <h6 className='lh-1 m-0 align-middle'>{item.nomb_prog}</h6>
                                                 </div>

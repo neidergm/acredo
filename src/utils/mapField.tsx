@@ -63,9 +63,6 @@ const mapField = (item: I_FormField, defaultValue?: any) => {
                     </div>
                     <div style={{ height: "90vh" }}>
                         <iframe
-                            onLoad={() => {
-                                console.log("OK");
-                            }}
                             // src="https://drive.google.com/file/d/16sNCAcgzNWE-PKNyG4OUlkRFIsxMwBytdYdyo955SZI/preview"
                             src={`${baseurl}${value}?embedded=true`}
                             // src="https://docs.google.com/document/d/16sNCAcgzNWE-PKNyG4OUlkRFIsxMwBytdYdyo955SZI/preview?embedded=true"

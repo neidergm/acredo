@@ -115,6 +115,9 @@ const FormContent = ({ canEdit, formItem, onSubmit, onDelete, onObservationsDone
                         <AttachmentsTable
                             list={formItem.multiplesValues!}
                             onEdit={openFormAsModal}
+                            orderingCallback={
+                                () => onSubmit(null, null as any, undefined, true)
+                            }
                             onDelete={onDelete}
                             canEdit={canEdit}
                             onObservationsDone={onObservationsDone}
