@@ -329,6 +329,11 @@ export const GET_PROGRAMS_BY_STATE = `programas/all/`;
  */
 export const DELETE_PROGRAM = `programas`;
 
+/**
+ * @method GET
+ */
+export const GET_FACULTAD = `programas/facultades`;
+
 
 /*---------------------------------------------*/
 // NOTIFICATIONS

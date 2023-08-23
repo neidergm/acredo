@@ -6,8 +6,8 @@ import { AXIOS_REQUEST } from '../../services/axiosService';
 import { DELETE_PROGRAM, GET_PROGRAMS_LIST, SAVE_PROGRAM_DATA } from '../../services/endPointsService';
 import { I_Program } from '../../interfaces/programs.interface';
 import Loader from '../../components/Loader';
-import { Button, Col, Offcanvas, OffcanvasBody, OffcanvasHeader, Row, Table } from 'reactstrap';
-import { getNormalDate } from '../../utils/dateUtils';
+import { Badge, Button, Col, Offcanvas, OffcanvasBody, OffcanvasHeader, Row, Table } from 'reactstrap';
+import { getDateDiff, getNormalDate } from '../../utils/dateUtils';
 import { ArrowRightShort, Edit, ExclamationCircleFill, Kanban, Plus, XCircle } from '../../components/Icons';
 import { isAdmin, isSupervisor } from '../../utils/userRolUtils';
 import { useAppSelector } from '../../hooks/useAppSelector';
@@ -91,11 +91,11 @@ const Details = () => {
         const FORM_ID = "PROGRAM_FORM";
         let defaultValues = {};
         if (program) {
-            const { ciud_prog, est_prog, moda_prog, nivel_prog, nomb_prog, tform_prog, titu_prog, cod_snies, freg_snies, cod_prog } = program;
+            const { ciud_prog, est_prog, moda_prog, nivel_prog, nomb_prog, tform_prog, titu_prog, cod_snies, freg_snies, cod_prog, id_facu } = program;
 
             defaultValues = {
                 departamento: program?.depa_prog,
-                ciud_prog, est_prog, moda_prog, nivel_prog, nomb_prog, tform_prog, titu_prog, cod_snies, freg_snies, cod_prog
+                ciud_prog, est_prog, moda_prog, nivel_prog, nomb_prog, tform_prog, titu_prog, cod_snies, freg_snies, cod_prog, id_facu
             }
         }
 
@@ -188,6 +188,26 @@ const Details = () => {
         }
     }
 
+    const showProgramUsers = (show = true) => {
+        if (program && show) {
+            setShowSidePanel({
+                title: "Decanos y directores",
+                body: <div>
+                    {
+                        program.deca_dire.map((d, i) => <Card key={i} className='shadow-none bg-light mb-3'>
+                            <p className='fw-semibold'>{d.nomb_cargo}</p>
+                            <p className='mb-0'>{d.nomb_resp}</p>
+                            <span className='text-muted small'>Identificación: {d.iden_resp}</span>
+                        </Card>)
+                    }
+                </div>,
+                toggler: showAllResolutions
+            })
+        } else {
+            setShowSidePanel(null)
+        }
+    }
+
     useEffect(() => {
         if (!id_program) {
             navigate(-1)
@@ -196,11 +216,13 @@ const Details = () => {
         }
     }, [])
 
+    const expiredResolution = program?.fech_reso ? getDateDiff(program.fech_reso, new Date()) < 0 : true;
+
     return (
         <>
             <SubHeader
                 showBackButton
-                text={program?.nomb_prog || "Detalles de programa"}
+                text={program?.nomb_prog || "Detalles deL programa"}
                 className="container-xl"
             />
 
@@ -224,7 +246,7 @@ const Details = () => {
                                 <OffcanvasBody>{showSidePanel?.body}</OffcanvasBody>
                             </Offcanvas>
                             <Row>
-                                <Col md="6" className='mb-4'>
+                                <Col lg="6" className='mb-4'>
                                     <Card className='h-100 justify-content-between'>
                                         <div>
                                             <div>
@@ -238,6 +260,10 @@ const Details = () => {
                                             <div className='mt-4'>
                                                 <Table>
                                                     <tbody className='border-top'>
+                                                        <tr>
+                                                            <td><b className="fw-semibold">Facultad</b></td>
+                                                            <td>{program.facultad}</td>
+                                                        </tr>
                                                         <tr>
                                                             <td><b className="fw-semibold">Código de programa</b></td>
                                                             <td>{program.cod_prog}</td>
@@ -272,28 +298,41 @@ const Details = () => {
                                                         </tr>
                                                         <tr>
                                                             <td><b className="fw-semibold">Resolución válida hasta</b></td>
-                                                            <td>{getNormalDate(program.fech_reso, { dateStyle: "long" })}</td>
+                                                            <td className={expiredResolution ? "bg-danger bg-opacity-25 text-danger fw-bold" : ""}>
+                                                                {getNormalDate(program.fech_reso, { dateStyle: "long" })}
+                                                                {
+                                                                    expiredResolution && <Badge color='danger' className='ms-2'>
+                                                                        {getDateDiff(program.fech_reso, new Date()) < 0 ? "Vencida" : ""}
+                                                                    </Badge>
+                                                                }
+                                                            </td>
                                                         </tr>
                                                     </tbody>
                                                 </Table>
                                             </div>
                                         </div>
-                                        {is_admin && <div className='d-flex justify-content-between gap-3'>
-                                            <div className='text-end mt-3'>
-                                                <Button size='sm' color='danger' onClick={() => deleteProgram()}>
-                                                    <i className='me-1'><XCircle size={15} /></i> Eliminar
+                                        <div className='d-flex justify-content-between gap-3 mt-3'>
+                                            <div>
+                                                <Button size='sm' color='link' onClick={() => showProgramUsers()}>
+                                                    Decanos y directores <ArrowRightShort size={16} />
                                                 </Button>
                                             </div>
-                                            <div className='text-end mt-3'>
-                                                <Button size='sm' color='primary' onClick={() => updateProgramData()}>
-                                                    <i className='me-1'><Edit size={15} /></i> Actualizar información
-                                                </Button>
-                                            </div>
+                                            {is_admin && <div className='d-flex gap-2'>
+                                                <div className='text-end'>
+                                                    <Button size='sm' color='danger' onClick={() => deleteProgram()}>
+                                                        <i className='me-1'><XCircle size={15} /></i> Eliminar
+                                                    </Button>
+                                                </div>
+                                                <div className='text-end'>
+                                                    <Button size='sm' color='primary' onClick={() => updateProgramData()}>
+                                                        <i className='me-1'><Edit size={15} /></i> Actualizar información
+                                                    </Button>
+                                                </div>
+                                            </div>}
                                         </div>
-                                        }
                                     </Card>
                                 </Col>
-                                <Col md="6" className='mb-4'>
+                                <Col lg="6" className='mb-4'>
                                     <Card className='h-100 justify-content-between'>
                                         <div>
                                             <div className='mb-4'>

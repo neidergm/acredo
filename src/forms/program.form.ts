@@ -1,6 +1,7 @@
 import { I_FormField } from '../interfaces/conditions.interface';
 import { I_JSONObject, T_FieldsTypes } from '../interfaces/generic.interface';
-import { CITIES_BY_DEPARTMENT, DEPARTMENT_LIST } from '../services/endPointsService';
+import { AXIOS_REQUEST } from '../services/axiosService';
+import { CITIES_BY_DEPARTMENT, DEPARTMENT_LIST, GET_FACULTAD } from '../services/endPointsService';
 import mapField from '../utils/mapField';
 
 const programForm = (defaultValues: I_JSONObject): T_FieldsTypes[] => [
@@ -22,6 +23,25 @@ const programForm = (defaultValues: I_JSONObject): T_FieldsTypes[] => [
         "type": "text",
         "wrapperClassName": "col-6",
         "validations": {}
+    },
+    {
+        "name": "id_facu",
+        "label": "Facultad",
+        "tag": "select",
+        "type": "simple",
+        "options": null,
+        "request": {
+            method: "GET",
+            params: {},
+            url: GET_FACULTAD
+        },
+        "doRequest": ({ method, params, url }: any) => AXIOS_REQUEST(url, method, params).then(resp => {
+            return { options: resp.data?.map((i: any) => ({ value: i.id_facu, label: i.nomb_facu })) };
+        }),
+        "wrapperClassName": "col-6",
+        "validations": {
+            "required": true
+        }
     },
     {
         "name": "est_prog",

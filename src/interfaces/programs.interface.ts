@@ -37,17 +37,26 @@ export interface I_Resolutions {
     nper_snies: number;
 }
 
+export interface I_DecaAndDirector {
+    iden_resp: string,
+    nomb_resp: string,
+    nomb_cargo: string
+}
+
 export interface I_Program {
     cod_snies: string;
     ciud_prog: string;
+    deca_dire: I_DecaAndDirector[];
     depa_prog: string;
     nomb_ciud: string;
     nomb_depa: string;
     est_prog: 0 | 1;
     estado: string;
     eventos: null | I_ProgramEvent[];
+    facultad: string;
     fech_reso: string;
     freg_snies: string;
+    id_facu: number;
     id_prog: number;
     cod_prog: string;
     moda_prog: string;

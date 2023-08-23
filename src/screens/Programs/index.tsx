@@ -76,6 +76,11 @@ const Programs = () => {
             values: [],
             selectedValue: ""
         },
+        facultad: {
+            label: "Facultad",
+            values: [],
+            selectedValue: ""
+        },
     })
 
     const doFilter = (value: string, property: string, list = fetchedList.current) => {
@@ -278,6 +283,10 @@ const Programs = () => {
                                                     <div className='vr p-0 bg-secondary opacity-10'></div>
 
                                                     <div className='col small'>
+                                                        <div className='mb-1'>
+                                                            <b>Facultad: </b>
+                                                            <span>{item.facultad}</span>
+                                                        </div>
                                                         <div className='mb-1'>
                                                             <b>Ciudad: </b>
                                                             <span>{item.nomb_ciud} | {item.nomb_depa}</span>
