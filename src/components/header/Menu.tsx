@@ -54,6 +54,10 @@ const Menu = ({ children }: I_MenuProps) => {
                             <b className='d-block'>Identificación:</b>
                             <span>{userInfo?.dni}</span>
                         </p>
+                        <p>
+                            <b className='d-block'>Rol:</b>
+                            <span>{userInfo?.rol_nomb}</span>
+                        </p>
                     </DropdownItem>
                     <DropdownItem disabled tag="div" style={{ "pointerEvents": "initial" }} className="mt-3 text-center">
                         <Button color='primary' onClick={confirmLogout} size='sm'>Cerrar sesión</Button>

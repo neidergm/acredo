@@ -272,6 +272,7 @@ export const CAMPUS_LIST = `sedes`;
 
 /**
  * @method GET
+ * @params {/process_type}
  */
 export const CONDITIONS_TYPES = `getinfo/condiciones`;
 

@@ -6,9 +6,9 @@ import { ExclamationCircleFill } from '../../components/Icons';
 import { AXIOS_REQUEST } from '../../services/axiosService';
 import { GET_PROGRAMS_LIST, SAVE_PROGRAM_DATA } from '../../services/endPointsService';
 import Card from '../../components/Card';
-import { Badge, Button, CardBody, CardHeader, UncontrolledTooltip } from 'reactstrap';
+import { Badge, Button, CardBody, CardHeader } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
-import { getDateDiff, getNormalDate } from '../../utils/dateUtils';
+import { getNormalDate } from '../../utils/dateUtils';
 import { Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON, closeModal } from '../../components/Modal';
 import Alert, { I_AlertObject } from '../../components/Alert';
 import Form from 'react-ngm-form';
@@ -17,27 +17,13 @@ import { jsonToFormData } from '../../utils/formUtils';
 import { I_JSONObject } from '../../interfaces/generic.interface';
 import { toast } from 'react-hot-toast';
 import classnames from 'classnames';
-import { isAdmin, isSupervisor } from '../../utils/userRolUtils';
+import { isAdmin } from '../../utils/userRolUtils';
 import { useAppSelector } from '../../hooks/useAppSelector';
-
-type T_Filter = {
-    [key: string]: {
-        label: string;
-        values?: Array<string>; //For selects
-        selectedValue: string;
-    }
-}
-
-// const est_resolution_colors: any = {
-//     "Vencida": "danger",
-//     "Sin resolución": "warning",
-//     "Activa": "success"
-// };
+import ProgramFilter from '../../components/ProgramFilter';
 
 const Programs = () => {
 
-    const [programsList, setProgramsList] = useState<null | I_Program[]>();
-    const fetchedList = useRef<I_Program[]>([])
+    const [programsList, setProgramsList] = useState<null | I_Program[]>(null);
     const navigate = useNavigate();
 
     const is_admin = isAdmin(useAppSelector(s => s.user.userInfo?.rol));
@@ -45,58 +31,6 @@ const Programs = () => {
     const [modal, setModal] = useState<T_ModalJSON | null>(null)
     const [alert, setAlert] = useState<I_AlertObject | null>(null)
     const [loader, setLoader] = useState<string | null>(null)
-
-    const [filter, setFilter] = useState<T_Filter>({
-        nomb_prog: {
-            label: "Buscar por nombre",
-            selectedValue: ""
-        },
-        est_resolution: {
-            label: "Resolución",
-            values: [],
-            selectedValue: ""
-        },
-        estado: {
-            label: "Estado",
-            values: [],
-            selectedValue: ""
-        },
-        nomb_ciud: {
-            label: "Ciudad",
-            values: [],
-            selectedValue: ""
-        },
-        nivel_prog: {
-            label: "Nivel",
-            values: [],
-            selectedValue: ""
-        },
-        moda_prog: {
-            label: "Modalidad",
-            values: [],
-            selectedValue: ""
-        },
-        facultad: {
-            label: "Facultad",
-            values: [],
-            selectedValue: ""
-        },
-    })
-
-    const doFilter = (value: string, property: string, list = fetchedList.current) => {
-        const f = filter;
-        f[property].selectedValue = value;
-
-        const keys = Object.keys(f).filter(i => !!(f[i].selectedValue));
-
-        if (!keys.length) return list;
-        setFilter({ ...f })
-        return list.filter(p => keys.every(k => f[k].values ? !!((p as any)[k] === f[k].selectedValue) : new RegExp(f[k].selectedValue, "i").test((p as any)[k])))
-    }
-
-    const searchByFilter = (value: string, property: string) => {
-        setProgramsList(doFilter(value, property))
-    }
 
     const newProgram = () => {
         const FORM_ID = "PROGRAM_FORM";
@@ -156,28 +90,17 @@ const Programs = () => {
     const getPrograms = () => {
         setProgramsList(null)
         AXIOS_REQUEST(GET_PROGRAMS_LIST).then(resp => {
-            fetchedList.current = resp.data;
             setProgramsList(resp.data)
-
-            const f = filter;
-            for (let i = 0; i < resp.data.length; i++) {
-                const p: I_Program = resp.data[i];
-                p.est_resolution = p.fech_reso ? (getDateDiff(p.fech_reso, new Date()) < 0 ? "Vencida" : "Activa") : "Sin resolución";
-                for (const key in filter) {
-                    if (f[key].values) {
-                        const val = (p as any)[`${key}`];
-                        if (!!val && !f[key].values!.includes(val))
-                            f[key].values!.push(val);
-                    }
-                }
-            }
-            setFilter(f)
         })
     }
 
     useEffect(() => {
         getPrograms()
     }, [])
+
+    // useEffect(() => {
+    //     console.log("ProgramsList UPDATED")
+    // }, [programsList])
 
     return (
         <>
@@ -197,54 +120,33 @@ const Programs = () => {
             <Alert isOpen={!!alert} {...alert} />
 
             <div className="container-fluid container-xxxl">
-                {!!(fetchedList.current.length) && !!(programsList) && <> <div className='d-flex flex-column-reverse flex-xl-row'>
-                    <div className='d-flex gap-3 mb-3 align-items-center flex-wrap'>
-                        {Object.keys(filter).map(f => <div key={f}>
-                            {!filter[f].values ?
-                                <>
-                                    <label htmlFor={f} className="form-label small mb-1">{filter[f].label}</label>
-                                    <input
-                                        placeholder='Búsqueda'
-                                        className='form-control'
-                                        type='search'
-                                        style={{ width: "200px" }}
-                                        onChange={e => searchByFilter(e.target.value, f)}
-                                    />
-                                </>
-                                :
-                                !!((filter[f].values?.length || 0) > 1) && <>
-                                    <label htmlFor={f} className="form-label small mb-1">{filter[f].label}</label>
-                                    <select value={filter[f].selectedValue} id={f} className='form-select w-auto border text-secondary' onChange={e => searchByFilter(e.target.value, f)}>
-                                        <option value="">Filtrar</option>
-                                        {filter[f].values!.map(o => <option key={o} value={o}>{o}</option>)}
-                                    </select>
-                                </>
-                            }
-                        </div>)
-                        }
+                {!!(programsList) && <>
+                    <div className='mb-3'>
+
+                        {is_admin && <div className='float-end'>
+                            <Button color='primary' size='sm' onClick={() => newProgram()}>+ Nuevo programa</Button>
+                        </div>}
+                        <ProgramFilter list={programsList} updateList={l => setProgramsList(l)} />
+
                     </div>
-                    {is_admin && <div className='flex-grow-1 mb-2 text-end'>
-                        <Button color='primary' size='sm' onClick={() => newProgram()}>+ Nuevo programa</Button>
-                    </div>}
-                </div>
-                    <div className='mb-4 pt-2 d-inline-flex align-items-center gap-3 mb-2'>
+
+                    {/* <div className='d-flex flex-column-reverse flex-xl-row'>
+                        <div className='d-flex gap-3 mb-3 align-items-center flex-wrap'>
+                            <ProgramFilter list={programsList} updateList={l => setProgramsList(l)} />
+                        </div>
+                        {is_admin && <div className='flex-grow-1 mb-2 text-end'>
+                            <Button color='primary' size='sm' onClick={() => newProgram()}>+ Nuevo programa</Button>
+                        </div>}
+                    </div> */}
+                    <div className='mb-4 pt-2 d-inline-flex align-items-center gap-3 mb-4'>
                         <div className='d-inline-block'>
                             <div
                                 className='border-start border-5 border-dark py-1 ps-3 pe-4 bg-secondary bg-opacity-10 d-inline-block'
                                 style={{ borderRadius: "2px 10px 10px 2px" }}
                             >
-                                <small className='fw-semibold'>{programsList?.length} Programas filtrados</small>
+                                <small className='fw-semibold'>{programsList?.length} Programas encontrados</small>
                             </div>
                         </div>
-                        {/* {filter.est_resolution.values?.length && <div className='d-inline-flex gap-1'>
-                            {filter.est_resolution.values.map((e, i) => <div key={i}>
-                                <UncontrolledTooltip target={`BTN_ID_${i}`}>Estado de resolución: {e}</UncontrolledTooltip>
-                                <Button className="opacity-75 p-2 rounded-circle" active={e === filter.est_resolution.selectedValue}
-                                    onClick={() => searchByFilter(e, "est_resolution")}
-                                    id={`BTN_ID_${i}`} color={`${est_resolution_colors[e]}`}></Button>
-                            </div>
-                            )}
-                        </div>} */}
                     </div>
                 </>}
                 <div className="mb-5">
@@ -351,7 +253,7 @@ const Programs = () => {
                         </div>
                     }
                 </div>
-            </div>
+            </div >
         </>
     )
 }

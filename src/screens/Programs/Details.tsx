@@ -41,6 +41,9 @@ const Details = () => {
 
     const getProgramInfo = () => {
         return AXIOS_REQUEST(`${GET_PROGRAMS_LIST}/${id_program}`).then(resp => {
+            if (!resp.data[0]) {
+                return navigate(-1)
+            }
             setProgram(resp.data[0])
         })
     }
@@ -74,6 +77,7 @@ const Details = () => {
                     setLoader("Eliminando resolución")
                     AXIOS_REQUEST(`${DELETE_PROGRAM}`, "PUT", jsonToFormData({ est_prog: -1, id_prog: program?.id_prog }, "[0].")).then(res => {
                         toast.success("Programa eliminado correctamente", { position: "top-right" });
+                        navigate(-1)
                     }).catch(e => {
                         toast.error("No se pudo eliminar el programa", { position: "top-right" });
                     }).finally(() => {
@@ -216,7 +220,7 @@ const Details = () => {
         }
     }, [])
 
-    const expiredResolution = program?.fech_reso ? getDateDiff(program.fech_reso, new Date()) < 0 : true;
+    const expiredResolution = program?.fech_reso && getDateDiff(program.fech_reso, new Date()) < 0;
 
     return (
         <>
@@ -300,11 +304,7 @@ const Details = () => {
                                                             <td><b className="fw-semibold">Resolución válida hasta</b></td>
                                                             <td className={expiredResolution ? "bg-danger bg-opacity-25 text-danger fw-bold" : ""}>
                                                                 {getNormalDate(program.fech_reso, { dateStyle: "long" })}
-                                                                {
-                                                                    expiredResolution && <Badge color='danger' className='ms-2'>
-                                                                        {getDateDiff(program.fech_reso, new Date()) < 0 ? "Vencida" : ""}
-                                                                    </Badge>
-                                                                }
+                                                                {expiredResolution && <Badge color='danger' className='ms-2'>Vencida</Badge>}
                                                             </td>
                                                         </tr>
                                                     </tbody>
@@ -317,7 +317,7 @@ const Details = () => {
                                                     Decanos y directores <ArrowRightShort size={16} />
                                                 </Button>
                                             </div>
-                                            {is_admin && <div className='d-flex gap-2'>
+                                            {is_admin && <div className='d-flex gap-1'>
                                                 <div className='text-end'>
                                                     <Button size='sm' color='danger' onClick={() => deleteProgram()}>
                                                         <i className='me-1'><XCircle size={15} /></i> Eliminar

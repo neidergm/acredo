@@ -96,11 +96,10 @@ const ConditionsDetails = () => {
 
   const editTask = () => {
     const formID = "FORM-EDIT-TASK";
-    const fields = taskForm(false);
-
+    const fields = taskForm(false, processSelected?.id_tcond);
     const defaultValues = {
       nomb_cond: conditionSelected?.nomb_cond,
-      cod_cond: conditionSelected?.cod_cond?.toString(),
+      cod_cond: (conditionSelected?.cod_cond || processSelected?.id_tcond)?.toString(),
       detalle: conditionSelected?.detalle,
       responsable: conditionSelected?.usuarios?.map(u => ({ cargo: u.id_cargo, user: u.id_rc, role: u.rol }))
     }

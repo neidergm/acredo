@@ -1,0 +1,8 @@
+.item-filter > label > small {
+    display: none;
+    cursor: pointer;
+}
+
+.item-filter:hover > label > small {
+    display: block;
+}

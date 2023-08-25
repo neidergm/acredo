@@ -27,7 +27,7 @@ export const dateToString = (date: Date, join = "-", reverse = false) => {
 export const getNormalDate = (value: string | number, options?: Intl.DateTimeFormatOptions) => {
     let date: Date;
 
-    if(!value) return ""
+    if (!value) return ""
 
     if (typeof value === "string") {
         date = stringToDate(value);

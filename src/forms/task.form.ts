@@ -5,7 +5,7 @@ import { CHARGE, CONDITIONS_TYPES, RESPONSIBLES_BY_CHARGE, ROLS } from "../servi
 import mapField from "../utils/mapField";
 
 // export const taskForm = (showGoogleDocField = true, showConditionTypeField = true): T_FieldsTypes[] => {
-export const taskForm = (showConditionTypeField = true): T_FieldsTypes[] => {
+export const taskForm = (showConditionTypeField = true, process_type?: number): T_FieldsTypes[] => {
     const f: T_FieldsTypes[] = [
         {
             "name": "nomb_cond",
@@ -51,7 +51,7 @@ export const taskForm = (showConditionTypeField = true): T_FieldsTypes[] => {
         disabled: !showConditionTypeField,
         "request": {
             method: "GET",
-            url: CONDITIONS_TYPES,
+            url: `${CONDITIONS_TYPES}${process_type ? `/${process_type}` : ""}`,
             params: {}
         },
         doRequest: ({ method, params, url }) => {

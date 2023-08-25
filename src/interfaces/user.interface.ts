@@ -9,6 +9,7 @@ export interface I_User {
     mail: string;
     nombProg: string;
     rol: T_UserRole;
+    rol_nomb?: string;
     type: string;
     prog_cond?: string;
     picture?: string;

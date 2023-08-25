@@ -108,7 +108,7 @@ const Conditions = () => {
 
   const modalToCreateTask = (phase: T_PhasesWithConditions) => {
     const formID = "FORM-CREATE-TASK";
-    const fields = taskForm();
+    const fields = taskForm(undefined, selectedProcess?.id_tcond);
     setModal({
       isOpen: true,
       children: <div key={formID}>
