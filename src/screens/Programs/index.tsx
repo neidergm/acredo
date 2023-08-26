@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SubHeader } from '../../components/SubHeader'
 import { I_Program } from '../../interfaces/programs.interface';
 import Loader from '../../components/Loader';
@@ -8,7 +8,7 @@ import { GET_PROGRAMS_LIST, SAVE_PROGRAM_DATA } from '../../services/endPointsSe
 import Card from '../../components/Card';
 import { Badge, Button, CardBody, CardHeader } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
-import { getNormalDate } from '../../utils/dateUtils';
+import { getDateDiff, getNormalDate } from '../../utils/dateUtils';
 import { Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON, closeModal } from '../../components/Modal';
 import Alert, { I_AlertObject } from '../../components/Alert';
 import Form from 'react-ngm-form';
@@ -20,6 +20,7 @@ import classnames from 'classnames';
 import { isAdmin } from '../../utils/userRolUtils';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import ProgramFilter from '../../components/ProgramFilter';
+import CustomDropdown from '../../components/CustomDropdown';
 
 const Programs = () => {
 
@@ -98,10 +99,6 @@ const Programs = () => {
         getPrograms()
     }, [])
 
-    // useEffect(() => {
-    //     console.log("ProgramsList UPDATED")
-    // }, [programsList])
-
     return (
         <>
             <SubHeader
@@ -130,14 +127,6 @@ const Programs = () => {
 
                     </div>
 
-                    {/* <div className='d-flex flex-column-reverse flex-xl-row'>
-                        <div className='d-flex gap-3 mb-3 align-items-center flex-wrap'>
-                            <ProgramFilter list={programsList} updateList={l => setProgramsList(l)} />
-                        </div>
-                        {is_admin && <div className='flex-grow-1 mb-2 text-end'>
-                            <Button color='primary' size='sm' onClick={() => newProgram()}>+ Nuevo programa</Button>
-                        </div>}
-                    </div> */}
                     <div className='mb-4 pt-2 d-inline-flex align-items-center gap-3 mb-4'>
                         <div className='d-inline-block'>
                             <div
@@ -154,15 +143,20 @@ const Programs = () => {
                         (programsList.length ?
                             <div className='row h-100'>
                                 {programsList
-                                    .map((item, i) => <div className='col-12 col-sm-6 col-xl-4 mb-4' key={`${item.id_prog}-${i}`}>
+                                    .map((item, i) => <div className='col-12 col-md-6 col-xl-4 mb-4' key={`${item.id_prog}-${i}`}>
                                         <Card className='h-100 p-0 hover-scale-up' onClick={() => navigate(`${item.id_prog}`)}>
-                                            <CardHeader className={classnames('text-white border-0 py-3',
+                                            <CardHeader className={classnames("p-0", 'text-white border-0',
                                                 {
                                                     "bg-success bg-opacity-75": item.est_prog === 1,
                                                     'bg-dark bg-opacity-25': item.est_prog === 0,
                                                 })}>
-                                                <div style={{ minHeight: "2rem" }} className='d-flex align-items-center'>
-                                                    <h6 className='lh-1 m-0 align-middle'>{item.nomb_prog}</h6>
+                                                <div className='px-3 pt-3 pb-2'>
+                                                    <div style={{ minHeight: "2rem" }} className='d-flex align-items-center'>
+                                                        <h6 className='lh-1 m-0 align-middle'>{item.nomb_prog}</h6>
+                                                    </div>
+                                                </div>
+                                                <div className='bg-dark bg-opacity-10 opacity-50 px-3 py-1 small text-truncate'>
+                                                    <small className='text-white fw-semibold'>Facultad de <span className='text-lowercase'>{item.facultad}</span></small>
                                                 </div>
                                             </CardHeader>
                                             <CardBody className=''>
@@ -182,13 +176,13 @@ const Programs = () => {
                                                         </div>
                                                     </div>
 
-                                                    <div className='vr p-0 bg-secondary opacity-10'></div>
+                                                    <div className='vr p-0 bg-secondary bg-opacity-50'></div>
 
                                                     <div className='col small'>
-                                                        <div className='mb-1'>
+                                                        {/* <div className='mb-1'>
                                                             <b>Facultad: </b>
                                                             <span>{item.facultad}</span>
-                                                        </div>
+                                                        </div> */}
                                                         <div className='mb-1'>
                                                             <b>Ciudad: </b>
                                                             <span>{item.nomb_ciud} | {item.nomb_depa}</span>
@@ -206,26 +200,42 @@ const Programs = () => {
                                                             <span>{item.moda_prog}</span>
                                                         </div>
                                                         <div className='mb-1'>
-                                                            <b
-                                                                className={classnames({
-                                                                    'text-danger': item.est_resolution === "Vencida",
-                                                                })}
-                                                            >
-                                                                Resolución hasta: </b>
-                                                            <span>{
-                                                                item.fech_reso ?
-                                                                    <span className={classnames({
-                                                                        'text-danger': item.est_resolution === "Vencida"
-                                                                    })}>
-                                                                        {getNormalDate(item.fech_reso, { dateStyle: "long" })} &nbsp;
-                                                                        {item.est_resolution === "Vencida" && <Badge color='danger'>Vencida</Badge>}
-                                                                    </span>
+                                                            <b>Resolución: </b>
+                                                            {
+                                                                item.fech_reso?.length ?
+                                                                    (item.fech_reso.length === 1 ?
+                                                                        <>
+                                                                            <span>{item.fech_reso[0].reso_apro} - {item.fech_reso[0].reco_mim}</span>
+                                                                            <p className='mb-0 text-secondary'>
+                                                                                {
+                                                                                    getDateDiff(item.fech_reso[0].fech_ven) >= 0 ?
+                                                                                        <span>
+                                                                                            Vigente hasta <span>{getNormalDate(item.fech_reso[0].fech_ven, { dateStyle: "long" })}</span>
+                                                                                        </span>
+                                                                                        :
+                                                                                        <span className='text-danger fw-semibold'>
+                                                                                            Vencida desde <span>{getNormalDate(item.fech_reso[0].fech_ven, { dateStyle: "long" })}</span>
+                                                                                        </span>
+                                                                                }
+                                                                            </p>
+                                                                        </>
+                                                                        :
+                                                                        <>
+                                                                            <b className='text-secondary fw-semibold'>Tiene {item.fech_reso.length} resoluciones </b>
+                                                                            <div className="hstack gap-2">
+                                                                                {item.fech_reso.map(fr =>
+                                                                                    <div title={"Vencida - " + fr.reco_mim} key={fr.reso_apro} className={classnames({ "text-danger fw-bold": getDateDiff(fr.fech_ven) >= 0 })}>
+                                                                                        {fr.reso_apro}
+                                                                                    </div>
+                                                                                )}
+                                                                            </div>
+                                                                        </>
+                                                                    )
                                                                     :
-                                                                    <span className='text-warning'>{item.est_resolution}</span>
+                                                                    <span className='text-warning'>Sin resoluciones</span>
                                                             }
-                                                            </span>
                                                         </div>
-                                                        <div className='text-end'>
+                                                        <div className='text-end position-absolute end-0 pb-1 pe-1'>
                                                             {item.eventos?.length && <Badge color='primary' className='me-1'>
                                                                 <span>{item.eventos.length} eventos</span>
                                                             </Badge>}

@@ -54,7 +54,11 @@ export interface I_Program {
     estado: string;
     eventos: null | I_ProgramEvent[];
     facultad: string;
-    fech_reso: string;
+    fech_reso?: {
+        fech_ven: string
+        reco_mim: string;
+        reso_apro: string
+    }[];
     freg_snies: string;
     id_facu: number;
     id_prog: number;
@@ -66,6 +70,6 @@ export interface I_Program {
     resoluciones: I_Resolutions[] | null;
     tform_prog: string;
     titu_prog: string;
-    est_resolution: "Activa" | "Sin resolución" | "Vencida";
+    // est_resolution: "Activa" | "Sin resolución" | "Vencida";
 }
 
