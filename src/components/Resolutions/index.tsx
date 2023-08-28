@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { I_Resolutions } from '../../interfaces/programs.interface'
 import Card from '../Card'
 import classnames from 'classnames'
-import { Button, Table } from 'reactstrap'
+import { Button, Nav, NavItem, NavLink, TabContent, TabPane, Table } from 'reactstrap'
 import { Edit, ExclamationCircleFill, Folder2Open, XCircle } from '../Icons'
 import { getNormalDate } from '../../utils/dateUtils'
 import { Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON, closeModal } from '../Modal'
@@ -19,7 +19,7 @@ import { getDifferenceBetweenData, jsonToFormData } from '../../utils/formUtils'
 
 type T_Props = {
     list?: I_Resolutions[] | null,
-    current?: I_Resolutions,
+    current?: I_Resolutions[] | null,
     program_id: number,
     canEdit?: boolean,
     callback?: () => void,
@@ -31,6 +31,7 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, current, chi
     const [modal, setModal] = useState<T_ModalJSON | null>(null);
     const [alertConfirm, setAlertConfirm] = useState<I_AlertObject | null>(null);
     const [loader, setLoader] = useState<string | null>(null);
+    const [activeTab, setActiveTab] = useState(0);
 
     const confirmDelete = (item: I_Resolutions) => {
         setAlertConfirm(
@@ -61,9 +62,7 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, current, chi
         })
     }
 
-    const onAdd = () => {
-        onEdit()
-    }
+    const onAdd = () => onEdit()
 
     const onEdit = (reso?: I_Resolutions) => {
         const FORM_ID = "FORM_RESO";
@@ -72,8 +71,8 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, current, chi
 
         if (reso) {
             form.shift();
-            const { fech_ejec, fech_reso, ncre_snies, nper_snies, vige_reso, peri_acad, reco_min, jres_deta, just_reso } = reso;
-            defaultValues = { fech_ejec, fech_reso, ncre_snies, nper_snies, vige_reso, peri_acad, reco_min, jres_deta, just_reso }
+            const { fech_ejec, fech_reso, ncre_snies, nper_snies, vige_reso, peri_acad, reco_min, jres_deta, just_reso, estado } = reso;
+            defaultValues = { fech_ejec, fech_reso, ncre_snies, nper_snies, vige_reso, peri_acad, reco_min, jres_deta, just_reso, estado }
         }
 
         setModal({
@@ -88,6 +87,7 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, current, chi
                         data = getDifferenceBetweenData(defaultValues, data)
                         if (Object.keys(data).length) {
                             data.reso_apro ||= reso!.reso_apro;
+                            data.id_reso ||= reso!.id_reso;
                             saveResolutionData(data, reso ? "PUT" : "POST")
                         } else {
                             toast.error("No hay cambios para actualizar", { position: "top-right", icon: <i className='text-warning'><ExclamationCircleFill /> </i> })
@@ -134,54 +134,79 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, current, chi
 
             <Alert isOpen={!!alertConfirm} {...alertConfirm} />
 
-            {!current && !list && <div className='text-center p-5 text-muted opacity-50'>
+            {!current?.length && !list && <div className='text-center p-5 text-muted opacity-50'>
                 <p><Folder2Open size={30} /></p>
                 No tiene resoluciones registradas
             </div>}
 
             {current && <div>
-                <Table>
-                    <tbody className='border-top'>
-                        <tr>
-                            <td><b className="fw-semibold">Aprobación</b></td>
-                            <td>{current.reso_apro}
-                                <small className='text-secondary ms-2'>({getNormalDate(current.fech_reso, { dateStyle: "long" })})</small>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><b className="fw-semibold">Fecha de ejecución</b></td>
-                            <td>{getNormalDate(current.fech_ejec, { dateStyle: "long" })}</td>
-                        </tr>
-                        <tr>
-                            <td><b className="fw-semibold">Vigencia</b></td>
-                            <td>{current.vige_reso} años</td>
-                        </tr>
-                        <tr>
-                            <td><b className="fw-semibold">Nro. Periodos</b></td>
-                            <td>{current.nper_snies} periodos</td>
-                        </tr>
-                        <tr>
-                            <td><b className="fw-semibold">Periodos académicos</b></td>
-                            <td>{current.peri_acad}</td>
-                        </tr>
-                        <tr>
-                            <td><b className="fw-semibold">Nro. Créditos</b></td>
-                            <td>{current.ncre_snies} créditos</td>
-                        </tr>
-                        <tr>
-                            <td><b className="fw-semibold">Reconocimiento del ministerio</b></td>
-                            <td>{current.reco_min}</td>
-                        </tr>
-                        <tr>
-                            <td><b className="fw-semibold">Justificación de resolución</b></td>
-                            <td>{current.just_reso}</td>
-                        </tr>
-                        <tr>
-                            <td><b className="fw-semibold">Justificación detallada</b></td>
-                            <td>{current.jres_deta}</td>
-                        </tr>
-                    </tbody>
-                </Table>
+                <Nav tabs className="group-subtitle p-0 mb-3 border-bottom justify-content-md-start d-flex flex-nowrap align-items-center lh-1">
+                    {current.map((re, idx) =>
+                        <NavItem onClick={() => setActiveTab(idx)} className='cursor-pointer text-truncate' key={idx}>
+                            <NavLink className={classnames("border-0 text-secondary pt-0 text-truncate px-2 px-lg-3", {
+                                "active border-4 border-bottom border-warning text-warning fw-semibold": activeTab === idx
+                            })}>
+                                {re.reco_min}
+                            </NavLink>
+                        </NavItem>
+                    )}
+                </Nav>
+                <TabContent activeTab={activeTab} className="tab-content-item">
+                    {current.map((r, idx) =>
+                        <TabPane tabId={idx} key={idx}>
+                            <div className='mb-3 mt-4'>
+                                <div className='d-flex gap-1 small justify-content-between text-secondary'>
+                                    <div className='bg-light py-2 px-2 px-lg-3 rounded-3 flex-grow-1'>
+                                        <span className='d-block mb-2'>
+                                            <b className='text-dark'>Resolución: </b><span>{r.reso_apro}</span>
+                                        </span>
+                                        <span>{getNormalDate(r.fech_reso, { dateStyle: "long" })}</span>
+                                    </div>
+                                    <div className='bg-light py-2 px-2 px-lg-3 rounded-3 flex-grow-1'>
+                                        <b className='d-block mb-2 text-dark'>Fecha de ejecución</b>
+                                        <span>{getNormalDate(r.fech_ejec, { dateStyle: "long" })}</span>
+                                    </div>
+                                    <div className='bg-light py-2 px-2 px-lg-3 rounded-3 flex-grow-1'>
+                                        <span className='d-block mb-2'>
+                                            <b className='text-dark'>Vigencia: </b><span>{r.vige_reso} año{r.vige_reso > 1 && "s"}</span>
+                                        </span>
+                                        <span>
+                                            {getNormalDate(r.fech_vige, { dateStyle: "long" })}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <Table className='small'>
+                                <tbody>
+                                    <tr>
+                                        <td><b className="fw-semibold">Reconocimiento del ministerio</b></td>
+                                        <td>{r.reco_min}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b className="fw-semibold">Estado</b></td>
+                                        {r.estado === 1 ? <td> Activo</td> : <td></td>}
+                                    </tr>
+                                    <tr>
+                                        <td><b className="fw-semibold">Periodos académicos</b></td>
+                                        <td>{r.nper_snies} periodo{r.nper_snies > 1 && "s"} <span className='text-muted'>( {r.peri_acad} )</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><b className="fw-semibold">Nro. Créditos</b></td>
+                                        <td>{r.ncre_snies} créditos</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b className="fw-semibold">Justificación de resolución</b></td>
+                                        <td>{r.just_reso}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b className="fw-semibold">Justificación detallada</b></td>
+                                        <td>{r.jres_deta}</td>
+                                    </tr>
+                                </tbody>
+                            </Table>
+                        </TabPane>
+                    )}
+                </TabContent>
             </div>}
 
             {list?.map((r, idx) => <div key={r.reso_apro}>
@@ -245,7 +270,7 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, current, chi
                         </div>
                         <div>
                             <b className='d-block'>Vigencia</b>
-                            <span>{r.vige_reso} años</span>
+                            <span>{r.vige_reso} año{r.vige_reso > 1 && "s"}</span>
                         </div>
                     </div>
                     <div className='small d-flex flex-column gap-2 text-secondary'>
@@ -266,7 +291,7 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, current, chi
             </div>)
             }
 
-            {children?.(onAdd, () => { current && onEdit(current) })}
+            {children?.(onAdd, () => { current && onEdit(current[activeTab]) })}
         </>
     )
 }

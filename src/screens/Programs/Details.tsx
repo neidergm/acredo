@@ -227,7 +227,7 @@ const Details = () => {
             <SubHeader
                 showBackButton
                 text={program?.nomb_prog || "Detalles deL programa"}
-                className="container-xl"
+                className="container-xxl"
             />
 
             <Loader isOpen={!!(loader)} subtitle={loader} />
@@ -239,7 +239,7 @@ const Details = () => {
 
             <Alert isOpen={!!alert} {...alert} />
 
-            <div className="container-xl">
+            <div className="container-xxl">
                 <div>
                     {!program ? <div className='p-5 mt-5'><Loader loaderAsModal={false} isOpen /></div>
                         : <>
@@ -347,11 +347,15 @@ const Details = () => {
                                                     className='border-start border-5 border-dark py-1 ps-3 pe-4 bg-secondary bg-opacity-10 mb-2 d-inline-block'
                                                     style={{ borderRadius: "2px 10px 10px 2px" }}
                                                 >
-                                                    <small className='fw-bold text-uppercase '>RESOLUCIÓN ACTUAL</small>
+                                                    <small className='fw-bold text-uppercase '>RESOLUCIONES ACTIVAS</small>
                                                 </div>
                                             </div>
                                         </div>
-                                        <Resolutions current={program.resoluciones?.[0]} program_id={program.id_prog} canEdit={is_admin} callback={getProgramInfo}>
+                                        <Resolutions
+                                            current={program.resoluciones?.filter(r => r.estado === 1)}
+                                            program_id={program.id_prog}
+                                            canEdit={is_admin}
+                                            callback={getProgramInfo}>
                                             {(add, edit) => (
                                                 <div className='flex-grow-1 mt-3 d-flex justify-content-between gap-1 align-items-end'>
                                                     <div className='d-inline-block'>

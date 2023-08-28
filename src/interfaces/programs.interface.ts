@@ -22,19 +22,19 @@ interface I_ProgramProcess {
 
 export interface I_Resolutions {
     estado: 1 | 0;
-    id_prog: number;
-    reco_min: string;
-    cod_snies: string;
     fech_ejec: string;
     fech_reso: string;
+    fech_vige: string;
+    id_prog: number;
+    id_reso: number;
     jres_deta: null | string;
     just_reso: null | string;
-    peri_acad: string;
-    reso_apro: string;
-    vige_reso: number;
-    freg_snies: string;
     ncre_snies: number;
     nper_snies: number;
+    peri_acad: string;
+    reco_min: string;
+    reso_apro: string;
+    vige_reso: number;
 }
 
 export interface I_DecaAndDirector {
@@ -44,12 +44,11 @@ export interface I_DecaAndDirector {
 }
 
 export interface I_Program {
-    cod_snies: string;
     ciud_prog: string;
+    cod_prog: string;
+    cod_snies: string;
     deca_dire: I_DecaAndDirector[];
     depa_prog: string;
-    nomb_ciud: string;
-    nomb_depa: string;
     est_prog: 0 | 1;
     estado: string;
     eventos: null | I_ProgramEvent[];
@@ -62,9 +61,10 @@ export interface I_Program {
     freg_snies: string;
     id_facu: number;
     id_prog: number;
-    cod_prog: string;
     moda_prog: string;
     nivel_prog: string;
+    nomb_ciud: string;
+    nomb_depa: string;
     nomb_prog: string;
     procesos: null | I_ProgramProcess[];
     resoluciones: I_Resolutions[] | null;

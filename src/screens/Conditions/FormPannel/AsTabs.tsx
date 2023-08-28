@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Children } from 'react'
+import { useState, useEffect } from 'react'
 import { TabContent, TabPane, Nav, NavItem, NavLink, Button } from 'reactstrap';
 import Loader from '../../../components/Loader';
 import classnames from 'classnames';
@@ -111,7 +111,7 @@ const AsTabs = ({
                             const num_obs = item.tipo_obs !== 0 ? getNumObs(item) : 0;
                             return <NavItem key={`ni-${i}`}>
                                 <NavLink onClick={() => { toggleTab(i); }}
-                                    className={"sub-item text-muted px-3 pb-2 d-flex align-items-center " + classnames({
+                                    className={classnames("sub-item text-muted px-3 pb-2 d-flex align-items-center", {
                                         "active fw-bold px-xl-4": currentActiveTab === i
                                     })}
                                 >

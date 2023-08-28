@@ -12,6 +12,17 @@ const resolutionForm: T_FieldsTypes[] = [
         }
     },
     {
+        "name": "estado",
+        "label": "Estado",
+        "tag": "select",
+        "type": "simple",
+        "options": [{ "label": "Activo", "value": 1 }, { "label": "Inactivo", "value": 0 }],
+        "wrapperClassName": "col-6",
+        "validations": {
+            "required": true
+        }
+    },
+    {
         "name": "fech_reso",
         "label": "Fecha de resolución",
         "tag": "date",
