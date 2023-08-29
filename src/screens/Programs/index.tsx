@@ -119,12 +119,10 @@ const Programs = () => {
             <div className="container-fluid container-xxxl">
                 {!!(programsList) && <>
                     <div className='mb-3'>
-
                         {is_admin && <div className='float-end'>
                             <Button color='primary' size='sm' onClick={() => newProgram()}>+ Nuevo programa</Button>
                         </div>}
                         <ProgramFilter list={programsList} updateList={l => setProgramsList(l)} />
-
                     </div>
 
                     <div className='mb-4 pt-2 d-inline-flex align-items-center gap-3 mb-4'>

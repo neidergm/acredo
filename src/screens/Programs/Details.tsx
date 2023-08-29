@@ -6,8 +6,8 @@ import { AXIOS_REQUEST } from '../../services/axiosService';
 import { DELETE_PROGRAM, GET_PROGRAMS_LIST, SAVE_PROGRAM_DATA } from '../../services/endPointsService';
 import { I_Program } from '../../interfaces/programs.interface';
 import Loader from '../../components/Loader';
-import { Badge, Button, Col, Offcanvas, OffcanvasBody, OffcanvasHeader, Row, Table } from 'reactstrap';
-import { getDateDiff, getNormalDate } from '../../utils/dateUtils';
+import { Button, Col, Offcanvas, OffcanvasBody, OffcanvasHeader, Row, Table } from 'reactstrap';
+import { getNormalDate } from '../../utils/dateUtils';
 import { ArrowRightShort, Edit, ExclamationCircleFill, Kanban, Plus, XCircle } from '../../components/Icons';
 import { isAdmin, isSupervisor } from '../../utils/userRolUtils';
 import { useAppSelector } from '../../hooks/useAppSelector';
@@ -39,14 +39,13 @@ const Details = () => {
     const [program, setProgram] = useState<I_Program | null>(null);
     const [showSidePanel, setShowSidePanel] = useState<null | { title: string; body: any; toggler: (close: boolean) => void }>(null);
 
-    const getProgramInfo = () => {
-        return AXIOS_REQUEST(`${GET_PROGRAMS_LIST}/${id_program}`).then(resp => {
-            if (!resp.data[0]) {
-                return navigate(-1)
-            }
-            setProgram(resp.data[0])
-        })
-    }
+    const getProgramInfo = () => AXIOS_REQUEST(`${GET_PROGRAMS_LIST}/${id_program}`).then(resp => {
+        if (!resp.data[0]) {
+            return navigate(-1)
+        }
+        setProgram(resp.data[0] && { ...resp.data[0] })
+        return resp.data[0]
+    }).catch(() => setProgram(null))
 
     const deleteProgram = () => {
         const hasProcess = program?.procesos?.length;
@@ -173,15 +172,15 @@ const Details = () => {
         }
     }
 
-    const showAllResolutions = (show = true) => {
-        if (program && show) {
+    const showAllResolutions = (show = true, prog = program) => {
+
+        if (prog && show) {
             setShowSidePanel({
                 title: "Resoluciones del programa",
-                body: <Resolutions list={program.resoluciones} program_id={program.id_prog} canEdit={is_admin}
+                body: <Resolutions list={prog.resoluciones} program_id={prog.id_prog} canEdit={is_admin}
                     callback={() => {
-                        setShowSidePanel({ ...showSidePanel!, body: <><Loader isOpen subtitle={"Espere"} /></> })
-                        getProgramInfo().finally(() => {
-                            showAllResolutions()
+                        getProgramInfo().then((p) => {
+                            showAllResolutions(true, p);
                         })
                     }}
                 />,
@@ -220,17 +219,14 @@ const Details = () => {
         }
     }, [])
 
-    // const expiredResolution = program?.fech_reso && getDateDiff(program.fech_reso, new Date()) < 0;
-
     return (
         <>
             <SubHeader
                 showBackButton
-                text={program?.nomb_prog || "Detalles deL programa"}
+                text={program?.nomb_prog || "Detalles del programa"}
                 className="container-xxl"
             />
 
-            <Loader isOpen={!!(loader)} subtitle={loader} />
             <Modal isOpen={modal?.isOpen} size={modal?.size}>
                 <ModalHeader textCenter toggle={() => closeModal(setModal)}>{modal?.title}</ModalHeader>
                 <ModalBody>{modal?.children}</ModalBody>
@@ -238,6 +234,7 @@ const Details = () => {
             </Modal>
 
             <Alert isOpen={!!alert} {...alert} />
+            <Loader isOpen={!!(loader)} subtitle={loader} />
 
             <div className="container-xxl">
                 <div>
@@ -352,19 +349,19 @@ const Details = () => {
                                             </div>
                                         </div>
                                         <Resolutions
-                                            current={program.resoluciones?.filter(r => r.estado === 1)}
+                                            actives={program.resoluciones?.filter(r => r.estado === 1)}
                                             program_id={program.id_prog}
                                             canEdit={is_admin}
                                             callback={getProgramInfo}>
-                                            {(add, edit) => (
+                                            {(add, edit, hasActives) => (
                                                 <div className='flex-grow-1 mt-3 d-flex justify-content-between gap-1 align-items-end'>
                                                     <div className='d-inline-block'>
-                                                        {program.resoluciones?.[0] && <Button size='sm' color='link' onClick={() => showAllResolutions()}>
+                                                        {!!program.resoluciones?.length && <Button size='sm' color='link' onClick={() => showAllResolutions()}>
                                                             Ver todas las resoluciones <ArrowRightShort size={16} />
                                                         </Button>}
                                                     </div>
                                                     {is_admin && <>
-                                                        {program.resoluciones?.[0] && <div className='ms-auto d-inline-block'>
+                                                        {hasActives && <div className='ms-auto d-inline-block'>
                                                             <Button size='sm' color='primary' onClick={() => edit()}>
                                                                 <i className='me-1'><Edit size={15} /></i> Editar
                                                             </Button>

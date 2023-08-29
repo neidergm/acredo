@@ -59,7 +59,7 @@ const ProgramFilter = ({ list, updateList }: T_Props) => {
 
     return (
         <>
-            <div className='float-'>
+            <div className='d-inline-block'>
                 <CustomDropdown
                     options={
                         [...Object.keys(filter).map(f => ({

@@ -2,9 +2,9 @@ import { useState } from 'react'
 import { I_Resolutions } from '../../interfaces/programs.interface'
 import Card from '../Card'
 import classnames from 'classnames'
-import { Button, Nav, NavItem, NavLink, TabContent, TabPane, Table } from 'reactstrap'
+import { Badge, Button, Nav, NavItem, NavLink, TabContent, TabPane, Table } from 'reactstrap'
 import { Edit, ExclamationCircleFill, Folder2Open, XCircle } from '../Icons'
-import { getNormalDate } from '../../utils/dateUtils'
+import { getDateDiff, getNormalDate } from '../../utils/dateUtils'
 import { Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON, closeModal } from '../Modal'
 import Alert, { I_AlertObject } from '../Alert'
 import { AXIOS_REQUEST } from '../../services/axiosService'
@@ -19,26 +19,54 @@ import { getDifferenceBetweenData, jsonToFormData } from '../../utils/formUtils'
 
 type T_Props = {
     list?: I_Resolutions[] | null,
-    current?: I_Resolutions[] | null,
+    actives?: I_Resolutions[] | null,
     program_id: number,
     canEdit?: boolean,
     callback?: () => void,
-    children?: (addResoFunction: () => void, updateResoFunction: () => void) => JSX.Element,
+    children?: (addResoFunction: () => void, updateResoFunction: () => void, hasActives: boolean) => JSX.Element,
 }
 
-const Resolutions = ({ list, program_id, callback, canEdit = false, current, children }: T_Props) => {
+const Resolutions = ({ list, program_id, callback, canEdit = false, actives, children }: T_Props) => {
 
     const [modal, setModal] = useState<T_ModalJSON | null>(null);
     const [alertConfirm, setAlertConfirm] = useState<I_AlertObject | null>(null);
     const [loader, setLoader] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState(0);
 
+    const getStatusName = (est: 0 | 1, expiration: string, render?: (content: any, color: null | string) => any, expiredColor = "danger", inactiveColor = "warning", defaultColor = "success") => {
+        let text = "";
+        let color = defaultColor;
+        const v = getDateDiff(expiration);
+
+        if (est === 1) {
+            text = "Activa"
+            if (v >= 0) {
+                text += " y vigente"
+            } else {
+                text += " y vencida"
+                color = expiredColor;
+            }
+        } else {
+            text = "Inactiva"
+
+            if (v >= 0) {
+                text += " y vigente"
+                color = inactiveColor;
+            } else {
+                color = "dark";
+                text += " y vencida"
+            }
+        }
+
+        return render ? render(text, color) : text;
+    }
+
     const confirmDelete = (item: I_Resolutions) => {
         setAlertConfirm(
             confirmDeleteAlertObject(
                 <span>Se eliminará permanentemente la resolución <b>{item.reso_apro}</b></span>,
                 () => {
-                    onDelete(item.reso_apro);
+                    onDelete(item.id_reso);
                     closeModal(setAlertConfirm)
                 },
                 setAlertConfirm
@@ -46,10 +74,10 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, current, chi
         )
     }
 
-    const onDelete = (reso_apro: string) => {
+    const onDelete = (id_reso: number) => {
         setLoader("Eliminando resolución")
 
-        const d = jsonToFormData({ reso_apro, estado: -1 }, "resoluciones[0].");
+        const d = jsonToFormData({ id_reso, estado: -1 }, "resoluciones[0].");
         d.append(`id_prog`, `${program_id}`)
 
         AXIOS_REQUEST(`${DELETE_PROGRAM_RESOLUTION}`, "PUT", d).then(res => {
@@ -70,9 +98,8 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, current, chi
         let defaultValues = {};
 
         if (reso) {
-            form.shift();
-            const { fech_ejec, fech_reso, ncre_snies, nper_snies, vige_reso, peri_acad, reco_min, jres_deta, just_reso, estado } = reso;
-            defaultValues = { fech_ejec, fech_reso, ncre_snies, nper_snies, vige_reso, peri_acad, reco_min, jres_deta, just_reso, estado }
+            const { fech_ejec, fech_reso, ncre_snies, nper_snies, vige_reso, peri_acad, reso_apro, reco_min, jres_deta, just_reso, estado } = reso;
+            defaultValues = { fech_ejec, fech_reso, ncre_snies, nper_snies, vige_reso, reso_apro, peri_acad, reco_min, jres_deta, just_reso, estado }
         }
 
         setModal({
@@ -87,7 +114,7 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, current, chi
                         data = getDifferenceBetweenData(defaultValues, data)
                         if (Object.keys(data).length) {
                             data.reso_apro ||= reso!.reso_apro;
-                            data.id_reso ||= reso!.id_reso;
+                            reso?.id_reso && (data.id_reso = reso.id_reso);
                             saveResolutionData(data, reso ? "PUT" : "POST")
                         } else {
                             toast.error("No hay cambios para actualizar", { position: "top-right", icon: <i className='text-warning'><ExclamationCircleFill /> </i> })
@@ -125,34 +152,33 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, current, chi
 
     return (
         <>
-            <Loader isOpen={!!(loader)} subtitle={loader}></Loader>
+            <Loader isOpen={!!(loader)} subtitle={loader} />
             <Modal isOpen={modal?.isOpen} size={modal?.size}>
                 <ModalHeader textCenter toggle={() => closeModal(setModal)}>{modal?.title}</ModalHeader>
                 <ModalBody>{modal?.children}</ModalBody>
                 {modal?.footer}
             </Modal>
-
             <Alert isOpen={!!alertConfirm} {...alertConfirm} />
 
-            {!current?.length && !list && <div className='text-center p-5 text-muted opacity-50'>
+            {!actives?.length && !list && <div className='text-center p-5 text-muted opacity-50'>
                 <p><Folder2Open size={30} /></p>
-                No tiene resoluciones registradas
+                No tiene resoluciones activas
             </div>}
 
-            {current && <div>
+            {!!actives?.length && <div>
                 <Nav tabs className="group-subtitle p-0 mb-3 border-bottom justify-content-md-start d-flex flex-nowrap align-items-center lh-1">
-                    {current.map((re, idx) =>
+                    {actives.map((re, idx) =>
                         <NavItem onClick={() => setActiveTab(idx)} className='cursor-pointer text-truncate' key={idx}>
                             <NavLink className={classnames("border-0 text-secondary pt-0 text-truncate px-2 px-lg-3", {
                                 "active border-4 border-bottom border-warning text-warning fw-semibold": activeTab === idx
                             })}>
-                                {re.reco_min}
+                                {re.reco_min || re.reso_apro}
                             </NavLink>
                         </NavItem>
                     )}
                 </Nav>
                 <TabContent activeTab={activeTab} className="tab-content-item">
-                    {current.map((r, idx) =>
+                    {actives.map((r, idx) =>
                         <TabPane tabId={idx} key={idx}>
                             <div className='mb-3 mt-4'>
                                 <div className='d-flex gap-1 small justify-content-between text-secondary'>
@@ -184,7 +210,7 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, current, chi
                                     </tr>
                                     <tr>
                                         <td><b className="fw-semibold">Estado</b></td>
-                                        {r.estado === 1 ? <td> Activo</td> : <td></td>}
+                                        <td>{getStatusName(r.estado, r.fech_vige, (content, color) => <span className={`text-${color}`}>{content}</span>)}</td>
                                     </tr>
                                     <tr>
                                         <td><b className="fw-semibold">Periodos académicos</b></td>
@@ -213,24 +239,15 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, current, chi
                 <Card className='bg-light shadow-none mb-3 px-2 px-lg-3' key={idx}>
                     <div className='d-flex gap-2 justify-content-between'>
                         <div className='flex-grow-1 d-flex gap-1'>
-                            <div>
-                                <div className={classnames(
-                                    'd-flex rounded-pill align-items-center pe-4 gap-2 bg-opacity-25',
-                                    "bg-secondary text-muted"
-                                )}>
-                                    <div
-                                        className={classnames('rounded-circle text-white position-relative d-inline-block', "bg-dark bg-opacity-75")}
-                                        style={{ padding: "14px" }}
-                                    >
-                                        <b className='fw-semibold position-absolute top-50 start-50 translate-middle'>{idx + 1}</b>
-                                    </div>
-                                    <div>
-                                        <small className='fw-semibold ps-1'>
-                                            R. aprobación:  {r.reso_apro}
-                                        </small>
-                                    </div>
+                            {getStatusName(r.estado, r.fech_vige, (content, color) =>
+                                <div
+                                    className={`d-flex rounded-pill align-items-center pe-4 gap-2 bg-opacity-25 p-1 bg-${color || "success"}`}>
+                                    <Badge color={color || "success"} className={'bg-opacity-75 fs-6 py-1 px-2 rounded-pill'}>
+                                        <b className='fw-semibold'>{r.reso_apro}</b>
+                                    </Badge>
+                                    <div className={`text-${color} small fw-semibold ps-1`}>{content}</div>
                                 </div>
-                            </div>
+                            )}
                         </div>
                         {canEdit && <><div>
                             <Button
@@ -255,31 +272,33 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, current, chi
                         </>
                         }
                     </div>
-                    <div className='d-flex gap-3 mt-3 small mb-3 flex-wrap'>
+                    <div className='small mt-3'>
+                        <b>Reconocimiento del ministerio: </b>{r.reco_min}
+                    </div>
+                    <div className='d-flex gap-4 mt-3 small mb-3 flex-wrap'>
                         <div>
                             <b className='d-block'>Fecha de resolución</b>
                             <span>{r.fech_reso}</span>
                         </div>
                         <div>
-                            <b className='d-block'>Periodos</b>
-                            <span>{r.peri_acad}</span>
+                            <b className='d-block'>Vigencia</b>
+                            <span>{r.vige_reso} año{r.vige_reso > 1 && "s"} ({r.fech_vige})</span>
                         </div>
                         <div>
                             <b className='d-block'>Créditos</b>
-                            <span>{r.ncre_snies}</span>
+                            <span>{r.ncre_snies} créditos</span>
                         </div>
-                        <div>
-                            <b className='d-block'>Vigencia</b>
-                            <span>{r.vige_reso} año{r.vige_reso > 1 && "s"}</span>
-                        </div>
+
                     </div>
                     <div className='small d-flex flex-column gap-2 text-secondary'>
                         <div>
                             <b className='fw-semibold'>Fecha de ejecución: </b>{getNormalDate(r.fech_ejec, { dateStyle: "long" })}
                         </div>
                         <div>
-                            <b className='fw-semibold'>Reconocimiento del ministerio: </b>{r.reco_min}
+                            <b className='fw-semibold'>Periodos: </b>
+                            <span>{r.nper_snies} periodo{r.nper_snies > 1 && "s"} | {r.peri_acad}</span>
                         </div>
+
                         <div>
                             <b className='fw-semibold'>Justificación de resolución: </b>{r.just_reso || "No tiene"}
                         </div>
@@ -291,7 +310,7 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, current, chi
             </div>)
             }
 
-            {children?.(onAdd, () => { current && onEdit(current[activeTab]) })}
+            {children?.(onAdd, () => { actives && onEdit(actives[activeTab]) }, !!(actives?.length))}
         </>
     )
 }
