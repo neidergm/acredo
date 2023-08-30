@@ -48,7 +48,7 @@ const programForm = (defaultValues: I_JSONObject): T_FieldsTypes[] => [
         "label": "Estado",
         "tag": "select",
         "type": "simple",
-        "options": [{ label: "Activo", value: "1" }, { label: "Cerrado", value: "0" }],
+        "options": [{ label: "Activo", value: 1 }, { label: "Cerrado", value: 0 }],
         "wrapperClassName": "col-6",
         "validations": {
             "required": true

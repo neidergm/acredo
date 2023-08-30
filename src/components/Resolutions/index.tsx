@@ -3,7 +3,7 @@ import { I_Resolutions } from '../../interfaces/programs.interface'
 import Card from '../Card'
 import classnames from 'classnames'
 import { Badge, Button, Nav, NavItem, NavLink, TabContent, TabPane, Table } from 'reactstrap'
-import { Edit, ExclamationCircleFill, Folder2Open, XCircle } from '../Icons'
+import { CheckCircleFill, Edit, ExclamationCircleFill, Folder2Open, XCircle, XCircleFill } from '../Icons'
 import { getDateDiff, getNormalDate } from '../../utils/dateUtils'
 import { Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON, closeModal } from '../Modal'
 import Alert, { I_AlertObject } from '../Alert'
@@ -33,23 +33,33 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, actives, chi
     const [loader, setLoader] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState(0);
 
-    const getStatusName = (est: 0 | 1, expiration: string, render?: (content: any, color: null | string) => any, expiredColor = "danger", inactiveColor = "warning", defaultColor = "success") => {
+    const getStatusName = (est: 0 | 1,
+        expiration: string,
+        render?: (content: string, color: null | string, icon?: JSX.Element) => JSX.Element | string,
+        expiredColor = "danger",
+        inactiveColor = "warning",
+        defaultColor = "success"
+    ) => {
         let text = "";
         let color = defaultColor;
+        let icon = undefined;
         const v = getDateDiff(expiration);
 
         if (est === 1) {
             text = "Activa"
             if (v >= 0) {
                 text += " y vigente"
+                icon = <CheckCircleFill size={16} />;
             } else {
                 text += " y vencida"
                 color = expiredColor;
+                icon = <XCircleFill size={16} />;
             }
         } else {
             text = "Inactiva"
 
             if (v >= 0) {
+                icon = <ExclamationCircleFill size={16} />;
                 text += " y vigente"
                 color = inactiveColor;
             } else {
@@ -58,7 +68,7 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, actives, chi
             }
         }
 
-        return render ? render(text, color) : text;
+        return render ? render(text, color, icon) : text;
     }
 
     const confirmDelete = (item: I_Resolutions) => {
@@ -99,7 +109,7 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, actives, chi
 
         if (reso) {
             const { fech_ejec, fech_reso, ncre_snies, nper_snies, vige_reso, peri_acad, reso_apro, reco_min, jres_deta, just_reso, estado } = reso;
-            defaultValues = { fech_ejec, fech_reso, ncre_snies, nper_snies, vige_reso, reso_apro, peri_acad, reco_min, jres_deta, just_reso, estado }
+            defaultValues = { fech_ejec, fech_reso, ncre_snies, nper_snies, vige_reso, reso_apro, peri_acad, reco_min, jres_deta, just_reso, estado: `${estado}` }
         }
 
         setModal({
@@ -113,7 +123,7 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, actives, chi
                     onSubmit={data => {
                         data = getDifferenceBetweenData(defaultValues, data)
                         if (Object.keys(data).length) {
-                            data.reso_apro ||= reso!.reso_apro;
+                            data.reso_apro ||= reso?.reso_apro;
                             reso?.id_reso && (data.id_reso = reso.id_reso);
                             saveResolutionData(data, reso ? "PUT" : "POST")
                         } else {
@@ -210,7 +220,9 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, actives, chi
                                     </tr>
                                     <tr>
                                         <td><b className="fw-semibold">Estado</b></td>
-                                        <td>{getStatusName(r.estado, r.fech_vige, (content, color) => <span className={`text-${color}`}>{content}</span>)}</td>
+                                        <td>{getStatusName(r.estado, r.fech_vige, (content, color, icon) => <span className={`text-${color}`}>
+                                            <i className='me-1'>{icon}</i>{content}</span>)}
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td><b className="fw-semibold">Periodos académicos</b></td>
@@ -236,10 +248,10 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, actives, chi
             </div>}
 
             {list?.map((r, idx) => <div key={r.reso_apro}>
-                <Card className='bg-light shadow-none mb-3 px-2 px-lg-3' key={idx}>
-                    <div className='d-flex gap-2 justify-content-between'>
-                        <div className='flex-grow-1 d-flex gap-1'>
-                            {getStatusName(r.estado, r.fech_vige, (content, color) =>
+                {getStatusName(r.estado, r.fech_vige, (content, color) =>
+                    <Card className={`bg-${color} bg-opacity-10 shadow-none mb-3 px-2 px-lg-3 overflow-hidden`} key={idx}>
+                        <div className='d-flex gap-2 justify-content-between'>
+                            <div className='flex-grow-1 d-flex gap-1'>
                                 <div
                                     className={`d-flex rounded-pill align-items-center pe-4 gap-2 bg-opacity-25 p-1 bg-${color || "success"}`}>
                                     <Badge color={color || "success"} className={'bg-opacity-75 fs-6 py-1 px-2 rounded-pill'}>
@@ -247,66 +259,75 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, actives, chi
                                     </Badge>
                                     <div className={`text-${color} small fw-semibold ps-1`}>{content}</div>
                                 </div>
-                            )}
-                        </div>
-                        {canEdit && <><div>
-                            <Button
-                                size="sm"
-                                color='light'
-                                className={classnames('rounded-circle p-1 d-inline-flex align-items-center')}
-                                onClick={() => onEdit(r)}
-                            >
-                                <Edit />
-                            </Button>
-                        </div>
-                            <div>
+
+                            </div>
+                            {canEdit && <><div>
                                 <Button
                                     size="sm"
-                                    color='light'
-                                    className={classnames('text-danger rounded-circle p-1 d-inline-flex align-items-center')}
-                                    onClick={() => confirmDelete(r)}
+                                    color="transparent"
+                                    className={classnames('rounded-circle p-1 d-inline-flex align-items-center')}
+                                    onClick={() => onEdit(r)}
                                 >
-                                    <XCircle />
+                                    <Edit />
                                 </Button>
                             </div>
-                        </>
-                        }
-                    </div>
-                    <div className='small mt-3'>
-                        <b>Reconocimiento del ministerio: </b>{r.reco_min}
-                    </div>
-                    <div className='d-flex gap-4 mt-3 small mb-3 flex-wrap'>
-                        <div>
-                            <b className='d-block'>Fecha de resolución</b>
-                            <span>{r.fech_reso}</span>
+                                <div>
+                                    <Button
+                                        size="sm"
+                                        color='transparent'
+                                        className={classnames('text-danger rounded-circle p-1 d-inline-flex align-items-center')}
+                                        onClick={() => confirmDelete(r)}
+                                    >
+                                        <XCircle />
+                                    </Button>
+                                </div>
+                            </>
+                            }
                         </div>
-                        <div>
-                            <b className='d-block'>Vigencia</b>
-                            <span>{r.vige_reso} año{r.vige_reso > 1 && "s"} ({r.fech_vige})</span>
+                        <div className='small mt-3'>
+                            <b>Reconocimiento del ministerio: </b>{r.reco_min}
                         </div>
-                        <div>
-                            <b className='d-block'>Créditos</b>
-                            <span>{r.ncre_snies} créditos</span>
-                        </div>
+                        <div className='d-flex gap-4 mt-3 small mb-3 flex-wrap'>
+                            <div>
+                                <b className='d-block'>Fecha de resolución</b>
+                                <span>{r.fech_reso}</span>
+                            </div>
+                            <div>
+                                <b className='d-block'>Vigencia</b>
+                                <span>{r.vige_reso} año{r.vige_reso > 1 && "s"} ({r.fech_vige})</span>
+                            </div>
+                            <div>
+                                <b className='d-block'>Créditos</b>
+                                <span>{r.ncre_snies} créditos</span>
+                            </div>
 
-                    </div>
-                    <div className='small d-flex flex-column gap-2 text-secondary'>
-                        <div>
-                            <b className='fw-semibold'>Fecha de ejecución: </b>{getNormalDate(r.fech_ejec, { dateStyle: "long" })}
                         </div>
-                        <div>
-                            <b className='fw-semibold'>Periodos: </b>
-                            <span>{r.nper_snies} periodo{r.nper_snies > 1 && "s"} | {r.peri_acad}</span>
-                        </div>
+                        <div className='small d-flex flex-column gap-2 text-secondary'>
+                            <div>
+                                <b className='fw-semibold'>Fecha de ejecución: </b>{getNormalDate(r.fech_ejec, { dateStyle: "long" })}
+                            </div>
+                            <div>
+                                <b className='fw-semibold'>Periodos: </b>
+                                <span>{r.nper_snies} periodo{r.nper_snies > 1 && "s"} | {r.peri_acad}</span>
+                            </div>
 
-                        <div>
-                            <b className='fw-semibold'>Justificación de resolución: </b>{r.just_reso || "No tiene"}
+                            <div>
+                                <b className='fw-semibold'>Justificación de resolución: </b>{r.just_reso || "No tiene"}
+                            </div>
+                            <div>
+                                <b className='fw-semibold'>Justificación detallada: </b>{r.jres_deta || "No tiene"}
+                            </div>
                         </div>
-                        <div>
-                            <b className='fw-semibold'>Justificación detallada: </b>{r.jres_deta || "No tiene"}
-                        </div>
-                    </div>
-                </Card>
+                        {/* <div className={`position-absolute text-${color}`} style={{
+                            bottom: "15%",
+                            opacity: 0.1,
+                            right: "7%",
+                            transform: "scale(6.5)"
+                        }}>
+                            {icon}
+                        </div> */}
+                    </Card>
+                )}
             </div>)
             }
 

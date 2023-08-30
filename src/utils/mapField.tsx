@@ -1,7 +1,7 @@
-import { Button, Input } from "reactstrap";
+import { Button } from "reactstrap";
 import { BoxArrowUpRight } from "../components/Icons";
 import TextEditor from "../components/TextEditor";
-import { I_FormField, I_FormFieldWithAnswer, T_FileAnswer } from "../interfaces/conditions.interface";
+import { I_FormField, I_FormFieldWithAnswer } from "../interfaces/conditions.interface";
 import { I_JSONObject, T_FieldsTypes } from "../interfaces/generic.interface";
 import { AXIOS_REQUEST } from "../services/axiosService";
 import { getFormItemDefaultValue } from "./formUtils";
@@ -63,6 +63,7 @@ const mapField = (item: I_FormField, defaultValue?: any) => {
                     </div>
                     <div style={{ height: "90vh" }}>
                         <iframe
+                            title={"Document"}
                             // src="https://drive.google.com/file/d/16sNCAcgzNWE-PKNyG4OUlkRFIsxMwBytdYdyo955SZI/preview"
                             src={`${baseurl}${value}?embedded=true`}
                             // src="https://docs.google.com/document/d/16sNCAcgzNWE-PKNyG4OUlkRFIsxMwBytdYdyo955SZI/preview?embedded=true"

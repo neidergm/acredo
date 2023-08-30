@@ -219,9 +219,11 @@ const Programs = () => {
                                                                         :
                                                                         <>
                                                                             <b className='text-secondary fw-semibold'>Tiene {item.fech_reso.length} resoluciones </b>
-                                                                            <div className="hstack gap-2">
-                                                                                {item.fech_reso.map(fr =>
-                                                                                    <div title={"Vencida - " + fr.reco_mim} key={fr.reso_apro} className={classnames({ "text-danger fw-bold": getDateDiff(fr.fech_ven) >= 0 })}>
+                                                                            <div className="hstack gap-2 fw-bold">
+                                                                                {item.fech_reso.map(fr =>  getDateDiff(fr.fech_ven) >= 0 ?
+                                                                                    <div title={"Vigente - " + fr.reco_mim} key={fr.reso_apro}>{fr.reso_apro}</div>
+                                                                                    : 
+                                                                                    <div title={"Vencida - " + fr.reco_mim} key={fr.reso_apro} className={"text-danger fw-bold"}>
                                                                                         {fr.reso_apro}
                                                                                     </div>
                                                                                 )}

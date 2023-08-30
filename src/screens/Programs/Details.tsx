@@ -22,6 +22,8 @@ import { I_JSONObject } from '../../interfaces/generic.interface';
 import { getDifferenceBetweenData, jsonToFormData } from '../../utils/formUtils';
 import { toast } from 'react-hot-toast';
 import confirmDeleteAlertObject from '../../utils/confirmDeleteAlertObject';
+import classnames from 'classnames';
+import { I_Process } from '../../interfaces/process.interface';
 
 const EVENT_LIMITS_SHOW = 3;
 
@@ -37,7 +39,7 @@ const Details = () => {
 
     const { id_program } = useParams();
     const [program, setProgram] = useState<I_Program | null>(null);
-    const [showSidePanel, setShowSidePanel] = useState<null | { title: string; body: any; toggler: (close: boolean) => void }>(null);
+    const [showSidePanel, setShowSidePanel] = useState<null | { title: string; body: JSX.Element; toggler: (close: boolean) => void }>(null);
 
     const getProgramInfo = () => AXIOS_REQUEST(`${GET_PROGRAMS_LIST}/${id_program}`).then(resp => {
         if (!resp.data[0]) {
@@ -98,12 +100,11 @@ const Details = () => {
 
             defaultValues = {
                 departamento: program?.depa_prog,
-                ciud_prog, est_prog, moda_prog, nivel_prog, nomb_prog, tform_prog, titu_prog, cod_snies, freg_snies, cod_prog, id_facu
+                ciud_prog, est_prog: `${est_prog}`, moda_prog, nivel_prog, nomb_prog, tform_prog, titu_prog, cod_snies, freg_snies, cod_prog, id_facu
             }
         }
 
         const form = programForm(defaultValues)
-
         setModal({
             isOpen: true,
             title: "Modificar programa",
@@ -271,7 +272,7 @@ const Details = () => {
                                                         </tr>
                                                         <tr>
                                                             <td><b className="fw-semibold">Estado</b></td>
-                                                            <td>{program.estado}</td>
+                                                            <td className={classnames({"text-danger fw-bold":program.est_prog === 0})}>{program.estado}</td>
                                                         </tr>
                                                         <tr>
                                                             <td><b className="fw-semibold">Ciudad</b></td>
@@ -391,7 +392,7 @@ const Details = () => {
                                             {program.procesos ?
                                                 program.procesos.map((p, idx) => <React.Fragment key={`${p.id_conv}-${idx}`}>
                                                     {idx !== 0 && <div className='mx-3 opacity-50'><hr className='border-secondary' /></div>}
-                                                    <ProcessResumeItem process={p as any} pickItem={() => navigate(`/proceso/${p.id_conv}`)} />
+                                                    <ProcessResumeItem process={p as I_Process} pickItem={() => navigate(`/proceso/${p.id_conv}`)} />
                                                 </React.Fragment>)
                                                 :
                                                 <div className='p-5 text-center text-secondary opacity-50'>

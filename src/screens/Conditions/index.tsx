@@ -403,6 +403,47 @@ const Conditions = () => {
                         </AccordionHeader>
                         <AccordionBody accordionId={`${phase.id_fase}`} tag={Card}>
                           <ListGroup flush tag="div">
+                            <ListGroupItem
+                              tag="div"
+                              className="pb-5 pb-2 bg-transparent px-0 px-xl-3 d-flex gap-2 justify-content-between"
+                            >
+                              <div className="text-muted">
+                                Tareas de la fase: <b>{phase.condiciones?.length}</b>
+                              </div>
+                              <div className="d-flex gap-2">
+                                {is_admin ? <>
+                                  <Button
+                                    size='sm'
+                                    color='primary'
+                                    onClick={() => modalToCreateTask(phase)}
+                                  >
+                                    <i><Plus /></i>
+                                    Crear nueva tarea
+                                  </Button>
+
+                                  <CustomDropdown options={[
+                                    { text: "Mostrar todos los anexos", icon: <Clip size={16} />, click: () => showAllAttachment(phase) },
+                                    { text: "Modificar fase", icon: <Edit size={16} />, click: () => modalToEditPhase(phase) },
+                                    { text: "Eliminar fase", icon: <XCircle size={16} />, click: () => deletePhase(phase) },
+                                  ]}>
+                                    <DropdownToggle size="sm" color='primary'>
+                                      <ThreeDotsVertical />
+                                    </DropdownToggle>
+                                  </CustomDropdown>
+                                </>
+                                  :
+                                  <Button
+                                    size='sm'
+                                    color='primary'
+                                    onClick={() => showAllAttachment(phase)}
+                                  >
+                                    <i><Clip /></i>
+                                    Mostrar todos los anexos
+                                  </Button>
+                                }
+                              </div>
+
+                            </ListGroupItem>
                             {!(phase.condiciones?.length) ?
                               <ListGroupItem
                                 tag="div"
@@ -419,7 +460,7 @@ const Conditions = () => {
                                 <ListGroupItem
                                   key={item.id_cond}
                                   tag="div"
-                                  className="d-flex gap-3"
+                                  className="d-flex gap-3 px-0 px-xl-3"
                                 >
                                   <div
                                     className="pt-3 pb-3 hover-scale-up bg-transparent px-0 px-xl-3 flex-grow-1"
@@ -437,7 +478,7 @@ const Conditions = () => {
 
                                     <div className="float-md-end d-flex flex-md-column gap-2 mb-3 mb-md-0 flex-wrap">
                                       <div className="text-end">
-                                        <div className="px-3 rounded-pill badge opacity-75"
+                                        <div className="px-3 rounded-pill badge opacity-50"
                                           style={{ backgroundColor: `${item.color}` }}>
                                           {item.estado}
                                         </div>
@@ -445,8 +486,8 @@ const Conditions = () => {
                                       {Number(item.num_obs) > 0 && <div className="text-end">
                                         <Badge
                                           pill
-                                          color="light"
-                                          className="px-3 text-muted"
+                                          color="dark"
+                                          className="px-3 bg-opacity-10 text-muted"
                                         >
                                           {item.num_obs} Observaciones
                                         </Badge>
@@ -460,7 +501,7 @@ const Conditions = () => {
                                     </div>
 
                                     <p className="card-text mt-2 mt-md-2 d-inline-block">
-                                      <small className="text-muted">
+                                      <small className="text-muted opacity-75">
                                         - Última actualización el {new Date(item.marc_update).toLocaleString([], { dateStyle: "long", timeStyle: "short" })}
                                       </small>
                                     </p>
@@ -468,42 +509,6 @@ const Conditions = () => {
                                 </ListGroupItem>
                               )
                             }
-
-                            <ListGroupItem
-                              tag="div"
-                              className="pt-5 pb-2 bg-transparent px-0 px-xl-3 d-flex gap-2 justify-content-end"
-                            >
-                              {is_admin ? <>
-                                <Button
-                                  size='sm'
-                                  color='primary'
-                                  onClick={() => modalToCreateTask(phase)}
-                                >
-                                  <i><Plus /></i>
-                                  Crear nueva tarea
-                                </Button>
-
-                                <CustomDropdown options={[
-                                  { text: "Mostrar todos los anexos", icon: <Clip size={16} />, click: () => showAllAttachment(phase) },
-                                  { text: "Modificar fase", icon: <Edit size={16} />, click: () => modalToEditPhase(phase) },
-                                  { text: "Eliminar fase", icon: <XCircle size={16} />, click: () => deletePhase(phase) },
-                                ]}>
-                                  <DropdownToggle size="sm" color='primary'>
-                                    <ThreeDotsVertical />
-                                  </DropdownToggle>
-                                </CustomDropdown>
-                              </>
-                                :
-                                <Button
-                                  size='sm'
-                                  color='primary'
-                                  onClick={() => showAllAttachment(phase)}
-                                >
-                                  <i><Clip /></i>
-                                  Mostrar todos los anexos
-                                </Button>
-                              }
-                            </ListGroupItem>
                           </ListGroup>
                         </AccordionBody>
                       </AccordionItem>
