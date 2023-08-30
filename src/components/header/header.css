@@ -4,6 +4,7 @@
 
 .header .brand{
   z-index: 0;
+  top: -3px;
   text-align: center;
   margin: auto;
   width: 100%;
@@ -11,7 +12,6 @@
 }
 
 .header .navigation-items{
-  /* float: inline-end; */
   z-index: 1;
 }
 .header .navigation-items a {

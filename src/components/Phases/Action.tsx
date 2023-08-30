@@ -1,9 +1,10 @@
 import { T_Action } from '../../interfaces/phasesAndStages.interface';
 import Card from '../Card';
 import classnames from 'classnames';
-import { Button } from 'reactstrap';
+import { Badge, Button } from 'reactstrap';
 import { Edit, XCircle } from '../Icons';
 import { getNormalDate } from '../../utils/dateUtils';
+import { isLead } from '../../utils/userRolUtils';
 
 type T_Props = {
     data: T_Action;
@@ -91,7 +92,7 @@ const Action = ({
             </p>
             <ul className='ps-3 ms-1 mb-0'>
                 {data.usuarios?.map((user, i) => <li className='small cursor-pointer' key={i} title={user.nomb_cargo}>
-                    {user.responsable}<small className='text-muted'> | {user.rol_nombre}</small>
+                    {user.responsable} {isLead(user.rol) && <Badge className='fw-semibold bg-opacity-50'>{user.rol_nombre}</Badge>}
                     {/* <Badge className='ms-2 text-muted' color='light'>{user.rol_nombre}</Badge> */}
                 </li>) || <li className='small text-danger fw-semibold'>SIN USUARIOS ASIGNADOS</li>
                 }
