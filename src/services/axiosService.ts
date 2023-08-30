@@ -2,10 +2,12 @@ import axios from 'axios';
 import { BASE_URL } from './constantsService';
 import localStorageService from './localStorageService';
 import { I_JSONObject } from '../interfaces/generic.interface';
+import { toast } from 'react-hot-toast';
 
 let token_storaged = "";
 let otherConfig = {
     validateStatus: (status: number) => {
+        console.log(status)
         if (status === 401) {
             localStorageService.deleteItems(["user", "token"]);
             window.location.reload();
@@ -67,6 +69,9 @@ const AXIOS_REQUEST = (url: string, method = "get", data: null | FormData | I_JS
     }).then(resp => {
         return resp?.data
     }).catch(err => {
+        if(err.code === "ERR_NETWORK"){
+            toast.error("Error, por favor verifique su conexión a internet e intente nuevamente", {position: "bottom-center", duration: 15000, className: "bg-warning text-white"})
+        }
         throw new Error(err);
     })
 }
