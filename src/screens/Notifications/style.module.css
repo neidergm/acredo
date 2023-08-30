@@ -1,4 +1,3 @@
-.noti-list {}
 
 .noti-item {
     padding-left: 0px;
@@ -70,12 +69,17 @@
 
 .noti-unread .resume {
     color: #1c1c1c !important;
+    font-weight: 500;
 }
 
 .noti-unread .avatar {
     position: relative;
     background: linear-gradient(to right, #06A099 0%, #31AC69 100%);
     color: #fff;
+}
+
+.noti-unread .notification-html {
+    opacity: 1 !important;
 }
 
 @media screen and (max-width: 768px) {
@@ -88,6 +92,7 @@
 
 .noti-item .notification-html {
     display: inline;
+    opacity: 0.55;
 }
 
 .noti-item .notification-html * {
@@ -106,6 +111,9 @@
     text-decoration: none !important;
     opacity: inherit !important;
     position: inherit !important;
+}
+.noti-item .notification-html br{
+    display :none !important;
 }
 
 /* .notification-html .table>:not(caption)>*>* {

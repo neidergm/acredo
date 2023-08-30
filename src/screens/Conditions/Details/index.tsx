@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { CheckCircleFill, Edit, ExclamationCircleFill, Eye, InfoCircle, LinkIcon, People, ThreeDotsVertical, XCircle } from "../../../components/Icons";
+import { CheckCircleFill, Edit, ExclamationCircleFill, InfoCircle, LinkIcon, People, ThreeDotsVertical, XCircle } from "../../../components/Icons";
 import { Badge, Button, CloseButton, DropdownToggle } from 'reactstrap';
 import classnames from 'classnames';
 import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } from "../../../components/Modal";

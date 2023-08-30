@@ -100,10 +100,10 @@ const Notifications = () => {
             <SubHeader
                 showBackButton
                 text={`Notificaciones`}
-                className="container-xl"
+                className="container-fluid container-xxxl"
             />
 
-            <div className="container-xl" ref={pannelRef}>
+            <div className="container-fluid container-xxxl" ref={pannelRef}>
                 <div className="row">
                     <div className={classnames("col d-lg-block", { "d-none": selectedNotification }, !selectedNotification ? "col-12" : "col-lg-4")}>
                         <Card className="ps-3 pe-0" style={selectedNotification ? { height: pannelHeight } : { minHeight: pannelHeight }} >
@@ -119,9 +119,7 @@ const Notifications = () => {
                                 :
                                 (list.length === 0 ?
                                     <div className="w-100 d-flex flex-column justify-content-center align-items-center text-secondary text-opacity-50 gap-4" style={{ minHeight: "inherit" }}>
-                                        <h4>
-                                            <Bell size={40}/>
-                                        </h4>
+                                        <h4><Bell size={40}/></h4>
                                         <h4 className="">No hay nada para mostrar</h4>
                                     </div>
                                     :
@@ -156,7 +154,9 @@ const Notifications = () => {
                                                                         </Badge>
                                                                     </div>
                                                                     <div className="text-truncate mb-0">
-                                                                        <div className="d-inline">{item.asun_noti} - </div>
+                                                                        <div className="d-inline">{item.asun_noti}</div>
+                                                                    </div>
+                                                                    <div className="text-truncate text-secondary fw-normal mb-0 mt-2 small">
                                                                         {item.html_content}
                                                                     </div>
                                                                 </div>
@@ -190,14 +190,14 @@ const Notifications = () => {
 
                             <div className="overflow-auto">
                                 <div>
-                                    <h4>{selectedNotification.asun_noti}</h4>
+                                    <h5>{selectedNotification.asun_noti}</h5>
                                     <div>
                                         <Badge color="secondary" className="bg-opacity-25 text-dark my-1 text-opacity-50">
                                             {selectedNotification.desc_tipo_noti}
                                         </Badge>
                                     </div>
                                 </div>
-                                <div className="mt-4">{selectedNotification.html_content}</div>
+                                <div className="mt-4 pt-3">{selectedNotification.html_content}</div>
                             </div>
                         </Card>
                     </div>}

@@ -265,7 +265,7 @@ const Conditions = () => {
       <SubHeader
         showBackButton
         text={`${selectedProcess?.nomb_conv || ""}`}
-        className="container-xl"
+        className="container-xxl"
       />
 
       <Modal backdrop="static" size={modal?.size}
@@ -281,7 +281,7 @@ const Conditions = () => {
       <Alert isOpen={!!(alert?.isOpen)}{...alert} onClosed={() => { setAlert(null) }} />
       <Loader isOpen={!!(loading)} subtitle={loading} />
 
-      <div className="container-xl">
+      <div className="container-xxl">
         <div className="mb-5">
           {!selectedProcess ? <Loader isOpen loaderAsModal={false} /> :
             <Card className="pt-4 pb-3">

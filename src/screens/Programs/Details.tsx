@@ -224,7 +224,7 @@ const Details = () => {
             <SubHeader
                 showBackButton
                 text={program?.nomb_prog || "Detalles del programa"}
-                className="container-xxl"
+                className="container-xxxl"
             />
 
             <Modal isOpen={modal?.isOpen} size={modal?.size}>
@@ -236,7 +236,7 @@ const Details = () => {
             <Alert isOpen={!!alert} {...alert} />
             <Loader isOpen={!!(loader)} subtitle={loader} />
 
-            <div className="container-xxl">
+            <div className="container-fluid container-xxxl">
                 <div>
                     {!program ? <div className='p-5 mt-5'><Loader loaderAsModal={false} isOpen /></div>
                         : <>
@@ -266,7 +266,7 @@ const Details = () => {
                                                             <td>{program.facultad}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td><b className="fw-semibold">Código de programa</b></td>
+                                                            <td><b className="fw-semibold text-nowrap">Código de programa</b></td>
                                                             <td>{program.cod_prog}</td>
                                                         </tr>
                                                         <tr>
@@ -282,7 +282,7 @@ const Details = () => {
                                                             <td>{program.cod_snies} <small className='text-muted'>({getNormalDate(program.freg_snies, { dateStyle: "long" })})</small></td>
                                                         </tr>
                                                         <tr>
-                                                            <td><b className="fw-semibold">Nivel de formación</b></td>
+                                                            <td><b className="fw-semibold text-nowrap">Nivel de formación</b></td>
                                                             <td>{program.nivel_prog}</td>
                                                         </tr>
                                                         <tr>

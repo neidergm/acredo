@@ -20,7 +20,6 @@ import classnames from 'classnames';
 import { isAdmin } from '../../utils/userRolUtils';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import ProgramFilter from '../../components/ProgramFilter';
-import CustomDropdown from '../../components/CustomDropdown';
 
 const Programs = () => {
 

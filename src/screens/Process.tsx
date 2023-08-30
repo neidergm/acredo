@@ -188,7 +188,7 @@ const Process = () => {
 
   return (
     <>
-      <SubHeader text={'Procesos'} className="container-xl">
+      <SubHeader text={'Procesos'} className="container-xxl">
         <div className='d-flex align-items-center'>
           {/* {is_admin && <Button color='primary' size='sm' className='opacity-75 rounded-2' onClick={modalToCreateNewProcess}> */}
           {is_admin && <Button color='primary' size='sm' onClick={modalToCreateNewProcess}>
@@ -210,7 +210,7 @@ const Process = () => {
       <Alert isOpen={!!(alert?.isOpen)}{...alert} onClosed={() => { setAlert(null) }} />
 
       <Loader isOpen={!!loading} subtitle={loading} />
-      <div className="container-xl pt-3 pb-5">
+      <div className="container-fluid container-xxl pt-3 pb-5">
         {!(processList) ?
           <Loader loaderAsModal={false} isOpen />
           :

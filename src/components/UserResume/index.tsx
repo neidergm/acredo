@@ -3,6 +3,7 @@ import { T_PhasesWithConditions } from '../../interfaces/phasesAndStages.interfa
 import { Alert, Input, Table } from 'reactstrap'
 import classnames from 'classnames'
 import { I_Condition } from '../../interfaces/conditions.interface'
+import { isLead } from '../../utils/userRolUtils'
 
 type T_Props = {
     list: T_PhasesWithConditions[],
@@ -62,8 +63,7 @@ const UserResume = ({ list: _list, goToConditionDetailsScreen }: T_Props) => {
                                 </tr>
                                 <tr className="bg-secondary bg-opacity-25 border">
                                     <th className="fw-semibold w-25">Tarea</th>
-                                    <th className="fw-semibold w-25">Usuario</th>
-                                    <th className="fw-semibold">Rol</th>
+                                    <th className="fw-semibold w-25">Responsable</th>
                                     <th className="fw-semibold">Acción (Etapa)</th>
                                 </tr>
                             </thead>
@@ -78,11 +78,20 @@ const UserResume = ({ list: _list, goToConditionDetailsScreen }: T_Props) => {
                                                 {i === 0 &&
                                                     <td className="fw-semibold bg-light cursor-pointer border-bottom"
                                                         onClick={() => goToConditionDetailsScreen?.(cond)}
-                                                        rowSpan={cond.resumen_usuario.length}>{cond.nomb_cond}
+                                                        rowSpan={cond.resumen_usuario.length}>
+                                                        <p>{cond.nomb_cond}</p>
+                                                        <div className='fw-normal'>
+                                                            <b className='fw-normal bg-primary text-white opacity-75 rounded px-2'>Líderes</b>
+                                                            <ol className='list-group text-muted list-group-numbered opacity-75'>
+                                                                {cond.usuarios.map(u => isLead(u.rol) ?
+                                                                    <li key={u.id_rc} className='list-group-item p-0 bg-transparent border-0'>{u.responsable}</li>
+                                                                    : null)
+                                                                }
+                                                            </ol>
+                                                        </div>
                                                     </td>
                                                 }
                                                 <td className="">{u.nomb_resp}</td>
-                                                <td className="">{u.nomb_rol}</td>
                                                 <td className="">{u.accion}</td>
                                             </tr>
                                         }) : <tr className="small" key={`${phase.id_fase}-${cond.cod_cond}`}>
