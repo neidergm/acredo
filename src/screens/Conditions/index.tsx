@@ -65,6 +65,7 @@ const Conditions = () => {
       isOpen: true,
       size: "xl",
       title: "Anexos por fase",
+      fullscreen: "lg",
       children: <>
         <AllAttachments phaseId={phase.id_fase} />
       </>,
@@ -254,7 +255,7 @@ const Conditions = () => {
           selectItem(`${lastAccordionOpen || selectedProcess.id_fase}`);
         } else {
           const element = document.getElementById(`${accordionOpen}`)
-          !(element) ? selectItem(`${selectedProcess.id_fase}`) : element.scrollIntoView();
+          !(element) ? selectItem(`${selectedProcess.id_fase}`) : element.scrollIntoView({behavior: "smooth", block: "nearest"});
         }
       }
     }
@@ -365,12 +366,11 @@ const Conditions = () => {
                       const dateDiffInPhase = getDateDiff(new Date(phase.fech_fin));
                       return <AccordionItem
                         key={phase.id_fase}
-                        id={`${phase.id_fase}`}
                         className={
                           classnames("d-flex gap-2 flex-column mb-3",
                             styles["process-item"], { [styles["active"]]: accordionOpen === `${phase.id_fase}` })
                         } >
-                        <AccordionHeader targetId={`${phase.id_fase}`} className="p-0 d-flex mb-2 flex-wrap" tag={Card}>
+                        <AccordionHeader id={`${phase.id_fase}`} targetId={`${phase.id_fase}`} className="p-0 d-flex mb-2 flex-wrap" tag={Card}>
                           <div className="d-flex gap-2 flex-grow-1 align-content-center">
                             <div>
                               <div className="rounded-circle">
@@ -405,9 +405,9 @@ const Conditions = () => {
                           <ListGroup flush tag="div">
                             <ListGroupItem
                               tag="div"
-                              className="pb-5 pb-2 bg-transparent px-0 px-xl-3 d-flex gap-2 justify-content-between"
+                              className="pb-5 pb-2 bg-transparent px-0 px-xl-3 d-flex gap-2 justify-content-between border-0"
                             >
-                              <div className="text-muted">
+                              <div className="opacity-75 bg-dark bg-opacity-10 px-3 rounded-pill d-flex align-items-center lh-1 gap-2">
                                 Tareas de la fase: <b>{phase.condiciones?.length}</b>
                               </div>
                               <div className="d-flex gap-2">
@@ -422,7 +422,7 @@ const Conditions = () => {
                                   </Button>
 
                                   <CustomDropdown options={[
-                                    { text: "Mostrar todos los anexos", icon: <Clip size={16} />, click: () => showAllAttachment(phase) },
+                                    { text: "Ver todos los anexos de la fase", icon: <Clip size={16} />, click: () => showAllAttachment(phase) },
                                     { text: "Modificar fase", icon: <Edit size={16} />, click: () => modalToEditPhase(phase) },
                                     { text: "Eliminar fase", icon: <XCircle size={16} />, click: () => deletePhase(phase) },
                                   ]}>
@@ -438,7 +438,7 @@ const Conditions = () => {
                                     onClick={() => showAllAttachment(phase)}
                                   >
                                     <i><Clip /></i>
-                                    Mostrar todos los anexos
+                                    Ver todos los anexos de la fase
                                   </Button>
                                 }
                               </div>

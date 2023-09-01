@@ -110,6 +110,15 @@ code {
   font-size: .910em;
 }
 
+.btn-group > *:first-child{
+  border-bottom-right-radius: 0px !important;
+  border-top-right-radius: 0px !important;
+}
+.btn-group > *:nth-child(2){
+  border-bottom-left-radius: 0px !important;
+  border-top-left-radius: 0px !important;
+}
+
 .radius-15 {
   border-radius: 15px !important;
 }

@@ -27,8 +27,8 @@ export const actionFields = (id_condicion: string | number, id_action?: string |
   },
   {
     "label": `<br/>Usuarios responsable(s) <br/>
-    <span class="fw-normal text-secondary mb-2">El <b>líder de la tarea</b> es por defecto el responsable en esta acción si no se agregan más usuarios</span><br/>`,
-    "help": "No puede modificar los usuarios que son líderes o solo lectura",
+    <span class="fw-normal text-secondary mb-2">Los <b>líderes de la tarea</b> son por defecto los responsable en esta acción si no se agregan más usuarios</span><br/>`,
+    // "help": "No puede modificar los usuarios que son líderes o solo lectura",
     "name": "responsible",
     "tag": "list",
     "type": "table",

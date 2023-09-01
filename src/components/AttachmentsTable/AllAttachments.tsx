@@ -5,7 +5,7 @@ import { T_AttachmentInPhase, T_AttachmentsOfPhases } from '../../interfaces/pha
 import { AccordionBody, AccordionHeader, AccordionItem, DropdownToggle, Table, UncontrolledAccordion } from 'reactstrap'
 import CustomDropdown from '../CustomDropdown'
 import { toast } from 'react-hot-toast'
-import { Calendar2Event, Link, People, Quote, ThreeDotsVertical } from '../Icons'
+import { Calendar2Event, ExclamationCircleFill, Link, People, Quote, ThreeDotsVertical } from '../Icons'
 import { I_JSONObject } from '../../interfaces/generic.interface'
 import Loader from '../Loader'
 import { getNormalDate } from '../../utils/dateUtils'
@@ -37,9 +37,7 @@ const AllAttachments = ({
                     // className="text-nowrap"
                     style={{ maxWidth: "300px" }}
                 >
-                    <div
-                        className="d-flex flex-column justify-content-between h-100"
-                    >
+                    <div className="d-flex flex-column justify-content-between h-100">
                         <div className='text-nowrap'>
                             <div className='d-flex gap-1 mb-2 mt-1 align-items-start'>
                                 {!!(data.anexo) && <>
@@ -132,16 +130,21 @@ const AllAttachments = ({
             <Loader isOpen loaderAsModal={false} />
             <p className='my-4 text-center'>Consultando anexos</p>
         </div>
+    } else if (groups.length === 0) {
+        return <div className='text-muted my-5 text-center'>
+            <div className='opacity-50 mb-2'><ExclamationCircleFill size={30}/></div>
+            Sin anexos para mostrar
+        </div>
     }
 
     return (
         <div className='attach'>
-            <UncontrolledAccordion stayOpen flush >
+            <UncontrolledAccordion stayOpen flush defaultOpen={["0"]}>
                 {groups?.map((item, tid) =>
                     <AccordionItem key={tid}>
                         <div className='d-flex align-items-center justify-content-between'>
                             <AccordionHeader targetId={`${tid}`}
-                                className="flex-grow-1"
+                                className="flex-grow-1 border"
                                 tag="div"
                             >
                                 <span>
@@ -170,7 +173,6 @@ const AllAttachments = ({
                 )
                 }
             </UncontrolledAccordion>
-
         </div>
     )
 }

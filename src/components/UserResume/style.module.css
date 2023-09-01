@@ -1,0 +1,10 @@
+.item-list {
+    --bs-accordion-body-padding-x: 0;
+    --bs-accordion-body-padding-y: 0;
+    --bs-accordion-active-bg: var(--bs-secondary);
+    --bs-accordion-active-color: #fff;
+    --bs-accordion-btn-focus-border-color: transparent;
+    --bs-accordion-btn-bg: var(--bs-light);
+    --bs-accordion-btn-focus-box-shadow: none;
+    margin-bottom: 20px;
+}

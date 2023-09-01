@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { CheckCircleFill, Edit, ExclamationCircleFill, InfoCircle, LinkIcon, People, ThreeDotsVertical, XCircle } from "../../../components/Icons";
-import { Badge, Button, CloseButton, DropdownToggle } from 'reactstrap';
+import { CheckCircleFill, Clip, Edit, ExclamationCircleFill, InfoCircle, LinkIcon, People, ThreeDotsVertical, XCircle } from "../../../components/Icons";
+import { Badge, Button, CloseButton, DropdownToggle, Table } from 'reactstrap';
 import classnames from 'classnames';
 import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } from "../../../components/Modal";
 import { SubHeader } from "../../../components/SubHeader";
@@ -25,6 +26,7 @@ import Form from 'react-ngm-form';
 import TextEditor from '../../../components/TextEditor';
 import { I_JSONObject } from '../../../interfaces/generic.interface';
 import confirmDeleteAlertObject from '../../../utils/confirmDeleteAlertObject';
+import AllAttachments from '../../../components/AttachmentsTable/AllAttachments';
 
 const ConditionsDetails = () => {
 
@@ -72,6 +74,45 @@ const ConditionsDetails = () => {
       size: "xl",
       footer: <ModalFooter>
         <Button color="primary2" onClick={() => closeModal(setModalData)}>Cerrar</Button>
+      </ModalFooter>
+    })
+  }
+
+  const showUserResume = () => {
+    setModalData({
+      isOpen: true,
+      fullscreen: "lg",
+      title: "Usuarios responsables",
+      size: "xl",
+      footer: <ModalFooter className='justify-content-between'>
+        <Button color='primary2' onClick={() => closeModal(setModalData)}>Cerrar</Button>
+      </ModalFooter>,
+      children: <>
+        <Table responsive striped borderless>
+          <thead>
+            <tr><th></th><th>Acción (Etapa)</th><th>Responsable</th></tr>
+          </thead>
+          <tbody>
+            {conditionSelected?.resumen_usuario.map((u, idx) => <tr key={idx}><th>{idx + 1}</th><td>{u.accion}</td><td>{u.nomb_resp}</td></tr>)}
+          </tbody>
+        </Table>
+      </>
+    })
+  }
+
+  const showGeneralAttachmentsTable = () => {
+    processSelected && setModalData({
+      isOpen: true,
+      size: "xl",
+      fullscreen: "lg",
+      title: "Anexos de la fase",
+      children: <>
+        <AllAttachments phaseId={processSelected.id_fase!} />
+      </>,
+      footer: <ModalFooter>
+        <Button color='primary2' onClick={() => closeModal(setModalData)}>Cerrar</Button>
+        <Link to={`/proceso/fases/anexos/${processSelected.id_fase!}`} target="_blank"
+          className="btn btn-primary">Abrir en nueva pestaña</Link>
       </ModalFooter>
     })
   }
@@ -192,6 +233,7 @@ const ConditionsDetails = () => {
         onClosed={() => { setModalData(null) }}
         toggle={() => closeModal(setModalData)}
         size={modalData?.size}
+        fullscreen={modalData?.fullscreen}
       >
         <ModalHeader textCenter toggle={() => closeModal(setModalData)}>{modalData?.title}</ModalHeader>
         <ModalBody>{modalData?.children}</ModalBody>
@@ -224,7 +266,7 @@ const ConditionsDetails = () => {
                 </div>
               </div>
               {(!processSelected) ?
-                <div className='mb-3'><Loader isOpen={true} loaderAsModal={false} /></div>
+                <div className='py-5'><Loader isOpen={true} loaderAsModal={false} /></div>
                 :
                 <div className='d-flex flex-column gap-3 h-100'>
                   <div>
@@ -240,7 +282,7 @@ const ConditionsDetails = () => {
                     <b>Condición:</b>
                     <span className="d-block">{conditionSelected.condicion}</span>
                   </div>}
-                  {!!processSelected.programa && <div>
+                  {!!processSelected.programa && <div title="Ver detalles del programa">
                     <b>Programa:</b>
                     <span className="d-block">
                       <Link className="link-dark" to={`/programa/${processSelected.id_prog}`}>{processSelected.programa}
@@ -259,25 +301,20 @@ const ConditionsDetails = () => {
                         <span className="d-block">Usted tiene el rol de {conditionSelected?.rol_nombre}</span>
                       </div>}
                     </div>
-                    <div className='d-flex gap-3 mt-auto ms-auto'>
+                    <div className='d-flex gap-2 mt-auto ms-auto'>
                       <div>
-                        {!taskIsEnded && is_admin ?
-                          <CustomDropdown options={[
-                            { text: "Ver detalles", icon: <InfoCircle size={16} />, click: showConditionDetails },
+                        <CustomDropdown options={[
+                          { text: "Ver detalles", icon: <InfoCircle size={16} />, click: showConditionDetails },
+                          { text: "Ver todos los anexos de la fase", icon: <Clip size={16} />, click: showGeneralAttachmentsTable },
+                          ...((!taskIsEnded && is_admin) ? [
                             { text: "Modificar tarea", icon: <Edit size={16} />, click: editTask },
-                            { text: "Eliminar tarea", icon: <XCircle size={16} />, click: deleteTask },
-                          ]}>
-                            <DropdownToggle size="sm" color='primary' className='pe-3'>
-                              <ThreeDotsVertical size={16} /> Opciones
-                            </DropdownToggle>
-                          </CustomDropdown>
-                          :
-                          <Button size='sm' color="primary" outline onClick={() => showConditionDetails()}>
-                            <span className='d-flex align-items-center pe-2'>
-                              <span className='me-1'><InfoCircle size={16} /></span>Detalles
-                            </span>
-                          </Button>
-                        }
+                            { text: "Eliminar tarea", icon: <XCircle size={16} />, click: deleteTask }
+                          ] : [])
+                        ]}>
+                          <DropdownToggle size="sm" color='primary' className='pe-3'>
+                            <ThreeDotsVertical size={16} /> Opciones
+                          </DropdownToggle>
+                        </CustomDropdown>
                       </div>
                       <div>
                         <CustomDropdown options={
@@ -300,12 +337,16 @@ const ConditionsDetails = () => {
                                     {u.responsable}
                                     <span className='d-block small fw-semibold'>{u.rol_nombre}</span>
                                   </span>
-                                </>
-                                , optionProps: { className: "d-block pb-2" }
+                                </>,
+                                optionProps: { className: "d-block pb-2", disabled: true }
                               })),
+                              {
+                                icon: <i className='text-primary'><People size={14} /></i>,
+                                text: <small className='text-primary'>Ver responsables de las acciones</small>, optionProps: { className: "mt-4" }, click: showUserResume
+                              },
                               ...(!taskIsEnded && is_admin ? [{
                                 icon: <i className='text-primary'><Edit size={14} /></i>,
-                                text: <small className='text-primary'>Modificar usuarios</small>, optionProps: { className: "mt-4" }, click: editTask
+                                text: <small className='text-primary'>Modificar usuarios</small>, click: editTask
                               }] : [])
                             ]
 
@@ -341,7 +382,7 @@ const ConditionsDetails = () => {
           <div className={classnames('mb-4 order-3 order-lg-2', showAllPhases ? "col-lg-8" : "col-lg-12")}>
             <Card className='h-100'>
               {(!conditionSelected) ?
-                <div className='mt-4 pt-2'><Loader isOpen={true} loaderAsModal={false} /></div>
+                <div className='py-5 mt-5'><Loader isOpen={true} loaderAsModal={false} /></div>
                 :
                 <FormPannel formId={conditionSelected.form_cond} canEdit={canEditForms}
                   codCond={conditionSelected.cod_cond}
@@ -364,13 +405,17 @@ const ConditionsDetails = () => {
                   <CloseButton onClick={() => setShowAllPhases(false)} />
                 </div>
                 <div>
-                  <PhasesList isAdmin={!taskIsEnded && is_admin} />
+                  {(!conditionSelected) ?
+                    <div className='py-5'><Loader isOpen={true} loaderAsModal={false} /></div>
+                    :
+                    <PhasesList isAdmin={!taskIsEnded && is_admin} taskEnded={taskIsEnded} />
+                  }
                 </div>
               </Card>
             </div>
           </div>
-        </div>
-      </div>
+        </div >
+      </div >
     </>
   );
 };

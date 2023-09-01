@@ -1,12 +1,12 @@
-import React, { useState } from 'react'
-import { Badge, Button } from 'reactstrap';
+import { useState } from 'react'
+import { Badge, Button, DropdownToggle } from 'reactstrap';
 import { getDateDiff, getNormalDate } from '../../utils/dateUtils';
 import CircleProgress from '../CircleProgress';
 import classnames from 'classnames';
 import Alert, { I_AlertObject } from '../Alert';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import Loader from '../Loader';
-import { ArrowCounterclockwise, Check, ExclamationCircleFill } from '../Icons';
+import { ArrowCounterclockwise, Check, ExclamationCircleFill, UiChecks } from '../Icons';
 import { AXIOS_REQUEST } from '../../services/axiosService';
 import { PUT_ACTION, UPDATE_TASK } from '../../services/endPointsService';
 import { jsonToFormData } from '../../utils/formUtils';
@@ -16,6 +16,8 @@ import { selectProcess } from '../../store/actions/processActions';
 import { isAdmin, isLead, isOnlyView, isSupervisor } from '../../utils/userRolUtils';
 import { I_Condition } from '../../interfaces/conditions.interface';
 import { toast } from 'react-hot-toast';
+import CustomDropdown from '../CustomDropdown';
+import { closeModal } from '../Modal';
 
 type T_Props = {
     taskProgress: number,
@@ -42,9 +44,9 @@ const CurrentPhase = ({
     const is_admin = isAdmin(userRol);
     const is_supervisor = isSupervisor(userRol);
 
-    const canEndAction = !is_supervisor && (is_admin || !onlyView && !!(active?.action?.finalizar));
-    const canEndTask = !is_supervisor && (is_admin || isLead(task?.rol));
     const taskIsEnded = task?.id_esta === 3;
+    const canEndAction = !taskIsEnded && (!is_supervisor && (is_admin || (!onlyView && !!(active?.action?.finalizar))));
+    const canEndTask = !is_supervisor && (is_admin || isLead(task?.rol));
 
     const [_alert, setAlert] = useState<null | I_AlertObject>(null);
     const [loader, setLoader] = useState<null | string>(null);
@@ -60,6 +62,7 @@ const CurrentPhase = ({
             id_accion: active!.action!.id_accion
         }, "[0].")
         ).then(() => {
+            closeModal(setAlert)
             toast.success("Se ha finalizado la acción correctamente", { position: "top-right" });
             dispatch(setProcessPhasesWithConditions(processId, null))
             dispatch(selectCondition(null));
@@ -85,7 +88,7 @@ const CurrentPhase = ({
         })
         ).then(() => {
             toast.success("Se ha desmarcado la tarea correctamente", { position: "top-right" });
-
+            closeModal(setAlert)
             dispatch(setProcessPhasesWithConditions(processId, null))
             dispatch(selectCondition(null));
             dispatch(selectProcess(null));
@@ -109,6 +112,7 @@ const CurrentPhase = ({
             id_cond: task.id_cond
         })
         ).then(() => {
+            closeModal(setAlert)
             toast.success("Se ha finalizado la tarea correctamente", { position: "top-right" });
             dispatch(setProcessPhasesWithConditions(processId, null))
             dispatch(selectCondition(null));
@@ -140,14 +144,14 @@ const CurrentPhase = ({
         })
     }
 
-    const markTaskAsCompleted = () => {
+    const markTaskAsCompleted = (warning?: boolean) => {
         setAlert({
             isOpen: true,
             title: "¿Está seguro?",
-            subtitle: "La tarea se dará por finalizada, se quitarán los permisos a los responsables y no se podrá realizar ninguna clase de modificaciones",
-            type: "question",
+            subtitle: "La tarea se dará por terminada, se quitarán los permisos a los responsables y no se podrá realizar ninguna clase de modificaciones",
+            type: warning ? "warning" : "question",
             submitButton: {
-                value: "Sí, finalizar",
+                value: "Sí, continuar",
                 onClick: completeTask
             },
             closeButton: { value: "No, cancelar" }
@@ -159,17 +163,17 @@ const CurrentPhase = ({
             isOpen: true,
             title: "¿Está seguro?",
             subtitle: "La tarea dejará de estar completada, se restaurarán los permisos a los responsables y se habilitarán las modificaciones",
-            type: "question",
+            type: "warning",
             submitButton: {
-                value: "Sí, finalizar",
+                value: "Sí, continuar",
                 onClick: undoCompleteTask
             },
             closeButton: { value: "No, cancelar" }
         })
     }
 
-    if (!(active)) {
-        return <div className='mb-3'><Loader isOpen={true} loaderAsModal={false} /></div>
+    if (!task || !(active)) {
+        return <div className='py-5'><Loader isOpen={true} loaderAsModal={false} /></div>
     } else if (!action && phases?.[0]?.stages_completed === 0) {
         return <div className='w-100 h-100 d-flex justify-content-center align-items-center flex-column'>
             <i className='text-warning mb-2'><ExclamationCircleFill size={35} /></i>
@@ -178,10 +182,10 @@ const CurrentPhase = ({
     }
 
     return (<>
-        <Alert isOpen={!!(_alert?.isOpen)}{..._alert} onClosed={() => { setAlert(null) }} />
+        <Alert isOpen={!!(_alert?.isOpen)}{..._alert} onClosed={() => { closeModal(setAlert) }} />
         <Loader isOpen={!!(loader)} subtitle={loader} />
         {
-            (!phase && phases?.[0]?.stages?.length === phases?.[0]?.stages_completed) ?
+            (taskIsEnded || (!phase && phases?.[0]?.stages?.length === phases?.[0]?.stages_completed)) ?
                 <div className='w-100 h-100 d-flex justify-content-center align-items-center flex-column'>
                     {taskIsEnded ?
                         <b className="d-block fw-semibold">Tarea completada</b>
@@ -198,17 +202,16 @@ const CurrentPhase = ({
                     <div>
                         {!!(canEndTask) && (
                             taskIsEnded ?
-                                <Button onClick={undoMarkTaskAsCompleted} size='sm' color='primary' className='ms-auto' disabled={!(taskProgress)}>
+                                <Button onClick={() => undoMarkTaskAsCompleted()} size='sm' color='primary' className='ms-auto' disabled={!(taskProgress)}>
                                     <i className='me-1'><ArrowCounterclockwise /></i>
                                     Desmarcar tarea como completada
                                 </Button>
                                 :
-                                <Button onClick={markTaskAsCompleted} size='sm' color='primary' className='ms-auto' disabled={!(taskProgress)}>
+                                <Button onClick={() => markTaskAsCompleted()} size='sm' color='primary' className='ms-auto' disabled={!(taskProgress)}>
                                     <i className='me-1'><Check /></i>
                                     Marcar tarea como completada
                                 </Button>
-                        )
-                        }
+                        )}
                     </div>
                 </div>
                 :
@@ -246,11 +249,23 @@ const CurrentPhase = ({
                         {!!(togglePhases) &&
                             <Button onClick={togglePhases} size='sm' color='link' className='rounded-2 '>Mostrar fases y etapas</Button>
                         }
-                        {!!(canEndAction) &&
-                            <Button onClick={markActionAsCompleted} size='sm' color='primary' className='ms-auto'>
-                                <i className='me-1'><Check /></i>
-                                Finalizar esta acción
-                            </Button>
+                        {!!(canEndAction) && <div className='text-end flex-grow-1'>
+                            {
+                                <CustomDropdown
+                                    options={[{ text: "Marcar tarea como completada", click: () => { markTaskAsCompleted(true) }, icon: <UiChecks /> }]}
+                                    group={canEndTask}>
+                                    <Button onClick={markActionAsCompleted} size='sm' color='primary' className='ms-auto'>
+                                        <i className='me-1'><Check /></i>
+                                        Finalizar esta acción
+                                    </Button>
+                                    {canEndTask ? <DropdownToggle
+                                        caret
+                                        color="primary"
+                                        size='sm'
+                                    /> : <></>}
+                                </CustomDropdown>
+                            }
+                        </div>
                         }
                     </div>
                 </div>

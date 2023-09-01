@@ -5,23 +5,24 @@ type T_Option = {
     text: string | JSX.Element,
     click?: () => void,
     className?: string,
-    icon?: any,
+    icon?: JSX.Element,
     optionProps?: Partial<DropdownItemProps>
     disabled?: boolean,
 }
 
 type T_Props = {
-    children: JSX.Element;
-    options: Array<T_Option>
+    children: JSX.Element | JSX.Element[];
+    options: Array<T_Option>,
+    group?: boolean
 }
 
 const CustomDropdown = ({
-    children, options
+    children, options, group
 }: T_Props) => {
     return (
-        <UncontrolledDropdown >
+        <UncontrolledDropdown group={group || false}>
             {children}
-            <DropdownMenu className='border border-1 shadow-3 rounded-3 mt-1 py-3'>
+            <DropdownMenu className='border border-1 shadow-3 mt-1 rounded-3 py-3'>
                 {
                     options.map(({ optionProps, ...option }, idx) => {
                         return <DropdownItem onClick={() => option.click?.()} {...optionProps} key={idx}>

@@ -5,24 +5,23 @@ import styles from './phases.module.css';
 import classnames from 'classnames';
 import { CheckCircleFill, Edit, ExclamationCircleFill, Plus } from '../Icons';
 import { getDateDiff, getNormalDate } from '../../utils/dateUtils';
-import { closeModal, Modal, ModalBody, ModalHeader, T_ModalJSON } from '../Modal';
+import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } from '../Modal';
 
 import CreateStage from './Create/CreateStage';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import Loader from '../Loader';
 
 type T_Props = {
-  isAdmin: boolean
+  isAdmin: boolean,
+  taskEnded?: boolean
 }
 
-const PhasesList = (
-  { isAdmin }: T_Props
-) => {
+const PhasesList = ({ isAdmin, taskEnded }: T_Props) => {
 
   const [modal, setModal] = useState<T_ModalJSON | null>(null);
   const [selectStage, setSelectStage] = useState<{
     stage: T_Stage,
-    phase: T_Phase
+    phase: T_Phase,
   } | null>(null)
 
   const list = useAppSelector(state => state.conditions.selectedData.phases)
@@ -35,6 +34,9 @@ const PhasesList = (
       isOpen: true,
       size: "lg",
       title: action.nomb_accion,
+      footer: <ModalFooter className='justify-content-start'>
+        <Button color='primary2' onClick={() => closeModal(setModal)}>Cerrar</Button>
+      </ModalFooter>,
       children: <div>
         {action.est_accion === 2 && <p>
           <b className='d-block'>Fecha de realización: </b>
@@ -46,7 +48,7 @@ const PhasesList = (
           <b className='d-block'>Fecha límite: </b>
           <span>
             {getNormalDate(action.fecha_accion, { dateStyle: "full" })}
-            {action.est_accion === 0 && <Badge pill color={dateDiff < 0 ? "danger" : "primary"} className='float-end d-line-block'>
+            {action.est_accion === 0 ? (taskEnded && <Badge className='float-end' pill>No se realizó</Badge>) : <Badge pill color={dateDiff < 0 ? "danger" : "primary"} className='float-end d-line-block'>
               {dateDiff < 0 ? `Vencido hace ${dateDiff * -1} días` : `Vence ${dateDiff === 0 ? "hoy" : "en " + dateDiff + " días"}`}
             </Badge>}
           </span>
@@ -97,7 +99,7 @@ const PhasesList = (
                 const key = `action-${action.id_accion}`
                 return <div key={key}
                   className={classnames(
-                    `${styles.action} hover-scale-up`, { [styles.active]: action.id_accion === active?.action?.id_accion }
+                    `${styles.action} hover-scale-up`, { [styles.active]: !taskEnded && action.id_accion === active?.action?.id_accion }
                   )}
                   onClick={() => showActionDetails(action, item, phase)}
                 >
@@ -105,16 +107,19 @@ const PhasesList = (
                     <span className={classnames(
                       'fw-semibold',
                       action.est_accion === 2 ? "bg-success" : "bg-black bg-opacity-25",
-                      { "bg-black bg-opacity-50": action.id_accion === active?.action?.id_accion }
+                      { "bg-black bg-opacity-50": !taskEnded && action.id_accion === active?.action?.id_accion }
                     )}>
-                      {/* {action.orden} */}
                       {idx + 1}
                     </span>
                   </span>
                   <p>
                     {action.nomb_accion}
                     {action.est_accion !== 2 ?
-                      <span className='d-block text-muted'>Vence el {getNormalDate(action.fecha_accion, { dateStyle: "long" })}</span>
+                      (taskEnded ?
+                        <span className='d-block text-muted'>No realizada</span>
+                        :
+                        <span className='d-block text-muted'>Vence el {getNormalDate(action.fecha_accion, { dateStyle: "long" })}</span>
+                      )
                       :
                       <span className='d-block text-muted'>Realizada el {getNormalDate(action.marc_update, { dateStyle: "long", timeStyle: "short" })}</span>
                     }
@@ -211,7 +216,7 @@ const PhasesList = (
               </div>
             </div> */}
             <div className={classnames(styles["phase-body"], "ms-3")}>
-              <UncontrolledAccordion stayOpen flush defaultOpen={[`stage-${active?.stage?.id}`]}>
+              <UncontrolledAccordion stayOpen flush defaultOpen={taskEnded ? [""] : [`stage-${active?.stage?.id}`]}>
                 {item.stages ? doStages(item.stages, item) : <p>Sin etapas registradas</p>}
               </UncontrolledAccordion>
             </div>
