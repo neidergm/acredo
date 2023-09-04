@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from "react"
+import React, { useRef, useEffect } from "react"
 import Card from "../../components/Card"
-import { I_ProcessIndicators } from "../../interfaces/dashboard.interface";
 import Loader from "../../components/Loader";
 import classnames from "classnames";
 import { AXIOS_REQUEST } from "../../services/axiosService";
-import { GET_PROCESS_BY_STATE, GET_PROCESS_INDICATORS, PROCESS_LIST } from "../../services/endPointsService";
+import { GET_PROCESS_BY_STATE, PROCESS_LIST } from "../../services/endPointsService";
 import { I_Process } from "../../interfaces/process.interface";
 import CircleProgress from "../../components/CircleProgress";
-import { ExclamationCircleFill, Kanban } from "../../components/Icons";
+import { ExclamationCircleFill } from "../../components/Icons";
 import { useNavigate } from "react-router-dom";
+import { getProcessIndicators, setProcessList, setProcessSelectedFilter } from "../../store/actions/dashboardActions";
+import { useAppSelector } from "../../hooks/useAppSelector";
+import { useAppDispatch } from "../../hooks/useAppDispatch";
 
 export const ProcessResumeItem = ({ process, pickItem }: { process: I_Process, pickItem: (process: I_Process) => void }) => {
     return <div className="cursor hover-scale-up" onClick={() => pickItem(process)}>
@@ -49,32 +51,22 @@ export const ProcessResumeItem = ({ process, pickItem }: { process: I_Process, p
 
 const ProcessResume = () => {
 
-    const [indicators, setIndicators] = useState<I_ProcessIndicators[] | null>(null);
-    const [filter, setFilter] = useState<I_ProcessIndicators | null>(null);
-    const [processList, setProcessList] = useState<I_Process[] | null>(null)
+    const dispatch = useAppDispatch();
+    const indicators = useAppSelector(s => s.dashboard.processIndicators);
+    const filter = useAppSelector(s => s.dashboard.processSelectedFilter);
+    const processDictionary = useAppSelector(s => s.dashboard.processList);
+    const loadedList = useRef<{ [filter: string]: boolean }>({})
 
+    const markAsLoadedList = (filter: string) => loadedList.current[filter] = true
+
+    const processList = filter ? processDictionary[filter?.estado] : null;
     const navigate = useNavigate();
 
     const chooseFilter = (_filter: typeof filter) => {
-        if(_filter?.estado !== filter?.estado){
-            setProcessList(null)
-            getProcess(_filter)
-            setFilter(_filter)
+        if ((_filter?.estado !== filter?.estado)) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            dispatch(setProcessSelectedFilter(_filter!))
         }
-    }
-
-    const getIndicators = () => {
-        AXIOS_REQUEST(GET_PROCESS_INDICATORS).then(resp => {
-            setIndicators(resp.data)
-            chooseFilter(resp.data[0])
-        })
-    }
-
-    const getProcess = (_filter: typeof filter) => {
-        const url = _filter?.estado !== "Todos" ? `${GET_PROCESS_BY_STATE}${_filter?.estado}` : PROCESS_LIST
-        AXIOS_REQUEST(url).then(resp => {
-            setProcessList(resp.data)
-        })
     }
 
     const doItem = (process: I_Process, idx: number) => {
@@ -91,17 +83,32 @@ const ProcessResume = () => {
     }
 
     useEffect(() => {
-        getIndicators()
+        dispatch(getProcessIndicators(filter))
     }, [])
+
+    useEffect(() => {
+        const getProcess = () => {
+            const f = filter?.estado || "Todos";
+            if (loadedList.current[f]) return null;
+
+            const url = f !== "Todos" ? `${GET_PROCESS_BY_STATE}${filter?.estado}` : PROCESS_LIST
+            AXIOS_REQUEST(url).then(resp => {
+                dispatch(setProcessList(f, resp.data));
+                markAsLoadedList(f)
+            })
+        }
+
+        filter && getProcess()
+    }, [filter])
 
     return (<>
         <div className="pb-2 ps-2">
-        <span className="text-secondary fw-semibold opacity-50">
-          <span className="">
-            RESUMEN DE PROCESOS
-          </span>
-        </span>
-      </div>
+            <span className="text-secondary fw-semibold opacity-50">
+                <span className="">
+                    RESUMEN DE PROCESOS
+                </span>
+            </span>
+        </div>
         <div>
             <Card className="px-4">
                 <div className='row h-100'>
@@ -134,12 +141,19 @@ const ProcessResume = () => {
         <div className="mt-4">
             <Card className="px-0">
                 <div className="ps-3">
-                    {filter && <div
-                        className='border-start border-5 border-dark py-1 ps-3 pe-4 bg-secondary bg-opacity-10 mb-2 d-inline-block'
-                        style={{ borderRadius: "2px 10px 10px 2px" }}
-                    >
-                        <small className='fw-bold text-uppercase  text-uppercase'>{filter?.texto}</small>
-                    </div>}
+                    {filter && <>
+                        <div
+                            className='border-start border-5 border-dark py-1 ps-3 pe-4 bg-secondary bg-opacity-10 mb-2 d-inline-block'
+                            style={{ borderRadius: "2px 10px 10px 2px" }}
+                        >
+                            <small className='fw-bold text-uppercase text-uppercase'>{filter?.texto}</small>
+                        </div>
+                        {processDictionary[filter?.estado] && !loadedList.current[filter?.estado] &&
+                            <div className="d-inline-block float-end px-3">
+                                <Loader isOpen={true} loaderAsModal={false} size="sm" />
+                            </div>
+                        }
+                    </>}
                 </div>
                 <div className="pt-4 pb-2" style={{ minHeight: "37vh", overflowY: "auto", overflowX: "hidden" }}>
                     {processList ?

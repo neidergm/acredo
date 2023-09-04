@@ -15,12 +15,12 @@ const Loader = ({
     isOpen = false,
     loaderAsModal = true,
     subtitle,
-    size = 'sm',
+    size,
     children
 }: T_Props) => {
 
     if (!loaderAsModal) {
-        return <div className='text-center w-100 h-100'><Spinner animation="border" role="status" />{children}</div>
+        return <div className='text-center w-100 h-100'><Spinner role="status" size={size}/>{children}</div>
     }
     return (
         <Modal
@@ -32,7 +32,7 @@ const Loader = ({
         >
             {title && <ModalHeader className='justify-content-center border-0 pt-4 pb-0'>{title}</ModalHeader>}
             <ModalBody className='text-center'>
-                <Spinner animation="border" role="status" />
+                <Spinner role="status" />
             </ModalBody>
             {subtitle && <ModalFooter className='justify-content-center border-0 pb-4 pt-0' >{subtitle}</ModalFooter>}
         </Modal>

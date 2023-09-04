@@ -1,20 +1,52 @@
 import { I_AppAction, I_DashboardState } from "../../interfaces/store.interface";
-import { SET_PROCESS_FILTER, SET_PROCESS_INDICATORS, SET_PROCESS_LIST } from "../actions/dashboardActions";
+import { SET_PROCESS_INDICATORS, SET_PROCESS_LIST, SET_PROCESS_SELECTED_FILTER, SET_PROGRAMS_INDICATORS, SET_PROGRAMS_LIST, SET_PROGRAMS_SELECTED_FILTER } from "../actions/dashboardActions";
 
 const initialState: I_DashboardState = {
-    processFilter: [],
-    processIndicators: [],
-    processList: []
+    processIndicators: null,
+    processSelectedFilter: null,
+    processList: {},
+    programsIndicators: null,
+    programsSelectedFilter: null,
+    programsList: {},
 }
 
-const conditionsReducer = (state = initialState, action: I_AppAction): I_DashboardState => {
+const dashboardReducer = (state = initialState, action: I_AppAction): I_DashboardState => {
 
     switch (action.type) {
-
         case SET_PROCESS_LIST:
             return {
                 ...state,
-                processList: action.payload
+                processList: { ...state.processList, [action.payload.filter]: action.payload.process }
+            };
+
+        case SET_PROCESS_INDICATORS:
+            return {
+                ...state,
+                processIndicators: action.payload
+            };
+
+        case SET_PROCESS_SELECTED_FILTER:
+            return {
+                ...state,
+                processSelectedFilter: action.payload
+            };
+
+        case SET_PROGRAMS_LIST:
+            return {
+                ...state,
+                programsList: { ...state.programsList, [action.payload.filter]: action.payload.programs }
+            };
+
+        case SET_PROGRAMS_INDICATORS:
+            return {
+                ...state,
+                programsIndicators: action.payload
+            };
+
+        case SET_PROGRAMS_SELECTED_FILTER:
+            return {
+                ...state,
+                programsSelectedFilter: action.payload
             };
 
         default:
@@ -22,4 +54,4 @@ const conditionsReducer = (state = initialState, action: I_AppAction): I_Dashboa
     }
 }
 
-export default conditionsReducer;
+export default dashboardReducer;

@@ -1,8 +1,5 @@
-import { useEffect, useState } from 'react'
-import { AXIOS_REQUEST } from '../../services/axiosService'
-import { GET_RESUME } from '../../services/endPointsService'
+import { useState } from 'react'
 import { SubHeader } from '../../components/SubHeader'
-import Card from '../../components/Card'
 import ProcessResume from './ProcessResume'
 import ProgramsResume from './ProgramsResume'
 import classnames from 'classnames';

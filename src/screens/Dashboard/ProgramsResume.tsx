@@ -1,44 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Card from "../../components/Card";
 import classnames from "classnames";
 import Loader from '../../components/Loader';
-import { I_ProgramsIndicators } from '../../interfaces/dashboard.interface';
 import { AXIOS_REQUEST } from '../../services/axiosService';
-import { GET_PROGRAMS_BY_STATE, GET_PROGRAMS_INDICATORS } from '../../services/endPointsService';
+import { GET_PROGRAMS_BY_STATE } from '../../services/endPointsService';
 import { I_Program } from '../../interfaces/programs.interface';
 import { Badge } from 'reactstrap';
-import { ExclamationCircleFill, JournalBoomark, Stack } from '../../components/Icons';
+import { ExclamationCircleFill, Stack } from '../../components/Icons';
 import { useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { useAppSelector } from '../../hooks/useAppSelector';
+import { getProgramsIndicators, setProgramsList, setProgramsSelectedFilter } from '../../store/actions/dashboardActions';
 
 const ProgramsResume = () => {
 
-  const [indicators, setIndicators] = useState<I_ProgramsIndicators[] | null>(null);
-  const [filter, setFilter] = useState<I_ProgramsIndicators | null>(null);
-  const [programsList, setProgramsList] = useState<I_Program[] | null>(null)
+  const dispatch = useAppDispatch();
+  const indicators = useAppSelector(s => s.dashboard.programsIndicators);
+  const filter = useAppSelector(s => s.dashboard.programsSelectedFilter);
+  const programsDictionary = useAppSelector(s => s.dashboard.programsList);
+  const loadedList = useRef<{ [filter: string]: boolean }>({})
 
+  const markAsLoadedList = (filter: string) => loadedList.current[filter] = true
+
+  const programsList = filter ? programsDictionary[filter?.estado] : null;
   const navigate = useNavigate();
 
   const chooseFilter = (_filter: typeof filter) => {
-    if (_filter?.estado !== filter?.estado) {
-      setProgramsList(null)
-      setFilter(_filter)
-      getPrograms(_filter)
+    if ((_filter?.estado !== filter?.estado)) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      dispatch(setProgramsSelectedFilter(_filter!))
     }
-  }
-
-  const getIndicators = () => {
-    AXIOS_REQUEST(GET_PROGRAMS_INDICATORS).then(resp => {
-      setIndicators(resp.data)
-      chooseFilter(resp.data[0])
-    })
-  }
-
-  const getPrograms = (_filter: typeof filter) => {
-    // const url = (indicators && _filter?.estado !== indicators?.[0].estado) ? `${GET_PROGRAMS_BY_STATE}${_filter?.estado}` : GET_PROGRAMS_LIST
-    const url = `${GET_PROGRAMS_BY_STATE}${_filter?.estado}`
-    AXIOS_REQUEST(url).then(resp => {
-      setProgramsList(resp.data)
-    })
   }
 
   const pickItem = (program: I_Program) => {
@@ -91,8 +82,23 @@ const ProgramsResume = () => {
   }
 
   useEffect(() => {
-    getIndicators()
+    dispatch(getProgramsIndicators(filter))
   }, [])
+
+  useEffect(() => {
+    const getPrograms = () => {
+      const f = filter?.estado || "";
+      if (loadedList.current[f]) return null;
+
+      const url = `${GET_PROGRAMS_BY_STATE}${f}`;
+      AXIOS_REQUEST(url).then(resp => {
+        dispatch(setProgramsList(f, resp.data));
+        markAsLoadedList(f)
+      })
+    }
+
+    filter && getPrograms()
+  }, [filter])
 
   return (
     <>
@@ -137,12 +143,20 @@ const ProgramsResume = () => {
       <div className="mt-4">
         <Card className="px-0">
           <div className='ps-3'>
-            {filter && <div
-              className='border-start border-5 border-dark py-1 ps-3 pe-4 bg-secondary bg-opacity-10 mb-2 d-inline-block'
-              style={{ borderRadius: "2px 10px 10px 2px" }}
-            >
-              <small className='fw-bold text-uppercase  text-uppercase'>{filter?.texto}</small>
-            </div>}
+            {filter && <>
+              <div
+                className='border-start border-5 border-dark py-1 ps-3 pe-4 bg-secondary bg-opacity-10 mb-2 d-inline-block'
+                style={{ borderRadius: "2px 10px 10px 2px" }}
+              >
+                <small className='fw-bold text-uppercase  text-uppercase'>{filter?.texto}</small>
+              </div>
+              {programsDictionary[filter?.estado] && !loadedList.current[filter?.estado] &&
+                <div className="d-inline-block float-end px-3">
+                  <Loader isOpen={true} loaderAsModal={false} size="sm" />
+                </div>
+              }
+            </>
+            }
           </div>
           <div className="pt-4 pb-2" style={{ minHeight: "37vh", overflowY: "auto", overflowX: "hidden" }}>
             {programsList ?

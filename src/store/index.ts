@@ -3,6 +3,7 @@ import thunk from 'redux-thunk';
 
 // Reducers list
 import userReducer from './reducers/userReducer'
+import dashboardReducer from './reducers/dashboardReducer'
 import processReducer from './reducers/processReducer'
 import { LOGOUT, setUnauthorized, SET_UNAUTHORIZED } from './actions/userActions';
 import { setOtherAxiosConfig } from '../services/axiosService';
@@ -11,6 +12,7 @@ import notificationsReducer from './reducers/notificationsReducer';
 
 // Create deducer all in one
 const allReducers = combineReducers({
+    dashboard: dashboardReducer,
     user: userReducer,
     process: processReducer,
     conditions: conditionsReducer,

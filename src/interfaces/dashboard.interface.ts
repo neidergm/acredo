@@ -2,9 +2,10 @@ export interface I_ProcessIndicators {
     estado: string;
     cantidad: number;
     texto: string;
+    active?: boolean;
 }
 
-export interface I_ProgramsIndicators extends I_ProcessIndicators {}
+export type T_ProgramsIndicators = I_ProcessIndicators
 
 // interface I_Calendar {
 //     ciud_prog: string;
