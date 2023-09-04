@@ -4,7 +4,6 @@ import { useNavigate, useParams } from 'react-router-dom'
 import Card from '../../components/Card';
 import { AXIOS_REQUEST } from '../../services/axiosService';
 import { DELETE_PROGRAM, GET_PROGRAMS_LIST, SAVE_PROGRAM_DATA } from '../../services/endPointsService';
-import { I_Program } from '../../interfaces/programs.interface';
 import Loader from '../../components/Loader';
 import { Button, Col, Offcanvas, OffcanvasBody, OffcanvasHeader, Row, Table } from 'reactstrap';
 import { getNormalDate } from '../../utils/dateUtils';
@@ -24,13 +23,17 @@ import { toast } from 'react-hot-toast';
 import confirmDeleteAlertObject from '../../utils/confirmDeleteAlertObject';
 import classnames from 'classnames';
 import { I_Process } from '../../interfaces/process.interface';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { getProgramsList, selectProgram, setNeedRefreshList } from '../../store/actions/programsActions';
 
 const EVENT_LIMITS_SHOW = 3;
 
 const Details = () => {
 
+    const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const userRol = useAppSelector(state => state.user.userInfo?.rol);
+    const program = useAppSelector(state => state.programs.selected);
     const is_admin = !isSupervisor(userRol) && isAdmin(userRol);
 
     const [modal, setModal] = useState<T_ModalJSON | null>(null)
@@ -38,16 +41,21 @@ const Details = () => {
     const [loader, setLoader] = useState<string | null>(null)
 
     const { id_program } = useParams();
-    const [program, setProgram] = useState<I_Program | null>(null);
     const [showSidePanel, setShowSidePanel] = useState<null | { title: string; body: JSX.Element; toggler: (close: boolean) => void }>(null);
 
-    const getProgramInfo = () => AXIOS_REQUEST(`${GET_PROGRAMS_LIST}/${id_program}`).then(resp => {
-        if (!resp.data[0]) {
-            return navigate(-1)
+    const getProgramInfo = async () => {
+        if (program) {
+            return dispatch(getProgramsList(program.id_prog))
         }
-        setProgram(resp.data[0] && { ...resp.data[0] })
-        return resp.data[0]
-    }).catch(() => setProgram(null))
+
+        return AXIOS_REQUEST(`${GET_PROGRAMS_LIST}/${id_program}`).then(resp => {
+            if (!resp.data[0]) {
+                return navigate(-1)
+            }
+            dispatch(selectProgram(resp.data[0]))
+            return resp.data[0]
+        }).catch(() => selectProgram(null))
+    }
 
     const deleteProgram = () => {
         const hasProcess = program?.procesos?.length;
@@ -77,6 +85,8 @@ const Details = () => {
                 () => {
                     setLoader("Eliminando resolución")
                     AXIOS_REQUEST(`${DELETE_PROGRAM}`, "PUT", jsonToFormData({ est_prog: -1, id_prog: program?.id_prog }, "[0].")).then(res => {
+                        dispatch(setNeedRefreshList(true))
+                        dispatch(selectProgram(null))
                         toast.success("Programa eliminado correctamente", { position: "top-right" });
                         navigate(-1)
                     }).catch(e => {
@@ -153,7 +163,8 @@ const Details = () => {
         AXIOS_REQUEST(SAVE_PROGRAM_DATA, "PUT", jsonToFormData(data, "[0].")).then(resp => {
             toast.success("Datos del programa actualizados correctamente", { position: 'top-right' })
             closeModal(setModal);
-            getProgramInfo()
+            dispatch(setNeedRefreshList(true))
+            return getProgramInfo()
         }).catch(err => {
             toast.error("No se pudo actualizar datos del programa", { position: 'top-right' })
         }).finally(() => {
@@ -216,7 +227,7 @@ const Details = () => {
         if (!id_program) {
             navigate(-1)
         } else {
-            getProgramInfo()
+            !program && getProgramInfo()
         }
     }, [])
 
@@ -272,7 +283,7 @@ const Details = () => {
                                                         </tr>
                                                         <tr>
                                                             <td><b className="fw-semibold">Estado</b></td>
-                                                            <td className={classnames({"text-danger fw-bold":program.est_prog === 0})}>{program.estado}</td>
+                                                            <td className={classnames({ "text-danger fw-bold": program.est_prog === 0 })}>{program.estado}</td>
                                                         </tr>
                                                         <tr>
                                                             <td><b className="fw-semibold">Ciudad</b></td>

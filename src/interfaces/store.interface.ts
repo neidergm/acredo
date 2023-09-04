@@ -23,19 +23,18 @@ export interface I_ProcessState {
     selected: I_Process | null;
 }
 
+export interface I_ProgramsState {
+    list: Array<I_Program> | null;
+    selected: I_Program | null;
+    needRefreshList: boolean;
+}
+
 export type T_SelectedConditionData = {
     phases?: T_Phase[] | null,
     active?: T_ActivePhase | null,
 }
 
 export interface I_ConditionsState {
-    // fetchedConditionData: {
-    //     [id_process: string]: {
-    //         [id_condition: string]: null | {
-    //             phases: T_Phase[]
-    //         } & I_JSONObject
-    //     }
-    // };
     phasesWithConditions: { [id_process: string]: T_PhasesWithConditions[] };
     selected: I_Condition | null;
     selectedData: T_SelectedConditionData;
@@ -45,7 +44,7 @@ export interface I_DashboardState {
     processList: { [filter: string]: Array<I_Process> };
     processSelectedFilter: I_ProcessIndicators | null;
     processIndicators: I_ProcessIndicators[] | null;
-   
+
     programsList: { [filter: string]: Array<I_Program> };
     programsSelectedFilter: T_ProgramsIndicators | null;
     programsIndicators: T_ProgramsIndicators[] | null;

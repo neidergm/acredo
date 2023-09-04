@@ -1,5 +1,5 @@
 import { I_AppAction, I_DashboardState } from "../../interfaces/store.interface";
-import { SET_PROCESS_INDICATORS, SET_PROCESS_LIST, SET_PROCESS_SELECTED_FILTER, SET_PROGRAMS_INDICATORS, SET_PROGRAMS_LIST, SET_PROGRAMS_SELECTED_FILTER } from "../actions/dashboardActions";
+import { SET_PROCESS_INDICATORS, SET_PROCESS_LIST_RESUME, SET_PROCESS_SELECTED_FILTER, SET_PROGRAMS_INDICATORS, SET_PROGRAMS_LIST_RESUME, SET_PROGRAMS_SELECTED_FILTER } from "../actions/dashboardActions";
 
 const initialState: I_DashboardState = {
     processIndicators: null,
@@ -13,7 +13,7 @@ const initialState: I_DashboardState = {
 const dashboardReducer = (state = initialState, action: I_AppAction): I_DashboardState => {
 
     switch (action.type) {
-        case SET_PROCESS_LIST:
+        case SET_PROCESS_LIST_RESUME:
             return {
                 ...state,
                 processList: { ...state.processList, [action.payload.filter]: action.payload.process }
@@ -31,7 +31,7 @@ const dashboardReducer = (state = initialState, action: I_AppAction): I_Dashboar
                 processSelectedFilter: action.payload
             };
 
-        case SET_PROGRAMS_LIST:
+        case SET_PROGRAMS_LIST_RESUME:
             return {
                 ...state,
                 programsList: { ...state.programsList, [action.payload.filter]: action.payload.programs }

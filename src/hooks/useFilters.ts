@@ -69,7 +69,7 @@ const useFilters = <T>(
             }
         }
         for (const key in f) {
-            if(f[key].isSelect && f[key].options!.length <= 1) delete f[key];
+            if(f[key].isSelect && f[key]?.options!.length <= 1) delete f[key];
         }
         setFilter(f);
     }

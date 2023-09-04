@@ -7,18 +7,18 @@ import { I_Process } from "../../interfaces/process.interface";
 import { I_Program } from "../../interfaces/programs.interface";
 
 export const SET_PROCESS_INDICATORS = "SET_PROCESS_INDICATORS";
-export const SET_PROCESS_LIST = "SET_PROCESS_LIST";
+export const SET_PROCESS_LIST_RESUME = "SET_PROCESS_LIST_RESUME";
 export const SET_PROCESS_SELECTED_FILTER = "SET_PROCESS_SELECTED_FILTER";
 
 export const SET_PROGRAMS_INDICATORS = "SET_PROGRAMS_INDICATORS";
-export const SET_PROGRAMS_LIST = "SET_PROGRAMS_LIST";
+export const SET_PROGRAMS_LIST_RESUME = "SET_PROGRAMS_LIST_RESUME";
 export const SET_PROGRAMS_SELECTED_FILTER = "SET_PROGRAMS_SELECTED_FILTER";
 
-export const setProcessList = (filter: string, process: I_Process[]) => ({ type: SET_PROCESS_LIST, payload: { filter, process } })
+export const setProcessList = (filter: string, process: I_Process[]) => ({ type: SET_PROCESS_LIST_RESUME, payload: { filter, process } })
 export const setProcessIndicators = (payload: I_ProcessIndicators[]) => ({ type: SET_PROCESS_INDICATORS, payload })
 export const setProcessSelectedFilter = (payload: I_ProcessIndicators) => ({ type: SET_PROCESS_SELECTED_FILTER, payload })
 
-export const setProgramsList = (filter: string, programs: I_Program[]) => ({ type: SET_PROGRAMS_LIST, payload: { filter, programs } })
+export const setProgramsList = (filter: string, programs: I_Program[]) => ({ type: SET_PROGRAMS_LIST_RESUME, payload: { filter, programs } })
 export const setProgramsIndicators = (payload: T_ProgramsIndicators[]) => ({ type: SET_PROGRAMS_INDICATORS, payload })
 export const setProgramsSelectedFilter = (payload: T_ProgramsIndicators) => ({ type: SET_PROGRAMS_SELECTED_FILTER, payload })
 

@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
 import { SubHeader } from '../../components/SubHeader'
-import { I_Program } from '../../interfaces/programs.interface';
 import Loader from '../../components/Loader';
 import { ExclamationCircleFill } from '../../components/Icons';
 import { AXIOS_REQUEST } from '../../services/axiosService';
-import { GET_PROGRAMS_LIST, SAVE_PROGRAM_DATA } from '../../services/endPointsService';
+import { SAVE_PROGRAM_DATA } from '../../services/endPointsService';
 import Card from '../../components/Card';
 import { Badge, Button, CardBody, CardHeader } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
@@ -20,11 +19,18 @@ import classnames from 'classnames';
 import { isAdmin } from '../../utils/userRolUtils';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import ProgramFilter from '../../components/ProgramFilter';
+import { getProgramsList, selectProgram, setProgramsList } from '../../store/actions/programsActions';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { I_Program } from '../../interfaces/programs.interface';
 
 const Programs = () => {
 
-    const [programsList, setProgramsList] = useState<null | I_Program[]>(null);
+    const programsList = useAppSelector(state => state.programs.list);
+    const needRefreshList = useAppSelector(state => state.programs.needRefreshList);
+    const selected = useAppSelector(state => state.programs.selected);
+
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
 
     const is_admin = isAdmin(useAppSelector(s => s.user.userInfo?.rol));
 
@@ -88,14 +94,23 @@ const Programs = () => {
     }
 
     const getPrograms = () => {
-        setProgramsList(null)
-        AXIOS_REQUEST(GET_PROGRAMS_LIST).then(resp => {
-            setProgramsList(resp.data)
-        })
+        dispatch(getProgramsList())
     }
 
+    const pickProgram = (program: I_Program) => {
+        dispatch(selectProgram(program));
+        navigate(`${program.id_prog}`)
+    }
+
+    useLayoutEffect(() => {
+        (!programsList || needRefreshList) && getPrograms();
+    }, [])
+
     useEffect(() => {
-        getPrograms()
+        if (selected && programsList) {
+            const el = document.getElementById(`${selected.id_prog}`)
+            el?.scrollIntoView({ block: "center" });
+        }
     }, [])
 
     return (
@@ -121,7 +136,7 @@ const Programs = () => {
                         {is_admin && <div className='float-end'>
                             <Button color='primary' size='sm' onClick={() => newProgram()}>+ Nuevo programa</Button>
                         </div>}
-                        <ProgramFilter list={programsList} updateList={l => setProgramsList(l)} />
+                        <ProgramFilter list={programsList} updateList={l => dispatch(setProgramsList(l))} />
                     </div>
 
                     <div className='mb-4 pt-2 d-inline-flex align-items-center gap-3 mb-4'>
@@ -140,8 +155,15 @@ const Programs = () => {
                         (programsList.length ?
                             <div className='row h-100'>
                                 {programsList
-                                    .map((item, i) => <div className='col-12 col-md-6 col-xl-4 mb-4' key={`${item.id_prog}-${i}`}>
-                                        <Card className='h-100 p-0 hover-scale-up' onClick={() => navigate(`${item.id_prog}`)}>
+                                    .map((item, i) => <div className='col-12 col-md-6 col-xl-4 mb-4' key={`${item.id_prog}-${i}`} id={`${item.id_prog}`}>
+                                        <Card onClick={() => pickProgram(item)}
+                                            className={classnames('h-100 p-0 hover-scale-up position-relative')}
+                                        >
+                                            {needRefreshList && item.id_prog === selected?.id_prog &&
+                                                <Card className='position-absolute bg-white top-0 start-0 h-100 w-100 bg-opacity-75 d-flex align-items-center justify-content-center'>
+                                                    <div><Loader loaderAsModal={false} isOpen /></div>
+                                                </Card>
+                                            }
                                             <CardHeader className={classnames("p-0", 'text-white border-0',
                                                 {
                                                     "bg-success bg-opacity-75": item.est_prog === 1,
@@ -220,9 +242,9 @@ const Programs = () => {
                                                                         <>
                                                                             <b className='text-secondary fw-semibold'>Tiene {item.fech_reso.length} resoluciones </b>
                                                                             <div className="hstack gap-2 fw-bold">
-                                                                                {item.fech_reso.map(fr =>  getDateDiff(fr.fech_ven) >= 0 ?
+                                                                                {item.fech_reso.map(fr => getDateDiff(fr.fech_ven) >= 0 ?
                                                                                     <div title={"Vigente - " + fr.reco_mim} key={fr.reso_apro}>{fr.reso_apro}</div>
-                                                                                    : 
+                                                                                    :
                                                                                     <div title={"Vencida - " + fr.reco_mim} key={fr.reso_apro} className={"text-danger fw-bold"}>
                                                                                         {fr.reso_apro}
                                                                                     </div>

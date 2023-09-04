@@ -3,6 +3,7 @@ import thunk from 'redux-thunk';
 
 // Reducers list
 import userReducer from './reducers/userReducer'
+import programsReducer from './reducers/programsReducer'
 import dashboardReducer from './reducers/dashboardReducer'
 import processReducer from './reducers/processReducer'
 import { LOGOUT, setUnauthorized, SET_UNAUTHORIZED } from './actions/userActions';
@@ -14,6 +15,7 @@ import notificationsReducer from './reducers/notificationsReducer';
 const allReducers = combineReducers({
     dashboard: dashboardReducer,
     user: userReducer,
+    programs: programsReducer,
     process: processReducer,
     conditions: conditionsReducer,
     notifications: notificationsReducer,
