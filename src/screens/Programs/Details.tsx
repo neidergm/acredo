@@ -185,13 +185,15 @@ const Details = () => {
     }
 
     const showAllResolutions = (show = true, prog = program) => {
-
         if (prog && show) {
             setShowSidePanel({
                 title: "Resoluciones del programa",
                 body: <Resolutions list={prog.resoluciones} program_id={prog.id_prog} canEdit={is_admin}
                     callback={() => {
-                        getProgramInfo().then((p) => {
+                        setLoader("Espere")
+                        getProgramInfo()
+                        .then((p) => {
+                            setLoader(null);
                             showAllResolutions(true, p);
                         })
                     }}

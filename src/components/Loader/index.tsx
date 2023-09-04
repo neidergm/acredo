@@ -28,7 +28,7 @@ const Loader = ({
             contentClassName='border-0 pt-2 pb-2'
             isOpen={isOpen}
             backdrop="static"
-            size={size}
+            size={size || "sm"}
         >
             {title && <ModalHeader className='justify-content-center border-0 pt-4 pb-0'>{title}</ModalHeader>}
             <ModalBody className='text-center'>

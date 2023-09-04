@@ -13,12 +13,13 @@ export const selectProgram = (payload: I_Program | null) => ({ type: SELECT_PROG
 export const setNeedRefreshList = (payload: boolean) => ({ type: SET_REFRESH_STATE, payload });
 
 export const getProgramsList = (id_program?: number) => {
-    return (dispatch: T_AppDispatch): Promise<null | I_Program[]> => AXIOS_REQUEST(GET_PROGRAMS_LIST)
+    return (dispatch: T_AppDispatch): Promise<null | I_Program[] | I_Program> => AXIOS_REQUEST(GET_PROGRAMS_LIST)
         .then((res: { data: I_Program[] } & I_JSONObject) => {
             dispatch(setProgramsList([...res.data]));
             if (id_program) {
                 const program = res.data.find(p => p.id_prog === id_program) || null;
                 dispatch(selectProgram(program));
+                return program;
             }
 
             return res.data;

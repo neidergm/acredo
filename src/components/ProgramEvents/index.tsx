@@ -43,7 +43,7 @@ const ProgramEvents = ({ events, limit, program_id, callback, children, canEdit 
                     setLoader("Eliminando evento")
                     AXIOS_REQUEST(`${DELETE_PROGRAM_EVENT}${event.id_evento}`, "DELETE").then(res => {
                         toast.success("Evento eliminado correctamente", { position: "top-right" });
-                        callback?.();
+                        return callback?.();
                     }).catch(e => {
                         toast.error("No se pudo eliminar el evento", { position: "top-right" });
                     }).finally(() => {
@@ -97,8 +97,9 @@ const ProgramEvents = ({ events, limit, program_id, callback, children, canEdit 
         data.reco_evento = data.reco_evento.map(({ days }: { days: number }) => days)
         AXIOS_REQUEST(SAVE_PROGRAM_EVENT, type, jsonToFormData({ ...data, id_prog: program_id }, "[0]."))
             .then(res => {
+                closeModal(setModal)
                 toast.success(`Evento ${data.id_evento ? "actualizado" : "registrado"} correctamente`, { position: "top-right" });
-                callback?.();
+                return callback?.();
             })
             .catch(err => {
                 toast.error(`No se pudo ${data.id_evento ? "actualizar" : "registrar"} el evento`, { position: "top-right" });
