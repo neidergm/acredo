@@ -3,7 +3,7 @@ import { Card as CardB, CardProps } from 'reactstrap';
 import classnames from 'classnames';
 
 const Card = ({ className, children, ...props }: CardProps) =>
-    <CardB body {...props} className={classnames("rounded-4 border-0 shadow-1", className)}>
+    <CardB body {...props} className={classnames("px-3 rounded-4 border-0 shadow-1", className)}>
         {children}
     </CardB>
 

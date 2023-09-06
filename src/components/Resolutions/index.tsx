@@ -3,7 +3,7 @@ import { I_Resolutions } from '../../interfaces/programs.interface'
 import Card from '../Card'
 import classnames from 'classnames'
 import { Badge, Button, Nav, NavItem, NavLink, TabContent, TabPane, Table } from 'reactstrap'
-import { CheckCircleFill, Edit, ExclamationCircleFill, Folder2Open, XCircle, XCircleFill } from '../Icons'
+import { CheckCircleFill, Edit, ExclamationCircleFill, FilePDF, Folder2Open, XCircle, XCircleFill } from '../Icons'
 import { getDateDiff, getNormalDate } from '../../utils/dateUtils'
 import { Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON, closeModal } from '../Modal'
 import Alert, { I_AlertObject } from '../Alert'
@@ -231,6 +231,15 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, actives, chi
                                     <tr>
                                         <td><b className="fw-semibold">Nro. Créditos</b></td>
                                         <td>{r.ncre_snies} créditos</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b className="fw-semibold">Documento de resolución</b></td>
+                                        <td>
+                                            {r.doc_reso ? <a className='link-dark' href={r.doc_reso} target='_blank' rel="noreferrer">
+                                                <FilePDF size={18} /> Ver documento
+                                            </a> : <span className='text-secondary'>Sin documento registrado</span>
+                                            }
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td><b className="fw-semibold">Justificación de resolución</b></td>

@@ -27,6 +27,7 @@ export interface I_Resolutions {
     fech_vige: string;
     id_prog: number;
     id_reso: number;
+    doc_reso: null | string;
     jres_deta: null | string;
     just_reso: null | string;
     ncre_snies: number;

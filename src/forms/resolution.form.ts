@@ -12,6 +12,16 @@ const resolutionForm: T_FieldsTypes[] = [
         }
     },
     {
+        "name": "reco_min",
+        "label": "Reconocimiento del ministerio",
+        "tag": "input",
+        "type": "text",
+        "wrapperClassName": "col-12 col-md-6",
+        "validations": {
+            "required": true
+        }
+    },
+    {
         "name": "estado",
         "label": "Estado",
         "tag": "select",
@@ -83,16 +93,6 @@ const resolutionForm: T_FieldsTypes[] = [
         }
     },
     {
-        "name": "reco_min",
-        "label": "Reconocimiento del ministerio",
-        "tag": "input",
-        "type": "text",
-        "wrapperClassName": "col-12 col-md-6",
-        "validations": {
-            // "required": true
-        }
-    },
-    {
         "name": "just_reso",
         "label": "Justificación de resolución",
         "tag": "input",
@@ -107,6 +107,17 @@ const resolutionForm: T_FieldsTypes[] = [
         "type": "textarea",
         "wrapperClassName": "col-12",
         "validations": {}
+    },
+    {
+        "name": "doc_reso",
+        "label": "Documento de resolución",
+        "tag": "file",
+        "type": "simple",
+        "accept": [".pdf"],
+        "wrapperClassName": "col-12",
+        "validations": {
+            maxFileSize: 20,
+        }
     },
 ]
 

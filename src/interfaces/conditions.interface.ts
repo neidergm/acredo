@@ -24,6 +24,11 @@ export interface I_Condition {
     color: string;
     detalle: string;
     estado: string;
+    etapa_actual: {
+        nomb_accion: string;
+        nomb_etapa: string;
+        responsables: string;
+    };
     form_cond: string;
     /**
      * TASK id

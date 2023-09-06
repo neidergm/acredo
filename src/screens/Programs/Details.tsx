@@ -311,20 +311,6 @@ const Details = () => {
                                                             <td><b className="fw-semibold">Título otorgado</b></td>
                                                             <td>{program.titu_prog}</td>
                                                         </tr>
-                                                        {/* <tr>
-                                                            <td><b className="fw-semibold">Resolución válida hasta</b></td>
-                                                            <td className={expiredResolution ? "bg-danger bg-opacity-25 text-danger fw-bold" : ""}>
-                                                                {getNormalDate(program.fech_reso, { dateStyle: "long" })}
-                                                                {expiredResolution && <Badge color='danger' className='ms-2'>Vencida</Badge>}
-                                                            </td>
-                                                        </tr> */}
-                                                        {/* <tr>
-                                                            <td><b className="fw-semibold">Resolución válida hasta</b></td>
-                                                            <td className={expiredResolution ? "bg-danger bg-opacity-25 text-danger fw-bold" : ""}>
-                                                                {getNormalDate(program.fech_reso, { dateStyle: "long" })}
-                                                                {expiredResolution && <Badge color='danger' className='ms-2'>Vencida</Badge>}
-                                                            </td>
-                                                        </tr> */}
                                                     </tbody>
                                                 </Table>
                                             </div>
