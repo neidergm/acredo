@@ -131,6 +131,8 @@ const CurrentPhase = ({
     }
 
     const markActionAsCompleted = () => {
+        if (task.form_cond.length === 0) return cantEndTaskOrAction()
+        
         setAlert({
             isOpen: true,
             title: "¿Está seguro?",
@@ -145,6 +147,8 @@ const CurrentPhase = ({
     }
 
     const markTaskAsCompleted = (warning?: boolean) => {
+        if (task.form_cond.length === 0) return cantEndTaskOrAction()
+
         setAlert({
             isOpen: true,
             title: "¿Está seguro?",
@@ -169,6 +173,16 @@ const CurrentPhase = ({
                 onClick: undoCompleteTask
             },
             closeButton: { value: "No, cancelar" }
+        })
+    }
+
+    const cantEndTaskOrAction = () => {
+        setAlert({
+            isOpen: true,
+            title: "Espere",
+            subtitle: "No se puede realizar esta acción debido a que no hay formularios asociados a la tarea",
+            type: "error",
+            closeButton: { value: "Ok" }
         })
     }
 

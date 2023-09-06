@@ -12,7 +12,7 @@ import { getProcessList } from "../../store/actions/processActions";
 import Card from "../../components/Card";
 import classnames from 'classnames';
 import { getDateDiff, getNormalDate } from "../../utils/dateUtils";
-import { CheckCircleFill, Clip, Edit, ExclamationCircleFill, LinkIcon, PauseFill, Plus, ThreeDotsVertical, XCircle } from "../../components/Icons";
+import { Clip, Edit, ExclamationCircleFill, LinkIcon, PauseFill, Plus, ThreeDotsVertical, XCircle } from "../../components/Icons";
 import styles from './../Process.module.css';
 import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } from "../../components/Modal";
 import AllAttachments from "../../components/AttachmentsTable/AllAttachments";
@@ -260,6 +260,7 @@ const Conditions = () => {
         }
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedProcess, phasesWithConditions]);
 
   return (
@@ -286,9 +287,9 @@ const Conditions = () => {
       <div className="container-xxl">
         <div className="mb-5">
           {!selectedProcess ? <Loader isOpen loaderAsModal={false} /> :
-            <Card className="pt-4 pb-3 gap-3">
+            <Card className="px-xl-4">
               <div className="d-flex gap-4 flex-wrap flex-lg-nowrap">
-                <div className="flex-grow-1 d-flex gap-4 flex-column">
+                <div className="flex-grow-1 d-flex gap-3 flex-column">
                   {selectedProcess.programa && <div className="flex-grow-1">
                     <b>Programa: </b>
                     <span className="d-block">
@@ -297,7 +298,7 @@ const Conditions = () => {
                       </Link>
                     </span>
                   </div>}
-                  <div className="d-flex gap-4 flex-wrap">
+                  <div className="d-flex gap-3 flex-wrap">
                     <div>
                       <b>Tipo:</b>
                       <span className="d-block">{selectedProcess.tipo_cond}</span>
@@ -311,6 +312,14 @@ const Conditions = () => {
                     <b>Comentarios:</b>
                     <span className="d-block">{selectedProcess.coment_conv}</span>
                   </div>}
+
+                  <div className="mt-auto">
+                    {(is_admin || is_supervisor) &&
+                      <Button size="sm" color="primary2" onClick={() => showUserResume()}>
+                        Ver resumen de usuarios
+                      </Button>
+                    }
+                  </div>
                 </div>
                 <div className="h-100 d-flex flex-column gap-4">
                   <div>
@@ -334,16 +343,6 @@ const Conditions = () => {
                     <span>3 usuarios asociados</span>
                   </div> */}
                 </div>
-              </div>
-              <div className="text-end">
-                {(is_admin || is_supervisor) &&
-                  <Button size="sm" color="primary2" onClick={() => showUserResume()}>
-                    Ver resumen de usuarios
-                  </Button>
-                  // <span className="btn btn-link small p-0" style={{ marginBottom: "-10px" }}>
-                  //   <small></small>
-                  // </span>
-                }
               </div>
             </Card>
           }
