@@ -68,3 +68,21 @@
 .process-item.active>div:first-child>button{
     padding-bottom: 1.5rem !important;
 }
+
+@media print {
+    .process-item>div:first-child{
+        padding-left: 0px !important;
+        padding-right: 0px !important;
+        transform: initial !important;
+    }
+    .process-item>div:first-child>button{
+        display: block !important;
+        /* padding-top: 0px !important;
+        padding-bottom: 0px !important; */
+    }
+
+    .process-item:not(:first-child){
+        border-top: 1px solid rgba(128, 128, 128, 0.519);
+        margin-bottom: 20px;
+    }
+}

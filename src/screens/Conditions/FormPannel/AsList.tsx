@@ -80,10 +80,10 @@ const AsList = ({
         if (currentActiveTab !== null) {
             if (!loadedItems[currentActiveTab]) getFormFields();
 
-            const element = document.getElementById(`form-${currentActiveTab}`);
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth', block: "center" });
-            }
+            // const element = document.getElementById(`form-${currentActiveTab}`);
+            // if (element) {
+            //     element.scrollIntoView({ behavior: 'smooth', block: "center" });
+            // }
         }
     }, [currentActiveTab]);
 

@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SubHeader } from '../../components/SubHeader'
 import Loader from '../../components/Loader';
 import { ExclamationCircleFill } from '../../components/Icons';
@@ -102,16 +102,19 @@ const Programs = () => {
         navigate(`${program.id_prog}`)
     }
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         (!programsList || needRefreshList) && getPrograms();
     }, [])
+    // useLayoutEffect(() => {
+    //     (!programsList || needRefreshList) && getPrograms();
+    // }, [])
 
-    useEffect(() => {
-        if (selected && programsList) {
-            const el = document.getElementById(`${selected.id_prog}`)
-            el?.scrollIntoView({ block: "center" });
-        }
-    }, [])
+    // useEffect(() => {
+    //     if (selected && programsList) {
+    //         const el = document.getElementById(`${selected.id_prog}`)
+    //         el?.scrollIntoView({ block: "center" });
+    //     }
+    // }, [])
 
     return (
         <>

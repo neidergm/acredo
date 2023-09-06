@@ -12,7 +12,7 @@ import { getProcessList } from "../../store/actions/processActions";
 import Card from "../../components/Card";
 import classnames from 'classnames';
 import { getDateDiff, getNormalDate } from "../../utils/dateUtils";
-import { Clip, Edit, ExclamationCircleFill, LinkIcon, PauseFill, Plus, ThreeDotsVertical, XCircle } from "../../components/Icons";
+import { Clip, Edit, ExclamationCircleFill, LinkIcon, PauseFill, Plus, Printer, ThreeDotsVertical, XCircle } from "../../components/Icons";
 import styles from './../Process.module.css';
 import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } from "../../components/Modal";
 import AllAttachments from "../../components/AttachmentsTable/AllAttachments";
@@ -30,7 +30,7 @@ import confirmDeleteAlertObject from "../../utils/confirmDeleteAlertObject";
 import UserResume from "../../components/UserResume";
 import phaseForm from "../../forms/phase.form";
 
-let lastAccordionOpen = ``;
+let lastAccordionOpen = [""];
 
 const Conditions = () => {
   const location = useLocation()
@@ -44,7 +44,7 @@ const Conditions = () => {
   const is_supervisor = isSupervisor(userRol);
   const is_admin = isAdmin(userRol);
   const phasesWithConditions = useAppSelector(state => state.conditions.phasesWithConditions);
-  const [accordionOpen, setAccordionOpen] = useState(lastAccordionOpen);
+  const [accordionOpen, setAccordionOpen] = useState<string[]>(lastAccordionOpen);
   const [modal, setModal] = useState<null | T_ModalJSON>(null);
   const [loading, setLoading] = useState<null | string>(null);
   const [alert, setAlert] = useState<I_AlertObject | null>(null);
@@ -56,7 +56,7 @@ const Conditions = () => {
 
   const selectItem = (item: string) => {
     setAccordionOpen(i => {
-      lastAccordionOpen = i === item ? "" : item;
+      lastAccordionOpen = [i[0] === `${item}` ? "" : item];
       return lastAccordionOpen;
     })
   };
@@ -252,16 +252,36 @@ const Conditions = () => {
       if (!(phasesWithConditions[id_process])) {
         dispatch(getPhasesWithConditions(Number(id_process)))
       } else {
-        if (accordionOpen === "") {
+        if (accordionOpen[0] === "") {
           selectItem(`${lastAccordionOpen || selectedProcess.id_fase}`);
         } else {
-          const element = document.getElementById(`${accordionOpen}`)
-          !(element) ? selectItem(`${selectedProcess.id_fase}`) : element.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          // const element = document.getElementById(`${accordionOpen}`)
+          // !(element) ? selectItem(`${selectedProcess.id_fase}`) : element.scrollIntoView({ behavior: "smooth", block: "nearest" });
         }
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedProcess, phasesWithConditions]);
+
+  const printReport = () => {
+    window.print()
+  }
+
+  useEffect(() => {
+    const beforeprint = () => {
+      const p = !!(selectedProcess) && phasesWithConditions[selectedProcess.id_conv]
+      if (p) setAccordionOpen(() => p.map(i => `${i.id_fase}`))
+    }
+
+    const afterprint = () => setAccordionOpen(lastAccordionOpen)
+
+    window.addEventListener("beforeprint", beforeprint)
+    window.addEventListener("afterprint", afterprint)
+    return () => {
+      window.removeEventListener("beforeprint", beforeprint)
+      window.removeEventListener("afterprint", afterprint)
+    }
+  }, [phasesWithConditions])
 
   return (
     <>
@@ -314,10 +334,14 @@ const Conditions = () => {
                   </div>}
 
                   <div className="mt-auto">
-                    {(is_admin || is_supervisor) &&
+                    {(is_admin || is_supervisor) && <>
                       <Button size="sm" color="primary2" onClick={() => showUserResume()}>
                         Ver resumen de usuarios
                       </Button>
+                      <Button size="sm" color="primary2" className="ms-2" onClick={() => printReport()}>
+                        <Printer size={16} />
+                      </Button>
+                    </>
                     }
                   </div>
                 </div>
@@ -366,14 +390,14 @@ const Conditions = () => {
                 !phasesWithConditions[selectedProcess.id_conv].length ?
                   <p className="text-muted">No hay fases y tareas registradas en el proceso</p>
                   :
-                  <Accordion open={`${accordionOpen}`} {...{ toggle: selectItem }}>
+                  <Accordion open={accordionOpen} {...{ toggle: selectItem }} >
                     {phasesWithConditions[selectedProcess.id_conv].map((phase) => {
                       const dateDiffInPhase = getDateDiff(new Date(phase.fech_fin));
                       return <AccordionItem
                         key={phase.id_fase}
                         className={
                           classnames("d-flex gap-2 flex-column mb-3",
-                            styles["process-item"], { [styles["active"]]: accordionOpen === `${phase.id_fase}` })
+                            styles["process-item"], { [styles["active"]]: accordionOpen.includes(`${phase.id_fase}`) })
                         } >
                         <AccordionHeader id={`${phase.id_fase}`} targetId={`${phase.id_fase}`} className=" d-flex mb-2 flex-wrap" tag={Card}>
                           <div className="d-flex gap-2 flex-grow-1 align-content-center">

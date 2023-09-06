@@ -75,3 +75,12 @@
   border-radius: inherit;
 }
 
+@media print {
+  .header .navigation-items{
+    display: none !important;
+  }
+  .header .brand{
+    position: initial;
+  }
+
+}
