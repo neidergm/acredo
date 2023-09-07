@@ -56,7 +56,7 @@ const Menu = ({ children }: I_MenuProps) => {
                         </p>
                         <p>
                             <b className='d-block'>Rol:</b>
-                            <span>{userInfo?.rol_nomb}</span>
+                            <span>{userInfo?.rol_nomb || "Usuario"}</span>
                         </p>
                     </DropdownItem>
                     <DropdownItem disabled tag="div" style={{ "pointerEvents": "initial" }} className="mt-3 text-center">

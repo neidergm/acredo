@@ -7,7 +7,6 @@ import { toast } from 'react-hot-toast';
 let token_storaged = "";
 let otherConfig = {
     validateStatus: (status: number) => {
-        console.log(status)
         if (status === 401) {
             localStorageService.deleteItems(["user", "token"]);
             window.location.reload();

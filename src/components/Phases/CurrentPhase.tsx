@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Badge, Button, DropdownToggle } from 'reactstrap';
 import { getDateDiff, getNormalDate } from '../../utils/dateUtils';
 import CircleProgress from '../CircleProgress';
@@ -39,14 +39,20 @@ const CurrentPhase = ({
     const { action, phase, stage } = active || {};
 
     const userRol = useAppSelector(state => state.user.userInfo?.rol)
-
-    const onlyView = isOnlyView(task?.rol);
-    const is_admin = isAdmin(userRol);
-    const is_supervisor = isSupervisor(userRol);
-
     const taskIsEnded = task?.id_esta === 3;
-    const canEndAction = !taskIsEnded && (!is_supervisor && (is_admin || (!onlyView && !!(active?.action?.finalizar))));
-    const canEndTask = !is_supervisor && (is_admin || isLead(task?.rol));
+
+    const [canEndAction, canEndTask] = useMemo(() => {
+        const onlyView = isOnlyView(task?.rol);
+        const is_admin = isAdmin(userRol);
+        const is_supervisor = isSupervisor(userRol);
+        const is_lead = isLead(task?.rol);
+        
+        return [
+            !taskIsEnded && !is_supervisor && !onlyView && ((is_admin || is_lead) || !!(active?.action?.finalizar)) ,
+            !is_supervisor && (is_admin || is_lead)
+        ]
+    }, [active?.action?.finalizar, task?.rol, taskIsEnded, userRol]);
+
 
     const [_alert, setAlert] = useState<null | I_AlertObject>(null);
     const [loader, setLoader] = useState<null | string>(null);
@@ -132,7 +138,7 @@ const CurrentPhase = ({
 
     const markActionAsCompleted = () => {
         if (task.form_cond.length === 0) return cantEndTaskOrAction()
-        
+
         setAlert({
             isOpen: true,
             title: "¿Está seguro?",

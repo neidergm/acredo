@@ -20,7 +20,6 @@ const lazyLoaderComponents = (lazyComponent: () => T_LazyComponent, attemptsLeft
                             reject(error);
                             return;
                         }
-                        console.log("Reloading component...")
                         lazyLoaderComponents(lazyComponent, attemptsLeft - 1)().then(resolve, reject);
                     }, 1500)
                 })

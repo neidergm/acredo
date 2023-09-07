@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { CheckCircleFill, Clip, Edit, ExclamationCircleFill, InfoCircle, LinkIcon, People, ThreeDotsVertical, XCircle } from "../../../components/Icons";
 import { Badge, Button, CloseButton, DropdownToggle, Table } from 'reactstrap';
@@ -50,13 +50,15 @@ const ConditionsDetails = () => {
 
   const userRol = useAppSelector(state => state.user.userInfo?.rol)
 
-  const onlyView = isOnlyView(conditionSelected?.rol);
-  const is_admin = isAdmin(userRol);
-  const is_supervisor = isSupervisor(userRol);
-  const is_lead = isLead(userRol);
   const taskIsEnded = conditionSelected?.id_esta === 3;
 
-  const canEditForms = !is_supervisor && (!taskIsEnded && !onlyView && ((is_admin || is_lead) || !!(phases.active?.action?.finalizar)));
+  const [is_admin, canEditForms] = useMemo(() => {
+    const is_admin = isAdmin(userRol);
+    const onlyView = isOnlyView(conditionSelected?.rol);
+    const is_supervisor = isSupervisor(userRol);
+    const is_lead = isLead(conditionSelected?.rol);
+    return [is_admin, !taskIsEnded && !is_supervisor && !onlyView && ((is_admin || is_lead) || !!(phases.active?.action?.finalizar))]
+  }, [conditionSelected?.rol, userRol, taskIsEnded, phases.active?.action?.finalizar]);
 
   const showConditionDetails = () => {
     setModalData({
