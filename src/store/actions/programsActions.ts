@@ -7,10 +7,13 @@ import { GET_PROGRAMS_LIST } from "../../services/endPointsService";
 export const SET_PROGRAMS_LIST = "SET_PROGRAMS_LIST";
 export const SELECT_PROGRAM = "SELECT_PROGRAM";
 export const SET_REFRESH_STATE = "SET_REFRESH_STATE";
+export const SET_FILTER_PARAMS_PROGRAMS = "SET_FILTER_PARAMS_PROGRAMS";
 
 export const setProgramsList = (payload: Array<I_Program> | null) => ({ type: SET_PROGRAMS_LIST, payload });
 export const selectProgram = (payload: I_Program | null) => ({ type: SELECT_PROGRAM, payload });
 export const setNeedRefreshList = (payload: boolean) => ({ type: SET_REFRESH_STATE, payload });
+
+export const setFilterProgramParams = (payload: I_JSONObject) => ({ type: SET_FILTER_PARAMS_PROGRAMS, payload });
 
 export const getProgramsList = (id_program?: number) => {
     return (dispatch: T_AppDispatch): Promise<null | I_Program[] | I_Program> => AXIOS_REQUEST(GET_PROGRAMS_LIST)

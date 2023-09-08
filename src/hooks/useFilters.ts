@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 export type T_Filter = {
     [key: string]: {
@@ -6,7 +6,7 @@ export type T_Filter = {
         isSelect?: boolean,
         value?: string;
         options?: Array<string>; //For selects
-        selected?: boolean;
+        active?: boolean;
     }
 }
 
@@ -18,12 +18,12 @@ const useFilters = <T>(
     const dataList = useRef(list);
     const [filter, setFilter] = useState(filters);
 
-    const setSelectedFilters = (property: string) => {
-        filter[property].selected ? doFilter(property, "", true) : setFilter(f => { f[property].selected = true; return { ...f } })
+    const setActiveFilters = (property: string) => {
+        filter[property].active ? doFilter(property, "", true) : setFilter(f => { f[property].active = true; return { ...f } })
     }
 
-    const quitAllSelectedFilters = () => {
-        Object.keys(filter).forEach(i => { filter[i].selected = false })
+    const quitAllActiveFilters = () => {
+        Object.keys(filter).forEach(i => { filter[i].active = false })
         setFilter({ ...filter })
         onFilterList(dataList.current)
     }
@@ -36,23 +36,28 @@ const useFilters = <T>(
         }
     }
 
-    const doFilter = (property: string, value: string, quitSelectedFilter = false) => {
-        const f = filter;
-        f[property].value = value;
-        if (quitSelectedFilter) f[property].selected = false;
-
-        const keys = Object.keys(f).filter(i => !!(f[i].value));
-        let filtered = dataList.current;
+    const getFilteredList = (f = filter) => {
+        const keys = Object.keys(f).filter(i => !!(f[i].value))
 
         if (keys.length) {
-            filtered = filtered.filter(p => keys.every(k => f[k].options ?
-                !!((p as any)[k] === f[k].value)
-                : new RegExp(f[k].value || "", "i").test((p as any)[k])))
+            return dataList.current.filter(p => keys.every(k => f[k].options ?
+                !!((p as never)[k] === f[k].value)
+                : new RegExp(f[k].value || "", "i").test((p as never)[k])))
         }
 
+        return dataList.current;
+    }
+
+    const doFilter = (property: string, value: string, quitActiveFilter = false) => {
+        const f = filter;
+        f[property].value = value;
+        if (quitActiveFilter) f[property].active = false;
+
+        const newList = getFilteredList(f)
+
         setFilter({ ...f })
-        onFilterList(filtered)
-        return filtered
+        onFilterList(newList)
+        return newList
     }
 
     const buildFiltersByList = (l = dataList.current) => {
@@ -62,26 +67,34 @@ const useFilters = <T>(
             // p.est_resolution = p.fech_reso ? (getDateDiff(p.fech_reso, new Date()) < 0 ? "Vencida" : "Activa") : "Sin resolución";
             for (const key in f) {
                 if (f[key].isSelect) {
-                    const val = (p as any)[`${key}`];
+                    const val = (p as never)[`${key}`];
                     if (!f[key].options) f[key].options = [];
-                    if (val && !f[key].options?.includes(val)) f[key].options!.push(val)
+                    if (val && !f[key].options?.includes(val)) f[key].options?.push(val)
                 }
             }
         }
         for (const key in f) {
-            if(f[key].isSelect && f[key]?.options!.length <= 1) delete f[key];
+            if (f[key].isSelect && (f[key].options || []).length <= 1) delete f[key];
         }
         setFilter(f);
     }
 
-    const getSelectedFilters = () => Object.keys(filter).filter(i => filter[i].selected)
+    const getActiveFilters = () => Object.keys(filter).filter(i => filter[i].active)
 
-    useEffect(() => { buildFiltersByList() }, [])
+    useEffect(() => {
+        if (getActiveFilters().length) {
+            onFilterList(getFilteredList(filters))
+        } else {
+            buildFiltersByList()
+            onFilterList(dataList.current)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     return {
-        setSelectedFilters,
-        quitAllSelectedFilters,
-        getSelectedFilters,
+        setActiveFilters,
+        quitAllActiveFilters,
+        getActiveFilters,
         filter,
         setFilter,
         doFilter,

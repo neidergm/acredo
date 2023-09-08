@@ -1,5 +1,6 @@
 import { I_Condition } from "./conditions.interface";
 import { I_ProcessIndicators, T_ProgramsIndicators } from "./dashboard.interface";
+import { I_JSONObject } from "./generic.interface";
 import { I_Notification } from "./notification.interface";
 import { T_ActivePhase, T_Phase, T_PhasesWithConditions } from "./phasesAndStages.interface";
 import { I_Process } from "./process.interface";
@@ -27,6 +28,7 @@ export interface I_ProgramsState {
     list: Array<I_Program> | null;
     selected: I_Program | null;
     needRefreshList: boolean;
+    filter: I_JSONObject | null;
 }
 
 export type T_SelectedConditionData = {

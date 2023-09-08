@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Badge, DropdownToggle, Input } from 'reactstrap';
 import useFilters from '../../hooks/useFilters';
 import { I_Program } from '../../interfaces/programs.interface';
@@ -5,6 +6,9 @@ import CustomDropdown from '../CustomDropdown';
 import { Funnel } from '../Icons';
 import classnames from "classnames";
 import style from './style.module.css'
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { setFilterProgramParams } from '../../store/actions/programsActions';
+import { useAppSelector } from '../../hooks/useAppSelector';
 
 type T_Props = {
     list: I_Program[],
@@ -13,10 +17,13 @@ type T_Props = {
 
 const ProgramFilter = ({ list, updateList }: T_Props) => {
 
-    const { filter, doFilter, setSelectedFilters, getSelectedFilters, quitAllSelectedFilters } = useFilters<I_Program>({
+    const dispatch = useAppDispatch();
+    const filterParams = useAppSelector(s => s.programs.filter)
+
+    const { filter, doFilter, setActiveFilters, getActiveFilters, quitAllActiveFilters } = useFilters<I_Program>({
         onFilterList: (filterdList: typeof list) => updateList(filterdList),
         list,
-        filters: {
+        filters: filterParams || {
             nomb_prog: {
                 label: "Buscar por nombre",
             },
@@ -55,7 +62,13 @@ const ProgramFilter = ({ list, updateList }: T_Props) => {
         }
     });
 
-    const filtersLength = getSelectedFilters().length
+    useEffect(() => {
+        return () => {
+            filter && dispatch(setFilterProgramParams(filter))
+        }
+    }, [])
+
+    const filtersLength = getActiveFilters().length
 
     return (
         <>
@@ -63,13 +76,13 @@ const ProgramFilter = ({ list, updateList }: T_Props) => {
                 <CustomDropdown
                     options={
                         [...Object.keys(filter).map(f => ({
-                            text: <><Input type='checkbox' defaultChecked={!!(filter[f].selected)} className='me-2' />{filter[f].label}</>,
-                            click: () => setSelectedFilters(f)
+                            text: <><Input type='checkbox' defaultChecked={!!(filter[f].active)} className='me-2' />{filter[f].label}</>,
+                            click: () => setActiveFilters(f)
                         })),
                         { text: <></>, optionProps: { divider: true, className: "opacity-50" } },
                         {
                             text: <span className='small text-danger'>Quitar todos los filtros</span>,
-                            click: quitAllSelectedFilters,
+                            click: quitAllActiveFilters,
                             optionProps: { className: classnames("mt-1", { "opacity-50": !(filtersLength) }), disabled: !(filtersLength) }
                         }]
                     }>
@@ -81,15 +94,15 @@ const ProgramFilter = ({ list, updateList }: T_Props) => {
             <div>
                 <div className='pt-4 d-flex gap-3 flex-wrap w-100'>
                     {Object.keys(filter).map(f =>
-                        filter[f].selected && (
+                        filter[f].active && (
                             filter[f].isSelect ?
                                 !!((filter[f].options?.length || 0) > 1) && <div key={f} className={style["item-filter"]}>
                                     <label htmlFor={f} className="form-label small mb-1 d-flex justify-content-between gap-3">
                                         <span>{filter[f].label}</span>
-                                        <small className='link-primary' onClick={() => setSelectedFilters(f)}>Quitar</small>
+                                        <small className='link-primary' onClick={() => setActiveFilters(f)}>Quitar</small>
                                     </label>
                                     <select value={filter[f].value} id={f} className='form-select w-auto border text-secondary' onChange={e => doFilter(f, e.target.value)}>
-                                        <option value="">Filtrar</option>
+                                        <option value="">Todos</option>
                                         {filter[f].options!.map(o => <option key={o} value={o}>{o}</option>)}
                                     </select>
                                 </div>
@@ -97,9 +110,10 @@ const ProgramFilter = ({ list, updateList }: T_Props) => {
                                 <div key={f} className={style["item-filter"]}>
                                     <label htmlFor={f} className="form-label small mb-1 d-flex justify-content-between gap-3">
                                         <span>{filter[f].label}</span>
-                                        <small className='link-primary' onClick={() => setSelectedFilters(f)}>Quitar</small>
+                                        <small className='link-primary' onClick={() => setActiveFilters(f)}>Quitar</small>
                                     </label>
                                     <input
+                                        value={filter[f].value}
                                         placeholder='Búsqueda'
                                         className='form-control'
                                         type='search'

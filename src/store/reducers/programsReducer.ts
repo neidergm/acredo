@@ -1,10 +1,11 @@
 import { I_AppAction, I_ProgramsState } from "../../interfaces/store.interface";
-import { SET_PROGRAMS_LIST, SELECT_PROGRAM, SET_REFRESH_STATE } from "../actions/programsActions";
+import { SET_PROGRAMS_LIST, SELECT_PROGRAM, SET_REFRESH_STATE, SET_FILTER_PARAMS_PROGRAMS } from "../actions/programsActions";
 
 const initialState: I_ProgramsState = {
     list: null,
     needRefreshList: false,
-    selected: null
+    selected: null,
+    filter: null
 }
 
 const programReducer = (state = initialState, action: I_AppAction): I_ProgramsState => {
@@ -24,6 +25,11 @@ const programReducer = (state = initialState, action: I_AppAction): I_ProgramsSt
             return {
                 ...state,
                 needRefreshList: action.payload
+            };
+        case SET_FILTER_PARAMS_PROGRAMS:
+            return {
+                ...state,
+                filter: action.payload
             };
 
         default:

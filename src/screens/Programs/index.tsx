@@ -19,7 +19,7 @@ import classnames from 'classnames';
 import { isAdmin } from '../../utils/userRolUtils';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import ProgramFilter from '../../components/ProgramFilter';
-import { getProgramsList, selectProgram, setProgramsList } from '../../store/actions/programsActions';
+import { getProgramsList, selectProgram } from '../../store/actions/programsActions';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { I_Program } from '../../interfaces/programs.interface';
 
@@ -28,6 +28,8 @@ const Programs = () => {
     const programsList = useAppSelector(state => state.programs.list);
     const needRefreshList = useAppSelector(state => state.programs.needRefreshList);
     const selected = useAppSelector(state => state.programs.selected);
+
+    const [list, setList] = useState<typeof programsList>(null)
 
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
@@ -93,9 +95,7 @@ const Programs = () => {
         })
     }
 
-    const getPrograms = () => {
-        dispatch(getProgramsList())
-    }
+    const getPrograms = () => dispatch(getProgramsList())
 
     const pickProgram = (program: I_Program) => {
         dispatch(selectProgram(program));
@@ -103,18 +103,8 @@ const Programs = () => {
     }
 
     useEffect(() => {
-        (!programsList || needRefreshList) && getPrograms();
+        if (!programsList || needRefreshList) { getPrograms() }
     }, [])
-    // useLayoutEffect(() => {
-    //     (!programsList || needRefreshList) && getPrograms();
-    // }, [])
-
-    // useEffect(() => {
-    //     if (selected && programsList) {
-    //         const el = document.getElementById(`${selected.id_prog}`)
-    //         el?.scrollIntoView({ block: "center" });
-    //     }
-    // }, [])
 
     return (
         <>
@@ -139,7 +129,7 @@ const Programs = () => {
                         {is_admin && <div className='float-end'>
                             <Button color='primary' size='sm' onClick={() => newProgram()}>+ Nuevo programa</Button>
                         </div>}
-                        <ProgramFilter list={programsList} updateList={l => dispatch(setProgramsList(l))} />
+                        <ProgramFilter list={programsList} updateList={l => setList(l)} />
                     </div>
 
                     <div className='mb-4 pt-2 d-inline-flex align-items-center gap-3 mb-4'>
@@ -148,19 +138,19 @@ const Programs = () => {
                                 className='border-start border-5 border-dark py-1 ps-3 pe-4 bg-secondary bg-opacity-10 d-inline-block'
                                 style={{ borderRadius: "2px 10px 10px 2px" }}
                             >
-                                <small className='fw-semibold'>{programsList?.length} Programas encontrados</small>
+                                <small className='fw-semibold'>{list?.length} Programas encontrados</small>
                             </div>
                         </div>
                     </div>
                 </>}
                 <div className="mb-5">
-                    {programsList ?
-                        (programsList.length ?
+                    {list ?
+                        (list.length ?
                             <div className='row h-100'>
-                                {programsList
+                                {list
                                     .map((item, i) => <div className='col-12 col-md-6 col-xl-4 mb-4' key={`${item.id_prog}-${i}`} id={`${item.id_prog}`}>
                                         <Card onClick={() => pickProgram(item)}
-                                            className={classnames('h-100 p-0 hover-scale-up position-relative')}
+                                            className={classnames('h-100 ps-0 pe-0 p-0 hover-scale-up position-relative')}
                                         >
                                             {needRefreshList && item.id_prog === selected?.id_prog &&
                                                 <Card className='position-absolute bg-white top-0 start-0 h-100 w-100 bg-opacity-75 d-flex align-items-center justify-content-center'>
