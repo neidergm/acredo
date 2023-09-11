@@ -114,11 +114,12 @@ const Process = () => {
   const deleteProcess = (process: I_Process) => {
     setLoading("Eliminando proceso")
     AXIOS_REQUEST(DELETE_PROCESS + process.id_conv, "DELETE").then(r => {
-      dispatch(setProcessList(null))
+      dispatch(getProcessList())
       toast.success("Se ha eliminado el proceso correctamente", { position: "top-right" })
     }).catch(() => {
+      setLoading(null)
       toast.error("No se pudo eliminar el proceso", { position: "top-right" })
-    }).finally(() => setLoading(null))
+    })
   }
 
   const editProcess = (process: I_Process, data: I_JSONObject, defaultData: I_JSONObject) => {
@@ -141,12 +142,14 @@ const Process = () => {
           const d = jsonToFormData({ id_conv: process.id_conv, ...data });
           AXIOS_REQUEST(UPDATE_PROCESS, "PUT", d)
             .then(r => {
-              dispatch(setProcessList(null))
+              dispatch(getProcessList())
               closeModal(setModal);
               toast.success("Se ha modificado el proceso correctamente", { position: "top-right" })
             }).catch(() => {
+              setLoading(null);
               toast.error("No se pudo modificar el proceso", { position: "top-right" })
-            }).finally(() => setLoading(null))
+            })
+          // .finally(() => setLoading(null))
         }
       },
       closeButton: { value: "No, cancelar" }
@@ -167,12 +170,13 @@ const Process = () => {
 
           AXIOS_REQUEST(CREATE_PROCESS, "POST", d)
             .then(r => {
-              dispatch(setProcessList(null))
+              dispatch(getProcessList())
               closeModal(setModal);
               toast.success("Se ha creado el proceso correctamente", { position: "top-right" })
             }).catch(() => {
+              setLoading(null)
               toast.error("No se pudo crear el proceso", { position: "top-right" })
-            }).finally(() => setLoading(null))
+            })
         }
       },
       closeButton: { value: "No, cancelar" }
@@ -183,6 +187,8 @@ const Process = () => {
     if (!(processList?.length) && !hasLoaded.current) {
       hasLoaded.current = true;
       dispatch(getProcessList())
+    } else if (!!processList?.length && !!hasLoaded.current && loading) {
+      setLoading(null)
     }
   }, [processList])
 
