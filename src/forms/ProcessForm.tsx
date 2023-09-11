@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef, ChangeEvent } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Form from 'react-ngm-form'
 import mapField from '../utils/mapField';
 import { I_FormField } from '../interfaces/conditions.interface';
 import { I_JSONObject, T_FieldsTypes } from '../interfaces/generic.interface';
 import { AXIOS_REQUEST } from '../services/axiosService';
-import { CAMPUS_LIST, GET_PROCESS_TYPE, GET_PROGRAMS_LIST } from '../services/endPointsService';
+import { CAMPUS_LIST, GET_PROCESS_TYPE, GET_PROGRAMS_FOR_SELECT } from '../services/endPointsService';
 
 
 type T_Props = {
@@ -78,7 +78,7 @@ const ProcessForm = ({
             "request": {
                 method: "GET",
                 params: {},
-                url: GET_PROGRAMS_LIST
+                url: GET_PROGRAMS_FOR_SELECT
             },
             "dependsOn": "id_tcond",
             doRequest: ({ method, params, url }: I_JSONObject) => {

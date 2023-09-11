@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import Form from 'react-ngm-form'
-import { Button } from 'reactstrap';
+import { Button, Input, Label } from 'reactstrap';
 import { T_FieldsTypes } from '../../../interfaces/generic.interface';
 import { T_Action, T_Phase, T_Stage } from '../../../interfaces/phasesAndStages.interface'
 import stageformfields from './../../../forms/stage.form.json';
@@ -16,9 +16,11 @@ import { useParams } from 'react-router-dom';
 import Action from '../Action';
 import toast from 'react-hot-toast';
 import { jsonToFormData } from '../../../utils/formUtils';
-import { getNormalDate } from '../../../utils/dateUtils';
 import { selectProcess } from '../../../store/actions/processActions';
 import confirmDeleteAlertObject from '../../../utils/confirmDeleteAlertObject';
+import { UiChecks } from '../../Icons';
+import StageChooser from './StageChooser';
+import { isLead } from '../../../utils/userRolUtils';
 
 type T_Props = {
   stage?: T_Stage,
@@ -73,18 +75,40 @@ const CreateStage = ({
     modalToEditAction(undefined, "Crear")
   }
 
-  const onCreateAction = (data: any) => {
-    const d = jsonToFormData({
-      "[0].nomb_accion": data.nomb_accion,
-      "[0].fecha_accion": data.fecha_accion,
-      "[0].id_etapa": stage?.id,
-    });
+  const onCreateAction = (data: any | T_Action[], multiple = false) => {
 
-    !!(data.responsible?.length) && data.responsible.forEach((r: { user: string }, i: number) => {
-      d.append(`[0].responsable[${i}].id_rc`, r.user);
-      d.append(`[0].responsable[${i}].rol_cond`, "B");
-      d.append(`[0].responsable[${i}].id_cond`, id_cond!);
-    })
+    let d = new FormData();
+
+    if (multiple && typeof data === "object" && !!(data?.length)) {
+      data.forEach((action: T_Action, idx: number) => {
+        const pref = `[${idx}].`
+
+        d.append(`${pref}nomb_accion`, action.nomb_accion);
+        d.append(`${pref}fecha_accion`, action.fecha_accion);
+        d.append(`${pref}id_etapa`, `${stage?.id}`);
+
+        action.usuarios!.forEach((r, i: number) => {
+          if (!isLead(r.rol)) {
+            d.append(`${pref}responsable[${i}].id_rc`, `${r.id_rc}`);
+            d.append(`${pref}responsable[${i}].rol_cond`, r.rol);
+            d.append(`${pref}responsable[${i}].id_cond`, id_cond!);
+          }
+        })
+      });
+
+    } else {
+      d = jsonToFormData({
+        "[0].nomb_accion": data.nomb_accion,
+        "[0].fecha_accion": data.fecha_accion,
+        "[0].id_etapa": stage?.id,
+      });
+
+      !!(data.responsible?.length) && data.responsible.forEach((r: { user: string }, i: number) => {
+        d.append(`[0].responsable[${i}].id_rc`, r.user);
+        d.append(`[0].responsable[${i}].rol_cond`, "B");
+        d.append(`[0].responsable[${i}].id_cond`, id_cond!);
+      })
+    }
 
     setLoader("Creando nueva acción")
 
@@ -239,6 +263,38 @@ const CreateStage = ({
     }).finally(() => setLoader(null))
   }
 
+  const copyActionsFromPhase = () => {
+    setModal({
+      isOpen: true,
+      title: "Copiar acciones de etapa",
+      size: "lg",
+      fullscreen: "md",
+      children: <>
+        <p>Seleccione la etapa desde la cual quiere tomar las acciones como copia para la etapa <i>"{stage?.name}"</i></p>
+        <br />
+        <StageChooser phase={phase!} stage={stage!} formId="COPY_FORM" submit={(data) => {
+          if (data.length === 0) {
+            return toast.error("Debe seleccionar las acciones a copiar", { position: "top-right" })
+          }
+          setAlert({
+            isOpen: true,
+            type: "question",
+            title: "¿Está seguro?",
+            subtitle: `Se copiarán ${data.length} acciones en esta etapa. Tenga en cuenta que la copia incluye fechas y responsables`,
+            submitButton: {
+              value: "Ok, continuar", onClick: () => onCreateAction(data, true)
+            },
+            closeButton: { value: "No, cancelar" }
+          })
+        }} />
+      </>,
+      footer: <ModalFooter>
+        <Button color="primary2" type='button' onClick={() => closeModal(setModal)}>Cerrar</Button>
+        <Button color="primary" form='COPY_FORM'>Ok, copiar</Button>
+      </ModalFooter>
+    })
+  }
+
   useEffect(() => {
     return () => {
       if (updateDataOnUnmount.current) {
@@ -253,7 +309,7 @@ const CreateStage = ({
 
   return (
     <>
-      <Modal backdrop="static" size={modal?.size}
+      <Modal backdrop="static" size={modal?.size} fullscreen={modal?.fullscreen}
         isOpen={!!(modal?.isOpen)}
         onClosed={() => { setModal(null) }}
         toggle={() => closeModal(setModal)}
@@ -299,8 +355,12 @@ const CreateStage = ({
               {
                 !(actions) ? <Loader isOpen={!!(loader)} loaderAsModal={false} />
                   :
-                  !(actions.length) ?
+                  !(actions.length) ? <div className='text-secondary pt-5 text-center'>
                     <p className='mt-5'>No hay acciones registradas</p>
+                    <div className='mt-3'>
+                      <Button color="primary2" size='sm' onClick={() => copyActionsFromPhase()}><UiChecks /> Copiar acciones desde etapa</Button>
+                    </div>
+                  </div>
                     :
                     <div className='mt-4 pt-2'>
                       {actions.map((act, idx) => <Action

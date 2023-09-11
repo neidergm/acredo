@@ -325,6 +325,11 @@ export const GET_PROGRAMS_LIST = `programas`;
 export const GET_PROGRAMS_BY_STATE = `programas/all/`;
 
 /**
+ * @method GET
+ */
+export const GET_PROGRAMS_FOR_SELECT = `programas/select`;
+
+/**
  * @method PUT
  * @params {est_prog: -1, cid_prog}
  */

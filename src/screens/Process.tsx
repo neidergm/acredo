@@ -247,15 +247,15 @@ const Process = () => {
                         <span>{process.nomb_conv}</span>
                       </div>
                       <div className='d-flex gap-3 flex-wrap'>
-                        <div>
-                          <b className="d-block small">Sede:</b>
-                          <span>{process.sede}</span>
-                        </div>
                         {!!(process.id_prog) && <div>
                           <b className="d-block small">Programa:</b>
                           <span>{process.programa}</span>
                         </div>
                         }
+                        <div>
+                          <b className="d-block small">Sede:</b>
+                          <span>{process.sede}</span>
+                        </div>
                         {!!(process.fase_actual) && <div>
                           <b className="d-block small">Fase actual:</b>
                           <span>{process.fase_actual}</span>
