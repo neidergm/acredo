@@ -420,7 +420,7 @@ const Conditions = () => {
                             <div className="d-flex justify-content-center flex-column">
                               <span className="d-block mb-1 fw-semibold">{phase.nomb_fase}</span>
                               <small className="text-dark text-opacity-50">
-                                <span className="d-none d-md-inline-block">Desde </span>
+                                <span className="d-none d-md-inline-block pe-1">Desde </span>
                                 {getNormalDate(phase.fech_ini, { dateStyle: "long" })}
                                 <span className="d-none d-md-inline-block px-1">hasta </span>
                                 <span className="d-inline-block d-md-none px-1">a</span>
