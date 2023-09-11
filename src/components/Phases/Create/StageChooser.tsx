@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from 'react'
 import { T_Action, T_Phase, T_Stage } from '../../../interfaces/phasesAndStages.interface'
 import { Badge, Input, Label } from 'reactstrap';
 import classnames from 'classnames';
-import toast from 'react-hot-toast';
 
 type T_Props = {
     phase: T_Phase,

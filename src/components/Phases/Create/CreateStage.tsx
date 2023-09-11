@@ -86,12 +86,13 @@ const CreateStage = ({
         d.append(`${pref}nomb_accion`, action.nomb_accion);
         d.append(`${pref}fecha_accion`, action.fecha_accion);
         d.append(`${pref}id_etapa`, `${stage?.id}`);
-
-        action.usuarios!.forEach((r, i: number) => {
+        let i = 0;
+        action.usuarios!.forEach(r => {
           if (!isLead(r.rol)) {
             d.append(`${pref}responsable[${i}].id_rc`, `${r.id_rc}`);
             d.append(`${pref}responsable[${i}].rol_cond`, r.rol);
             d.append(`${pref}responsable[${i}].id_cond`, id_cond!);
+            i++;
           }
         })
       });
