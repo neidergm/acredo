@@ -20,8 +20,9 @@ const Loader = ({
 }: T_Props) => {
 
     if (!loaderAsModal) {
-        return <div className='text-center w-100 h-100'><Spinner role="status" size={size}/>{children}</div>
+        return <div className='text-center w-100 h-100'><Spinner role="status" size={size} />{children}</div>
     }
+
     return (
         <Modal
             centered

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import Loader from '../../../components/Loader';
 import { I_Form, I_FormField, I_FormFieldWithAnswer } from '../../../interfaces/conditions.interface';
 import { I_JSONObject, T_FieldsTypes } from '../../../interfaces/generic.interface';
@@ -177,9 +177,9 @@ const FormPannel = ({
                 // }
                 // item.est_resp = 0;
                 answers = null;
-               
+
             } else {
-               
+
                 fields = fields.map(f => ({ ...(answers?.find(i => i.id_campo === f.id_campo) || {}), ...f }))
             }
         }
@@ -196,9 +196,7 @@ const FormPannel = ({
         return await d;
     }
 
-    const toggleEditFormsPannel = () => {
-        setTogglePannel(t => !t);
-    }
+    const toggleEditFormsPannel = () => setTogglePannel(t => !t);
 
     const getFormWithAnswers = (id_fcamp: string | number): Promise<I_FormFieldWithAnswer[]> =>
         AXIOS_REQUEST(`${ANSWER_BY_FORM}${id_fcamp}`).then(res => res.data)
@@ -217,7 +215,7 @@ const FormPannel = ({
 
     useEffect(() => {
         getForms()
-    }, [])
+    }, [formId])
 
     let content: JSX.Element;
 
@@ -244,7 +242,7 @@ const FormPannel = ({
             onSubmit={confirmSubmit}
             onDelete={confirmDelete}
         >
-            {!!(canAddForms) && <Button size="sm" color="primary" onClick={toggleEditFormsPannel}>
+            {!!(canAddForms) && <Button size="sm" color="primary2" onClick={toggleEditFormsPannel}>
                 <i className='me-1'><Link /></i>
                 <span>Agregar plantillas de formularios</span>
             </Button>}
@@ -258,15 +256,23 @@ const FormPannel = ({
             onPickOne={pickFormItem}
             onSubmit={confirmSubmit}
             onDelete={confirmDelete}
-        />
+        >
+            {!!(canAddForms) && <div className='text-end'>
+                <Button size="sm" color="primary2" onClick={toggleEditFormsPannel}>
+                    <i className='me-1'><Link /></i>
+                    <span>Agregar plantillas de formularios</span>
+                </Button>
+            </div>
+            }
+        </AsList>
     } else {
         return null
     }
 
     return <>
-        {!!(canAddForms) && <FormsTemplatesAssociaton open={togglePannel} toggle={toggleEditFormsPannel} taskId={id_cond!} />}
-        <Alert isOpen={!!(alertConfirm?.isOpen)}{...alertConfirm} onClosed={() => { closeModal(setAlertConfirm) }} />
         <Loader isOpen={!!loader} subtitle={loader!} />
+        <Alert isOpen={!!(alertConfirm?.isOpen)}{...alertConfirm} onClosed={() => { closeModal(setAlertConfirm) }} />
+        {!!(canAddForms) && <FormsTemplatesAssociaton open={togglePannel} toggle={toggleEditFormsPannel} taskId={id_cond!} />}
         {content}
     </>
 }

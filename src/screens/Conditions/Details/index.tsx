@@ -200,6 +200,7 @@ const ConditionsDetails = () => {
       toast.success("Se ha actualizado la tarea correctamente", { position: "top-right" });
 
       dispatch(getContionData(Number(id_cond)))
+      dispatch(getPhasesAndStagesOfCondition(Number(id_cond)))
       dispatch(setProcessPhasesWithConditions(Number(id_process), null));
       closeModal(setModalData)
     }).catch(r => toast.error("No se pudo actualizar la tarea", { position: "top-right" }))
@@ -390,8 +391,9 @@ const ConditionsDetails = () => {
                   codCond={conditionSelected.cod_cond}
                   // canAddForms={conditionSelected.form_cond.split(",").length <= 1 &&
                   //   conditionSelected.marc_update === conditionSelected.marc_temp}
-                  canAddForms={conditionSelected.form_cond.split(",").length <= 1 &&
-                    !(conditionSelected.porcentaje)}
+                  canAddForms={is_admin && conditionSelected.porcentaje === 0}
+                // canAddForms={conditionSelected.form_cond.split(",").length <= 1 &&
+                //   !(conditionSelected.porcentaje)}
                 />
               }
             </Card>

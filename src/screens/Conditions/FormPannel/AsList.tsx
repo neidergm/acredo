@@ -11,6 +11,7 @@ import './../Details/style.css';
 type T_Props = {
     canEdit: boolean,
     id_cond: string,
+    children?: JSX.Element | JSX.Element[] | boolean,
     formList: T_Form[],
 } & T_FormPannelActions;
 
@@ -18,6 +19,7 @@ const AsList = ({
     canEdit,
     id_cond,
     formList,
+    children,
     onPickOne,
     onSubmit,
     onDelete,
@@ -91,6 +93,7 @@ const AsList = ({
 
     return (
         <>
+            {children}
             <ObservationChat
                 onlyRead={!canEdit}
                 toggle={showObservations}
@@ -171,7 +174,7 @@ const AsList = ({
                         <div className='float-end'>
                             <CloseButton onClick={() => selectItem(null)} className="ms-3" />
                         </div>
-                        <h4 className='mt-3'>{selectedItem.nomb_form}</h4>
+                        <h5 className='mt-3 border-start ps-3 py-2 border-5 border-dark text-secondary'>{selectedItem.nomb_form}</h5>
                         <div className='mt-5'>
                             {!(selectedItem.fields?.length) ?
                                 <Loader loaderAsModal={false} isOpen />

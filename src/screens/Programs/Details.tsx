@@ -254,7 +254,7 @@ const Details = () => {
                 <div>
                     {!program ? <div className='p-5 mt-5'><Loader loaderAsModal={false} isOpen /></div>
                         : <>
-                            <Offcanvas isOpen={!!(showSidePanel)} style={{ minWidth: "40%" }} >
+                            <Offcanvas isOpen={!!(showSidePanel)} style={{ minWidth: "40%" }} fade>
                                 <OffcanvasHeader toggle={() => { showAllEvents(false) }}>
                                     <span className='ps-3 border-start border-success border-4 py-1'>{showSidePanel?.title}</span>
                                 </OffcanvasHeader>

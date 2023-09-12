@@ -18,7 +18,7 @@ import toast from 'react-hot-toast';
 import { jsonToFormData } from '../../../utils/formUtils';
 import { selectProcess } from '../../../store/actions/processActions';
 import confirmDeleteAlertObject from '../../../utils/confirmDeleteAlertObject';
-import { UiChecks } from '../../Icons';
+import { ExclamationCircleFill, UiChecks } from '../../Icons';
 import StageChooser from './StageChooser';
 import { isLead } from '../../../utils/userRolUtils';
 
@@ -226,6 +226,8 @@ const CreateStage = ({
 
   const updateStage = ({ nomb_etapa }: any) => {
 
+    if (nomb_etapa === stage?.name) return toast.error("Nada para actualizar", { position: "top-right", icon: <i className='text-warning'><ExclamationCircleFill /> </i> })
+
     const data = jsonToFormData({
       "[0].id_fase": phase?.id,
       "[0].id_etapa": stage?.id,
@@ -359,7 +361,7 @@ const CreateStage = ({
                   !(actions.length) ? <div className='text-secondary pt-5 text-center'>
                     <p className='mt-5'>No hay acciones registradas</p>
                     <div className='mt-3'>
-                      <Button color="primary2" size='sm' onClick={() => copyActionsFromPhase()}><UiChecks /> Copiar acciones desde etapa</Button>
+                      <Button disabled={(phase?.stages?.length || 0) <= 1} color="primary2" size='sm' onClick={() => copyActionsFromPhase()}><UiChecks /> Copiar acciones desde etapa</Button>
                     </div>
                   </div>
                     :

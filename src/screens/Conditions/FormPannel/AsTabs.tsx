@@ -142,8 +142,8 @@ const AsTabs = ({
                                         </span>
                                     }
                                 </NavLink> */}
-                    <div className='flex-grow-1 text-end pb-3'>{children}</div>
                 </Nav>
+                <div className='flex-grow-1 text-end'>{children}</div>
                 <TabContent activeTab={currentActiveTab} className="tab-content-item pt-4">
                     {formList.map((item, i) => {
                         return <TabPane tabId={i} key={`tp-${i}`}>

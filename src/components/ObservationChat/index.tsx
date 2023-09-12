@@ -214,6 +214,7 @@ const ObservationChat = ({
 
     return (
         <Offcanvas
+            fade
             onOpened={() => getObservationsList()}
             onClosed={() => setMessages(null)}
             toggle={() => toggle(null)}

@@ -6,7 +6,7 @@ import Loader from '../components/Loader';
 import { I_Process } from '../interfaces/process.interface';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import { useAppSelector } from '../hooks/useAppSelector';
-import { getProcessList, selectProcess, setProcessList } from '../store/actions/processActions';
+import { getProcessList, selectProcess } from '../store/actions/processActions';
 import CircleProgress from '../components/CircleProgress';
 import Card from '../components/Card';
 import { Edit, ExclamationCircleFill, Folder2Open, Plus, ThreeDotsVertical, XCircle } from '../components/Icons';
@@ -79,7 +79,7 @@ const Process = () => {
         <ProcessForm
           formProps={{ id: FORMID }}
           defaultValues={defaultData}
-          onSubmit={(data: any) => editProcess(process, data, defaultData)}
+          onSubmit={(data: never) => editProcess(process, data, defaultData)}
         />
       </>,
       footer: <ModalFooter className='justify-content-between'>
@@ -156,7 +156,7 @@ const Process = () => {
     })
   }
 
-  const createNewProces = (data: any) => {
+  const createNewProces = (data: never) => {
     setAlert({
       type: "question",
       title: "¿Está seguro?",
@@ -190,6 +190,7 @@ const Process = () => {
     } else if (!!processList?.length && !!hasLoaded.current && loading) {
       setLoading(null)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [processList])
 
   return (

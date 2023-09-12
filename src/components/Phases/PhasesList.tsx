@@ -189,7 +189,7 @@ const PhasesList = ({ isAdmin, taskEnded }: T_Props) => {
         <ModalBody>{modal?.children}</ModalBody>
         {modal?.footer}
       </Modal>
-      <Offcanvas isOpen={!!(selectStage)} style={{ minWidth: "65%" }}>
+      <Offcanvas isOpen={!!(selectStage)} style={{ minWidth: "65%" }} fade>
         <OffcanvasHeader toggle={() => toggleEditStagePannel()}>
           <span className='ps-3 border-start border-success border-4 py-1'>{
             selectStage?.stage?.id ? "Modificar etapa" : "Crear nueva etapa"

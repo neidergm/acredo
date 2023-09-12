@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { Accordion, AccordionBody, AccordionHeader, AccordionItem, Badge, Button, ListGroup, ListGroupItem, Offcanvas, OffcanvasBody, OffcanvasHeader } from 'reactstrap';
 import { AXIOS_REQUEST } from '../../services/axiosService';
-import { ASOCIATE_FORM_TO_TASK, GET_TEMPLATES, GET_TEMPLATES_CATEGORIES } from '../../services/endPointsService';
+import { ASOCIATE_FORM_TO_TASK, GET_TEMPLATES, GET_TEMPLATES_CATEGORIES, PROCESS_LIST } from '../../services/endPointsService';
 import { T_Template, T_TemplateCategories } from '../../interfaces/conditions.interface';
 import { jsonToFormData } from '../../utils/formUtils';
 import { toast } from 'react-hot-toast';
@@ -35,7 +35,7 @@ const FormsTemplatesAssociaton = ({
     const [acccordionOpen, setAcccordionOpen] = useState<string[]>([]);
 
     const dispatch = useAppDispatch();
-    const process = useAppSelector(s => s.process.selected);
+    // const process = useAppSelector(s => s.process.selected);
 
     const formRef = useRef<HTMLFormElement>(null);
 
@@ -93,22 +93,51 @@ const FormsTemplatesAssociaton = ({
             </>,
             submitButton: {
                 value: "Ok, asociar", onClick: () => {
-                    setLoader("Asociando plantillas");
-                    const data = jsonToFormData({ form_cond: idsTemplates.join(","), id_cond: taskId });
-                    AXIOS_REQUEST(ASOCIATE_FORM_TO_TASK, "PUT", data)
-                        .then((resp) => {
-                            toggle();
-                            toast.success("Formularios asociados correctamente", { position: "top-right" });
-                            dispatch(selectCondition(null))
-                            dispatch(getContionData(Number(taskId!)))
-                            dispatch(setProcessPhasesWithConditions(process!.id_conv, null))
-                        }).catch(() => {
-                            toast.error("No se pudo asociar", { position: "top-right" });
-                        }).finally(() => setLoader(null))
+                    closeModal(setAlertConfirm)
+                    doAssotiation(idsTemplates)
                 }
             },
             closeButton: { value: "Cancelar" }
         })
+    }
+
+    // const doAssotiation = (idsTemplates: number[]) => {
+    //     setLoader("Asociando plantillas");
+    //     const data = jsonToFormData({ form_cond: idsTemplates.join(","), id_cond: taskId });
+
+    //     // AXIOS_REQUEST(ASOCIATE_FORM_TO_TASK, "PUT", data)
+    //     AXIOS_REQUEST(PROCESS_LIST).then(async (resp) => {
+    //         setLoader(null)
+    //         toast.success("Formularios asociados correctamente", { position: "top-right" });
+    //         toggle();
+    //         dispatch(selectCondition(null))
+    //         dispatch(getContionData(Number(taskId!)))
+    //         dispatch(setProcessPhasesWithConditions(process!.id_conv, null))
+    //     }).catch(() => {
+    //         setLoader(null)
+    //         toast.error("No se pudo asociar", { position: "top-right" });
+    //     })
+    // }
+
+    const doAssotiation = (idsTemplates: number[]) => {
+        const data = jsonToFormData({ form_cond: idsTemplates.join(","), id_cond: taskId });
+        setLoader("Asociando plantillas");
+        AXIOS_REQUEST(ASOCIATE_FORM_TO_TASK, "PUT", data).then(async (resp) => {
+            setLoader("Espere")
+            toast.success("Formularios asociados correctamente", { position: "top-right" });
+            return (dispatch(getContionData(Number(taskId!))) as any).then(() => {
+                setSelectedList({})
+                setAcccordionOpen([])
+                setLoader(null)
+                setTimeout(() => {
+                    toggle()
+                }, 500)
+            })
+        }).catch(() => {
+            setLoader(null)
+            toast.error("No se pudo asociar, intente nuevamente", { position: "top-right" });
+        })
+        // .finally(() => setTimeout(() => { setLoader(null) }, 4000))
     }
 
     const onSelectItem = (template: T_Template, category: number, isSelected: boolean) => {
@@ -175,11 +204,17 @@ const FormsTemplatesAssociaton = ({
     }, [])
 
     return (<>
-        <Offcanvas isOpen={open} style={{ minWidth: "70%" }}>
+        <Alert isOpen={!!(alertConfirm?.isOpen)}{...alertConfirm} onClosed={() => { closeModal(setAlertConfirm) }} />
+        <Loader isOpen={!!loader} subtitle={loader!} />
+        <Offcanvas isOpen={open} style={{ minWidth: "70%" }} fade
+            // onClosed={() => { document.body.style.opacity = "0.1" }}
+            unmountOnClose
+        >
             <OffcanvasHeader toggle={() => toggle()}>
                 <span className='ps-3 border-start border-success border-4 py-1'>Plantillas de formularios</span>
             </OffcanvasHeader>
             <OffcanvasBody>
+
                 <p className='border-start border-3 border-success ps-3 py-1 mb-4'>Seleccione 1 o más plantillas de formularios que desee asociar a esta tarea, tenga en cuenta que el orden en que seleccione las plantillas será el orden en que se visualizarán</p>
                 {!(categoriesList) ?
                     <Loader isOpen loaderAsModal={false}><p className='small'>Consultado categorías</p></Loader>
@@ -224,9 +259,7 @@ const FormsTemplatesAssociaton = ({
                 </div>
             </div>
         </Offcanvas >
-        <Alert isOpen={!!(alertConfirm?.isOpen)}{...alertConfirm} onClosed={() => { closeModal(setAlertConfirm) }} />
-        <Loader isOpen={!!loader} subtitle={loader!} />
     </>)
 }
 
-export default FormsTemplatesAssociaton
+export default FormsTemplatesAssociaton;
