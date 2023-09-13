@@ -18,6 +18,7 @@ import { I_Condition } from '../../interfaces/conditions.interface';
 import { toast } from 'react-hot-toast';
 import CustomDropdown from '../CustomDropdown';
 import { closeModal } from '../Modal';
+import useLoader from '../../hooks/useLoader';
 
 type T_Props = {
     taskProgress: number,
@@ -46,22 +47,22 @@ const CurrentPhase = ({
         const is_admin = isAdmin(userRol);
         const is_supervisor = isSupervisor(userRol);
         const is_lead = isLead(task?.rol);
-        
+
         return [
-            !taskIsEnded && !is_supervisor && !onlyView && ((is_admin || is_lead) || !!(active?.action?.finalizar)) ,
+            !taskIsEnded && !is_supervisor && !onlyView && ((is_admin || is_lead) || !!(active?.action?.finalizar)),
             !is_supervisor && (is_admin || is_lead)
         ]
     }, [active?.action?.finalizar, task?.rol, taskIsEnded, userRol]);
 
 
     const [_alert, setAlert] = useState<null | I_AlertObject>(null);
-    const [loader, setLoader] = useState<null | string>(null);
+    const { loading, openLoader, closeLoader } = useLoader();
 
     const dateDiff = getDateDiff(new Date(action?.fecha_accion || ""));
     const expiredDate = dateDiff < 0;
 
     const completeAction = () => {
-        setLoader("Finalizando acción");
+        openLoader("Finalizando acción");
 
         AXIOS_REQUEST(PUT_ACTION, "PUT", jsonToFormData({
             est_accion: 2,
@@ -83,23 +84,25 @@ const CurrentPhase = ({
                 isOpen: true,
                 closeButton: { value: "Ok" }
             })
-        }).finally(() => setLoader(null))
+        }).finally(() => closeLoader())
     }
 
     const undoCompleteTask = () => {
-        setLoader("Espere");
+        openLoader("Espere");
         AXIOS_REQUEST(UPDATE_TASK, "PUT", jsonToFormData({
             id_esta: 2,
             id_cond: task.id_cond
         })
         ).then(() => {
             toast.success("Se ha desmarcado la tarea correctamente", { position: "top-right" });
-            closeModal(setAlert)
+            closeLoader(()=>{
+                closeModal(setAlert)
+                callback?.();
+            })
             dispatch(setProcessPhasesWithConditions(processId, null))
             dispatch(selectCondition(null));
             dispatch(selectProcess(null));
             dispatch(getPhasesAndStagesOfCondition(task.id_cond));
-            callback?.();
         }).catch(() => {
             setAlert({
                 type: "error",
@@ -108,23 +111,25 @@ const CurrentPhase = ({
                 isOpen: true,
                 closeButton: { value: "Ok" }
             })
-        }).finally(() => setLoader(null))
+        }).finally(() => closeLoader())
     }
 
     const completeTask = () => {
-        setLoader("Finalizando tarea");
+        openLoader("Finalizando tarea");
         AXIOS_REQUEST(UPDATE_TASK, "PUT", jsonToFormData({
             id_esta: 3,
             id_cond: task.id_cond
         })
         ).then(() => {
-            closeModal(setAlert)
+            closeLoader(()=>{
+                closeModal(setAlert)
+                callback?.();
+            })
             toast.success("Se ha finalizado la tarea correctamente", { position: "top-right" });
             dispatch(setProcessPhasesWithConditions(processId, null))
             dispatch(selectCondition(null));
             dispatch(selectProcess(null));
             dispatch(getPhasesAndStagesOfCondition(task.id_cond));
-            callback?.();
         }).catch(() => {
             setAlert({
                 type: "error",
@@ -133,7 +138,7 @@ const CurrentPhase = ({
                 isOpen: true,
                 closeButton: { value: "Ok" }
             })
-        }).finally(() => setLoader(null))
+        }).finally(() => closeLoader())
     }
 
     const markActionAsCompleted = () => {
@@ -203,7 +208,7 @@ const CurrentPhase = ({
 
     return (<>
         <Alert isOpen={!!(_alert?.isOpen)}{..._alert} onClosed={() => { closeModal(setAlert) }} />
-        <Loader isOpen={!!(loader)} subtitle={loader} />
+        <Loader {...loading} />
         {
             (taskIsEnded || (!phase && phases?.[0]?.stages?.length === phases?.[0]?.stages_completed)) ?
                 <div className='w-100 h-100 d-flex justify-content-center align-items-center flex-column'>

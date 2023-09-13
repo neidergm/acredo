@@ -22,6 +22,7 @@ import ProgramFilter from '../../components/ProgramFilter';
 import { getProgramsList, selectProgram } from '../../store/actions/programsActions';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { I_Program } from '../../interfaces/programs.interface';
+import useLoader from '../../hooks/useLoader';
 
 const Programs = () => {
 
@@ -38,7 +39,8 @@ const Programs = () => {
 
     const [modal, setModal] = useState<T_ModalJSON | null>(null)
     const [alert, setAlert] = useState<I_AlertObject | null>(null)
-    const [loader, setLoader] = useState<string | null>(null)
+
+    const { loading, openLoader, closeLoader } = useLoader()
 
     const newProgram = () => {
         const FORM_ID = "PROGRAM_FORM";
@@ -81,17 +83,18 @@ const Programs = () => {
     }
 
     const saveProgramData = ({ departamento, ...data }: I_JSONObject) => {
-        setLoader("Registrando programa")
+        openLoader("Registrando programa")
         departamento && (data.depa_prog = departamento);
 
         AXIOS_REQUEST(SAVE_PROGRAM_DATA, "POST", jsonToFormData(data, "[0].")).then(resp => {
             toast.success("Programa registrado correctamente", { position: 'top-right' })
-            closeModal(setModal);
+            closeLoader(() => {
+                closeModal(setModal);
+            })
             getPrograms();
         }).catch(err => {
+            closeLoader()
             toast.error("No se pudo registrar el programa", { position: 'top-right' })
-        }).finally(() => {
-            setLoader(null)
         })
     }
 
@@ -114,7 +117,7 @@ const Programs = () => {
                 className="container-xxxl"
             />
 
-            <Loader isOpen={!!(loader)} subtitle={loader}></Loader>
+            <Loader {...loading} />
             <Modal isOpen={modal?.isOpen} size={modal?.size}>
                 <ModalHeader textCenter toggle={() => closeModal(setModal)}>{modal?.title}</ModalHeader>
                 <ModalBody>{modal?.children}</ModalBody>

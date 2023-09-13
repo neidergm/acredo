@@ -15,6 +15,7 @@ import toast from 'react-hot-toast';
 import { ExclamationCircleFill, Link } from '../../../components/Icons';
 import { Button } from 'reactstrap';
 import FormsTemplatesAssociaton from '../../../components/FormsTemplatesAssociation';
+import useLoader from '../../../hooks/useLoader';
 
 export type T_Form = {
     fields: Array<T_FieldsTypes>;
@@ -47,9 +48,10 @@ const FormPannel = ({
     const { id_cond } = useParams();
 
     const [formList, setFormList] = useState<T_Form[] | null>(null);
-    const [loader, setLoader] = useState<string | null>(null);
     const [alertConfirm, setAlertConfirm] = useState<I_AlertObject | null>(null);
     const [togglePannel, setTogglePannel] = useState(false);
+
+    const { loading, closeLoader, openLoader } = useLoader()
 
     const confirmSubmit = (data: any, formItem: T_Form, callback?: () => void) => {
         setAlertConfirm({
@@ -67,28 +69,40 @@ const FormPannel = ({
             title,
             subtitle,
             type: "question",
-            submitButton: { value: "Sí, eliminar", onClick: () => deleteItem(item, callback) },
+            submitButton: { value: "Sí, eliminar", onClick: () => { deleteItem(item, callback) } },
             closeButton: { value: "No, cancelar" },
         })
     }
 
     const deleteItem = (item: string, callback?: () => void) => {
-        setLoader("Eliminando")
+        openLoader("Eliminando")
 
-        return AXIOS_REQUEST(DELETE_ANSWER + item, "DELETE").then(resp => {
-            toast.success('Se ha eliminado correctamente', { position: "top-right" })
-            callback?.();
-        }).catch(err => {
-            toast.error('No se pudo eliminar', { position: "top-right" })
-        }).finally(() => {
-            setLoader(null)
-        })
+            // closeModal(setAlertConfirm) 
+        setTimeout(() => {
+            // eslint-disable-next-line no-debugger
+            debugger
+            closeLoader(() => {
+                // callback?.();
+            })
+        }, 2000)
+
+        // return AXIOS_REQUEST(DELETE_ANSWER + item, "DELETE").then(resp => {
+        //     toast.success('Se ha eliminado correctamente', { position: "top-right" });
+        //     // eslint-disable-next-line no-debugger
+        //     debugger;
+        //     closeLoader(() => {
+        //         callback?.();
+        //     })
+        // }).catch(err => {
+        //     closeLoader()
+        //     toast.error('No se pudo eliminar', { position: "top-right" })
+        // })
     }
 
     const submitAll = (data: any, formItem: T_Form, callback?: () => void) => {
         const method = formItem.est_resp === 1 ? "PUT" : "POST";
         data = getDifferenceBetweenData(formItem.defaultValues, data);
-        setLoader("Guardando datos");
+        openLoader("Guardando datos");
         const keysOnField = ["id_campo"];
         if (method === "PUT") {
             keysOnField.push("id_resp", "grupo_resp");
@@ -107,16 +121,16 @@ const FormPannel = ({
                     if (current) e![current] = { ...e![current], est_resp: 1 }
                     return [...e!]
                 });
-
-                callback?.()
+                closeLoader(() => {
+                    callback?.()
+                });
                 toast.success("Se registraron los datos correctamente", { position: "top-right" })
                 return true;
             })
             .catch(err => {
+                closeLoader();
                 toast.error("No se pudo registrar la información", { position: "top-right" });
                 return false;
-            }).finally(() => {
-                setLoader(null);
             })
     }
 
@@ -257,11 +271,22 @@ const FormPannel = ({
             onSubmit={confirmSubmit}
             onDelete={confirmDelete}
         >
-            {!!(canAddForms) && <div className='text-end'>
-                <Button size="sm" color="primary2" onClick={toggleEditFormsPannel}>
-                    <i className='me-1'><Link /></i>
-                    <span>Agregar plantillas de formularios</span>
-                </Button>
+            {!!(canAddForms) && <div className='d-flex justify-content-between flex-wrap'>
+                <div>
+                    <div className='d-flex justify-content-between mb-4 align-items-center'>
+                        <div
+                            className='border-start border-5 border-dark py-1 ps-3 pe-4 bg-secondary bg-opacity-10 mb-2'
+                            style={{ borderRadius: "2px 10px 10px 2px" }}
+                        >
+                            <small className='fw-bold text-uppercase '>{formList.length} Formularios</small>
+                        </div>
+                    </div></div>
+                <div>
+                    <Button size="sm" color="primary2" onClick={toggleEditFormsPannel}>
+                        <i className='me-1'><Link /></i>
+                        <span>Agregar plantillas de formularios</span>
+                    </Button>
+                </div>
             </div>
             }
         </AsList>
@@ -270,8 +295,8 @@ const FormPannel = ({
     }
 
     return <>
-        <Loader isOpen={!!loader} subtitle={loader!} />
         <Alert isOpen={!!(alertConfirm?.isOpen)}{...alertConfirm} onClosed={() => { closeModal(setAlertConfirm) }} />
+        <Loader {...loading} />
         {!!(canAddForms) && <FormsTemplatesAssociaton open={togglePannel} toggle={toggleEditFormsPannel} taskId={id_cond!} />}
         {content}
     </>

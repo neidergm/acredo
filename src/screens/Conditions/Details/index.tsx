@@ -6,7 +6,7 @@ import { Badge, Button, CloseButton, DropdownToggle, Table } from 'reactstrap';
 import classnames from 'classnames';
 import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } from "../../../components/Modal";
 import { SubHeader } from "../../../components/SubHeader";
-import { DELETE_TASK, UPDATE_TASK } from "../../../services/endPointsService";
+import { DELETE_TASK, PROCESS_LIST, UPDATE_TASK } from "../../../services/endPointsService";
 import { AXIOS_REQUEST } from "../../../services/axiosService";
 import Loader from '../../../components/Loader'
 import { useAppSelector } from '../../../hooks/useAppSelector';
@@ -27,12 +27,14 @@ import TextEditor from '../../../components/TextEditor';
 import { I_JSONObject } from '../../../interfaces/generic.interface';
 import confirmDeleteAlertObject from '../../../utils/confirmDeleteAlertObject';
 import AllAttachments from '../../../components/AttachmentsTable/AllAttachments';
+import useLoader from '../../../hooks/useLoader';
 
 const ConditionsDetails = () => {
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { id_process, id_cond } = useParams();
+  const { loading, openLoader, closeLoader } = useLoader();
 
   const processSelected = useAppSelector(state => state.process.selected);
   const conditionSelected = useAppSelector(state => state.conditions.selected);
@@ -45,7 +47,6 @@ const ConditionsDetails = () => {
   }
 
   const [_alert, setAlert] = useState<null | I_AlertObject>(null);
-  const [loader, setLoader] = useState<null | string>(null);
   const [modalData, setModalData] = useState<T_ModalJSON | null>(null);
 
   const userRol = useAppSelector(state => state.user.userInfo?.rol)
@@ -124,14 +125,14 @@ const ConditionsDetails = () => {
       confirmDeleteAlertObject(
         <span>Se eliminará la tarea con las etapas y acciones relacionadas a la misma</span>,
         () => {
-          setLoader("Eliminando tarea")
+          openLoader("Eliminando tarea")
 
           AXIOS_REQUEST(DELETE_TASK + conditionSelected?.id_cond, "DELETE").then(r => {
             toast.success("Se ha eliminado la tarea", { position: "top-right" });
             dispatch(setProcessPhasesWithConditions(Number(id_process), null));
             navigate(-1);
           }).catch(e => toast.error("No se pudo eliminar la tarea", { position: "top-right" }))
-            .finally(() => setLoader(null))
+            .finally(() => closeLoader())
         },
         setAlert
       ))
@@ -165,7 +166,6 @@ const ConditionsDetails = () => {
 
             if (!(responsablesChanged?.length)) {
               if (Object.keys(dataToSend).length === 0) {
-                setLoader(null);
                 return toast("No hay nada para actualizar", { position: "top-right", icon: <i className='text-warning'><ExclamationCircleFill /></i> })
               }
             } else {
@@ -178,7 +178,9 @@ const ConditionsDetails = () => {
               isOpen: true,
               type: "question",
               title: "¿Desea guardar los cambios realizados?",
-              closeButton: { value: "no, cancelar" }, submitButton: { value: "Si, guardar", onClick: () => onSubmitEditTask(d) }
+              closeButton: { value: "No, cancelar" }, submitButton: {
+                value: "Si, guardar", onClick: () => onSubmitEditTask(d)
+              }
             })
           }
           }
@@ -194,7 +196,7 @@ const ConditionsDetails = () => {
   }
 
   const onSubmitEditTask = (d: FormData) => {
-    setLoader("Actualizando tarea");
+    openLoader("Actualizando tarea", () => closeModal(setAlert));
 
     AXIOS_REQUEST(UPDATE_TASK, "PUT", d).then(r => {
       toast.success("Se ha actualizado la tarea correctamente", { position: "top-right" });
@@ -202,9 +204,13 @@ const ConditionsDetails = () => {
       dispatch(getContionData(Number(id_cond)))
       dispatch(getPhasesAndStagesOfCondition(Number(id_cond)))
       dispatch(setProcessPhasesWithConditions(Number(id_process), null));
-      closeModal(setModalData)
-    }).catch(r => toast.error("No se pudo actualizar la tarea", { position: "top-right" }))
-      .finally(() => setLoader(null))
+
+      closeLoader(() => { closeModal(setModalData) })
+
+    }).catch(r => {
+      closeLoader()
+      toast.error("No se pudo actualizar la tarea", { position: "top-right" })
+    })
   }
 
   useEffect(() => {
@@ -233,7 +239,7 @@ const ConditionsDetails = () => {
     <>
       <Modal
         isOpen={!!(modalData?.isOpen)}
-        onClosed={() => { setModalData(null) }}
+        // onClosed={() => { setModalData(null) }}
         toggle={() => closeModal(setModalData)}
         size={modalData?.size}
         fullscreen={modalData?.fullscreen}
@@ -243,8 +249,9 @@ const ConditionsDetails = () => {
         {modalData?.footer}
       </Modal>
 
-      <Alert isOpen={!!(_alert?.isOpen)}{..._alert} onClosed={() => { setAlert(null) }} />
-      <Loader isOpen={!!(loader)} subtitle={loader} />
+      <Alert isOpen={!!(_alert?.isOpen)}{..._alert} onClosed={_alert?.onClosed || (() => { setAlert(null) })} />
+      {/* <Loader isOpen={!!(loader)} subtitle={loader} loadCompleted={() => closeModal(setModalData)} /> */}
+      <Loader {...loading} />
       <SubHeader
         text={conditionSelected?.nomb_cond ?
           <div className='d-flex gap-3 flex-wrap align-items-center'>

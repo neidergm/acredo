@@ -29,6 +29,7 @@ import Alert, { I_AlertObject } from "../../components/Alert";
 import confirmDeleteAlertObject from "../../utils/confirmDeleteAlertObject";
 import UserResume from "../../components/UserResume";
 import phaseForm from "../../forms/phase.form";
+import useLoader from "../../hooks/useLoader";
 
 let lastAccordionOpen = [""];
 
@@ -46,8 +47,9 @@ const Conditions = () => {
   const phasesWithConditions = useAppSelector(state => state.conditions.phasesWithConditions);
   const [accordionOpen, setAccordionOpen] = useState<string[]>(lastAccordionOpen);
   const [modal, setModal] = useState<null | T_ModalJSON>(null);
-  const [loading, setLoading] = useState<null | string>(null);
   const [alert, setAlert] = useState<I_AlertObject | null>(null);
+
+  const { loading, closeLoader, openLoader } = useLoader()
 
   const goToConditionDetailsScreen = (condition: I_Condition) => {
     dispatch(selectCondition(condition));
@@ -135,7 +137,7 @@ const Conditions = () => {
   }
 
   const createPhase = (data: any) => {
-    setLoading("Creando fase");
+    openLoader("Creando fase");
 
     const d = jsonToFormData({
       "[0].nomb_fase": data.nomb_fase,
@@ -146,15 +148,18 @@ const Conditions = () => {
 
     AXIOS_REQUEST(SAVE_PHASE, "POST", d).then(r => {
       toast.success("Se ha creado la fase correctamente", { position: "top-right" });
-      closeModal(setModal);
+      closeLoader(() => {
+        closeModal(setModal);
+      });
       dispatch(setProcessPhasesWithConditions(Number(id_process), null))
     }).catch(e => {
+      closeLoader();
       toast.error("No se pudo crear la fase", { position: "top-right" });
-    }).finally(() => setLoading(null))
+    })
   }
 
   const createTask = ({ responsable, ...data }: any, phase: T_PhasesWithConditions) => {
-    setLoading("Creando nueva tarea");
+    openLoader("Creando nueva tarea");
     const d = jsonToFormData({
       ...data,
       id_conv: id_process,
@@ -169,9 +174,13 @@ const Conditions = () => {
     AXIOS_REQUEST(SAVE_TASK, "POST", d).then(r => {
       toast.success("Se ha creado la tarea correctamente", { position: "top-right" });
       dispatch(setProcessPhasesWithConditions(Number(id_process), null));
-      closeModal(setModal)
-    }).catch(r => toast.error("No se pudo crear la tarea", { position: "top-right" }))
-      .finally(() => setLoading(null))
+      closeLoader(() => {
+        closeModal(setModal)
+      })
+    }).catch(r => {
+      closeLoader()
+      toast.error("No se pudo crear la tarea", { position: "top-right" })
+    })
   }
 
   const deletePhase = (phase: T_PhasesWithConditions) => {
@@ -180,15 +189,13 @@ const Conditions = () => {
         confirmDeleteAlertObject(
           <span>Se eliminará la fase <b>{phase.nomb_fase}</b> con todas las tareas y avances en el proceso</span>,
           () => {
-            closeModal(setAlert)
-            setLoading("Eliminando fase")
+            openLoader("Eliminando fase", () => { closeModal(setAlert) })
             AXIOS_REQUEST(DELETE_PHASE + phase.id_fase, "DELETE")
               .then(r => {
                 toast.success("Se eliminó la fase correctamente", { position: "top-right" });
                 dispatch(setProcessPhasesWithConditions(Number(id_process), null))
               }).catch(r => toast.error("No se pudo eliminar la fase", { position: "top-right" }))
-              .finally(() => setLoading(null))
-
+              .finally(() => closeLoader())
           },
           setAlert
         ) :
@@ -222,7 +229,7 @@ const Conditions = () => {
   }
 
   const editPhase = (data: any, phase: T_PhasesWithConditions) => {
-    setLoading("Modificando fase");
+    openLoader("Modificando fase");
 
     const d = jsonToFormData({
       "[0].nomb_fase": data.nomb_fase,
@@ -233,13 +240,16 @@ const Conditions = () => {
 
     AXIOS_REQUEST(SAVE_PHASE, "PUT", d).then(r => {
       toast.success("Se ha modificado la fase correctamente", { position: "top-right" });
-      closeModal(setModal);
       dispatch(setProcessPhasesWithConditions(Number(id_process), null))
+      closeLoader(() => {
+        closeModal(setModal);
+      })
     }).catch(e => {
+      closeLoader()
       toast.error("No se pudo modificar la fase", {
         position: "top-right"
       })
-    }).finally(() => setLoading(null))
+    })
   }
 
   useEffect(() => {
@@ -302,7 +312,7 @@ const Conditions = () => {
         {modal?.footer}
       </Modal>
       <Alert isOpen={!!(alert?.isOpen)}{...alert} onClosed={() => { setAlert(null) }} />
-      <Loader isOpen={!!(loading)} subtitle={loading} />
+      <Loader {...loading} />
 
       <div className="container-xxl">
         <div className="mb-5">

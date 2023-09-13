@@ -16,6 +16,7 @@ import { DELETE_PROGRAM_EVENT, SAVE_PROGRAM_EVENT } from '../../services/endPoin
 import { jsonToFormData } from '../../utils/formUtils';
 import { toast } from 'react-hot-toast';
 import Alert, { I_AlertObject } from '../Alert';
+import useLoader from '../../hooks/useLoader';
 
 type T_Props = {
     events: I_ProgramEvent[] | null,
@@ -30,7 +31,8 @@ const ProgramEvents = ({ events, limit, program_id, callback, children, canEdit 
 
     const [modal, setModal] = useState<T_ModalJSON | null>(null)
     const [alert, setAlert] = useState<I_AlertObject | null>(null)
-    const [loader, setLoader] = useState<string | null>(null)
+
+    const { loading, openLoader, closeLoader } = useLoader()
 
     const deleteEvent = (event: I_ProgramEvent) => {
         setAlert({
@@ -40,14 +42,14 @@ const ProgramEvents = ({ events, limit, program_id, callback, children, canEdit 
             closeButton: { value: "No, cancelar" },
             submitButton: {
                 value: "Si, eliminar", onClick: () => {
-                    setLoader("Eliminando evento")
+                    openLoader("Eliminando evento")
                     AXIOS_REQUEST(`${DELETE_PROGRAM_EVENT}${event.id_evento}`, "DELETE").then(res => {
                         toast.success("Evento eliminado correctamente", { position: "top-right" });
                         return callback?.();
                     }).catch(e => {
                         toast.error("No se pudo eliminar el evento", { position: "top-right" });
                     }).finally(() => {
-                        setLoader(null)
+                        closeLoader()
                     })
                 }
             },
@@ -92,7 +94,7 @@ const ProgramEvents = ({ events, limit, program_id, callback, children, canEdit 
     }
 
     const saveEventData = (data: I_JSONObject, type: string) => {
-        setLoader(data.id_evento ? "Actualizando evento" : "Registrando evento")
+        openLoader(data.id_evento ? "Actualizando evento" : "Registrando evento")
 
         data.reco_evento = data.reco_evento.map(({ days }: { days: number }) => days)
         AXIOS_REQUEST(SAVE_PROGRAM_EVENT, type, jsonToFormData({ ...data, id_prog: program_id }, "[0]."))
@@ -105,13 +107,13 @@ const ProgramEvents = ({ events, limit, program_id, callback, children, canEdit 
                 toast.error(`No se pudo ${data.id_evento ? "actualizar" : "registrar"} el evento`, { position: "top-right" });
             })
             .finally(() => {
-                setLoader(null)
+                closeLoader()
             })
     }
 
     return (<>
 
-        <Loader isOpen={!!(loader)} subtitle={loader}></Loader>
+        <Loader {...loading} />
         <Modal isOpen={modal?.isOpen} size={modal?.size}>
             <ModalHeader textCenter toggle={() => closeModal(setModal)}>{modal?.title}</ModalHeader>
             <ModalBody>{modal?.children}</ModalBody>

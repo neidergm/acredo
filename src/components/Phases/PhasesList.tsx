@@ -29,7 +29,7 @@ const PhasesList = ({ isAdmin, taskEnded }: T_Props) => {
 
   const showActionDetails = (action: T_Action, stage: T_Stage, phase: T_Phase) => {
     const dateDiff = getDateDiff(new Date(action.fecha_accion));
-
+console.log(action)
     setModal({
       isOpen: true,
       size: "lg",
@@ -48,9 +48,13 @@ const PhasesList = ({ isAdmin, taskEnded }: T_Props) => {
           <b className='d-block'>Fecha límite: </b>
           <span>
             {getNormalDate(action.fecha_accion, { dateStyle: "full" })}
-            {action.est_accion === 0 ? (taskEnded && <Badge className='float-end' pill>No se realizó</Badge>) : <Badge pill color={dateDiff < 0 ? "danger" : "primary"} className='float-end d-line-block'>
-              {dateDiff < 0 ? `Vencido hace ${dateDiff * -1} días` : `Vence ${dateDiff === 0 ? "hoy" : "en " + dateDiff + " días"}`}
-            </Badge>}
+            {action.est_accion === 0 ?
+              (taskEnded && <Badge className='float-end' pill>No se realizó</Badge>)
+              : (action.est_accion === 2 ?
+                <Badge pill color='success' className='float-end d-line-block'>Realizada</Badge> :
+                <Badge pill color={dateDiff < 0 ? "danger" : "primary"} className='float-end d-line-block'>
+                  {dateDiff < 0 ? `Vencido hace ${dateDiff * -1} días` : `Vence ${dateDiff === 0 ? "hoy" : "en " + dateDiff + " días"}`}
+                </Badge>)}
           </span>
         </p>
         <p>

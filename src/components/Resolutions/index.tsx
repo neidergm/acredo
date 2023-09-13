@@ -16,6 +16,7 @@ import Form from 'react-ngm-form'
 import resolutionForm from '../../forms/resolution.form'
 import { I_JSONObject } from '../../interfaces/generic.interface'
 import { getDifferenceBetweenData, jsonToFormData } from '../../utils/formUtils'
+import useLoader from '../../hooks/useLoader'
 
 type T_Props = {
     list?: I_Resolutions[] | null,
@@ -30,8 +31,9 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, actives, chi
 
     const [modal, setModal] = useState<T_ModalJSON | null>(null);
     const [alertConfirm, setAlertConfirm] = useState<I_AlertObject | null>(null);
-    const [loader, setLoader] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState(0);
+
+    const { loading, openLoader, closeLoader } = useLoader()
 
     const getStatusName = (est: 0 | 1,
         expiration: string,
@@ -85,18 +87,19 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, actives, chi
     }
 
     const onDelete = (id_reso: number) => {
-        setLoader("Eliminando resolución")
+        openLoader("Eliminando resolución")
 
         const d = jsonToFormData({ id_reso, estado: -1 }, "resoluciones[0].");
         d.append(`id_prog`, `${program_id}`)
 
         AXIOS_REQUEST(`${DELETE_PROGRAM_RESOLUTION}`, "PUT", d).then(res => {
             toast.success("Resolución eliminada correctamente", { position: "top-right" });
-            callback?.();
+            closeLoader(()=>{
+                callback?.();
+            })
         }).catch(e => {
+            closeLoader()
             toast.error("No se pudo eliminar la resolución", { position: "top-right" });
-        }).finally(() => {
-            setLoader(null)
         })
     }
 
@@ -141,7 +144,7 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, actives, chi
     }
 
     const saveResolutionData = (data: I_JSONObject, type: string) => {
-        setLoader(type === "PUT" ? "Actualizando resolución" : "Registrando resolución")
+        openLoader(type === "PUT" ? "Actualizando resolución" : "Registrando resolución")
 
         const d = jsonToFormData(data, "resoluciones[0].");
         d.append("id_prog", `${program_id}`)
@@ -149,20 +152,20 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, actives, chi
         AXIOS_REQUEST(SAVE_PROGRAM_RESOLUTION, type, d)
             .then(res => {
                 toast.success(`Resolución ${type === "PUT" ? "actualizada" : "registrada"} correctamente`, { position: "top-right" });
-                closeModal(setModal)
-                callback?.();
+                closeLoader(() => {
+                    callback?.();
+                    closeModal(setModal)
+                })
             })
             .catch(err => {
+                closeLoader()
                 toast.error(`No se pudo ${type === "PUT" ? "actualizar" : "registrar"} la resolución`, { position: "top-right" });
-            })
-            .finally(() => {
-                setLoader(null)
             })
     }
 
     return (
         <>
-            <Loader isOpen={!!(loader)} subtitle={loader} />
+            <Loader {...loading} />
             <Modal isOpen={modal?.isOpen} size={modal?.size}>
                 <ModalHeader textCenter toggle={() => closeModal(setModal)}>{modal?.title}</ModalHeader>
                 <ModalBody>{modal?.children}</ModalBody>

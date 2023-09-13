@@ -25,6 +25,7 @@ import classnames from 'classnames';
 import { I_Process } from '../../interfaces/process.interface';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { getProgramsList, selectProgram, setNeedRefreshList } from '../../store/actions/programsActions';
+import useLoader from '../../hooks/useLoader';
 
 const EVENT_LIMITS_SHOW = 3;
 
@@ -38,7 +39,8 @@ const Details = () => {
 
     const [modal, setModal] = useState<T_ModalJSON | null>(null)
     const [alert, setAlert] = useState<I_AlertObject | null>(null)
-    const [loader, setLoader] = useState<string | null>(null)
+
+    const { loading, openLoader, closeLoader } = useLoader()
 
     const { id_program } = useParams();
     const [showSidePanel, setShowSidePanel] = useState<null | { title: string; body: JSX.Element; toggler: (close: boolean) => void }>(null);
@@ -83,7 +85,7 @@ const Details = () => {
             confirmDeleteAlertObject(
                 <span>Se eliminará permanentemente el programa <b>{program!.nomb_prog}</b></span>,
                 () => {
-                    setLoader("Eliminando resolución")
+                    openLoader("Eliminando resolución")
                     AXIOS_REQUEST(`${DELETE_PROGRAM}`, "PUT", jsonToFormData({ est_prog: -1, id_prog: program?.id_prog }, "[0].")).then(res => {
                         dispatch(setNeedRefreshList(true))
                         dispatch(selectProgram(null))
@@ -92,7 +94,7 @@ const Details = () => {
                     }).catch(e => {
                         toast.error("No se pudo eliminar el programa", { position: "top-right" });
                     }).finally(() => {
-                        setLoader(null)
+                        closeLoader()
                     })
                     closeModal(setAlert)
                 },
@@ -156,19 +158,20 @@ const Details = () => {
 
     const saveProgramData = ({ departamento, ...data }: I_JSONObject) => {
 
-        setLoader("Actualizando datos")
+        openLoader("Actualizando datos")
         departamento && (data.depa_prog = departamento);
         data.id_prog = program?.id_prog;
 
         AXIOS_REQUEST(SAVE_PROGRAM_DATA, "PUT", jsonToFormData(data, "[0].")).then(resp => {
             toast.success("Datos del programa actualizados correctamente", { position: 'top-right' })
-            closeModal(setModal);
             dispatch(setNeedRefreshList(true))
+            closeLoader(() => {
+                closeModal(setModal);
+            })
             return getProgramInfo()
         }).catch(err => {
+            closeLoader()
             toast.error("No se pudo actualizar datos del programa", { position: 'top-right' })
-        }).finally(() => {
-            setLoader(null)
         })
     }
 
@@ -190,12 +193,12 @@ const Details = () => {
                 title: "Resoluciones del programa",
                 body: <Resolutions list={prog.resoluciones} program_id={prog.id_prog} canEdit={is_admin}
                     callback={() => {
-                        setLoader("Espere")
+                        openLoader("Espere")
                         getProgramInfo()
-                        .then((p) => {
-                            setLoader(null);
-                            showAllResolutions(true, p);
-                        })
+                            .then((p) => {
+                                closeLoader();
+                                showAllResolutions(true, p);
+                            })
                     }}
                 />,
                 toggler: showAllResolutions
@@ -248,7 +251,7 @@ const Details = () => {
             </Modal>
 
             <Alert isOpen={!!alert} {...alert} />
-            <Loader isOpen={!!(loader)} subtitle={loader} />
+            <Loader {...loading} />
 
             <div className="container-fluid container-xxxl">
                 <div>

@@ -174,7 +174,8 @@ const AsList = ({
                         <div className='float-end'>
                             <CloseButton onClick={() => selectItem(null)} className="ms-3" />
                         </div>
-                        <h5 className='mt-3 border-start ps-3 py-2 border-5 border-dark text-secondary'>{selectedItem.nomb_form}</h5>
+                        <h5 className='mt-3 text-secondary'>{selectedItem.nomb_form}</h5>
+                        {/* <hr/> */}
                         <div className='mt-5'>
                             {!(selectedItem.fields?.length) ?
                                 <Loader loaderAsModal={false} isOpen />

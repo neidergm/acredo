@@ -22,6 +22,7 @@ import CustomDropdown from '../components/CustomDropdown';
 import { I_JSONObject } from '../interfaces/generic.interface';
 import confirmDeleteAlertObject from '../utils/confirmDeleteAlertObject';
 import ProcessForm from '../forms/ProcessForm';
+import useLoader from '../hooks/useLoader';
 
 const Process = () => {
 
@@ -30,9 +31,10 @@ const Process = () => {
   const dispatch = useAppDispatch();
   const userInfo = useAppSelector(state => state.user.userInfo);
   const [modal, setModal] = useState<null | T_ModalJSON>(null);
-  const [loading, setLoading] = useState<null | string>(null);
   const [alert, setAlert] = useState<I_AlertObject | null>(null);
   const hasLoaded = useRef(false);
+
+  const { loading, openLoader, closeLoader } = useLoader()
 
   const is_admin = !isSupervisor(userInfo?.rol) && isAdmin(userInfo?.rol)
 
@@ -112,12 +114,13 @@ const Process = () => {
   }
 
   const deleteProcess = (process: I_Process) => {
-    setLoading("Eliminando proceso")
+    openLoader("Eliminando proceso")
     AXIOS_REQUEST(DELETE_PROCESS + process.id_conv, "DELETE").then(r => {
       dispatch(getProcessList())
+      closeLoader()
       toast.success("Se ha eliminado el proceso correctamente", { position: "top-right" })
     }).catch(() => {
-      setLoading(null)
+      closeLoader()
       toast.error("No se pudo eliminar el proceso", { position: "top-right" })
     })
   }
@@ -137,16 +140,18 @@ const Process = () => {
       isOpen: true,
       submitButton: {
         value: "Si, modificar", onClick: () => {
-          setLoading("Modificando proceso");
+          openLoader("Modificando proceso");
 
           const d = jsonToFormData({ id_conv: process.id_conv, ...data });
           AXIOS_REQUEST(UPDATE_PROCESS, "PUT", d)
             .then(r => {
               dispatch(getProcessList())
-              closeModal(setModal);
+              closeLoader(() => {
+                closeModal(setModal);
+              });
               toast.success("Se ha modificado el proceso correctamente", { position: "top-right" })
             }).catch(() => {
-              setLoading(null);
+              closeLoader();
               toast.error("No se pudo modificar el proceso", { position: "top-right" })
             })
           // .finally(() => setLoading(null))
@@ -164,17 +169,19 @@ const Process = () => {
       isOpen: true,
       submitButton: {
         value: "Si, crear", onClick: () => {
-          setLoading("Creando proceso");
+          openLoader("Creando proceso");
 
           const d = jsonToFormData(data);
 
           AXIOS_REQUEST(CREATE_PROCESS, "POST", d)
             .then(r => {
               dispatch(getProcessList())
-              closeModal(setModal);
+              closeLoader(() => {
+                closeModal(setModal);
+              })
               toast.success("Se ha creado el proceso correctamente", { position: "top-right" })
             }).catch(() => {
-              setLoading(null)
+              closeLoader()
               toast.error("No se pudo crear el proceso", { position: "top-right" })
             })
         }
@@ -188,9 +195,9 @@ const Process = () => {
       hasLoaded.current = true;
       dispatch(getProcessList())
     } else if (!!processList?.length && !!hasLoaded.current && loading) {
-      setLoading(null)
+      closeLoader()
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [processList])
 
   return (
@@ -216,7 +223,7 @@ const Process = () => {
       </Modal>
       <Alert isOpen={!!(alert?.isOpen)}{...alert} onClosed={() => { setAlert(null) }} />
 
-      <Loader isOpen={!!loading} subtitle={loading} />
+      <Loader {...loading} />
       <div className="container-fluid container-xxl pt-3 pb-5">
         {!(processList) ?
           <Loader loaderAsModal={false} isOpen />

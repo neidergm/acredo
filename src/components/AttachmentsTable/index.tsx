@@ -14,6 +14,7 @@ import Ordering from './Ordering'
 import { AXIOS_REQUEST } from '../../services/axiosService'
 import { ORDERING_ANSWERS } from '../../services/endPointsService'
 import { jsonToFormData } from '../../utils/formUtils'
+import useLoader from '../../hooks/useLoader'
 
 type T_Props = {
     list: { [group: string]: T_Form },
@@ -45,7 +46,7 @@ const AttachmentsTable = ({
     const [mapedList, setMapedList] = useState<Array<T_MapedItemList>>([]);
     const orderRef = useRef<typeof mapedList>([]);
     const [modal, setModal] = useState<null | T_ModalJSON>(null)
-    const [loader, setLoader] = useState<null | string>(null)
+    const { loading, openLoader, closeLoader } = useLoader();
 
     const [observationsIsOpen, setObservationsIsOpen] = useState<{
         item: T_Form,
@@ -60,7 +61,7 @@ const AttachmentsTable = ({
     }
 
     const deleteAttach = (key: string, item: T_Form, attach: I_FormFieldWithAnswer) => {
-        onDelete!(`${item.id_fcamp}/${key}`,
+        onDelete!(`${item.id_fcamp}/${attach.grupo_resp}`,
             undefined,
             <>Esta acción es irreversible, se eliminará de forma permanente el anexo <b>{attach?.nomb_anexo}</b></>
         )
@@ -192,19 +193,20 @@ const AttachmentsTable = ({
             id_fcamp: o[0].attachment.id_fcamp
         })
 
-        setLoader("Modificando orden");
+        openLoader("Modificando orden");
 
         AXIOS_REQUEST(ORDERING_ANSWERS, "PUT", d).then(r => {
             toast.success("Orden actualizado", { position: "top-right" })
-            orderingCallback?.();
             setMapedList([]);
+            closeLoader(() => {
+                orderingCallback?.();
+                closeModal(setModal)
+            })
         }).catch(() => {
+            closeLoader()
             toast.error("No se pudo actualizar el orden", { position: "top-right" })
-        }).finally(() => {
-            setLoader(null)
         })
 
-        closeModal(setModal)
     }
 
     const mapList = (l: typeof list) => {
@@ -256,7 +258,7 @@ const AttachmentsTable = ({
                 {observationsIsOpen && `${observationsIsOpen.attachment.nomb_anexo}`}
             </small>
         </ObservationChat>
-        <Loader isOpen={!!(loader)} subtitle={loader} />
+        <Loader {...loading} />
 
         <Modal isOpen={modal?.isOpen} size={modal?.size}>
             <ModalHeader textCenter toggle={() => closeModal(setModal)}>{modal?.title}</ModalHeader>
