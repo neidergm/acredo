@@ -60,7 +60,7 @@ const AttachmentsTable = ({
         toast.success("Copiado", { position: "top-right" })
     }
 
-    const deleteAttach = (key: string, item: T_Form, attach: I_FormFieldWithAnswer) => {
+    const deleteAttach = (item: T_Form, attach: I_FormFieldWithAnswer) => {
         onDelete!(`${item.id_fcamp}/${attach.grupo_resp}`,
             undefined,
             <>Esta acción es irreversible, se eliminará de forma permanente el anexo <b>{attach?.nomb_anexo}</b></>
@@ -126,7 +126,7 @@ const AttachmentsTable = ({
                             [{
                                 text: "Eliminar anexo",
                                 icon: <XCircle size={16} />,
-                                click: () => deleteAttach(key, item, attachment)
+                                click: () => deleteAttach(item, attachment)
                             }] : []
                         )
                         }

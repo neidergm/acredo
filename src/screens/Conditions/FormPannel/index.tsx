@@ -77,26 +77,15 @@ const FormPannel = ({
     const deleteItem = (item: string, callback?: () => void) => {
         openLoader("Eliminando")
 
-            // closeModal(setAlertConfirm) 
-        setTimeout(() => {
-            // eslint-disable-next-line no-debugger
-            debugger
+        return AXIOS_REQUEST(DELETE_ANSWER + item, "DELETE").then(resp => {
+            toast.success('Se ha eliminado correctamente', { position: "top-right" });
             closeLoader(() => {
-                // callback?.();
+                callback?.();
             })
-        }, 2000)
-
-        // return AXIOS_REQUEST(DELETE_ANSWER + item, "DELETE").then(resp => {
-        //     toast.success('Se ha eliminado correctamente', { position: "top-right" });
-        //     // eslint-disable-next-line no-debugger
-        //     debugger;
-        //     closeLoader(() => {
-        //         callback?.();
-        //     })
-        // }).catch(err => {
-        //     closeLoader()
-        //     toast.error('No se pudo eliminar', { position: "top-right" })
-        // })
+        }).catch(err => {
+            closeLoader()
+            toast.error('No se pudo eliminar', { position: "top-right" })
+        })
     }
 
     const submitAll = (data: any, formItem: T_Form, callback?: () => void) => {

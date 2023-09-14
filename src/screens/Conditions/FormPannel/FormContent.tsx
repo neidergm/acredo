@@ -3,7 +3,7 @@ import Form from 'react-ngm-form'
 import { Button } from 'reactstrap'
 import { T_Form, T_FormPannelActions } from '.'
 import AttachmentsTable from '../../../components/AttachmentsTable'
-import { PlusCircleFill } from '../../../components/Icons'
+import { Edit, PlusCircleFill, XCircle } from '../../../components/Icons'
 import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } from '../../../components/Modal'
 import { isAGoogleDocField } from '../../../utils/mapField'
 
@@ -100,7 +100,22 @@ const FormContent = ({ canEdit, formItem, onSubmit, onDelete, onObservationsDone
                         {
                             Object.keys(formItem.multiplesValues!).map(r => {
                                 const respItem = formItem.multiplesValues![r];
-                                return <div className="bg-light p-3 mb-5 rounded-3" key={r}>
+                                return <div className="bg-light p-3 mb-5 rounded-3 position-relative" key={r}>
+                                    {canEdit && <div className='position-absolute end-0 top-0'>
+                                        <Button onClick={() => openFormAsModal(respItem, "Modificar")}
+                                            color='' title="Modificar" className='p-1 text-warning me-1' size='sm'>
+                                            <Edit size={16} />
+                                        </Button>
+                                        <Button onClick={() => {
+                                            onDelete!(`${respItem.id_fcamp}/${r}`,
+                                                undefined,
+                                                <>Esta acción es irreversible, se eliminará de forma permanente este bloque de respuestas</>
+                                            )
+                                        }}
+                                            color='' title="Eliminar" className='p-1 text-danger' size='sm'>
+                                            <XCircle size={16} />
+                                        </Button>
+                                    </div>}
                                     <Form
                                         key={`form_${r}`}
                                         disabled={true}
