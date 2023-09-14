@@ -1,9 +1,9 @@
-import { useState, useMemo } from 'react'
+import { useMemo } from 'react'
 import { Badge, Button, DropdownToggle } from 'reactstrap';
 import { getDateDiff, getNormalDate } from '../../utils/dateUtils';
 import CircleProgress from '../CircleProgress';
 import classnames from 'classnames';
-import Alert, { I_AlertObject } from '../Alert';
+import Alert from '../Alert';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import Loader from '../Loader';
 import { ArrowCounterclockwise, Check, ExclamationCircleFill, UiChecks } from '../Icons';
@@ -17,8 +17,8 @@ import { isAdmin, isLead, isOnlyView, isSupervisor } from '../../utils/userRolUt
 import { I_Condition } from '../../interfaces/conditions.interface';
 import { toast } from 'react-hot-toast';
 import CustomDropdown from '../CustomDropdown';
-import { closeModal } from '../Modal';
 import useLoader from '../../hooks/useLoader';
+import useAlert from '../../hooks/useAlert';
 
 type T_Props = {
     taskProgress: number,
@@ -54,8 +54,8 @@ const CurrentPhase = ({
         ]
     }, [active?.action?.finalizar, task?.rol, taskIsEnded, userRol]);
 
+    const { alertData, openAlert } = useAlert();
 
-    const [_alert, setAlert] = useState<null | I_AlertObject>(null);
     const { loading, openLoader, closeLoader } = useLoader();
 
     const dateDiff = getDateDiff(new Date(action?.fecha_accion || ""));
@@ -69,7 +69,6 @@ const CurrentPhase = ({
             id_accion: active!.action!.id_accion
         }, "[0].")
         ).then(() => {
-            closeModal(setAlert)
             toast.success("Se ha finalizado la acción correctamente", { position: "top-right" });
             dispatch(setProcessPhasesWithConditions(processId, null))
             dispatch(selectCondition(null));
@@ -77,11 +76,10 @@ const CurrentPhase = ({
             dispatch(getPhasesAndStagesOfCondition(task.id_cond));
             callback?.();
         }).catch(() => {
-            setAlert({
+            openAlert({
                 type: "error",
                 title: "Ops...",
-                subtitle: "No se pudo marcar la acción como finalizada, por favor intente nuevamente",
-                isOpen: true,
+                children: "No se pudo marcar la acción como finalizada, por favor intente nuevamente",
                 closeButton: { value: "Ok" }
             })
         }).finally(() => closeLoader())
@@ -95,8 +93,7 @@ const CurrentPhase = ({
         })
         ).then(() => {
             toast.success("Se ha desmarcado la tarea correctamente", { position: "top-right" });
-            closeLoader(()=>{
-                closeModal(setAlert)
+            closeLoader(() => {
                 callback?.();
             })
             dispatch(setProcessPhasesWithConditions(processId, null))
@@ -104,11 +101,10 @@ const CurrentPhase = ({
             dispatch(selectProcess(null));
             dispatch(getPhasesAndStagesOfCondition(task.id_cond));
         }).catch(() => {
-            setAlert({
+            openAlert({
                 type: "error",
                 title: "Ops...",
-                subtitle: "No se pudo marcar la tarea como finalizada, por favor intente nuevamente",
-                isOpen: true,
+                children: "No se pudo marcar la tarea como finalizada, por favor intente nuevamente",
                 closeButton: { value: "Ok" }
             })
         }).finally(() => closeLoader())
@@ -121,21 +117,17 @@ const CurrentPhase = ({
             id_cond: task.id_cond
         })
         ).then(() => {
-            closeLoader(()=>{
-                closeModal(setAlert)
-                callback?.();
-            })
+            closeLoader(() => callback?.())
             toast.success("Se ha finalizado la tarea correctamente", { position: "top-right" });
             dispatch(setProcessPhasesWithConditions(processId, null))
             dispatch(selectCondition(null));
             dispatch(selectProcess(null));
             dispatch(getPhasesAndStagesOfCondition(task.id_cond));
         }).catch(() => {
-            setAlert({
+            openAlert({
                 type: "error",
                 title: "Ops...",
-                subtitle: "No se pudo marcar la tarea como finalizada, por favor intente nuevamente",
-                isOpen: true,
+                children: "No se pudo marcar la tarea como finalizada, por favor intente nuevamente",
                 closeButton: { value: "Ok" }
             })
         }).finally(() => closeLoader())
@@ -144,10 +136,9 @@ const CurrentPhase = ({
     const markActionAsCompleted = () => {
         if (task.form_cond.length === 0) return cantEndTaskOrAction()
 
-        setAlert({
-            isOpen: true,
+        openAlert({
             title: "¿Está seguro?",
-            subtitle: "La acción quedará marcada como finalizada",
+            children: "La acción quedará marcada como finalizada",
             type: "question",
             submitButton: {
                 value: "Sí, finalizar",
@@ -160,10 +151,9 @@ const CurrentPhase = ({
     const markTaskAsCompleted = (warning?: boolean) => {
         if (task.form_cond.length === 0) return cantEndTaskOrAction()
 
-        setAlert({
-            isOpen: true,
+        openAlert({
             title: "¿Está seguro?",
-            subtitle: "La tarea se dará por terminada, se quitarán los permisos a los responsables y no se podrá realizar ninguna clase de modificaciones",
+            children: "La tarea se dará por terminada, se quitarán los permisos a los responsables y no se podrá realizar ninguna clase de modificaciones",
             type: warning ? "warning" : "question",
             submitButton: {
                 value: "Sí, continuar",
@@ -174,10 +164,9 @@ const CurrentPhase = ({
     }
 
     const undoMarkTaskAsCompleted = () => {
-        setAlert({
-            isOpen: true,
+        openAlert({
             title: "¿Está seguro?",
-            subtitle: "La tarea dejará de estar completada, se restaurarán los permisos a los responsables y se habilitarán las modificaciones",
+            children: "La tarea dejará de estar completada, se restaurarán los permisos a los responsables y se habilitarán las modificaciones",
             type: "warning",
             submitButton: {
                 value: "Sí, continuar",
@@ -188,10 +177,9 @@ const CurrentPhase = ({
     }
 
     const cantEndTaskOrAction = () => {
-        setAlert({
-            isOpen: true,
+        openAlert({
             title: "Espere",
-            subtitle: "No se puede realizar esta acción debido a que no hay formularios asociados a la tarea",
+            children: "No se puede realizar esta acción debido a que no hay formularios asociados a la tarea",
             type: "error",
             closeButton: { value: "Ok" }
         })
@@ -207,7 +195,7 @@ const CurrentPhase = ({
     }
 
     return (<>
-        <Alert isOpen={!!(_alert?.isOpen)}{..._alert} onClosed={() => { closeModal(setAlert) }} />
+        <Alert {...alertData} />
         <Loader {...loading} />
         {
             (taskIsEnded || (!phase && phases?.[0]?.stages?.length === phases?.[0]?.stages_completed)) ?

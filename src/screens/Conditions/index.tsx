@@ -25,11 +25,12 @@ import { DELETE_PHASE, SAVE_PHASE, SAVE_TASK } from "../../services/endPointsSer
 import toast from 'react-hot-toast';
 import { T_PhasesWithConditions } from "../../interfaces/phasesAndStages.interface";
 import CustomDropdown from "../../components/CustomDropdown";
-import Alert, { I_AlertObject } from "../../components/Alert";
+import Alert from "../../components/Alert";
 import confirmDeleteAlertObject from "../../utils/confirmDeleteAlertObject";
 import UserResume from "../../components/UserResume";
 import phaseForm from "../../forms/phase.form";
 import useLoader from "../../hooks/useLoader";
+import useAlert from "../../hooks/useAlert";
 
 let lastAccordionOpen = [""];
 
@@ -47,7 +48,8 @@ const Conditions = () => {
   const phasesWithConditions = useAppSelector(state => state.conditions.phasesWithConditions);
   const [accordionOpen, setAccordionOpen] = useState<string[]>(lastAccordionOpen);
   const [modal, setModal] = useState<null | T_ModalJSON>(null);
-  const [alert, setAlert] = useState<I_AlertObject | null>(null);
+
+  const { alertData, closeAlert, openAlert } = useAlert()
 
   const { loading, closeLoader, openLoader } = useLoader()
 
@@ -184,26 +186,26 @@ const Conditions = () => {
   }
 
   const deletePhase = (phase: T_PhasesWithConditions) => {
-    setAlert(
+    openAlert(
       !(phase.porcentaje) ?
         confirmDeleteAlertObject(
           <span>Se eliminará la fase <b>{phase.nomb_fase}</b> con todas las tareas y avances en el proceso</span>,
-          () => {
-            openLoader("Eliminando fase", () => { closeModal(setAlert) })
-            AXIOS_REQUEST(DELETE_PHASE + phase.id_fase, "DELETE")
-              .then(r => {
-                toast.success("Se eliminó la fase correctamente", { position: "top-right" });
-                dispatch(setProcessPhasesWithConditions(Number(id_process), null))
-              }).catch(r => toast.error("No se pudo eliminar la fase", { position: "top-right" }))
-              .finally(() => closeLoader())
-          },
-          setAlert
+          {
+            onClick: () => closeAlert(() => {
+              openLoader("Eliminando fase")
+              AXIOS_REQUEST(DELETE_PHASE + phase.id_fase, "DELETE")
+                .then(r => {
+                  toast.success("Se eliminó la fase correctamente", { position: "top-right" });
+                  dispatch(setProcessPhasesWithConditions(Number(id_process), null))
+                }).catch(r => toast.error("No se pudo eliminar la fase", { position: "top-right" }))
+                .finally(() => closeLoader())
+            })
+          }
         ) :
         {
-          isOpen: true,
           title: "Espere",
           type: "warning",
-          subtitle: <span>No se puede eliminar la fase <b>{phase.nomb_fase}</b> debido a que cuenta con tareas en curso o completadas</span>,
+          children: <span>No se puede eliminar la fase <b>{phase.nomb_fase}</b> debido a que cuenta con tareas en curso o completadas</span>,
           closeButton: { value: "Ok, cerrar" }
         }
     )
@@ -311,7 +313,7 @@ const Conditions = () => {
         <ModalBody>{modal?.children}</ModalBody>
         {modal?.footer}
       </Modal>
-      <Alert isOpen={!!(alert?.isOpen)}{...alert} onClosed={() => { setAlert(null) }} />
+      <Alert {...alertData} />
       <Loader {...loading} />
 
       <div className="container-xxl">

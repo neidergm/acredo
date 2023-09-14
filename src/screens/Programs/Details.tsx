@@ -14,7 +14,7 @@ import { ProcessResumeItem } from '../Dashboard/ProcessResume';
 import ProgramEvent from '../../components/ProgramEvents';
 import Resolutions from '../../components/Resolutions';
 import { Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON, closeModal } from '../../components/Modal';
-import Alert, { I_AlertObject } from '../../components/Alert';
+import Alert from '../../components/Alert';
 import Form from 'react-ngm-form';
 import programForm from '../../forms/program.form';
 import { I_JSONObject } from '../../interfaces/generic.interface';
@@ -26,6 +26,7 @@ import { I_Process } from '../../interfaces/process.interface';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { getProgramsList, selectProgram, setNeedRefreshList } from '../../store/actions/programsActions';
 import useLoader from '../../hooks/useLoader';
+import useAlert from '../../hooks/useAlert';
 
 const EVENT_LIMITS_SHOW = 3;
 
@@ -37,8 +38,9 @@ const Details = () => {
     const program = useAppSelector(state => state.programs.selected);
     const is_admin = !isSupervisor(userRol) && isAdmin(userRol);
 
+    const { alertData, closeAlert, openAlert } = useAlert();
+
     const [modal, setModal] = useState<T_ModalJSON | null>(null)
-    const [alert, setAlert] = useState<I_AlertObject | null>(null)
 
     const { loading, openLoader, closeLoader } = useLoader()
 
@@ -64,41 +66,39 @@ const Details = () => {
         const hastReso = program?.resoluciones?.length;
 
         if (hastReso || hasProcess) {
-            let subtitle = "El programa no puede ser eliminado ";
+            let children = "El programa no puede ser eliminado ";
 
             if (hastReso) {
-                subtitle += "debido a que cuenta con resoluciones"
-                if (hasProcess) { subtitle += " y " }
-            } else { subtitle += "debido a que " }
-            if (hasProcess) { subtitle += "tiene procesos en curso" }
+                children += "debido a que cuenta con resoluciones"
+                if (hasProcess) { children += " y " }
+            } else { children += "debido a que " }
+            if (hasProcess) { children += "tiene procesos en curso" }
 
-            return setAlert({
-                subtitle,
-                isOpen: true,
+            return openAlert({
+                children,
                 title: "No se puede eliminar",
                 type: "error",
-                onClosed: () => closeModal(setAlert),
                 closeButton: { value: "Ok, cerrar" }
             });
         }
-        setAlert(
+        openAlert(
             confirmDeleteAlertObject(
                 <span>Se eliminará permanentemente el programa <b>{program!.nomb_prog}</b></span>,
-                () => {
-                    openLoader("Eliminando resolución")
-                    AXIOS_REQUEST(`${DELETE_PROGRAM}`, "PUT", jsonToFormData({ est_prog: -1, id_prog: program?.id_prog }, "[0].")).then(res => {
-                        dispatch(setNeedRefreshList(true))
-                        dispatch(selectProgram(null))
-                        toast.success("Programa eliminado correctamente", { position: "top-right" });
-                        navigate(-1)
-                    }).catch(e => {
-                        toast.error("No se pudo eliminar el programa", { position: "top-right" });
-                    }).finally(() => {
-                        closeLoader()
+                {
+                    onClick: () => closeAlert(() => {
+                        openLoader("Eliminando resolución")
+                        AXIOS_REQUEST(`${DELETE_PROGRAM}`, "PUT", jsonToFormData({ est_prog: -1, id_prog: program?.id_prog }, "[0].")).then(res => {
+                            dispatch(setNeedRefreshList(true))
+                            dispatch(selectProgram(null))
+                            toast.success("Programa eliminado correctamente", { position: "top-right" });
+                            navigate(-1)
+                        }).catch(e => {
+                            toast.error("No se pudo eliminar el programa", { position: "top-right" });
+                        }).finally(() => {
+                            closeLoader()
+                        })
                     })
-                    closeModal(setAlert)
-                },
-                setAlert
+                }
             )
         )
     }
@@ -128,17 +128,14 @@ const Details = () => {
                     onSubmit={data => {
                         data = getDifferenceBetweenData(defaultValues, data)
                         if (Object.keys(data).length) {
-                            setAlert({
-                                isOpen: true,
+                            openAlert({
                                 type: "question",
                                 title: `¿Está seguro?`,
-                                subtitle: "Se actualizarán los datos de este programa",
+                                children: "Se actualizarán los datos de este programa",
                                 closeButton: { value: "No, cancelar" },
-                                onClosed: () => closeModal(setAlert),
                                 submitButton: {
                                     value: "Sí, actualizar", onClick: () => {
                                         saveProgramData(data);
-                                        closeModal(setAlert)
                                     }
                                 }
                             })

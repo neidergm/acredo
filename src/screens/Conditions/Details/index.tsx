@@ -6,12 +6,12 @@ import { Badge, Button, CloseButton, DropdownToggle, Table } from 'reactstrap';
 import classnames from 'classnames';
 import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } from "../../../components/Modal";
 import { SubHeader } from "../../../components/SubHeader";
-import { DELETE_TASK, PROCESS_LIST, UPDATE_TASK } from "../../../services/endPointsService";
+import { DELETE_TASK, UPDATE_TASK } from "../../../services/endPointsService";
 import { AXIOS_REQUEST } from "../../../services/axiosService";
 import Loader from '../../../components/Loader'
 import { useAppSelector } from '../../../hooks/useAppSelector';
 import { useAppDispatch } from '../../../hooks/useAppDispatch';
-import Alert, { I_AlertObject } from '../../../components/Alert';
+import Alert from '../../../components/Alert';
 import { CurrentPhase, PhasesList } from '../../../components/Phases';
 import FormPannel from './../FormPannel';
 import { getDifferenceBetweenData, jsonToFormData } from '../../../utils/formUtils';
@@ -29,6 +29,7 @@ import confirmDeleteAlertObject from '../../../utils/confirmDeleteAlertObject';
 import AllAttachments from '../../../components/AttachmentsTable/AllAttachments';
 import useLoader from '../../../hooks/useLoader';
 import objectsAreEquals from '../../../utils/compareObjects';
+import useAlert from '../../../hooks/useAlert';
 
 const ConditionsDetails = () => {
 
@@ -47,7 +48,8 @@ const ConditionsDetails = () => {
     active: useAppSelector(state => state.conditions.selectedData.active)
   }
 
-  const [_alert, setAlert] = useState<null | I_AlertObject>(null);
+  const { alertData, openAlert, closeAlert } = useAlert()
+
   const [modalData, setModalData] = useState<T_ModalJSON | null>(null);
 
   const userRol = useAppSelector(state => state.user.userInfo?.rol)
@@ -122,20 +124,21 @@ const ConditionsDetails = () => {
   }
 
   const deleteTask = () => {
-    setAlert(
+    openAlert(
       confirmDeleteAlertObject(
         <span>Se eliminará la tarea con las etapas y acciones relacionadas a la misma</span>,
-        () => {
-          openLoader("Eliminando tarea")
+        {
+          onClick: () => closeAlert(() => {
+            openLoader("Eliminando tarea")
 
-          AXIOS_REQUEST(DELETE_TASK + conditionSelected?.id_cond, "DELETE").then(r => {
-            toast.success("Se ha eliminado la tarea", { position: "top-right" });
-            dispatch(setProcessPhasesWithConditions(Number(id_process), null));
-            navigate(-1);
-          }).catch(e => toast.error("No se pudo eliminar la tarea", { position: "top-right" }))
-            .finally(() => closeLoader())
-        },
-        setAlert
+            AXIOS_REQUEST(DELETE_TASK + conditionSelected?.id_cond, "DELETE").then(r => {
+              toast.success("Se ha eliminado la tarea", { position: "top-right" });
+              dispatch(setProcessPhasesWithConditions(Number(id_process), null));
+              navigate(-1);
+            }).catch(e => toast.error("No se pudo eliminar la tarea", { position: "top-right" }))
+              .finally(() => closeLoader())
+          })
+        }
       ))
   }
 
@@ -179,8 +182,7 @@ const ConditionsDetails = () => {
                 d.append(`responsable[${i}].rol_cond`, r.role);
               });
             }
-            setAlert({
-              isOpen: true,
+            openAlert({
               type: "question",
               title: "¿Desea guardar los cambios realizados?",
               closeButton: { value: "No, cancelar" }, submitButton: {
@@ -201,7 +203,7 @@ const ConditionsDetails = () => {
   }
 
   const onSubmitEditTask = (d: FormData) => {
-    openLoader("Actualizando tarea", () => closeModal(setAlert));
+    openLoader("Actualizando tarea");
 
     AXIOS_REQUEST(UPDATE_TASK, "PUT", d).then(r => {
       toast.success("Se ha actualizado la tarea correctamente", { position: "top-right" });
@@ -254,8 +256,7 @@ const ConditionsDetails = () => {
         {modalData?.footer}
       </Modal>
 
-      <Alert isOpen={!!(_alert?.isOpen)}{..._alert} onClosed={_alert?.onClosed || (() => { setAlert(null) })} />
-      {/* <Loader isOpen={!!(loader)} subtitle={loader} loadCompleted={() => closeModal(setModalData)} /> */}
+      <Alert {...alertData} />
       <Loader {...loading} />
       <SubHeader
         text={conditionSelected?.nomb_cond ?

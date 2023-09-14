@@ -25,7 +25,7 @@ const useLoader = (props: T_State = { isOpen: false }, options?: T_LoaderOptions
     }
 
     const closeLoader = (callbackOnLoaded?: T_State["onClosed"]) => {
-        setLoading({ isOpen: false, onClosed: callbackOnLoaded })
+        setLoading(l => ({ ...l, isOpen: false, onClosed: callbackOnLoaded }))
     }
 
     return {

@@ -23,13 +23,14 @@ export const closeModal = (
     setStateCallback: (currentState: any) => any,
     onClosedCallback?: () => any
 ) => {
-    onClosedCallback?.()
-    return setStateCallback((currentState: T_ModalJSON) => (
-        { ...currentState, isOpen: false }
-        // eslint-disable-next-line no-debugger
-        // { ...currentState, isOpen: false, onClosed: onClosedCallback || currentState.onClosed }
-        // { ...currentState, isOpen: false, onClosed: onClosedCallback ? () => { currentState.onClosed?.(); onClosedCallback() } : currentState.onClosed }
-    ));
+
+
+    return setStateCallback((currentState: T_ModalJSON) => {
+        const extra = {onClosed: onClosedCallback || currentState.onClosed}
+        if (!(extra.onClosed)) delete extra.onClosed;
+
+        return { ...currentState, isOpen: false, ...extra }
+    });
 }
 
 export const ModalHeader = ({ toggle, textCenter, ...props }: T_ModalHeaderProps) =>

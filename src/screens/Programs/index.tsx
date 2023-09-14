@@ -9,7 +9,7 @@ import { Badge, Button, CardBody, CardHeader } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import { getDateDiff, getNormalDate } from '../../utils/dateUtils';
 import { Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON, closeModal } from '../../components/Modal';
-import Alert, { I_AlertObject } from '../../components/Alert';
+import Alert from '../../components/Alert';
 import Form from 'react-ngm-form';
 import programForm from '../../forms/program.form';
 import { jsonToFormData } from '../../utils/formUtils';
@@ -23,6 +23,7 @@ import { getProgramsList, selectProgram } from '../../store/actions/programsActi
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { I_Program } from '../../interfaces/programs.interface';
 import useLoader from '../../hooks/useLoader';
+import useAlert from '../../hooks/useAlert';
 
 const Programs = () => {
 
@@ -38,7 +39,8 @@ const Programs = () => {
     const is_admin = isAdmin(useAppSelector(s => s.user.userInfo?.rol));
 
     const [modal, setModal] = useState<T_ModalJSON | null>(null)
-    const [alert, setAlert] = useState<I_AlertObject | null>(null)
+
+    const { alertData, openAlert } = useAlert();
 
     const { loading, openLoader, closeLoader } = useLoader()
 
@@ -57,17 +59,14 @@ const Programs = () => {
                     formProps={{ id: FORM_ID }}
                     defaultValues={defaultValues}
                     onSubmit={data => {
-                        setAlert({
-                            isOpen: true,
+                        openAlert({
                             type: "question",
                             title: `¿Está seguro?`,
-                            subtitle: "Se registrará un nuevo programa",
+                            children: "Se registrará un nuevo programa",
                             closeButton: { value: "No, cancelar" },
-                            onClosed: () => closeModal(setAlert),
                             submitButton: {
                                 value: "Sí, registrar", onClick: () => {
                                     saveProgramData(data);
-                                    closeModal(setAlert)
                                 }
                             }
                         })
@@ -124,7 +123,7 @@ const Programs = () => {
                 {modal?.footer}
             </Modal>
 
-            <Alert isOpen={!!alert} {...alert} />
+            <Alert {...alertData} />
 
             <div className="container-fluid container-xxxl">
                 {!!(programsList) && <>

@@ -1,15 +1,14 @@
 import { I_AlertObject } from "../components/Alert"
 import Form from 'react-ngm-form';
-import { closeModal } from "../components/Modal";
 
-export default (subtitle: any, onSubmit: () => void, stateFunction: React.Dispatch<any>): I_AlertObject => {
+const confirmDeleteAlertObject = (subtitle: I_AlertObject["children"], submitBtn: Required<I_AlertObject["submitButton"]>): I_AlertObject => {
     return {
-        needFillConfirmation: true,
         isOpen: true,
+        needFillConfirmation: true,
         // onClosed: () => { },
         title: "¿Está seguro?",
         type: "question",
-        subtitle: <>
+        children: <>
             {subtitle}
             <div className='mt-4' >
                 <Form
@@ -29,15 +28,17 @@ export default (subtitle: any, onSubmit: () => void, stateFunction: React.Dispat
                             }
                         }]}
                     defaultValues={{}}
-                    onSubmit={onSubmit}
+                    onSubmit={() => submitBtn?.onClick()}
                 />
             </div>
         </>,
         submitButton: {
             form: "DELETE-CONFIRM-ALERT",
             type: "submit",
-            value: "Sí, eliminar"
+            value: submitBtn?.value || "Sí, eliminar"
         },
-        closeButton: { value: "No, cancelar", onClick: () => closeModal(stateFunction) }
+        closeButton: { value: "No, cancelar" }
     }
 }
+
+export default confirmDeleteAlertObject;

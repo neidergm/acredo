@@ -6,13 +6,14 @@ import { T_Template, T_TemplateCategories } from '../../interfaces/conditions.in
 import { jsonToFormData } from '../../utils/formUtils';
 import { toast } from 'react-hot-toast';
 import { ExclamationCircleFill } from '../Icons';
-import Alert, { I_AlertObject } from '../Alert';
+import Alert from '../Alert';
 import Loader from '../Loader';
 import { closeModal } from '../Modal';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { getContionData } from '../../store/actions/conditionsActions';
 import styles from './styles.module.css';
 import useLoader from '../../hooks/useLoader';
+import useAlert from '../../hooks/useAlert';
 
 type T_Props = {
     open: boolean;
@@ -28,7 +29,8 @@ const FormsTemplatesAssociaton = ({
     const [templatesList, setTemplatesList] = useState<{ [cat: string]: T_Template[] }>({});
     const [categoriesList, setCategoriesList] = useState<T_TemplateCategories[] | null>(null);
     const { loading, openLoader, closeLoader } = useLoader();
-    const [alertConfirm, setAlertConfirm] = useState<I_AlertObject | null>(null);
+
+    const { alertData, openAlert } = useAlert();
 
     const [selectedList, setSelectedList] = useState<{ [temp: string]: { category: number, position: number, data: T_Template } }>({});
     const [acccordionOpen, setAcccordionOpen] = useState<string[]>([]);
@@ -70,12 +72,11 @@ const FormsTemplatesAssociaton = ({
 
         const idsTemplates: number[] = [];
 
-        setAlertConfirm({
-            isOpen: true,
+        openAlert({
             title: "¿Desea realizar los cambios?",
             type: "question",
             size: "lg",
-            subtitle: <>
+            children: <>
                 <span className='mb-4 pb-2 d-block'>Esta acción es irreversible, no se podrán quitar o modificar más adelante las plantillas seleccionadas</span>
 
                 <span className='text-start text-dark d-block' >
@@ -98,7 +99,7 @@ const FormsTemplatesAssociaton = ({
 
     const doAssotiation = (idsTemplates: number[]) => {
         const data = jsonToFormData({ form_cond: idsTemplates.join(","), id_cond: taskId });
-        openLoader("Asociando plantillas", () => closeModal(setAlertConfirm));
+        openLoader("Asociando plantillas");
         AXIOS_REQUEST(ASOCIATE_FORM_TO_TASK, "PUT", data).then(async (resp) => {
             openLoader("Espere")
             toast.success("Formularios asociados correctamente", { position: "top-right" });
@@ -177,7 +178,7 @@ const FormsTemplatesAssociaton = ({
     }, [])
 
     return (<>
-        <Alert isOpen={!!(alertConfirm?.isOpen)}{...alertConfirm} onClosed={() => { closeModal(setAlertConfirm) }} />
+        <Alert {...alertData} />
         <Loader {...loading} />
         <Offcanvas isOpen={open} style={{ minWidth: "70%" }} fade unmountOnClose>
             <OffcanvasHeader toggle={() => toggle()}>

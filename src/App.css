@@ -40,7 +40,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   height: 100vh;
 
-  padding-right: 0px !important;
+  /* padding-right: 0px !important; */
   overflow: hidden auto;
   /* overflow: hidden; */
 }

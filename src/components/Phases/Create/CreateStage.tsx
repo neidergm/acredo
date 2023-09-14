@@ -6,7 +6,7 @@ import { T_Action, T_Phase, T_Stage } from '../../../interfaces/phasesAndStages.
 import stageformfields from './../../../forms/stage.form.json';
 import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } from '../../Modal';
 import { actionFields } from './../../../forms/action.form';
-import Alert, { I_AlertObject } from '../../Alert';
+import Alert from '../../Alert';
 import { AXIOS_REQUEST } from '../../../services/axiosService';
 import { DELETE_ACTION, DELETE_STAGE, PUT_ACTION, PUT_STAGE } from '../../../services/endPointsService';
 import Loader from '../../Loader';
@@ -22,6 +22,7 @@ import { ExclamationCircleFill, UiChecks } from '../../Icons';
 import StageChooser from './StageChooser';
 import { isLead } from '../../../utils/userRolUtils';
 import useLoader from '../../../hooks/useLoader';
+import useAlert from '../../../hooks/useAlert';
 
 type T_Props = {
   stage?: T_Stage,
@@ -39,7 +40,8 @@ const CreateStage = ({
   const stageIsRegistered = !!(stage?.id);
   const actions = stage?.actions || [];
   const [modal, setModal] = useState<T_ModalJSON | null>(null);
-  const [alert, setAlert] = useState<I_AlertObject | null>(null);
+
+  const { alertData, openAlert, closeAlert } = useAlert();
 
   const { loading, closeLoader, openLoader } = useLoader()
 
@@ -167,43 +169,38 @@ const CreateStage = ({
   }
 
   const modalToDeleteAction = (action: T_Action) => {
-    setAlert(
+    openAlert(
       confirmDeleteAlertObject(
         <span>Se eliminará la acción <b>{action.nomb_accion}</b></span>,
-        () => {
-          onDeleteAction(action);
-          closeModal(setAlert)
-        },
-        setAlert)
+        {
+          onClick: () => closeAlert(() => onDeleteAction(action))
+        }
+      )
     )
   }
 
   const modalToDeleteStage = (stage: T_Stage) => {
     if (phase?.stages?.length === 1) {
-      return setAlert({
-        isOpen: true,
+      return openAlert({
         title: "Espere",
         type: "warning",
-        subtitle: <span>No se puede eliminar debido a que la tarea quedaría sin etapas</span>,
+        children: <span>No se puede eliminar debido a que la tarea quedaría sin etapas</span>,
         closeButton: { value: "Ok" }
       })
     } else if (stage.actions_completed! > 0) {
-      return setAlert({
-        isOpen: true,
+      return openAlert({
         title: "Espere",
         type: "warning",
-        subtitle: <span>No se puede eliminar debido a que la etapa cuenta con acciones realizadas</span>,
+        children: <span>No se puede eliminar debido a que la etapa cuenta con acciones realizadas</span>,
         closeButton: { value: "Ok" }
       })
     }
-    setAlert(
+    openAlert(
       confirmDeleteAlertObject(
         <span>Se eliminará la etapa <b>{stage.name}</b> con todas las acciones relacionadas a la misma</span>,
-        () => {
-          onDeleteStage(stage);
-          closeModal(setAlert)
-        },
-        setAlert
+        {
+          onClick: () => closeAlert(() => onDeleteStage(stage))
+        }
       ))
   }
 
@@ -226,7 +223,7 @@ const CreateStage = ({
       updateDataOnUnmount.current = true;
       toast.success('Etapa eliminada correctamente', { position: 'top-right' });
       dispatch(getPhasesAndStagesOfCondition(Number(id_cond)));
-      closeLoader(()=>{
+      closeLoader(() => {
         callback?.();
       })
     }).catch(() => {
@@ -290,11 +287,10 @@ const CreateStage = ({
           if (data.length === 0) {
             return toast.error("Debe seleccionar las acciones a copiar", { position: "top-right" })
           }
-          setAlert({
-            isOpen: true,
+          openAlert({
             type: "question",
             title: "¿Está seguro?",
-            subtitle: `Se copiarán ${data.length} acciones en esta etapa. Tenga en cuenta que la copia incluye fechas y responsables`,
+            children: `Se copiarán ${data.length} acciones en esta etapa. Tenga en cuenta que la copia incluye fechas y responsables`,
             submitButton: {
               value: "Ok, continuar", onClick: () => onCreateAction(data, true)
             },
@@ -332,7 +328,7 @@ const CreateStage = ({
         <ModalBody>{modal?.children}</ModalBody>
         {modal?.footer}
       </Modal>
-      <Alert onClosed={() => { setAlert(null) }} isOpen={!!(alert?.isOpen)}{...alert} />
+      <Alert {...alertData} />
       <Loader {...loading} />
       <div className='d-flex flex-column w-100 h-100'>
         <div className='flex-grow-1'>

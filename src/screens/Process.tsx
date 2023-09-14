@@ -12,7 +12,7 @@ import Card from '../components/Card';
 import { Edit, ExclamationCircleFill, Folder2Open, Plus, ThreeDotsVertical, XCircle } from '../components/Icons';
 import { Modal, ModalBody, ModalHeader, T_ModalJSON, closeModal, ModalFooter } from '../components/Modal';
 // import processForm from './../forms/process.form';
-import Alert, { I_AlertObject } from '../components/Alert';
+import Alert from '../components/Alert';
 import { AXIOS_REQUEST } from '../services/axiosService';
 import { CREATE_PROCESS, DELETE_PROCESS, UPDATE_PROCESS } from '../services/endPointsService';
 import { toast } from 'react-hot-toast';
@@ -23,6 +23,7 @@ import { I_JSONObject } from '../interfaces/generic.interface';
 import confirmDeleteAlertObject from '../utils/confirmDeleteAlertObject';
 import ProcessForm from '../forms/ProcessForm';
 import useLoader from '../hooks/useLoader';
+import useAlert from '../hooks/useAlert';
 
 const Process = () => {
 
@@ -31,9 +32,9 @@ const Process = () => {
   const dispatch = useAppDispatch();
   const userInfo = useAppSelector(state => state.user.userInfo);
   const [modal, setModal] = useState<null | T_ModalJSON>(null);
-  const [alert, setAlert] = useState<I_AlertObject | null>(null);
   const hasLoaded = useRef(false);
 
+  const { alertData, openAlert, closeAlert } = useAlert()
   const { loading, openLoader, closeLoader } = useLoader()
 
   const is_admin = !isSupervisor(userInfo?.rol) && isAdmin(userInfo?.rol)
@@ -93,23 +94,21 @@ const Process = () => {
 
   const confirmDeleteProcess = (process: I_Process) => {
     if (!(process.porcentaje) === false) {
-      return setAlert({
+      return openAlert({
         type: "warning",
-        "title": "Espere",
-        isOpen: true,
+        title: "Espere",
         closeButton: { value: "Ok" },
-        subtitle: "Este proceso no puede ser eliminado debido a que cuenta con un progreso"
+        children: "Este proceso no puede ser eliminado debido a que cuenta con un progreso"
       })
     }
 
-    setAlert({
+    openAlert({
       needFillConfirmation: true,
       ...confirmDeleteAlertObject("Se eliminará el proceso con todo lo que se incluye en el mismo",
-        () => {
-          deleteProcess(process);
-          closeModal(setAlert)
-        },
-        setAlert)
+        {
+          onClick: () => closeAlert(() => deleteProcess(process))
+        }
+      )
     })
   }
 
@@ -133,11 +132,10 @@ const Process = () => {
         position: "top-right"
       })
     }
-    setAlert({
+    openAlert({
       type: "question",
       title: "¿Está seguro?",
-      subtitle: "Se modificarán datos en el proceso",
-      isOpen: true,
+      children: "Se modificarán datos en el proceso",
       submitButton: {
         value: "Si, modificar", onClick: () => {
           openLoader("Modificando proceso");
@@ -162,11 +160,10 @@ const Process = () => {
   }
 
   const createNewProces = (data: never) => {
-    setAlert({
+    openAlert({
       type: "question",
       title: "¿Está seguro?",
-      subtitle: "Se creará un nuevo proceso con los datos indicados",
-      isOpen: true,
+      children: "Se creará un nuevo proceso con los datos indicados",
       submitButton: {
         value: "Si, crear", onClick: () => {
           openLoader("Creando proceso");
@@ -221,7 +218,7 @@ const Process = () => {
         <ModalBody>{modal?.children}</ModalBody>
         {modal?.footer}
       </Modal>
-      <Alert isOpen={!!(alert?.isOpen)}{...alert} onClosed={() => { setAlert(null) }} />
+      <Alert {...alertData} />
 
       <Loader {...loading} />
       <div className="container-fluid container-xxl pt-3 pb-5">

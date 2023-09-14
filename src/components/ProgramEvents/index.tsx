@@ -15,8 +15,9 @@ import { AXIOS_REQUEST } from '../../services/axiosService';
 import { DELETE_PROGRAM_EVENT, SAVE_PROGRAM_EVENT } from '../../services/endPointsService';
 import { jsonToFormData } from '../../utils/formUtils';
 import { toast } from 'react-hot-toast';
-import Alert, { I_AlertObject } from '../Alert';
+import Alert from '../Alert';
 import useLoader from '../../hooks/useLoader';
+import useAlert from '../../hooks/useAlert';
 
 type T_Props = {
     events: I_ProgramEvent[] | null,
@@ -30,15 +31,15 @@ type T_Props = {
 const ProgramEvents = ({ events, limit, program_id, callback, children, canEdit = false }: T_Props) => {
 
     const [modal, setModal] = useState<T_ModalJSON | null>(null)
-    const [alert, setAlert] = useState<I_AlertObject | null>(null)
+
+    const {alertData, openAlert} = useAlert();
 
     const { loading, openLoader, closeLoader } = useLoader()
 
     const deleteEvent = (event: I_ProgramEvent) => {
-        setAlert({
-            isOpen: true,
+        openAlert({
             title: "¿Está seguro?",
-            subtitle: "El evento quedará eliminado",
+            children: "El evento quedará eliminado",
             closeButton: { value: "No, cancelar" },
             submitButton: {
                 value: "Si, eliminar", onClick: () => {
@@ -54,7 +55,6 @@ const ProgramEvents = ({ events, limit, program_id, callback, children, canEdit 
                 }
             },
             type: "question",
-            onClosed: () => closeModal(setAlert)
         })
     }
 
@@ -120,7 +120,7 @@ const ProgramEvents = ({ events, limit, program_id, callback, children, canEdit 
             {modal?.footer}
         </Modal>
 
-        <Alert isOpen={!!alert} {...alert} />
+        <Alert {...alertData} />
 
         {events ? <div className={styles["events-container"]}>
             {events.slice(0, limit).map(event =>

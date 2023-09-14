@@ -3,8 +3,8 @@ import { Badge, Button, DropdownToggle, Table } from 'reactstrap'
 import { useAppSelector } from '../../hooks/useAppSelector'
 import { I_FormFieldWithAnswer } from '../../interfaces/conditions.interface'
 import { T_Form, T_FormPannelActions } from './../../screens/Conditions/FormPannel'
-import Alert, { I_AlertObject } from '../Alert'
-import { ArrowDownUp, ChatDots, ChatDotsFill, Edit, ExclamationCircleFill, Link, Quote, ThreeDotsVertical, XCircle } from '../Icons'
+import Alert from '../Alert'
+import { ChatDots, ChatDotsFill, Edit, ExclamationCircleFill, Link, Quote, ThreeDotsVertical, XCircle } from '../Icons'
 import ObservationChat from '../ObservationChat'
 import toast from 'react-hot-toast';
 import CustomDropdown from '../CustomDropdown'
@@ -15,6 +15,7 @@ import { AXIOS_REQUEST } from '../../services/axiosService'
 import { ORDERING_ANSWERS } from '../../services/endPointsService'
 import { jsonToFormData } from '../../utils/formUtils'
 import useLoader from '../../hooks/useLoader'
+import useAlert from '../../hooks/useAlert'
 
 type T_Props = {
     list: { [group: string]: T_Form },
@@ -41,7 +42,8 @@ const AttachmentsTable = ({
     onObservationsDone,
     orderingCallback
 }: T_Props) => {
-    const [alertConfirm, setAlertConfirm] = useState<I_AlertObject | null>(null);
+
+    const { alertData, openAlert } = useAlert()
 
     const [mapedList, setMapedList] = useState<Array<T_MapedItemList>>([]);
     const orderRef = useRef<typeof mapedList>([]);
@@ -169,11 +171,10 @@ const AttachmentsTable = ({
                     if (!orderRef.current.length) {
                         return toast.error("No hay cambios para guardar", { position: "top-right", icon: <i className='text-warning'><ExclamationCircleFill /> </i> })
                     }
-                    setAlertConfirm({
-                        isOpen: true,
+                    openAlert({
                         type: "warning",
                         title: "¿Está seguro?",
-                        subtitle: "Se cambiará el orden de los anexos, tenga en cuenta que la codificación y numeración cambiará",
+                        children: "Se cambiará el orden de los anexos, tenga en cuenta que la codificación y numeración cambiará",
                         closeButton: { value: "No, cancelar" },
                         submitButton: {
                             value: "Sí, guardar",
@@ -267,7 +268,7 @@ const AttachmentsTable = ({
         </Modal>
 
         <div className='position-relative'>
-            <Alert isOpen={!!(alertConfirm?.isOpen)}{...alertConfirm} onClosed={() => { setAlertConfirm(null) }} />
+            <Alert {...alertData} />
             <Table bordered responsive="md" className='pb-5'>
                 <thead className='small'>
                     <tr className="table-primary align-middle">

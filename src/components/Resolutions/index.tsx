@@ -6,7 +6,7 @@ import { Badge, Button, Nav, NavItem, NavLink, TabContent, TabPane, Table } from
 import { CheckCircleFill, Edit, ExclamationCircleFill, FilePDF, Folder2Open, XCircle, XCircleFill } from '../Icons'
 import { getDateDiff, getNormalDate } from '../../utils/dateUtils'
 import { Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON, closeModal } from '../Modal'
-import Alert, { I_AlertObject } from '../Alert'
+import Alert from '../Alert'
 import { AXIOS_REQUEST } from '../../services/axiosService'
 import { toast } from 'react-hot-toast'
 import { DELETE_PROGRAM_RESOLUTION, SAVE_PROGRAM_RESOLUTION } from '../../services/endPointsService'
@@ -17,6 +17,7 @@ import resolutionForm from '../../forms/resolution.form'
 import { I_JSONObject } from '../../interfaces/generic.interface'
 import { getDifferenceBetweenData, jsonToFormData } from '../../utils/formUtils'
 import useLoader from '../../hooks/useLoader'
+import useAlert from '../../hooks/useAlert'
 
 type T_Props = {
     list?: I_Resolutions[] | null,
@@ -30,8 +31,9 @@ type T_Props = {
 const Resolutions = ({ list, program_id, callback, canEdit = false, actives, children }: T_Props) => {
 
     const [modal, setModal] = useState<T_ModalJSON | null>(null);
-    const [alertConfirm, setAlertConfirm] = useState<I_AlertObject | null>(null);
     const [activeTab, setActiveTab] = useState(0);
+
+    const { alertData, openAlert, closeAlert } = useAlert()
 
     const { loading, openLoader, closeLoader } = useLoader()
 
@@ -74,14 +76,12 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, actives, chi
     }
 
     const confirmDelete = (item: I_Resolutions) => {
-        setAlertConfirm(
+        openAlert(
             confirmDeleteAlertObject(
                 <span>Se eliminará permanentemente la resolución <b>{item.reso_apro}</b></span>,
-                () => {
-                    onDelete(item.id_reso);
-                    closeModal(setAlertConfirm)
+                {
+                    onClick: () => closeAlert(() => onDelete(item.id_reso))
                 },
-                setAlertConfirm
             )
         )
     }
@@ -94,7 +94,7 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, actives, chi
 
         AXIOS_REQUEST(`${DELETE_PROGRAM_RESOLUTION}`, "PUT", d).then(res => {
             toast.success("Resolución eliminada correctamente", { position: "top-right" });
-            closeLoader(()=>{
+            closeLoader(() => {
                 callback?.();
             })
         }).catch(e => {
@@ -171,7 +171,7 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, actives, chi
                 <ModalBody>{modal?.children}</ModalBody>
                 {modal?.footer}
             </Modal>
-            <Alert isOpen={!!alertConfirm} {...alertConfirm} />
+            <Alert {...alertData} />
 
             {!actives?.length && !list && <div className='text-center p-5 text-muted opacity-50'>
                 <p><Folder2Open size={30} /></p>

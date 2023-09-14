@@ -1,9 +1,9 @@
-import { useState } from 'react'
 import { Button, DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown } from 'reactstrap';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector'
 import { logout } from '../../store/actions/userActions';
-import Alert, { I_AlertObject } from '../Alert';
+import Alert from '../Alert';
+import useAlert from '../../hooks/useAlert';
 
 interface I_MenuProps {
     children: JSX.Element | JSX.Element[]
@@ -14,18 +14,15 @@ const Menu = ({ children }: I_MenuProps) => {
     const userInfo = useAppSelector(state => state.user.userInfo);
     const dispatch = useAppDispatch();
 
-    const [_alert, setAlert] = useState<null | I_AlertObject>(null);
+    const { alertData, openAlert } = useAlert();
 
     const confirmLogout = () => {
-        setAlert({
-            isOpen: true,
+        openAlert({
             title: "¿Desea cerrar la sesión?",
             type: "question",
             submitButton: {
                 value: "Sí, cerrar",
-                onClick: () => {
-                    dispatch(logout())
-                }
+                onClick: () => dispatch(logout())
             },
             closeButton: { value: "No, cancelar" }
         })
@@ -33,15 +30,15 @@ const Menu = ({ children }: I_MenuProps) => {
 
     return (
         <div>
-            <Alert isOpen={!!(_alert?.isOpen)}{..._alert} onClosed={() => { setAlert(null) }} />
+            <Alert {...alertData} />
 
             <UncontrolledDropdown>
                 <DropdownToggle caret tag="div" className='d-flex align-items-center'>
                     {children}
                 </DropdownToggle>
                 <DropdownMenu className='border-0 shadow-sm mt-1 py-3'>
-                    <DropdownItem header style={{whiteSpace: "normal"}} className="pb-4">
-                        <p style={{width: "300px"}} className="text-center mb-0 pb-3 border-bottom">
+                    <DropdownItem header style={{ whiteSpace: "normal" }} className="pb-4">
+                        <p style={{ width: "300px" }} className="text-center mb-0 pb-3 border-bottom">
                             {userInfo?.cargo}
                         </p>
                     </DropdownItem>

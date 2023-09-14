@@ -5,7 +5,7 @@ import { I_JSONObject, T_FieldsTypes } from '../../../interfaces/generic.interfa
 import { AXIOS_REQUEST } from '../../../services/axiosService';
 import { ANSWER_BY_FORM, DELETE_ANSWER, FORM, FORM_FIELDS, SAVE_ANSWERS } from '../../../services/endPointsService';
 import { mapFieldAndDefaultValues } from '../../../utils/mapField';
-import Alert, { I_AlertObject } from '../../../components/Alert';
+import Alert from '../../../components/Alert';
 import AsList from './AsList';
 import AsTabs from './AsTabs';
 import { useParams } from 'react-router-dom';
@@ -16,6 +16,7 @@ import { ExclamationCircleFill, Link } from '../../../components/Icons';
 import { Button } from 'reactstrap';
 import FormsTemplatesAssociaton from '../../../components/FormsTemplatesAssociation';
 import useLoader from '../../../hooks/useLoader';
+import useAlert from '../../../hooks/useAlert';
 
 export type T_Form = {
     fields: Array<T_FieldsTypes>;
@@ -48,14 +49,14 @@ const FormPannel = ({
     const { id_cond } = useParams();
 
     const [formList, setFormList] = useState<T_Form[] | null>(null);
-    const [alertConfirm, setAlertConfirm] = useState<I_AlertObject | null>(null);
     const [togglePannel, setTogglePannel] = useState(false);
+
+    const { alertData, openAlert } = useAlert();
 
     const { loading, closeLoader, openLoader } = useLoader()
 
     const confirmSubmit = (data: any, formItem: T_Form, callback?: () => void) => {
-        setAlertConfirm({
-            isOpen: true,
+        openAlert({
             title: "¿Desea guardar los cambios?",
             type: "question",
             submitButton: { value: "Sí, guardar", onClick: () => submitAll(data, formItem, callback) },
@@ -63,11 +64,10 @@ const FormPannel = ({
         })
     }
 
-    const confirmDelete = (item: string, title = "¿Está seguro?", subtitle: any = "", callback?: () => void) => {
-        setAlertConfirm({
-            isOpen: true,
+    const confirmDelete = (item: string, title = "¿Está seguro?", children: any = "", callback?: () => void) => {
+        openAlert({
             title,
-            subtitle,
+            children,
             type: "question",
             submitButton: { value: "Sí, eliminar", onClick: () => { deleteItem(item, callback) } },
             closeButton: { value: "No, cancelar" },
@@ -284,7 +284,7 @@ const FormPannel = ({
     }
 
     return <>
-        <Alert isOpen={!!(alertConfirm?.isOpen)}{...alertConfirm} onClosed={() => { closeModal(setAlertConfirm) }} />
+        <Alert {...alertData} />
         <Loader {...loading} />
         {!!(canAddForms) && <FormsTemplatesAssociaton open={togglePannel} toggle={toggleEditFormsPannel} taskId={id_cond!} />}
         {content}
