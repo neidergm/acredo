@@ -28,6 +28,7 @@ import { I_JSONObject } from '../../../interfaces/generic.interface';
 import confirmDeleteAlertObject from '../../../utils/confirmDeleteAlertObject';
 import AllAttachments from '../../../components/AttachmentsTable/AllAttachments';
 import useLoader from '../../../hooks/useLoader';
+import objectsAreEquals from '../../../utils/compareObjects';
 
 const ConditionsDetails = () => {
 
@@ -159,8 +160,12 @@ const ConditionsDetails = () => {
             const diffData = getDifferenceBetweenData(defaultValues, data);
             const { responsable, ...dataToSend } = diffData;
 
+            // const responsablesChanged = responsable.length !== defaultValues.responsable?.length ? responsable :
+            //   responsable?.filter((r: I_JSONObject) => !(defaultValues.responsable?.find(
+            //     (dr: I_JSONObject) => dr.user.toString() === r.user.toString)
+            //   ))
             const responsablesChanged = responsable.length !== defaultValues.responsable?.length ? responsable :
-              responsable?.filter((r: I_JSONObject) => !(defaultValues.responsable?.find((dr: I_JSONObject) => dr.user.toString() === r.user.toString())))
+              responsable?.filter((r: I_JSONObject, i: number) => !objectsAreEquals(defaultValues.responsable?.[i] || {}, r, false))
 
             const d = jsonToFormData({ ...dataToSend, id_cond: conditionSelected?.id_cond });
 

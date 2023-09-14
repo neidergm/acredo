@@ -1,4 +1,4 @@
-const objectsAreEquals = (object1: any, object2: any) => {
+const objectsAreEquals = (object1: any, object2: any, strictDataType = true) => {
     const keys1 = Object.keys(object1);
     const keys2 = Object.keys(object2);
     if (keys1.length !== keys2.length) {
@@ -9,8 +9,8 @@ const objectsAreEquals = (object1: any, object2: any) => {
         const val2 = object2[key];
         const areObjects = isObject(val1) && isObject(val2);
         if (
-            areObjects && !objectsAreEquals(val1, val2) ||
-            !areObjects && val1 !== val2
+            (areObjects && !objectsAreEquals(val1, val2)) ||
+            (!areObjects && (strictDataType ? val1 !== val2 : val1 != val2))
         ) {
             return false;
         }

@@ -29,7 +29,7 @@ const PhasesList = ({ isAdmin, taskEnded }: T_Props) => {
 
   const showActionDetails = (action: T_Action, stage: T_Stage, phase: T_Phase) => {
     const dateDiff = getDateDiff(new Date(action.fecha_accion));
-console.log(action)
+    
     setModal({
       isOpen: true,
       size: "lg",
