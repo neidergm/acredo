@@ -4,8 +4,6 @@ import Form from 'react-ngm-form';
 const confirmDeleteAlertObject = (subtitle: I_AlertObject["children"], submitBtn: Required<I_AlertObject["submitButton"]>): I_AlertObject => {
     return {
         isOpen: true,
-        needFillConfirmation: true,
-        // onClosed: () => { },
         title: "¿Está seguro?",
         type: "question",
         children: <>

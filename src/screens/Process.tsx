@@ -102,14 +102,11 @@ const Process = () => {
       })
     }
 
-    openAlert({
-      needFillConfirmation: true,
-      ...confirmDeleteAlertObject("Se eliminará el proceso con todo lo que se incluye en el mismo",
-        {
-          onClick: () => closeAlert(() => deleteProcess(process))
-        }
-      )
-    })
+    openAlert(confirmDeleteAlertObject("Se eliminará el proceso con todo lo que se incluye en el mismo",
+      {
+        onClick: () => closeAlert(() => deleteProcess(process))
+      }
+    ))
   }
 
   const deleteProcess = (process: I_Process) => {

@@ -37,6 +37,7 @@ const Details = () => {
     const userRol = useAppSelector(state => state.user.userInfo?.rol);
     const program = useAppSelector(state => state.programs.selected);
     const is_admin = !isSupervisor(userRol) && isAdmin(userRol);
+    const needRefreshList = useAppSelector(s => s.programs.needRefreshList);
 
     const { alertData, closeAlert, openAlert } = useAlert();
 
@@ -47,10 +48,8 @@ const Details = () => {
     const { id_program } = useParams();
     const [showSidePanel, setShowSidePanel] = useState<null | { title: string; body: JSX.Element; toggler: (close: boolean) => void }>(null);
 
-    const getProgramInfo = async () => {
-        if (program) {
-            return dispatch(getProgramsList(program.id_prog))
-        }
+    const getProgramInfo = async (refreshList = false) => {
+        if (refreshList) dispatch(setNeedRefreshList(true))
 
         return AXIOS_REQUEST(`${GET_PROGRAMS_LIST}/${id_program}`).then(resp => {
             if (!resp.data[0]) {
@@ -154,29 +153,26 @@ const Details = () => {
     }
 
     const saveProgramData = ({ departamento, ...data }: I_JSONObject) => {
+        openLoader("Actualizando datos", () => {
+            departamento && (data.depa_prog = departamento);
+            data.id_prog = program?.id_prog;
 
-        openLoader("Actualizando datos")
-        departamento && (data.depa_prog = departamento);
-        data.id_prog = program?.id_prog;
-
-        AXIOS_REQUEST(SAVE_PROGRAM_DATA, "PUT", jsonToFormData(data, "[0].")).then(resp => {
-            toast.success("Datos del programa actualizados correctamente", { position: 'top-right' })
-            dispatch(setNeedRefreshList(true))
-            closeLoader(() => {
-                closeModal(setModal);
+            AXIOS_REQUEST(SAVE_PROGRAM_DATA, "PUT", jsonToFormData(data, "[0].")).then(resp => {
+                toast.success("Datos del programa actualizados correctamente", { position: 'top-right' })
+                closeLoader(() => closeModal(setModal))
+                return getProgramInfo(true)
+            }).catch(err => {
+                closeLoader()
+                toast.error("No se pudo actualizar datos del programa", { position: 'top-right' })
             })
-            return getProgramInfo()
-        }).catch(err => {
-            closeLoader()
-            toast.error("No se pudo actualizar datos del programa", { position: 'top-right' })
         })
     }
 
-    const showAllEvents = (show = true) => {
+    const showAllEvents = (show = true, prog = program) => {
         if (program && show) {
             setShowSidePanel({
                 title: "Eventos del programa",
-                body: <ProgramEvent events={program.eventos} program_id={program.id_prog} callback={getProgramInfo} canEdit={is_admin} />,
+                body: <ProgramEvent events={prog!.eventos} program_id={prog!.id_prog} callback={updateEventCallback} canEdit={is_admin} />,
                 toggler: showAllEvents
             })
         } else {
@@ -184,20 +180,27 @@ const Details = () => {
         }
     }
 
+    const updateResolutionCallback = (showAllInPanel = true) => {
+        openLoader("Espere", () => {
+            getProgramInfo(true).then((p) => {
+                showAllInPanel && showAllResolutions(true, p);
+            }).finally(() => closeLoader())
+        })
+    }
+
+    const updateEventCallback = (showAllInPanel = true) => {
+        openLoader("Espere", () => {
+            getProgramInfo(true).then((p) => {
+                showAllInPanel && showAllEvents(true, p)
+            }).finally(() => closeLoader())
+        })
+    }
+
     const showAllResolutions = (show = true, prog = program) => {
         if (prog && show) {
             setShowSidePanel({
                 title: "Resoluciones del programa",
-                body: <Resolutions list={prog.resoluciones} program_id={prog.id_prog} canEdit={is_admin}
-                    callback={() => {
-                        openLoader("Espere")
-                        getProgramInfo()
-                            .then((p) => {
-                                closeLoader();
-                                showAllResolutions(true, p);
-                            })
-                    }}
-                />,
+                body: <Resolutions list={prog.resoluciones} program_id={prog.id_prog} canEdit={is_admin} saveCallback={updateResolutionCallback} />,
                 toggler: showAllResolutions
             })
         } else {
@@ -231,6 +234,9 @@ const Details = () => {
         } else {
             !program && getProgramInfo()
         }
+        return () => {
+            if (needRefreshList) dispatch(getProgramsList())
+        }
     }, [])
 
     return (
@@ -247,14 +253,14 @@ const Details = () => {
                 {modal?.footer}
             </Modal>
 
-            <Alert isOpen={!!alert} {...alert} />
+            <Alert {...alertData} />
             <Loader {...loading} />
 
             <div className="container-fluid container-xxxl">
                 <div>
                     {!program ? <div className='p-5 mt-5'><Loader loaderAsModal={false} isOpen /></div>
                         : <>
-                            <Offcanvas isOpen={!!(showSidePanel)} style={{ minWidth: "40%" }} fade>
+                            <Offcanvas isOpen={!!(showSidePanel)} style={{ minWidth: "40%", width: "auto" }} fade>
                                 <OffcanvasHeader toggle={() => { showAllEvents(false) }}>
                                     <span className='ps-3 border-start border-success border-4 py-1'>{showSidePanel?.title}</span>
                                 </OffcanvasHeader>
@@ -352,7 +358,7 @@ const Details = () => {
                                             actives={program.resoluciones?.filter(r => r.estado === 1)}
                                             program_id={program.id_prog}
                                             canEdit={is_admin}
-                                            callback={getProgramInfo}>
+                                            saveCallback={() => updateResolutionCallback(false)}>
                                             {(add, edit, hasActives) => (
                                                 <div className='flex-grow-1 mt-3 d-flex justify-content-between gap-1 align-items-end'>
                                                     <div className='d-inline-block'>
@@ -422,7 +428,7 @@ const Details = () => {
                                             events={program.eventos}
                                             limit={EVENT_LIMITS_SHOW}
                                             program_id={program.id_prog}
-                                            callback={getProgramInfo}
+                                            callback={() => updateEventCallback(false)}
                                             canEdit={is_admin}
                                         >
                                             {(addEventFunction) => (

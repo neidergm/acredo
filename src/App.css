@@ -3,6 +3,10 @@
   src: url('./fonts/FredokaOne-Regular.ttf');
 }
 
+/* .offcanvas{
+  --bs-offcanvas-width: auto !important;
+} */
+
 html {
   scroll-behavior: smooth;
   --bs-body-bg: #f3f4f6 !important;
@@ -87,7 +91,11 @@ code {
     background-color: darkgrey;
   }
 }
-
+/* @media screen and (min-width: 991px) {
+ .offcanvas{
+  max-width: 80vw !important;
+ }
+} */
 .cursor-pointer {
   cursor: pointer;
 }

@@ -65,13 +65,13 @@ const PhasesList = ({ isAdmin, taskEnded }: T_Props) => {
           <b className='d-block'>Fase: </b>
           <span>{phase.name}</span>
         </p>
-        <p>
+        <div>
           <b className='d-block'>Responsables: </b>
           <ul>
             {action.usuarios?.map((u, i) => <li key={i} title={u.nomb_cargo}>
               {u.responsable} <small className='text-muted'> | {u.rol_nombre}</small></li>) || <li>Sin responsables</li>}
           </ul>
-        </p>
+        </div>
       </div>
     })
   }

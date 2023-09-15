@@ -10,7 +10,6 @@ import AsList from './AsList';
 import AsTabs from './AsTabs';
 import { useParams } from 'react-router-dom';
 import { formToSubmitData, getDifferenceBetweenData } from '../../../utils/formUtils';
-import { closeModal } from '../../../components/Modal';
 import toast from 'react-hot-toast';
 import { ExclamationCircleFill, Link } from '../../../components/Icons';
 import { Button } from 'reactstrap';

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { I_Resolutions } from '../../interfaces/programs.interface'
 import Card from '../Card'
 import classnames from 'classnames'
@@ -24,11 +24,11 @@ type T_Props = {
     actives?: I_Resolutions[] | null,
     program_id: number,
     canEdit?: boolean,
-    callback?: () => void,
+    saveCallback?: () => void,
     children?: (addResoFunction: () => void, updateResoFunction: () => void, hasActives: boolean) => JSX.Element,
 }
 
-const Resolutions = ({ list, program_id, callback, canEdit = false, actives, children }: T_Props) => {
+const Resolutions = ({ list, program_id, saveCallback, canEdit = false, actives, children }: T_Props) => {
 
     const [modal, setModal] = useState<T_ModalJSON | null>(null);
     const [activeTab, setActiveTab] = useState(0);
@@ -87,19 +87,16 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, actives, chi
     }
 
     const onDelete = (id_reso: number) => {
-        openLoader("Eliminando resolución")
+        openLoader("Eliminando resolución", () => {
+            const d = jsonToFormData({ id_reso, estado: -1 }, "resoluciones[0].");
+            d.append(`id_prog`, `${program_id}`)
 
-        const d = jsonToFormData({ id_reso, estado: -1 }, "resoluciones[0].");
-        d.append(`id_prog`, `${program_id}`)
-
-        AXIOS_REQUEST(`${DELETE_PROGRAM_RESOLUTION}`, "PUT", d).then(res => {
-            toast.success("Resolución eliminada correctamente", { position: "top-right" });
-            closeLoader(() => {
-                callback?.();
-            })
-        }).catch(e => {
-            closeLoader()
-            toast.error("No se pudo eliminar la resolución", { position: "top-right" });
+            AXIOS_REQUEST(`${DELETE_PROGRAM_RESOLUTION}`, "PUT", d).then(res => {
+                toast.success("Resolución eliminada correctamente", { position: "top-right" });
+                saveCallback?.();
+            }).catch(e => {
+                toast.error("No se pudo eliminar la resolución", { position: "top-right" });
+            }).finally(() => closeLoader())
         })
     }
 
@@ -144,24 +141,30 @@ const Resolutions = ({ list, program_id, callback, canEdit = false, actives, chi
     }
 
     const saveResolutionData = (data: I_JSONObject, type: string) => {
-        openLoader(type === "PUT" ? "Actualizando resolución" : "Registrando resolución")
+        openLoader(type === "PUT" ? "Actualizando resolución" : "Registrando resolución", () => {
+            const d = jsonToFormData(data, "resoluciones[0].");
+            d.append("id_prog", `${program_id}`)
 
-        const d = jsonToFormData(data, "resoluciones[0].");
-        d.append("id_prog", `${program_id}`)
-
-        AXIOS_REQUEST(SAVE_PROGRAM_RESOLUTION, type, d)
-            .then(res => {
-                toast.success(`Resolución ${type === "PUT" ? "actualizada" : "registrada"} correctamente`, { position: "top-right" });
-                closeLoader(() => {
-                    callback?.();
+            AXIOS_REQUEST(SAVE_PROGRAM_RESOLUTION, type, d)
+                .then(res => {
                     closeModal(setModal)
+                    toast.success(`Resolución ${type === "PUT" ? "actualizada" : "registrada"} correctamente`, { position: "top-right" });
+                    closeLoader(() => {
+                        saveCallback?.();
+                    })
                 })
-            })
-            .catch(err => {
-                closeLoader()
-                toast.error(`No se pudo ${type === "PUT" ? "actualizar" : "registrar"} la resolución`, { position: "top-right" });
-            })
+                .catch(err => {
+                    closeLoader()
+                    toast.error(`No se pudo ${type === "PUT" ? "actualizar" : "registrar"} la resolución`, { position: "top-right" });
+                })
+        })
     }
+
+    useEffect(() => {
+        if (actives?.length && !(actives[activeTab])) {
+            setActiveTab(0)
+        }
+    }, [actives])
 
     return (
         <>

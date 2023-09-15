@@ -82,18 +82,16 @@ const Programs = () => {
     }
 
     const saveProgramData = ({ departamento, ...data }: I_JSONObject) => {
-        openLoader("Registrando programa")
-        departamento && (data.depa_prog = departamento);
+        openLoader("Registrando programa", () => {
+            departamento && (data.depa_prog = departamento);
 
-        AXIOS_REQUEST(SAVE_PROGRAM_DATA, "POST", jsonToFormData(data, "[0].")).then(resp => {
-            toast.success("Programa registrado correctamente", { position: 'top-right' })
-            closeLoader(() => {
+            AXIOS_REQUEST(SAVE_PROGRAM_DATA, "POST", jsonToFormData(data, "[0].")).then(resp => {
+                toast.success("Programa registrado correctamente", { position: 'top-right' })
                 closeModal(setModal);
-            })
-            getPrograms();
-        }).catch(err => {
-            closeLoader()
-            toast.error("No se pudo registrar el programa", { position: 'top-right' })
+                getPrograms();
+            }).catch(err => {
+                toast.error("No se pudo registrar el programa", { position: 'top-right' })
+            }).finally(() => closeLoader())
         })
     }
 
@@ -103,6 +101,8 @@ const Programs = () => {
         dispatch(selectProgram(program));
         navigate(`${program.id_prog}`)
     }
+
+    // useEffect(() => { setList(programsList) }, [programsList]);
 
     useEffect(() => {
         if (!programsList || needRefreshList) { getPrograms() }

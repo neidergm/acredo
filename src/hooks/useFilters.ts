@@ -50,8 +50,10 @@ const useFilters = <T>(
 
     const doFilter = (property: string, value: string, quitActiveFilter = false) => {
         const f = filter;
-        f[property].value = value;
-        if (quitActiveFilter) f[property].active = false;
+        if (property !== "") {
+            f[property].value = value;
+            if (quitActiveFilter) f[property].active = false;
+        }
 
         const newList = getFilteredList(f)
 

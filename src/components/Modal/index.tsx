@@ -23,8 +23,6 @@ export const closeModal = (
     setStateCallback: (currentState: any) => any,
     onClosedCallback?: () => any
 ) => {
-
-
     return setStateCallback((currentState: T_ModalJSON) => {
         const extra = {onClosed: onClosedCallback || currentState.onClosed}
         if (!(extra.onClosed)) delete extra.onClosed;

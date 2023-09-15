@@ -15,8 +15,6 @@ export interface I_AlertObject {
   onClosed?: () => void,
   onOpened?: () => void,
   children?: JSX.Element | JSX.Element[] | string | null;
-  // subtitle?: JSX.Element | JSX.Element[] | string | null;
-
   fullscreen?: boolean | 'sm' | 'md' | 'lg' | 'xl';
   showCloseX?: boolean;
   closeButton?: T_Btn;
@@ -24,7 +22,6 @@ export interface I_AlertObject {
   title?: string | JSX.Element | JSX.Element[];
   size?: 'sm' | 'md' | 'lg' | 'xl';
   type?: keyof typeof alertType;
-  needFillConfirmation?: boolean;
 }
 
 const alertType = {
@@ -38,24 +35,14 @@ const alertType = {
 const Alert = ({
   title,
   showCloseX,
-  // onClosed,
-  // size = 'md',
   type,
   children,
   closeButton,
   submitButton,
   fullscreen,
-  needFillConfirmation,
   closeAlert,
   ...props
 }: I_AlertObject & { closeAlert?: (closeCallback?: () => void) => void }) => {
-  // const [showAlert, setShowAlert] = useState(isOpen);
-
-  // const toggle = () => setShowAlert(!showAlert);
-
-  // useEffect(() => setShowAlert(isOpen), [isOpen])
-
-  console.log(props)
 
   const buttons = [];
 
@@ -93,7 +80,7 @@ const Alert = ({
       <ModalHeader className='border-0 pb-0 flex-column-reverse'
         toggle={showCloseX ? () => closeAlert?.() : undefined}
       >
-        <div className='justify-content-center p-3'>{alertType[type!]}</div>
+        <div className='justify-content-center p-3'>{type && alertType[type]}</div>
       </ModalHeader>
       <ModalBody className="text-center">
         {title && <h3 className='mb-4'>{title}</h3>}

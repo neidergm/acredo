@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Badge, DropdownToggle, Input } from 'reactstrap';
 import useFilters from '../../hooks/useFilters';
 import { I_Program } from '../../interfaces/programs.interface';
@@ -18,9 +18,10 @@ type T_Props = {
 const ProgramFilter = ({ list, updateList }: T_Props) => {
 
     const dispatch = useAppDispatch();
-    const filterParams = useAppSelector(s => s.programs.filter)
+    const filterParams = useAppSelector(s => s.programs.filter);
+    const filterLoaded = useRef(false)
 
-    const { filter, doFilter, setActiveFilters, getActiveFilters, quitAllActiveFilters } = useFilters<I_Program>({
+    const { filter, doFilter, setActiveFilters, getActiveFilters, quitAllActiveFilters, setDataList } = useFilters<I_Program>({
         onFilterList: (filterdList: typeof list) => updateList(filterdList),
         list,
         filters: filterParams || {
@@ -63,6 +64,15 @@ const ProgramFilter = ({ list, updateList }: T_Props) => {
     });
 
     useEffect(() => {
+        if (filterLoaded.current) {
+            setDataList(list)
+            doFilter("", "")
+        }
+    }, [list])
+
+    useEffect(() => {
+        filterLoaded.current = true;
+
         return () => {
             filter && dispatch(setFilterProgramParams(filter))
         }
