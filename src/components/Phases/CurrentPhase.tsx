@@ -74,15 +74,19 @@ const CurrentPhase = ({
             dispatch(selectCondition(null));
             dispatch(selectProcess(null));
             dispatch(getPhasesAndStagesOfCondition(task.id_cond));
-            callback?.();
-        }).catch(() => {
-            openAlert({
-                type: "error",
-                title: "Ops...",
-                children: "No se pudo marcar la acción como finalizada, por favor intente nuevamente",
-                closeButton: { value: "Ok" }
+            closeLoader(() => {
+                callback?.();
             })
-        }).finally(() => closeLoader())
+        }).catch(() => {
+            closeLoader(() => {
+                openAlert({
+                    type: "error",
+                    title: "Ops...",
+                    children: "No se pudo marcar la acción como finalizada, por favor intente nuevamente",
+                    closeButton: { value: "Ok" }
+                })
+            })
+        })
     }
 
     const undoCompleteTask = () => {
@@ -101,13 +105,15 @@ const CurrentPhase = ({
             dispatch(selectProcess(null));
             dispatch(getPhasesAndStagesOfCondition(task.id_cond));
         }).catch(() => {
-            openAlert({
-                type: "error",
-                title: "Ops...",
-                children: "No se pudo marcar la tarea como finalizada, por favor intente nuevamente",
-                closeButton: { value: "Ok" }
+            closeLoader(() => {
+                openAlert({
+                    type: "error",
+                    title: "Ops...",
+                    children: "No se pudo marcar la tarea como finalizada, por favor intente nuevamente",
+                    closeButton: { value: "Ok" }
+                })
             })
-        }).finally(() => closeLoader())
+        })
     }
 
     const completeTask = () => {
@@ -124,13 +130,15 @@ const CurrentPhase = ({
             dispatch(selectProcess(null));
             dispatch(getPhasesAndStagesOfCondition(task.id_cond));
         }).catch(() => {
-            openAlert({
-                type: "error",
-                title: "Ops...",
-                children: "No se pudo marcar la tarea como finalizada, por favor intente nuevamente",
-                closeButton: { value: "Ok" }
+            closeLoader(() => {
+                openAlert({
+                    type: "error",
+                    title: "Ops...",
+                    children: "No se pudo marcar la tarea como finalizada, por favor intente nuevamente",
+                    closeButton: { value: "Ok" }
+                })
             })
-        }).finally(() => closeLoader())
+        })
     }
 
     const markActionAsCompleted = () => {

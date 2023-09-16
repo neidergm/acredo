@@ -93,10 +93,13 @@ const Resolutions = ({ list, program_id, saveCallback, canEdit = false, actives,
 
             AXIOS_REQUEST(`${DELETE_PROGRAM_RESOLUTION}`, "PUT", d).then(res => {
                 toast.success("Resolución eliminada correctamente", { position: "top-right" });
-                saveCallback?.();
+                closeLoader(() => {
+                    saveCallback?.();
+                })
             }).catch(e => {
+                closeLoader()
                 toast.error("No se pudo eliminar la resolución", { position: "top-right" });
-            }).finally(() => closeLoader())
+            })
         })
     }
 

@@ -5,7 +5,8 @@ const initialState: I_ProgramsState = {
     list: null,
     needRefreshList: false,
     selected: null,
-    filter: null
+    filter: null,
+    withActionInProgress: []
 }
 
 const programReducer = (state = initialState, action: I_AppAction): I_ProgramsState => {

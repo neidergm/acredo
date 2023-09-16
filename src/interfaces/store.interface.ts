@@ -29,6 +29,7 @@ export interface I_ProgramsState {
     selected: I_Program | null;
     needRefreshList: boolean;
     filter: I_JSONObject | null;
+    withActionInProgress: string[]
 }
 
 export type T_SelectedConditionData = {

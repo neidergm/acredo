@@ -86,12 +86,15 @@ const Programs = () => {
             departamento && (data.depa_prog = departamento);
 
             AXIOS_REQUEST(SAVE_PROGRAM_DATA, "POST", jsonToFormData(data, "[0].")).then(resp => {
-                toast.success("Programa registrado correctamente", { position: 'top-right' })
-                closeModal(setModal);
-                getPrograms();
+                toast.success("Programa registrado correctamente", { position: 'top-right' });
+                (getPrograms() as any).then(() => {
+                    closeModal(setModal);
+                    closeLoader()
+                })
             }).catch(err => {
+                closeLoader()
                 toast.error("No se pudo registrar el programa", { position: 'top-right' })
-            }).finally(() => closeLoader())
+            })
         })
     }
 

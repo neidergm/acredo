@@ -85,16 +85,20 @@ const Details = () => {
                 <span>Se eliminará permanentemente el programa <b>{program!.nomb_prog}</b></span>,
                 {
                     onClick: () => closeAlert(() => {
-                        openLoader("Eliminando resolución")
-                        AXIOS_REQUEST(`${DELETE_PROGRAM}`, "PUT", jsonToFormData({ est_prog: -1, id_prog: program?.id_prog }, "[0].")).then(res => {
-                            dispatch(setNeedRefreshList(true))
-                            dispatch(selectProgram(null))
-                            toast.success("Programa eliminado correctamente", { position: "top-right" });
-                            navigate(-1)
-                        }).catch(e => {
-                            toast.error("No se pudo eliminar el programa", { position: "top-right" });
-                        }).finally(() => {
-                            closeLoader()
+                        openLoader("Eliminando programa", () => {
+                            AXIOS_REQUEST(`${DELETE_PROGRAM}`, "PUT", jsonToFormData({ est_prog: -1, id_prog: program?.id_prog }, "[0].")).then(async () => {
+                                dispatch((getProgramsList() as any)).then(() => {
+                                    // dispatch(setNeedRefreshList(true))
+                                    closeLoader()
+                                    dispatch(selectProgram(null))
+                                    toast.success("Programa eliminado correctamente", { position: "top-right" });
+                                    navigate(-1)
+                                })
+
+                            }).catch(e => {
+                                closeLoader()
+                                toast.error("No se pudo eliminar el programa", { position: "top-right" });
+                            })
                         })
                     })
                 }
