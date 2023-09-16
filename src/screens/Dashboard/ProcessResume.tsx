@@ -150,7 +150,7 @@ const ProcessResume = () => {
                         </div>
                         {processDictionary[filter?.estado] && !loadedList.current[filter?.estado] &&
                             <div className="d-inline-block float-end px-3">
-                                <Loader isOpen={true} loaderAsModal={false} size="sm" />
+                                <Loader isOpen loaderAsModal={false} size="sm" />
                             </div>
                         }
                     </>}

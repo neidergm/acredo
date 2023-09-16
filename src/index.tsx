@@ -6,6 +6,7 @@ import store from './store';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import { Toaster } from 'react-hot-toast';
 import { AXIOS_REQUEST } from './services/axiosService';
+import Loader from './components/Loader';
 
 declare global {
   interface Window {
@@ -36,6 +37,7 @@ root.render(
   <Provider store={store}>
     <ErrorHandler>
       <Toaster />
+      <Loader />
       <App />
     </ErrorHandler>
   </Provider>

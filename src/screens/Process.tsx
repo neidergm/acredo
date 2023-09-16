@@ -35,7 +35,7 @@ const Process = () => {
   const hasLoaded = useRef(false);
 
   const { alertData, openAlert, closeAlert } = useAlert()
-  const { loading, openLoader, closeLoader } = useLoader()
+  const { loading, closeLoader, openLoader } = useLoader()
 
   const is_admin = !isSupervisor(userInfo?.rol) && isAdmin(userInfo?.rol)
 
@@ -217,7 +217,7 @@ const Process = () => {
       </Modal>
       <Alert {...alertData} />
 
-      <Loader {...loading} />
+      {/* <Loader {...loading} /> */}
       <div className="container-fluid container-xxl pt-3 pb-5">
         {!(processList) ?
           <Loader loaderAsModal={false} isOpen />

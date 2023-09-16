@@ -28,7 +28,8 @@ const FormsTemplatesAssociaton = ({
 }: T_Props) => {
     const [templatesList, setTemplatesList] = useState<{ [cat: string]: T_Template[] }>({});
     const [categoriesList, setCategoriesList] = useState<T_TemplateCategories[] | null>(null);
-    const { loading, openLoader, closeLoader } = useLoader();
+    // const { loading, closeLoader, openLoader } = useLoader()
+const { closeLoader, openLoader } = useLoader();
 
     const { alertData, openAlert } = useAlert();
 
@@ -179,7 +180,7 @@ const FormsTemplatesAssociaton = ({
 
     return (<>
         <Alert {...alertData} />
-        <Loader {...loading} />
+        {/* <Loader {...loading} /> */}
         <Offcanvas isOpen={open} style={{ minWidth: "70%" }} fade unmountOnClose>
             <OffcanvasHeader toggle={() => toggle()}>
                 <span className='ps-3 border-start border-success border-4 py-1'>Plantillas de formularios</span>

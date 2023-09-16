@@ -48,7 +48,8 @@ const AttachmentsTable = ({
     const [mapedList, setMapedList] = useState<Array<T_MapedItemList>>([]);
     const orderRef = useRef<typeof mapedList>([]);
     const [modal, setModal] = useState<null | T_ModalJSON>(null)
-    const { loading, openLoader, closeLoader } = useLoader();
+    // const { loading, closeLoader, openLoader } = useLoader()
+const { closeLoader, openLoader } = useLoader();
 
     const [observationsIsOpen, setObservationsIsOpen] = useState<{
         item: T_Form,
@@ -259,7 +260,7 @@ const AttachmentsTable = ({
                 {observationsIsOpen && `${observationsIsOpen.attachment.nomb_anexo}`}
             </small>
         </ObservationChat>
-        <Loader {...loading} />
+        {/* <Loader {...loading} /> */}
 
         <Modal isOpen={modal?.isOpen} size={modal?.size}>
             <ModalHeader textCenter toggle={() => closeModal(setModal)}>{modal?.title}</ModalHeader>

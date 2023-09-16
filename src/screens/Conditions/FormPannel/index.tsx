@@ -52,7 +52,8 @@ const FormPannel = ({
 
     const { alertData, openAlert } = useAlert();
 
-    const { loading, closeLoader, openLoader } = useLoader()
+    // const { loading, closeLoader, openLoader } = useLoader()
+    const { closeLoader, openLoader } = useLoader()
 
     const confirmSubmit = (data: any, formItem: T_Form, callback?: () => void) => {
         openAlert({
@@ -284,7 +285,7 @@ const FormPannel = ({
 
     return <>
         <Alert {...alertData} />
-        <Loader {...loading} />
+        {/* <Loader {...loading} /> */}
         {!!(canAddForms) && <FormsTemplatesAssociaton open={togglePannel} toggle={toggleEditFormsPannel} taskId={id_cond!} />}
         {content}
     </>

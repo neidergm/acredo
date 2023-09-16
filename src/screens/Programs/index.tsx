@@ -42,7 +42,8 @@ const Programs = () => {
 
     const { alertData, openAlert } = useAlert();
 
-    const { loading, openLoader, closeLoader } = useLoader()
+    // const { loading, closeLoader, openLoader } = useLoader()
+const { closeLoader, openLoader } = useLoader()
 
     const newProgram = () => {
         const FORM_ID = "PROGRAM_FORM";
@@ -119,7 +120,7 @@ const Programs = () => {
                 className="container-xxxl"
             />
 
-            <Loader {...loading} />
+            {/* <Loader {...loading} /> */}
             <Modal isOpen={modal?.isOpen} size={modal?.size}>
                 <ModalHeader textCenter toggle={() => closeModal(setModal)}>{modal?.title}</ModalHeader>
                 <ModalBody>{modal?.children}</ModalBody>

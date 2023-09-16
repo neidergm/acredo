@@ -43,7 +43,8 @@ const CreateStage = ({
 
   const { alertData, openAlert, closeAlert } = useAlert();
 
-  const { loading, closeLoader, openLoader } = useLoader()
+  // const { loading, closeLoader, openLoader } = useLoader()
+  const { closeLoader, openLoader } = useLoader()
 
   const updateDataOnUnmount = useRef(false)
 
@@ -329,7 +330,7 @@ const CreateStage = ({
         {modal?.footer}
       </Modal>
       <Alert {...alertData} />
-      <Loader {...loading} />
+      {/* <Loader {...loading} /> */}
       <div className='d-flex flex-column w-100 h-100'>
         <div className='flex-grow-1'>
           <div className='d-flex justify-content-between gap-4 flex-wrap'>
@@ -363,7 +364,7 @@ const CreateStage = ({
                 <b>NOTA: </b>No se pueden modificar ni eliminar las acciones que ya se han realizado
               </p>
               {
-                !(actions) ? <Loader isOpen={!!(loading)} loaderAsModal={false} />
+                !(actions) ? <Loader isOpen loaderAsModal={false} />
                   :
                   !(actions.length) ? <div className='text-secondary pt-5 text-center'>
                     <p className='mt-5'>No hay acciones registradas</p>

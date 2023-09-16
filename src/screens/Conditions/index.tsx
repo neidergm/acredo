@@ -51,7 +51,8 @@ const Conditions = () => {
 
   const { alertData, closeAlert, openAlert } = useAlert()
 
-  const { loading, closeLoader, openLoader } = useLoader()
+  // const { loading, closeLoader, openLoader } = useLoader()
+  const { closeLoader, openLoader } = useLoader()
 
   const goToConditionDetailsScreen = (condition: I_Condition) => {
     dispatch(selectCondition(condition));
@@ -314,7 +315,7 @@ const Conditions = () => {
         {modal?.footer}
       </Modal>
       <Alert {...alertData} />
-      <Loader {...loading} />
+      {/* <Loader {...loading} /> */}
 
       <div className="container-xxl">
         <div className="mb-5">

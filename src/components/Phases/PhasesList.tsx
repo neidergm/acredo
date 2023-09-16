@@ -172,7 +172,7 @@ const PhasesList = ({ isAdmin, taskEnded }: T_Props) => {
   }, [list])
 
   if (!(list)) {
-    return <div className='mb-3'><Loader isOpen={true} loaderAsModal={false} /></div>
+    return <div className='mb-3'><Loader loaderAsModal={false} /></div>
   } else if (!(list.length)) {
     return <><div className='w-100 h-100 d-flex justify-content-center align-items-center flex-column mb-5 mt-5'>
       <i className='text-warning mb-2'><ExclamationCircleFill size={35} /></i>

@@ -56,7 +56,8 @@ const CurrentPhase = ({
 
     const { alertData, openAlert } = useAlert();
 
-    const { loading, openLoader, closeLoader } = useLoader();
+    // const { loading, closeLoader, openLoader } = useLoader()
+const { closeLoader, openLoader } = useLoader();
 
     const dateDiff = getDateDiff(new Date(action?.fecha_accion || ""));
     const expiredDate = dateDiff < 0;
@@ -194,7 +195,7 @@ const CurrentPhase = ({
     }
 
     if (!task || !(active)) {
-        return <div className='py-5'><Loader isOpen={true} loaderAsModal={false} /></div>
+        return <div className='py-5'><Loader isOpen loaderAsModal={false} /></div>
     } else if (!action && phases?.[0]?.stages_completed === 0) {
         return <div className='w-100 h-100 d-flex justify-content-center align-items-center flex-column'>
             <i className='text-warning mb-2'><ExclamationCircleFill size={35} /></i>
@@ -204,7 +205,7 @@ const CurrentPhase = ({
 
     return (<>
         <Alert {...alertData} />
-        <Loader {...loading} />
+        {/* <Loader {...loading} /> */}
         {
             (taskIsEnded || (!phase && phases?.[0]?.stages?.length === phases?.[0]?.stages_completed)) ?
                 <div className='w-100 h-100 d-flex justify-content-center align-items-center flex-column'>

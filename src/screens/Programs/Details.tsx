@@ -43,7 +43,8 @@ const Details = () => {
 
     const [modal, setModal] = useState<T_ModalJSON | null>(null)
 
-    const { loading, openLoader, closeLoader } = useLoader()
+    // const { loading, closeLoader, openLoader } = useLoader()
+const { closeLoader, openLoader } = useLoader()
 
     const { id_program } = useParams();
     const [showSidePanel, setShowSidePanel] = useState<null | { title: string; body: JSX.Element; toggler: (close: boolean) => void }>(null);
@@ -258,7 +259,7 @@ const Details = () => {
             </Modal>
 
             <Alert {...alertData} />
-            <Loader {...loading} />
+            {/* <Loader {...loading} /> */}
 
             <div className="container-fluid container-xxxl">
                 <div>

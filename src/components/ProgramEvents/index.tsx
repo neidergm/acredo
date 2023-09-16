@@ -33,7 +33,8 @@ const ProgramEvents = ({ events, limit, program_id, callback, children, canEdit 
 
     const { alertData, openAlert } = useAlert();
 
-    const { loading, openLoader, closeLoader } = useLoader()
+    // const { loading, closeLoader, openLoader } = useLoader()
+const { closeLoader, openLoader } = useLoader()
 
     const deleteEvent = (event: I_ProgramEvent) => {
         openAlert({
@@ -111,7 +112,7 @@ const ProgramEvents = ({ events, limit, program_id, callback, children, canEdit 
     return (<>
 
         <Alert {...alertData} />
-        <Loader {...loading} />
+        {/* <Loader {...loading} /> */}
         <Modal isOpen={modal?.isOpen} size={modal?.size}>
             <ModalHeader textCenter toggle={() => closeModal(setModal)}>{modal?.title}</ModalHeader>
             <ModalBody>{modal?.children}</ModalBody>

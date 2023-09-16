@@ -2,7 +2,7 @@ import { Spinner } from 'reactstrap';
 
 const FallbackComponen1 = () => {
     return (
-        <div className='w-100 h-100 d-flex justify-content-center align-items-center position-absolute'>
+        <div className='w-100 h-100 d-flex justify-content-center align-items-center position-absolute top-0' style={{ zIndex: -1 }}>
             <Spinner color='success' animation="border" role="status" />
         </div>
     );

@@ -36,7 +36,8 @@ const ConditionsDetails = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { id_process, id_cond } = useParams();
-  const { loading, openLoader, closeLoader } = useLoader();
+  // const { loading, closeLoader, openLoader } = useLoader()
+const { closeLoader, openLoader } = useLoader();
 
   const processSelected = useAppSelector(state => state.process.selected);
   const conditionSelected = useAppSelector(state => state.conditions.selected);
@@ -257,7 +258,7 @@ const ConditionsDetails = () => {
       </Modal>
 
       <Alert {...alertData} />
-      <Loader {...loading} />
+      {/* <Loader {...loading} /> */}
       <SubHeader
         text={conditionSelected?.nomb_cond ?
           <div className='d-flex gap-3 flex-wrap align-items-center'>
@@ -282,7 +283,7 @@ const ConditionsDetails = () => {
                 </div>
               </div>
               {(!processSelected) ?
-                <div className='py-5'><Loader isOpen={true} loaderAsModal={false} /></div>
+                <div className='py-5'><Loader isOpen loaderAsModal={false} /></div>
                 :
                 <div className='d-flex flex-column gap-3 h-100'>
                   <div>
@@ -398,7 +399,7 @@ const ConditionsDetails = () => {
           <div className={classnames('mb-4 order-3 order-lg-2', showAllPhases ? "col-lg-8" : "col-lg-12")}>
             <Card className='h-100'>
               {(!conditionSelected) ?
-                <div className='py-5 mt-5'><Loader isOpen={true} loaderAsModal={false} /></div>
+                <div className='py-5 mt-5'><Loader isOpen loaderAsModal={false} /></div>
                 :
                 <FormPannel formId={conditionSelected.form_cond} canEdit={canEditForms}
                   codCond={conditionSelected.cod_cond}
@@ -423,7 +424,7 @@ const ConditionsDetails = () => {
                 </div>
                 <div>
                   {(!conditionSelected) ?
-                    <div className='py-5'><Loader isOpen={true} loaderAsModal={false} /></div>
+                    <div className='py-5'><Loader isOpen loaderAsModal={false} /></div>
                     :
                     <PhasesList isAdmin={!taskIsEnded && is_admin} taskEnded={taskIsEnded} />
                   }

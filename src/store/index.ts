@@ -10,6 +10,7 @@ import { LOGOUT, setUnauthorized, SET_UNAUTHORIZED } from './actions/userActions
 import { setOtherAxiosConfig } from '../services/axiosService';
 import conditionsReducer from './reducers/conditionsReducer';
 import notificationsReducer from './reducers/notificationsReducer';
+import loaderReducer from './reducers/loaderReducer';
 
 // Create deducer all in one
 const allReducers = combineReducers({
@@ -19,6 +20,7 @@ const allReducers = combineReducers({
     process: processReducer,
     conditions: conditionsReducer,
     notifications: notificationsReducer,
+    loader: loaderReducer,
 });
 
 declare global {
