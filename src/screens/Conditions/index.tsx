@@ -6,9 +6,9 @@ import { Accordion, AccordionBody, AccordionHeader, AccordionItem, Badge, Button
 import Loader from "../../components/Loader";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
-import { selectCondition, getPhasesWithConditions } from "../../store/actions/conditionsActions";
+import { selectCondition, getPhasesWithConditions } from "../../store/slices/taskSlice";
 import CircleProgress from "../../components/CircleProgress";
-import { getProcessList } from "../../store/actions/processActions";
+import { getProcessList } from "../../store/slices/processSlice";
 import Card from "../../components/Card";
 import classnames from 'classnames';
 import { getDateDiff, getNormalDate } from "../../utils/dateUtils";

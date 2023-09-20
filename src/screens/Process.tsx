@@ -6,7 +6,7 @@ import Loader from '../components/Loader';
 import { I_Process } from '../interfaces/process.interface';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import { useAppSelector } from '../hooks/useAppSelector';
-import { getProcessList, selectProcess } from '../store/actions/processActions';
+import { getProcessList, selectProcess } from '../store/slices/processSlice';
 import CircleProgress from '../components/CircleProgress';
 import Card from '../components/Card';
 import { Edit, ExclamationCircleFill, Folder2Open, Plus, ThreeDotsVertical, XCircle } from '../components/Icons';

@@ -24,7 +24,7 @@ import confirmDeleteAlertObject from '../../utils/confirmDeleteAlertObject';
 import classnames from 'classnames';
 import { I_Process } from '../../interfaces/process.interface';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
-import { getProgramsList, selectProgram, setNeedRefreshList } from '../../store/actions/programsActions';
+import { getProgramsList, selectProgram, setNeedRefreshList } from '../../store/slices/programsSlice';
 import useLoader from '../../hooks/useLoader';
 import useAlert from '../../hooks/useAlert';
 

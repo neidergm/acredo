@@ -7,7 +7,7 @@ import { Funnel } from '../Icons';
 import classnames from "classnames";
 import style from './style.module.css'
 import { useAppDispatch } from '../../hooks/useAppDispatch';
-import { setFilterProgramParams } from '../../store/actions/programsActions';
+import { setFilterProgramParams } from '../../store/slices/programsSlice';
 import { useAppSelector } from '../../hooks/useAppSelector';
 
 type T_Props = {

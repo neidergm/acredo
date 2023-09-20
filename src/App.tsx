@@ -6,7 +6,7 @@ import Header from './components/Header';
 import { useAppSelector } from './hooks/useAppSelector';
 import { CloseButton, Toast, ToastBody } from 'reactstrap';
 import { useAppDispatch } from './hooks/useAppDispatch';
-import { setUnauthorized } from './store/actions/userActions';
+import { setUnauthorized } from './store/slices/userSlice';
 import Footer from './components/Footer';
 import './App.css';
 import './custom-colors.css';

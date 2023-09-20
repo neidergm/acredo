@@ -3,7 +3,7 @@ import style from "./login.module.css";
 import lazyLoaderComponents from "../../services/lazyLoadingService";
 import { I_User } from "../../interfaces/user.interface";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
-import { login } from "../../store/actions/userActions";
+import { login } from "../../store/slices/userSlice";
 import logo from './../../images/logo-master.svg';
 import classnames from 'classnames';
 import Footer from "../../components/Footer";

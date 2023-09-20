@@ -1,7 +1,7 @@
 import { Button, DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown } from 'reactstrap';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector'
-import { logout } from '../../store/actions/userActions';
+import { logout } from '../../store/slices/userSlice';
 import Alert from '../Alert';
 import useAlert from '../../hooks/useAlert';
 

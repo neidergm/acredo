@@ -1,6 +1,6 @@
 import { useAppSelector } from './useAppSelector';
 import { useAppDispatch } from './useAppDispatch';
-import { close, open } from '../store/actions/loaderActions';
+import { close, open } from '../store/slices/loaderSlice';
 
 type T_State = {
     isOpen: boolean,

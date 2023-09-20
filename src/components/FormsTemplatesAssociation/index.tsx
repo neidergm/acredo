@@ -9,7 +9,7 @@ import { ExclamationCircleFill } from '../Icons';
 import Alert from '../Alert';
 import Loader from '../Loader';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
-import { getContionData } from '../../store/actions/conditionsActions';
+import { getContionData } from '../../store/slices/taskSlice';
 import styles from './styles.module.css';
 import useLoader from '../../hooks/useLoader';
 import useAlert from '../../hooks/useAlert';

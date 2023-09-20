@@ -10,7 +10,7 @@ import { ExclamationCircleFill, Stack } from '../../components/Icons';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
-import { getProgramsIndicators, setProgramsList, setProgramsSelectedFilter } from '../../store/actions/dashboardActions';
+import { getProgramsIndicators, setProgramsList, setProgramsSelectedFilter } from '../../store/slices/dashboardSlice';
 
 const ProgramsResume = () => {
 

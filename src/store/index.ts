@@ -87,7 +87,7 @@ export default store;
 
 // import { combineReducers, StoreEnhancer, EmptyObject, Store } from 'redux';
 // import { configureStore } from '@reduxjs/toolkit'
-// import { LOGOUT, SET_UNAUTHORIZED, getConfig, setUnauthorized } from './actions/userAction';
+// import { LOGOUT, SET_UNAUTHORIZED, getConfig, setUnauthorized } from './slices/userAction';
 
 // // Reducers list
 // import activitiesReducer from './reducers/activitiesReducer'
@@ -161,7 +161,7 @@ export default store;
 // import programsReducer from './reducers/programsReducer'
 // import dashboardReducer from './reducers/dashboardReducer'
 // import processReducer from './reducers/processReducer'
-// import { LOGOUT, setUnauthorized, SET_UNAUTHORIZED } from './actions/userActions';
+// import { LOGOUT, setUnauthorized, SET_UNAUTHORIZED } from './slices/userSlice';
 // import { setOtherAxiosConfig } from '../services/axiosService';
 // import conditionsReducer from './reducers/conditionsReducer';
 // import notificationsReducer from './reducers/notificationsReducer';

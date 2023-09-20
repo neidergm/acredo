@@ -8,7 +8,7 @@ import style from "./style.module.css";
 import { getDateDiff, getNormalDate } from "../../utils/dateUtils"
 import { useAppDispatch } from "../../hooks/useAppDispatch"
 import { useAppSelector } from "../../hooks/useAppSelector"
-import { setNotificationsList } from "../../store/actions/notificationsActions"
+import { setNotificationsList } from "../../store/slices/notificationsSlice"
 import { AXIOS_REQUEST } from "../../services/axiosService"
 import { GET_NOTIFICATIONS, MARK_AS_READ_NOTIFICATION } from "../../services/endPointsService"
 import Loader from "../../components/Loader";

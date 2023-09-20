@@ -13,7 +13,7 @@ import { I_Observation } from '../../interfaces/observations.interface';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { toast } from 'react-hot-toast';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
-import { getPhasesWithConditions } from '../../store/actions/conditionsActions';
+import { getPhasesWithConditions } from '../../store/slices/taskSlice';
 
 interface I_props {
     isOpen: boolean;

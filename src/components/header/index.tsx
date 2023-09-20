@@ -7,7 +7,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { Bell, BellFill, HouseGear, QuestionCircle } from '../Icons';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
-import { getNotificationsReport } from '../../store/actions/notificationsActions';
+import { getNotificationsReport } from '../../store/slices/notificationsSlice';
 import { isAdmin, isSupervisor } from '../../utils/userRolUtils';
 
 export const Header = ({ titulo = "Master U" }: { titulo?: string }) => {

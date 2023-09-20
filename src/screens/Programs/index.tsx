@@ -19,7 +19,7 @@ import classnames from 'classnames';
 import { isAdmin } from '../../utils/userRolUtils';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import ProgramFilter from '../../components/ProgramFilter';
-import { getProgramsList, selectProgram } from '../../store/actions/programsActions';
+import { getProgramsList, selectProgram } from '../../store/slices/programsSlice';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { I_Program } from '../../interfaces/programs.interface';
 import useLoader from '../../hooks/useLoader';

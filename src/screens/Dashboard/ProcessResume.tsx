@@ -8,7 +8,7 @@ import { I_Process } from "../../interfaces/process.interface";
 import CircleProgress from "../../components/CircleProgress";
 import { ExclamationCircleFill } from "../../components/Icons";
 import { useNavigate } from "react-router-dom";
-import { getProcessIndicators, setProcessList, setProcessSelectedFilter } from "../../store/actions/dashboardActions";
+import { getProcessIndicators, setProcessList, setProcessSelectedFilter } from "../../store/slices/dashboardSlice";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 
