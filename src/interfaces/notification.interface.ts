@@ -26,5 +26,5 @@ export interface I_Notification {
     tipo_noti: 0 | 1 | 2;
     desc_tipo_noti: string;
 
-    html_content?: any
+    // html_content?: JSX.Element
 }

@@ -56,8 +56,7 @@ const CurrentPhase = ({
 
     const { alertData, openAlert } = useAlert();
 
-    // const { loading, closeLoader, openLoader } = useLoader()
-const { closeLoader, openLoader } = useLoader();
+    const { closeLoader, openLoader } = useLoader();
 
     const dateDiff = getDateDiff(new Date(action?.fecha_accion || ""));
     const expiredDate = dateDiff < 0;
@@ -75,9 +74,7 @@ const { closeLoader, openLoader } = useLoader();
             dispatch(selectCondition(null));
             dispatch(selectProcess(null));
             dispatch(getPhasesAndStagesOfCondition(task.id_cond));
-            closeLoader(() => {
-                callback?.();
-            })
+            closeLoader(callback)
         }).catch(() => {
             closeLoader(() => {
                 openAlert({
@@ -98,10 +95,8 @@ const { closeLoader, openLoader } = useLoader();
         })
         ).then(() => {
             toast.success("Se ha desmarcado la tarea correctamente", { position: "top-right" });
-            closeLoader(() => {
-                callback?.();
-            })
-            dispatch(setProcessPhasesWithConditions(processId, null))
+            closeLoader(callback);
+            dispatch(setProcessPhasesWithConditions(processId, null));
             dispatch(selectCondition(null));
             dispatch(selectProcess(null));
             dispatch(getPhasesAndStagesOfCondition(task.id_cond));

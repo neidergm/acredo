@@ -9,7 +9,6 @@ import CustomDropdown from '../CustomDropdown'
 import { Modal, ModalHeader, ModalBody, T_ModalJSON, closeModal, ModalFooter } from '../Modal';
 import Form from 'react-ngm-form';
 import eventForm from '../../forms/event.form';
-import Loader from '../Loader';
 import { I_JSONObject } from '../../interfaces/generic.interface';
 import { AXIOS_REQUEST } from '../../services/axiosService';
 import { DELETE_PROGRAM_EVENT, SAVE_PROGRAM_EVENT } from '../../services/endPointsService';
@@ -33,8 +32,7 @@ const ProgramEvents = ({ events, limit, program_id, callback, children, canEdit 
 
     const { alertData, openAlert } = useAlert();
 
-    // const { loading, closeLoader, openLoader } = useLoader()
-const { closeLoader, openLoader } = useLoader()
+    const { closeLoader, openLoader } = useLoader()
 
     const deleteEvent = (event: I_ProgramEvent) => {
         openAlert({
@@ -98,8 +96,8 @@ const { closeLoader, openLoader } = useLoader()
             data.reco_evento = data.reco_evento.map(({ days }: { days: number }) => days)
             AXIOS_REQUEST(SAVE_PROGRAM_EVENT, type, jsonToFormData({ ...data, id_prog: program_id }, "[0]."))
                 .then(res => {
-                    closeModal(setModal)
                     toast.success(`Evento ${data.id_evento ? "actualizado" : "registrado"} correctamente`, { position: "top-right" });
+                    closeModal(setModal)
                     closeLoader(() => callback?.(true))
                 })
                 .catch(err => {
@@ -112,8 +110,7 @@ const { closeLoader, openLoader } = useLoader()
     return (<>
 
         <Alert {...alertData} />
-        {/* <Loader {...loading} /> */}
-        <Modal isOpen={modal?.isOpen} size={modal?.size}>
+        <Modal isOpen={modal?.isOpen} size={modal?.size} onClosed={modal?.onClosed}>
             <ModalHeader textCenter toggle={() => closeModal(setModal)}>{modal?.title}</ModalHeader>
             <ModalBody>{modal?.children}</ModalBody>
             {modal?.footer}

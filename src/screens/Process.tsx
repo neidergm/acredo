@@ -36,7 +36,6 @@ const Process = () => {
 
   const { alertData, openAlert, closeAlert } = useAlert()
   const { loading, closeLoader, openLoader } = useLoader()
-
   const is_admin = !isSupervisor(userInfo?.rol) && isAdmin(userInfo?.rol)
 
   const goToConditionsScreen = (process: I_Process) => {
@@ -112,8 +111,8 @@ const Process = () => {
   const deleteProcess = (process: I_Process) => {
     openLoader("Eliminando proceso")
     AXIOS_REQUEST(DELETE_PROCESS + process.id_conv, "DELETE").then(r => {
-      dispatch(getProcessList())
-      closeLoader()
+      openLoader("Actualizando listado", null)
+      dispatch(getProcessList()).then(() => { closeModal(setModal) })
       toast.success("Se ha eliminado el proceso correctamente", { position: "top-right" })
     }).catch(() => {
       closeLoader()
@@ -135,21 +134,17 @@ const Process = () => {
       children: "Se modificarán datos en el proceso",
       submitButton: {
         value: "Si, modificar", onClick: () => {
-          openLoader("Modificando proceso");
-
-          const d = jsonToFormData({ id_conv: process.id_conv, ...data });
-          AXIOS_REQUEST(UPDATE_PROCESS, "PUT", d)
-            .then(r => {
-              dispatch(getProcessList())
-              closeLoader(() => {
-                closeModal(setModal);
-              });
+          openLoader("Modificando proceso", () => {
+            const d = jsonToFormData({ id_conv: process.id_conv, ...data });
+            AXIOS_REQUEST(UPDATE_PROCESS, "PUT", d).then(r => {
               toast.success("Se ha modificado el proceso correctamente", { position: "top-right" })
+              openLoader("Actualizando listado", null)
+              dispatch(getProcessList()).then(() => { closeModal(setModal) })
             }).catch(() => {
               closeLoader();
               toast.error("No se pudo modificar el proceso", { position: "top-right" })
             })
-          // .finally(() => setLoading(null))
+          });
         }
       },
       closeButton: { value: "No, cancelar" }
@@ -163,21 +158,19 @@ const Process = () => {
       children: "Se creará un nuevo proceso con los datos indicados",
       submitButton: {
         value: "Si, crear", onClick: () => {
-          openLoader("Creando proceso");
+          openLoader("Creando proceso", () => {
+            const d = jsonToFormData(data);
 
-          const d = jsonToFormData(data);
-
-          AXIOS_REQUEST(CREATE_PROCESS, "POST", d)
-            .then(r => {
-              dispatch(getProcessList())
-              closeLoader(() => {
-                closeModal(setModal);
+            AXIOS_REQUEST(CREATE_PROCESS, "POST", d)
+              .then(r => {
+                toast.success("Se ha creado el proceso correctamente", { position: "top-right" })
+                openLoader("Actualizando listado", null)
+                dispatch(getProcessList()).then(() => { closeModal(setModal) })
+              }).catch(() => {
+                closeLoader()
+                toast.error("No se pudo crear el proceso", { position: "top-right" })
               })
-              toast.success("Se ha creado el proceso correctamente", { position: "top-right" })
-            }).catch(() => {
-              closeLoader()
-              toast.error("No se pudo crear el proceso", { position: "top-right" })
-            })
+          })
         }
       },
       closeButton: { value: "No, cancelar" }
@@ -188,8 +181,8 @@ const Process = () => {
     if (!(processList?.length) && !hasLoaded.current) {
       hasLoaded.current = true;
       dispatch(getProcessList())
-    } else if (!!processList?.length && !!hasLoaded.current && loading) {
-      closeLoader()
+    } else if (!!processList?.length && !!hasLoaded.current && loading.isOpen) {
+      closeLoader();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [processList])
@@ -208,7 +201,7 @@ const Process = () => {
       <Modal backdrop="static"
         size={modal?.size}
         isOpen={!!(modal?.isOpen)}
-        onClosed={() => { setModal(null) }}
+        onClosed={() => { modal?.onClosed?.() }}
         toggle={() => closeModal(setModal)}
       >
         <ModalHeader textCenter toggle={() => closeModal(setModal)}>{modal?.title}</ModalHeader>

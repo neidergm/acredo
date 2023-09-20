@@ -88,7 +88,7 @@ const { closeLoader, openLoader } = useLoader()
 
             AXIOS_REQUEST(SAVE_PROGRAM_DATA, "POST", jsonToFormData(data, "[0].")).then(resp => {
                 toast.success("Programa registrado correctamente", { position: 'top-right' });
-                (getPrograms() as any).then(() => {
+                getPrograms().then(() => {
                     closeModal(setModal);
                     closeLoader()
                 })

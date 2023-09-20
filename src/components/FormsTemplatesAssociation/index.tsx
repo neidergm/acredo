@@ -8,7 +8,6 @@ import { toast } from 'react-hot-toast';
 import { ExclamationCircleFill } from '../Icons';
 import Alert from '../Alert';
 import Loader from '../Loader';
-import { closeModal } from '../Modal';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { getContionData } from '../../store/actions/conditionsActions';
 import styles from './styles.module.css';
@@ -28,8 +27,7 @@ const FormsTemplatesAssociaton = ({
 }: T_Props) => {
     const [templatesList, setTemplatesList] = useState<{ [cat: string]: T_Template[] }>({});
     const [categoriesList, setCategoriesList] = useState<T_TemplateCategories[] | null>(null);
-    // const { loading, closeLoader, openLoader } = useLoader()
-const { closeLoader, openLoader } = useLoader();
+    const { closeLoader, openLoader } = useLoader();
 
     const { alertData, openAlert } = useAlert();
 
@@ -102,9 +100,9 @@ const { closeLoader, openLoader } = useLoader();
         const data = jsonToFormData({ form_cond: idsTemplates.join(","), id_cond: taskId });
         openLoader("Asociando plantillas");
         AXIOS_REQUEST(ASOCIATE_FORM_TO_TASK, "PUT", data).then(async (resp) => {
-            openLoader("Espere")
             toast.success("Formularios asociados correctamente", { position: "top-right" });
-            return (dispatch(getContionData(Number(taskId!))) as any).then(() => {
+            openLoader("Espere", null)
+            return dispatch(getContionData(Number(taskId!))).then(() => {
                 setSelectedList({})
                 setAcccordionOpen([])
                 closeLoader(toggle)

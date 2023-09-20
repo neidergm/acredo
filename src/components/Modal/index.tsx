@@ -24,7 +24,7 @@ export const closeModal = (
     onClosedCallback?: () => any
 ) => {
     return setStateCallback((currentState: T_ModalJSON) => {
-        const extra = {onClosed: onClosedCallback || currentState.onClosed}
+        const extra = {onClosed: onClosedCallback || currentState?.onClosed}
         if (!(extra.onClosed)) delete extra.onClosed;
 
         return { ...currentState, isOpen: false, ...extra }
@@ -47,6 +47,8 @@ export const Modal = ({ toggle, className, fullscreen = "sm", ...props }: ModalH
         fullscreen={fullscreen}
         keyboard={false}
         centered
+        modalTransition={{ timeout: 100 }}
+        backdropTransition={{ timeout: 50 }}
         {...props}
         toggle={toggle ? (() => toggle()) : undefined}
     />

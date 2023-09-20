@@ -9,7 +9,6 @@ import ObservationChat from '../ObservationChat'
 import toast from 'react-hot-toast';
 import CustomDropdown from '../CustomDropdown'
 import { Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON, closeModal } from '../Modal'
-import Loader from '../Loader'
 import Ordering from './Ordering'
 import { AXIOS_REQUEST } from '../../services/axiosService'
 import { ORDERING_ANSWERS } from '../../services/endPointsService'
@@ -48,8 +47,7 @@ const AttachmentsTable = ({
     const [mapedList, setMapedList] = useState<Array<T_MapedItemList>>([]);
     const orderRef = useRef<typeof mapedList>([]);
     const [modal, setModal] = useState<null | T_ModalJSON>(null)
-    // const { loading, closeLoader, openLoader } = useLoader()
-const { closeLoader, openLoader } = useLoader();
+    const { closeLoader, openLoader } = useLoader();
 
     const [observationsIsOpen, setObservationsIsOpen] = useState<{
         item: T_Form,
@@ -179,7 +177,7 @@ const { closeLoader, openLoader } = useLoader();
                         closeButton: { value: "No, cancelar" },
                         submitButton: {
                             value: "Sí, guardar",
-                            onClick: () => saveNewOrder()
+                            onClick: saveNewOrder
                         }
                     })
                 }}>Guardar</Button>
@@ -195,8 +193,7 @@ const { closeLoader, openLoader } = useLoader();
             id_fcamp: o[0].attachment.id_fcamp
         })
 
-        openLoader("Modificando orden");
-
+        openLoader("Modificando orden")
         AXIOS_REQUEST(ORDERING_ANSWERS, "PUT", d).then(r => {
             toast.success("Orden actualizado", { position: "top-right" })
             setMapedList([]);
@@ -208,7 +205,6 @@ const { closeLoader, openLoader } = useLoader();
             closeLoader()
             toast.error("No se pudo actualizar el orden", { position: "top-right" })
         })
-
     }
 
     const mapList = (l: typeof list) => {

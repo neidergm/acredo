@@ -75,6 +75,8 @@ const Alert = ({
     <Modal
       backdrop="static"
       fullscreen={fullscreen || false}
+      modalTransition={{ timeout: 100 }}
+      backdropTransition={{ timeout: 100 }}
       {...props}
     >
       <ModalHeader className='border-0 pb-0 flex-column-reverse'

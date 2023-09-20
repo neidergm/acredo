@@ -6,13 +6,13 @@ import { Accordion, AccordionBody, AccordionHeader, AccordionItem, Badge, Button
 import Loader from "../../components/Loader";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
-import { selectCondition, getPhasesWithConditions, setProcessPhasesWithConditions } from "../../store/actions/conditionsActions";
+import { selectCondition, getPhasesWithConditions } from "../../store/actions/conditionsActions";
 import CircleProgress from "../../components/CircleProgress";
 import { getProcessList } from "../../store/actions/processActions";
 import Card from "../../components/Card";
 import classnames from 'classnames';
 import { getDateDiff, getNormalDate } from "../../utils/dateUtils";
-import { Clip, Edit, ExclamationCircleFill, LinkIcon, PauseFill, Plus, Printer, ThreeDotsVertical, XCircle } from "../../components/Icons";
+import { Clip, Edit, ExclamationCircleFill, Folder2Open, LinkIcon, PauseFill, Plus, Printer, ThreeDotsVertical, XCircle } from "../../components/Icons";
 import styles from './../Process.module.css';
 import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } from "../../components/Modal";
 import AllAttachments from "../../components/AttachmentsTable/AllAttachments";
@@ -151,10 +151,7 @@ const Conditions = () => {
 
     AXIOS_REQUEST(SAVE_PHASE, "POST", d).then(r => {
       toast.success("Se ha creado la fase correctamente", { position: "top-right" });
-      closeLoader(() => {
-        closeModal(setModal);
-      });
-      dispatch(setProcessPhasesWithConditions(Number(id_process), null))
+      refreshData()
     }).catch(e => {
       closeLoader();
       toast.error("No se pudo crear la fase", { position: "top-right" });
@@ -176,10 +173,8 @@ const Conditions = () => {
 
     AXIOS_REQUEST(SAVE_TASK, "POST", d).then(r => {
       toast.success("Se ha creado la tarea correctamente", { position: "top-right" });
-      dispatch(setProcessPhasesWithConditions(Number(id_process), null));
-      closeLoader(() => {
-        closeModal(setModal)
-      })
+      openLoader("Actualizando", null)
+      refreshData()
     }).catch(r => {
       closeLoader()
       toast.error("No se pudo crear la tarea", { position: "top-right" })
@@ -197,7 +192,7 @@ const Conditions = () => {
               AXIOS_REQUEST(DELETE_PHASE + phase.id_fase, "DELETE")
                 .then(r => {
                   toast.success("Se eliminó la fase correctamente", { position: "top-right" });
-                  dispatch(setProcessPhasesWithConditions(Number(id_process), null))
+                  refreshData()
                 }).catch(r => toast.error("No se pudo eliminar la fase", { position: "top-right" }))
                 .finally(() => closeLoader())
             })
@@ -243,38 +238,39 @@ const Conditions = () => {
 
     AXIOS_REQUEST(SAVE_PHASE, "PUT", d).then(r => {
       toast.success("Se ha modificado la fase correctamente", { position: "top-right" });
-      dispatch(setProcessPhasesWithConditions(Number(id_process), null))
-      closeLoader(() => {
-        closeModal(setModal);
-      })
+      openLoader("Actualizando", null)
+      refreshData()
     }).catch(e => {
       closeLoader()
-      toast.error("No se pudo modificar la fase", {
-        position: "top-right"
-      })
+      toast.error("No se pudo modificar la fase", { position: "top-right" })
     })
+  }
+
+  const refreshData = () => {
+    openLoader("Actualizando", null)
+    getData().then(() => {
+      closeLoader()
+      closeModal(setModal)
+    })
+  }
+
+  const getData = () => {
+    return dispatch(getProcessList(Number(id_process))).then((r) =>
+      dispatch(getPhasesWithConditions(Number(id_process))).then(() => r.payload)
+    )
   }
 
   useEffect(() => {
     if (!id_process) {
       return navigate("/")
     }
-    if (!selectedProcess) {
-      dispatch(getProcessList(Number(id_process)))
-    } else {
-      if (!(phasesWithConditions[id_process])) {
-        dispatch(getPhasesWithConditions(Number(id_process)))
-      } else {
-        if (accordionOpen[0] === "") {
-          selectItem(`${lastAccordionOpen || selectedProcess.id_fase}`);
-        } else {
-          // const element = document.getElementById(`${accordionOpen}`)
-          // !(element) ? selectItem(`${selectedProcess.id_fase}`) : element.scrollIntoView({ behavior: "smooth", block: "nearest" });
-        }
+
+    getData().then((r: any) => {
+      if (accordionOpen[0] === "") {
+        selectItem(`${lastAccordionOpen[0] === "" ? r.selected?.id_fase : lastAccordionOpen[0]}`);
       }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedProcess, phasesWithConditions]);
+    })
+  }, [])
 
   const printReport = () => {
     window.print()
@@ -306,7 +302,7 @@ const Conditions = () => {
 
       <Modal backdrop="static" size={modal?.size}
         isOpen={!!(modal?.isOpen)}
-        onClosed={() => { setModal(null) }}
+        onClosed={modal?.onClosed}
         toggle={() => closeModal(setModal)}
         fullscreen={modal?.fullscreen}
       >
@@ -315,7 +311,6 @@ const Conditions = () => {
         {modal?.footer}
       </Modal>
       <Alert {...alertData} />
-      {/* <Loader {...loading} /> */}
 
       <div className="container-xxl">
         <div className="mb-5">
@@ -400,8 +395,10 @@ const Conditions = () => {
                 </div>}
               </SubHeader>
               {
-                !phasesWithConditions[selectedProcess.id_conv].length ?
-                  <p className="text-muted">No hay fases y tareas registradas en el proceso</p>
+                !phasesWithConditions[selectedProcess.id_conv].length ? <div className=" pt-4 mt-5 opacity-50 text-muted text-center">
+                  <Folder2Open size={40} />
+                  <p className="mt-3">No hay fases y tareas registradas en el proceso</p>
+                </div>
                   :
                   <Accordion open={accordionOpen} {...{ toggle: selectItem }} >
                     {phasesWithConditions[selectedProcess.id_conv].map((phase) => {
@@ -558,33 +555,42 @@ const Conditions = () => {
                                           </small>
                                         </p> */}
                                       {item.etapa_actual ?
-                                        <div className="d-flex gap-3 gap-lg-4 text-dark opacity-50">
-                                          <p className="mb-1 d-none d-sm-block">
-                                            <small className="d-block text-secondary fw-semibold lh-1">Etapa actual:</small>
-                                            <small>{item.etapa_actual.nomb_etapa}</small>
-                                          </p>
-                                          <p className="mb-1">
-                                            <small className="d-block text-secondary fw-semibold lh-1">Acción actual:</small>
-                                            <small>{item.etapa_actual.nomb_accion}</small>
-                                          </p>
-                                          <p className="mb-1">
-                                            <small className="d-block text-secondary fw-semibold lh-1">Responsable de acción:</small>
-                                            <small>{item.etapa_actual.responsables}</small>
-                                          </p>
-                                        </div>
+                                        (item.form_cond === "" ? <div><p className="mb-1 text-danger">
+                                          <small className="d-block lh-1 fw-semibold"><ExclamationCircleFill size={16} /> La tarea se encuentra incompleta</small>
+                                          <small className="ps-3 ms-1">No tiene formularios asociados</small>
+                                        </p></div>
+                                          :
+                                          <div className="d-flex gap-3 gap-lg-4 text-dark opacity-50">
+                                            <p className="mb-1 d-none d-sm-block">
+                                              <small className="d-block text-secondary fw-semibold lh-1">Etapa actual:</small>
+                                              <small>{item.etapa_actual.nomb_etapa}</small>
+                                            </p>
+                                            <p className="mb-1">
+                                              <small className="d-block text-secondary fw-semibold lh-1">Acción actual:</small>
+                                              <small>{item.etapa_actual.nomb_accion}</small>
+                                            </p>
+                                            <p className="mb-1">
+                                              <small className="d-block text-secondary fw-semibold lh-1">Responsable de acción:</small>
+                                              <small>{item.etapa_actual.responsables}</small>
+                                            </p>
+                                          </div>)
                                         :
                                         <div>
                                           {
-                                            item.porcentaje < 100 ? (item.porcentaje > 0 ?
-                                              <p className="mb-1 text-warning">
-                                                <small className="d-block lh-1 fw-semibold"><ExclamationCircleFill size={16} /> Todas las etapas y acciones se encuentran completadas</small>
-                                                <small className="ps-3 ms-1">Esta tarea debe ser marcada como finalizada</small>
-                                              </p>
-                                              :
-                                              <p className="mb-1 text-danger">
-                                                <small className="d-block lh-1 fw-semibold"><ExclamationCircleFill size={16} /> La tarea se encuentra incompleta</small>
-                                                <small className="ps-3 ms-1">No cuenta con etapas y acciones registradas</small>
-                                              </p>
+                                            item.porcentaje < 100 ? (
+                                              item.porcentaje > 0 ?
+                                                <p className="mb-1 text-warning">
+                                                  <small className="d-block lh-1 fw-semibold"><ExclamationCircleFill size={16} /> Todas las etapas y acciones se encuentran completadas</small>
+                                                  <small className="ps-3 ms-1">Esta tarea debe ser marcada como finalizada</small>
+                                                </p>
+                                                :
+                                                <p className="mb-1 text-danger">
+                                                  <small className="d-block lh-1 fw-semibold"><ExclamationCircleFill size={16} /> La tarea se encuentra incompleta</small>
+                                                  <small className="ps-3 ms-1">No cuenta con etapas y acciones registradas</small>
+                                                  {
+                                                    item.form_cond === "" && <small className="ms-1">| No tiene formularios asociados</small>
+                                                  }
+                                                </p>
                                             )
                                               :
                                               <p className="mb-1 opacity-50">

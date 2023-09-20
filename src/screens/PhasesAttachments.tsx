@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SubHeader } from '../components/SubHeader'
 import AllAttachments from '../components/AttachmentsTable/AllAttachments'
 import { useParams } from 'react-router-dom';
@@ -6,7 +6,7 @@ import { Button } from 'reactstrap';
 import { XCircle } from '../components/Icons';
 import { AXIOS_REQUEST } from '../services/axiosService';
 import { PHASE_DETAILS } from '../services/endPointsService';
-import { T_Phase, T_PhasesWithConditions } from '../interfaces/phasesAndStages.interface';
+import { T_PhasesWithConditions } from '../interfaces/phasesAndStages.interface';
 import Loader from '../components/Loader';
 import Card from '../components/Card';
 

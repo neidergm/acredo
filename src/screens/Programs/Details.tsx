@@ -44,7 +44,7 @@ const Details = () => {
     const [modal, setModal] = useState<T_ModalJSON | null>(null)
 
     // const { loading, closeLoader, openLoader } = useLoader()
-const { closeLoader, openLoader } = useLoader()
+    const { closeLoader, openLoader } = useLoader()
 
     const { id_program } = useParams();
     const [showSidePanel, setShowSidePanel] = useState<null | { title: string; body: JSX.Element; toggler: (close: boolean) => void }>(null);
@@ -88,7 +88,7 @@ const { closeLoader, openLoader } = useLoader()
                     onClick: () => closeAlert(() => {
                         openLoader("Eliminando programa", () => {
                             AXIOS_REQUEST(`${DELETE_PROGRAM}`, "PUT", jsonToFormData({ est_prog: -1, id_prog: program?.id_prog }, "[0].")).then(async () => {
-                                dispatch((getProgramsList() as any)).then(() => {
+                                dispatch(getProgramsList()).then(() => {
                                     // dispatch(setNeedRefreshList(true))
                                     closeLoader()
                                     dispatch(selectProgram(null))
@@ -158,11 +158,11 @@ const { closeLoader, openLoader } = useLoader()
     }
 
     const saveProgramData = ({ departamento, ...data }: I_JSONObject) => {
-        openLoader("Actualizando datos", () => {
+        return openLoader("Actualizando datos", () => {
             departamento && (data.depa_prog = departamento);
             data.id_prog = program?.id_prog;
 
-            AXIOS_REQUEST(SAVE_PROGRAM_DATA, "PUT", jsonToFormData(data, "[0].")).then(resp => {
+            return AXIOS_REQUEST(SAVE_PROGRAM_DATA, "PUT", jsonToFormData(data, "[0].")).then(resp => {
                 toast.success("Datos del programa actualizados correctamente", { position: 'top-right' })
                 closeLoader(() => closeModal(setModal))
                 return getProgramInfo(true)
@@ -186,19 +186,19 @@ const { closeLoader, openLoader } = useLoader()
     }
 
     const updateResolutionCallback = (showAllInPanel = true) => {
-        openLoader("Espere", () => {
+        openLoader("Espere", () =>
             getProgramInfo(true).then((p) => {
                 showAllInPanel && showAllResolutions(true, p);
             }).finally(() => closeLoader())
-        })
+        )
     }
 
     const updateEventCallback = (showAllInPanel = true) => {
-        openLoader("Espere", () => {
+        openLoader("Espere", () =>
             getProgramInfo(true).then((p) => {
                 showAllInPanel && showAllEvents(true, p)
             }).finally(() => closeLoader())
-        })
+        )
     }
 
     const showAllResolutions = (show = true, prog = program) => {

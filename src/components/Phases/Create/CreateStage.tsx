@@ -43,7 +43,6 @@ const CreateStage = ({
 
   const { alertData, openAlert, closeAlert } = useAlert();
 
-  // const { loading, closeLoader, openLoader } = useLoader()
   const { closeLoader, openLoader } = useLoader()
 
   const updateDataOnUnmount = useRef(false)

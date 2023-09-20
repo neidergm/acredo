@@ -39,6 +39,8 @@ const Notifications = () => {
         }
     }
 
+    const printNotiContent = (content: string) => <div className={style["notification-html"]} dangerouslySetInnerHTML={{ __html: content }}></div>
+
     const markAsRead = (id_noti: number) => {
         AXIOS_REQUEST(MARK_AS_READ_NOTIFICATION, "PUT", jsonToFormData({ id_noti: id_noti })).then(r => {
             const i = list!.findIndex((i) => id_noti === i.id_noti);
@@ -53,8 +55,8 @@ const Notifications = () => {
                 r.data.map((i: I_Notification) => ({
                     ...i,
                     desc_tipo_noti: notitypes[`${i.tipo_noti}`],
-                    html_content: <div className={style["notification-html"]} dangerouslySetInnerHTML={{ __html: i.desc_noti }}></div>
-                }))
+                    // html_content: <div className={style["notification-html"]} dangerouslySetInnerHTML={{ __html: i.desc_noti }}></div>
+                }) as const)
             ))
         })
     }
@@ -119,7 +121,7 @@ const Notifications = () => {
                                 :
                                 (list.length === 0 ?
                                     <div className="w-100 d-flex flex-column justify-content-center align-items-center text-secondary text-opacity-50 gap-4" style={{ minHeight: "inherit" }}>
-                                        <h4><Bell size={40}/></h4>
+                                        <h4><Bell size={40} /></h4>
                                         <h4 className="">No hay nada para mostrar</h4>
                                     </div>
                                     :
@@ -129,6 +131,7 @@ const Notifications = () => {
                                                 list?.map(item => {
                                                     const active = selectedNotification?.id_noti === item.id_noti
                                                     const wasToday = getDateDiff(item.marc_temp) === 0;
+                                                    const content = printNotiContent(item.desc_noti);
                                                     return <ListGroupItem className={classnames(style["noti-item"], "px-1",
                                                         {
                                                             [style["noti-unread"]]: !item.est_noti,
@@ -157,7 +160,7 @@ const Notifications = () => {
                                                                         <div className="d-inline">{item.asun_noti}</div>
                                                                     </div>
                                                                     <div className="text-truncate text-secondary fw-normal mb-0 mt-2 small">
-                                                                        {item.html_content}
+                                                                        {content}
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -197,7 +200,7 @@ const Notifications = () => {
                                         </Badge>
                                     </div>
                                 </div>
-                                <div className="mt-4 pt-3">{selectedNotification.html_content}</div>
+                                <div className="mt-4 pt-3">{printNotiContent(selectedNotification.desc_noti)}</div>
                             </div>
                         </Card>
                     </div>}

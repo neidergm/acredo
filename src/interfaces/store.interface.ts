@@ -11,7 +11,7 @@ export interface I_AppAction<T = any> { type: string, payload: T }
 
 export interface I_UserState {
     userInfo: I_User | null,
-    unauthorized: string,
+    unauthorized?: string | null | false,
 }
 
 export interface I_NotificationsState {

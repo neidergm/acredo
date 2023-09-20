@@ -44,7 +44,7 @@ const App = () => {
           <Toast className='border-0 bg-danger text-white my-4 mx-auto'>
             <ToastBody className='d-flex justify-content-between'>
               <div>{user.unauthorized}</div>
-              <div><CloseButton variant='white' onClick={() => { dispatch(setUnauthorized("")) }} /></div>
+              <div><CloseButton variant='white' onClick={() => { dispatch(setUnauthorized()) }} /></div>
             </ToastBody>
           </Toast>
         </div>

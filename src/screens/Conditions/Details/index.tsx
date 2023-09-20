@@ -17,7 +17,7 @@ import FormPannel from './../FormPannel';
 import { getDifferenceBetweenData, jsonToFormData } from '../../../utils/formUtils';
 import { getProcessList } from '../../../store/actions/processActions';
 import Card from '../../../components/Card';
-import { getPhasesAndStagesOfCondition, getContionData, setProcessPhasesWithConditions, setSelectedConditionData } from '../../../store/actions/conditionsActions';
+import { getPhasesAndStagesOfCondition, getContionData, setSelectedConditionData } from '../../../store/actions/conditionsActions';
 import { isAdmin, isLead, isOnlyView, isSupervisor } from '../../../utils/userRolUtils';
 import CustomDropdown from '../../../components/CustomDropdown';
 import toast from 'react-hot-toast';
@@ -36,8 +36,7 @@ const ConditionsDetails = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { id_process, id_cond } = useParams();
-  // const { loading, closeLoader, openLoader } = useLoader()
-const { closeLoader, openLoader } = useLoader();
+  const { closeLoader, openLoader } = useLoader();
 
   const processSelected = useAppSelector(state => state.process.selected);
   const conditionSelected = useAppSelector(state => state.conditions.selected);
@@ -62,6 +61,7 @@ const { closeLoader, openLoader } = useLoader();
     const onlyView = isOnlyView(conditionSelected?.rol);
     const is_supervisor = isSupervisor(userRol);
     const is_lead = isLead(conditionSelected?.rol);
+    
     return [is_admin, !taskIsEnded && !is_supervisor && !onlyView && ((is_admin || is_lead) || !!(phases.active?.action?.finalizar))]
   }, [conditionSelected?.rol, userRol, taskIsEnded, phases.active?.action?.finalizar]);
 
@@ -134,7 +134,6 @@ const { closeLoader, openLoader } = useLoader();
 
             AXIOS_REQUEST(DELETE_TASK + conditionSelected?.id_cond, "DELETE").then(r => {
               toast.success("Se ha eliminado la tarea", { position: "top-right" });
-              dispatch(setProcessPhasesWithConditions(Number(id_process), null));
               navigate(-1);
             }).catch(e => toast.error("No se pudo eliminar la tarea", { position: "top-right" }))
               .finally(() => closeLoader())
@@ -206,15 +205,15 @@ const { closeLoader, openLoader } = useLoader();
   const onSubmitEditTask = (d: FormData) => {
     openLoader("Actualizando tarea");
 
-    AXIOS_REQUEST(UPDATE_TASK, "PUT", d).then(r => {
+    AXIOS_REQUEST(UPDATE_TASK, "PUT", d).then(async () => {
       toast.success("Se ha actualizado la tarea correctamente", { position: "top-right" });
 
-      dispatch(getContionData(Number(id_cond)))
-      dispatch(getPhasesAndStagesOfCondition(Number(id_cond)))
-      dispatch(setProcessPhasesWithConditions(Number(id_process), null));
+      await dispatch(getContionData(Number(id_cond)))
+      await dispatch(getPhasesAndStagesOfCondition(Number(id_cond)))
+      // dispatch(setProcessPhasesWithConditions(Number(id_process), null));
 
-      closeLoader(() => { closeModal(setModalData) })
-
+      closeLoader()
+      closeModal(setModalData)
     }).catch(r => {
       closeLoader()
       toast.error("No se pudo actualizar la tarea", { position: "top-right" })
@@ -258,7 +257,6 @@ const { closeLoader, openLoader } = useLoader();
       </Modal>
 
       <Alert {...alertData} />
-      {/* <Loader {...loading} /> */}
       <SubHeader
         text={conditionSelected?.nomb_cond ?
           <div className='d-flex gap-3 flex-wrap align-items-center'>
@@ -405,7 +403,7 @@ const { closeLoader, openLoader } = useLoader();
                   codCond={conditionSelected.cod_cond}
                   // canAddForms={conditionSelected.form_cond.split(",").length <= 1 &&
                   //   conditionSelected.marc_update === conditionSelected.marc_temp}
-                  canAddForms={is_admin && conditionSelected.porcentaje === 0}
+                  canAddForms={is_admin && !(conditionSelected.porcentaje)}
                 // canAddForms={conditionSelected.form_cond.split(",").length <= 1 &&
                 //   !(conditionSelected.porcentaje)}
                 />

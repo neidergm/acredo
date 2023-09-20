@@ -1,5 +1,5 @@
 import { I_AppAction, I_ConditionsState } from "../../interfaces/store.interface";
-import { SELECTED_CONDITION_DATA, SELECT_CONDITION, SET_PHASES_CONDITIONS } from "../actions/conditionsActions";
+// import { SELECTED_CONDITION_DATA, SELECT_CONDITION, SET_PHASES_CONDITIONS } from "../actions/conditionsActions";
 
 const initialState: I_ConditionsState = {
     selectedData: {},
@@ -20,23 +20,23 @@ const conditionsReducer = (state = initialState, action: I_AppAction): I_Conditi
         //             ...action.payload
         //         }
         // };
-        case SET_PHASES_CONDITIONS:
-            return {
-                ...state,
-                phasesWithConditions: { ...state.phasesWithConditions, [action.payload.id_process]: action.payload.data }
-            };
+        // case SET_PHASES_CONDITIONS:
+        //     return {
+        //         ...state,
+        //         phasesWithConditions: { ...state.phasesWithConditions, [action.payload.id_process]: action.payload.data }
+        //     };
 
-        case SELECT_CONDITION:
-            return {
-                ...state,
-                selected: action.payload,
-            };
+        // case SELECT_CONDITION:
+        //     return {
+        //         ...state,
+        //         selected: action.payload,
+        //     };
 
-        case SELECTED_CONDITION_DATA:
-            return {
-                ...state,
-                selectedData: action.payload === null ? {} : { ...state.selectedData, ...action.payload }
-            };
+        // case SELECTED_CONDITION_DATA:
+        //     return {
+        //         ...state,
+        //         selectedData: action.payload === null ? {} : { ...state.selectedData, ...action.payload }
+        //     };
 
         default:
             return state;

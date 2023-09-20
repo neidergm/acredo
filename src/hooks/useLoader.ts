@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { useAppSelector } from './useAppSelector';
 import { useAppDispatch } from './useAppDispatch';
 import { close, open } from '../store/actions/loaderActions';
@@ -6,7 +5,7 @@ import { close, open } from '../store/actions/loaderActions';
 type T_State = {
     isOpen: boolean,
     onClosed?: () => void,
-    onOpened?: () => void,
+    onOpened?: (() => void) | null,
     children?: JSX.Element | JSX.Element[] | string | null
 }
 
@@ -24,11 +23,28 @@ const useLoader = (props: T_State = { isOpen: false }, options?: T_LoaderOptions
     const dispatch = useAppDispatch()
     const loading = useAppSelector(s => s.loader)
 
-    const openLoader = (content: T_State["children"], callbackOnStartLoading?: T_State["onOpened"], options?: T_LoaderOptions) => {
-        dispatch(open({ children: content, onOpened: callbackOnStartLoading, ...options }))
-
-        // setLoading({ isOpen: true,  })
+    /**
+     * @param content 
+     * @param callbackOnStartLoading - If if null then only update if the loader is opened  
+     * @param options 
+     * @returns 
+     */
+    const openLoader = (content: T_State["children"], callbackOnStartLoading?: T_State["onOpened"] | null, options?: Omit<T_LoaderProps, "isOpen" | "onOpened">) => {
+        const opts = { ...(options || {}), onOpened: callbackOnStartLoading }
+        dispatch(open({ children: content, ...opts }))
     }
+
+    // const openLoader = (content: T_State["children"], callbackOnStartLoading?: T_State["onOpened"] | null, options?: T_LoaderOptions) => {
+
+    //     console.log(isOpen())
+
+    //     if (callbackOnStartLoading === null && !isOpen()) {
+    //         return null
+    //     }
+
+    //     const opts = { ...(options || {}), onOpened: callbackOnStartLoading || undefined }
+    //     dispatch(open({ children: content, ...opts }))
+    // }
 
     const closeLoader = (callbackOnLoaded?: T_State["onClosed"]) => {
         dispatch(close(callbackOnLoaded))

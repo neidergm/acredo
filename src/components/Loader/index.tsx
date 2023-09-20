@@ -10,7 +10,8 @@ const Loader = (p: Partial<T_Props> = { isOpen: false }) => {
     const loadingData = useAppSelector(s => s.loader)
 
     const {
-        onClosed, onOpened,
+        onClosed,
+        onOpened,
         title,
         isOpen = false,
         size,
@@ -23,13 +24,20 @@ const Loader = (p: Partial<T_Props> = { isOpen: false }) => {
 
     return (
         <Modal
+            id="loader"
+            key="loader"
             onClosed={onClosed}
-            onOpened={onOpened}
+            onOpened={onOpened || undefined}
             centered
             contentClassName='border-0 pt-2 pb-2'
             isOpen={isOpen}
             backdrop="static"
             size={size || "sm"}
+            role='alert'
+            modalTransition={{ timeout: 100 }}
+            backdropTransition={{ timeout: 100 }}
+            style={{ zIndex: 1055 }}
+        // fade={false}
         >
             {title && <ModalHeader className='justify-content-center border-0 pt-4 pb-0'>{title}</ModalHeader>}
             <ModalBody className='text-center'>
