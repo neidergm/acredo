@@ -40,7 +40,7 @@ const App = () => {
   if (!!(user.unauthorized) || !(user.userInfo)) {
     return <Suspense fallback={<FallbackComponen1 />}>
       {user.unauthorized &&
-        <div className='position-absolute w-100'>
+        <div className='position-absolute w-100' style={{ zIndex: 1 }}>
           <Toast className='border-0 bg-danger text-white my-4 mx-auto'>
             <ToastBody className='d-flex justify-content-between'>
               <div>{user.unauthorized}</div>

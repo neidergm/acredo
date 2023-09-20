@@ -29,17 +29,21 @@ export const ProcessResumeItem = ({ process, pickItem }: { process: I_Process, p
             </div>
             <div className="flex-grow-1">
                 <div className='d-flex flex-column text-secondary text-opacity-75'>
-                    <div>
-                        <b className="small">Sede: </b>
-                        <small>{process.sede}</small>
-                    </div>
-                    {!!(process.id_prog) && <div>
-                        <b className="small">Programa: </b>
+                    {process.id_tcond === 1 ? <div className="small">
+                        <b >Programa: </b>
                         <small>{process.programa}</small>
                     </div>
+                        : <div className="small">
+                            <b >Tipo: </b>
+                            <small className="text-uppercase ">{process.tipo_cond}</small>
+                        </div>
                     }
-                    {!!(process.fase_actual) && <div>
-                        <b className="small">Fase actual: </b>
+                    <div className="small">
+                        <b>Sede: </b>
+                        <small>{process.sede}</small>
+                    </div>
+                    {!!(process.fase_actual) && <div className="small">
+                        <b>Fase actual: </b>
                         <small>{process.fase_actual}</small>
                     </div>
                     }

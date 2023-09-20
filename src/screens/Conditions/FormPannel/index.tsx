@@ -11,11 +11,12 @@ import AsTabs from './AsTabs';
 import { useParams } from 'react-router-dom';
 import { formToSubmitData, getDifferenceBetweenData } from '../../../utils/formUtils';
 import toast from 'react-hot-toast';
-import { ExclamationCircleFill, Link } from '../../../components/Icons';
+import { ExclamationCircleFill, Link, XCircle } from '../../../components/Icons';
 import { Button } from 'reactstrap';
 import FormsTemplatesAssociaton from '../../../components/FormsTemplatesAssociation';
 import useLoader from '../../../hooks/useLoader';
 import useAlert from '../../../hooks/useAlert';
+import confirmDeleteAlertObject from '../../../utils/confirmDeleteAlertObject';
 
 export type T_Form = {
     fields: Array<T_FieldsTypes>;
@@ -50,7 +51,7 @@ const FormPannel = ({
     const [formList, setFormList] = useState<T_Form[] | null>(null);
     const [togglePannel, setTogglePannel] = useState(false);
 
-    const { alertData, openAlert } = useAlert();
+    const { alertData, openAlert, closeAlert } = useAlert();
 
     // const { loading, closeLoader, openLoader } = useLoader()
     const { closeLoader, openLoader } = useLoader()
@@ -215,6 +216,19 @@ const FormPannel = ({
                 setFormList([])
             })
     }
+  
+    const deleteForm = (form: T_Form) => {
+        openAlert(
+            confirmDeleteAlertObject(
+              <span>Se eliminará el formulario <b>{form.nomb_form}</b></span>,
+              {
+                onClick: () => closeAlert(() => {
+                    console.log("Bine")
+                })
+              }
+            )
+          )
+    }
 
     useEffect(() => {
         getForms()
@@ -245,10 +259,16 @@ const FormPannel = ({
             onSubmit={confirmSubmit}
             onDelete={confirmDelete}
         >
-            {!!(canAddForms) && <Button size="sm" color="primary2" onClick={toggleEditFormsPannel}>
-                <i className='me-1'><Link /></i>
-                <span>Agregar plantillas de formularios</span>
-            </Button>}
+            <div className='d-flex'>
+                {/* {!!(canAddForms) && <Button size="sm" color="link" className='link-danger' onClick={()=>deleteForm({} as T_Form)}>
+                    <i className='me-1'><XCircle /></i>
+                    <span>Eliminar formulario</span>
+                </Button>} */}
+                {!!(canAddForms) && <Button size="sm" color="primary2" className='ms-auto' onClick={toggleEditFormsPannel}>
+                    <i className='me-1'><Link /></i>
+                    <span>Agregar plantillas de formularios</span>
+                </Button>}
+            </div>
         </AsTabs>
     } else if (formList.length >= 4) {
         content = <AsList
@@ -279,7 +299,7 @@ const FormPannel = ({
             </div>
             }
         </AsList>
-    } 
+    }
     else {
         return null
     }

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { SubHeader } from "../components/SubHeader";
 import { Badge, Button, DropdownToggle } from 'reactstrap';
@@ -11,7 +11,6 @@ import CircleProgress from '../components/CircleProgress';
 import Card from '../components/Card';
 import { Edit, ExclamationCircleFill, Folder2Open, Plus, ThreeDotsVertical, XCircle } from '../components/Icons';
 import { Modal, ModalBody, ModalHeader, T_ModalJSON, closeModal, ModalFooter } from '../components/Modal';
-// import processForm from './../forms/process.form';
 import Alert from '../components/Alert';
 import { AXIOS_REQUEST } from '../services/axiosService';
 import { CREATE_PROCESS, DELETE_PROCESS, UPDATE_PROCESS } from '../services/endPointsService';
@@ -32,10 +31,9 @@ const Process = () => {
   const dispatch = useAppDispatch();
   const userInfo = useAppSelector(state => state.user.userInfo);
   const [modal, setModal] = useState<null | T_ModalJSON>(null);
-  const hasLoaded = useRef(false);
 
   const { alertData, openAlert, closeAlert } = useAlert()
-  const { loading, closeLoader, openLoader } = useLoader()
+  const { closeLoader, openLoader } = useLoader()
   const is_admin = !isSupervisor(userInfo?.rol) && isAdmin(userInfo?.rol)
 
   const goToConditionsScreen = (process: I_Process) => {
@@ -112,7 +110,7 @@ const Process = () => {
     openLoader("Eliminando proceso")
     AXIOS_REQUEST(DELETE_PROCESS + process.id_conv, "DELETE").then(r => {
       openLoader("Actualizando listado", null)
-      dispatch(getProcessList()).then(() => { closeModal(setModal) })
+      dispatch(getProcessList()).then(() => { closeModal(setModal); closeLoader() })
       toast.success("Se ha eliminado el proceso correctamente", { position: "top-right" })
     }).catch(() => {
       closeLoader()
@@ -139,7 +137,7 @@ const Process = () => {
             AXIOS_REQUEST(UPDATE_PROCESS, "PUT", d).then(r => {
               toast.success("Se ha modificado el proceso correctamente", { position: "top-right" })
               openLoader("Actualizando listado", null)
-              dispatch(getProcessList()).then(() => { closeModal(setModal) })
+              dispatch(getProcessList()).then(() => { closeModal(setModal); closeLoader() })
             }).catch(() => {
               closeLoader();
               toast.error("No se pudo modificar el proceso", { position: "top-right" })
@@ -165,7 +163,7 @@ const Process = () => {
               .then(r => {
                 toast.success("Se ha creado el proceso correctamente", { position: "top-right" })
                 openLoader("Actualizando listado", null)
-                dispatch(getProcessList()).then(() => { closeModal(setModal) })
+                dispatch(getProcessList()).then(() => { closeModal(setModal); closeLoader() })
               }).catch(() => {
                 closeLoader()
                 toast.error("No se pudo crear el proceso", { position: "top-right" })
@@ -178,14 +176,9 @@ const Process = () => {
   }
 
   useEffect(() => {
-    if (!(processList?.length) && !hasLoaded.current) {
-      hasLoaded.current = true;
-      dispatch(getProcessList())
-    } else if (!!processList?.length && !!hasLoaded.current && loading.isOpen) {
-      closeLoader();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [processList])
+    // if (!(processList?.length) && !hasLoaded.current) {
+    dispatch(getProcessList())
+  }, [])
 
   return (
     <>
