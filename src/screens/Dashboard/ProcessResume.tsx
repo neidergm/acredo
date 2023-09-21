@@ -29,7 +29,7 @@ export const ProcessResumeItem = ({ process, pickItem }: { process: I_Process, p
             </div>
             <div className="flex-grow-1">
                 <div className='d-flex flex-column text-secondary text-opacity-75'>
-                    {process.id_tcond === 1 ? <div className="small">
+                    {process.id_tcond === 2 ? <div className="small">
                         <b >Programa: </b>
                         <small>{process.programa}</small>
                     </div>

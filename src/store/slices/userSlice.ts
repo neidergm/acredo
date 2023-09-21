@@ -16,7 +16,7 @@ const name = "user";
 
 const initialState = (): I_UserState => ({
     userInfo: localStorageService.getItem("user"),
-    unauthorized: "",
+    unauthorized: false,
 })
 
 export const login = createAsyncThunk(`${name}/login`, async (credential: string, { rejectWithValue }) => {
@@ -51,9 +51,9 @@ const userSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(login.fulfilled, (state, action) => {
-            const { user } = action.payload;
+            const user  = action.payload;
             state.userInfo = user;
-            // userSlice.actions.setUserInfo(user);
+            state.unauthorized = false;
         });
         builder.addCase(login.rejected, (state) => {
             state.unauthorized = "Parece que no tiene permisos para ingresar";
