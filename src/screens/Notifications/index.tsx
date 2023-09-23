@@ -43,9 +43,14 @@ const Notifications = () => {
 
     const markAsRead = (id_noti: number) => {
         AXIOS_REQUEST(MARK_AS_READ_NOTIFICATION, "PUT", jsonToFormData({ id_noti: id_noti })).then(r => {
-            const i = list!.findIndex((i) => id_noti === i.id_noti);
-            list![i].est_noti = 1;
-            dispatch(setNotificationsList([...list!]))
+            // const _list = list!;
+            // const i = _list.findIndex((i) => id_noti === i.id_noti);
+            // _list[i].est_noti = 1;
+            // dispatch(setNotificationsList([..._list]))
+            const _list = [...list!];
+            const i = _list.findIndex((i) => id_noti === i.id_noti);
+            _list[i] = {..._list[i], est_noti: 1};
+            dispatch(setNotificationsList(_list))
         }).catch()
     }
 

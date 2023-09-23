@@ -220,7 +220,7 @@ const AttachmentsTable = ({
                 const { criterio }: any = original.find((i: any) => !!i.criterio) || {};
                 const { evidencias }: any = original.find((i: any) => !!i.evidencias) || {};
 
-                _list.push({
+                _list[item.orden_resp ? (item.orden_resp - 1) : _list.length] = {
                     item,
                     attachment,
                     criterio,
@@ -228,7 +228,7 @@ const AttachmentsTable = ({
                     nomb_anexo,
                     respuesta,
                     id: idx + 1
-                })
+                }
             }
         })
 

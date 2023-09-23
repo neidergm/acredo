@@ -24,6 +24,7 @@ export type T_Form = {
     originalFieldsObject: Array<I_FormField | I_FormFieldWithAnswer>;
     multiplesValues?: { [group: string]: T_Form } | null;
     isAttachmentsTable?: boolean;
+    orden_resp?: number;
 } & I_Form;
 
 export type T_FormPannelActions = {
@@ -144,7 +145,6 @@ const FormPannel = ({
 
         if (answers) {
             if (item.tipo_form !== 0) {
-
                 multiplesAnswers = answers.reduce((p, c) => {
                     if (c.nomb_anexo) isAttachmentsTable = true;
                     p[c.grupo_resp] = [...(p[c.grupo_resp] || []), c];
@@ -160,6 +160,7 @@ const FormPannel = ({
                         ...item,
                         ...mapFieldAndDefaultValues(multiplesAnswers[key], multiplesAnswers[key]),
                         num_obs,
+                        orden_resp: multiplesAnswers[key][0].orden_resp,
                         est_resp: 1,
                         originalFieldsObject: multiplesAnswers[key]
                     }

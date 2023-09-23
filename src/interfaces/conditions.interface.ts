@@ -89,6 +89,7 @@ export interface I_FormFieldWithAnswer extends I_FormField {
     nomb_anexo: null | string;
     usuario?: string;
     num_obs?: number;
+    orden_resp?: number;
 }
 
 // export interface I_AttachmentsAnswer extends I_FormFieldWithAnswer {
