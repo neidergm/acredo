@@ -23,7 +23,7 @@ type T_Props = {
 const FormsTemplatesAssociaton = ({
     toggle,
     open,
-    taskId
+    taskId,
 }: T_Props) => {
     const [templatesList, setTemplatesList] = useState<{ [cat: string]: T_Template[] }>({});
     const [categoriesList, setCategoriesList] = useState<T_TemplateCategories[] | null>(null);

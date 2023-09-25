@@ -3,7 +3,7 @@ import Loader from '../../../components/Loader';
 import { I_Form, I_FormField, I_FormFieldWithAnswer } from '../../../interfaces/conditions.interface';
 import { I_JSONObject, T_FieldsTypes } from '../../../interfaces/generic.interface';
 import { AXIOS_REQUEST } from '../../../services/axiosService';
-import { ANSWER_BY_FORM, DELETE_ANSWER, FORM, FORM_FIELDS, SAVE_ANSWERS } from '../../../services/endPointsService';
+import { ANSWER_BY_FORM, DELETE_ANSWER, DESASOCIATE_FORM_TO_TASK, FORM, FORM_FIELDS, SAVE_ANSWERS } from '../../../services/endPointsService';
 import { mapFieldAndDefaultValues } from '../../../utils/mapField';
 import Alert from '../../../components/Alert';
 import AsList from './AsList';
@@ -11,7 +11,7 @@ import AsTabs from './AsTabs';
 import { useParams } from 'react-router-dom';
 import { formToSubmitData, getDifferenceBetweenData } from '../../../utils/formUtils';
 import toast from 'react-hot-toast';
-import { ExclamationCircleFill, Link, XCircle } from '../../../components/Icons';
+import { ExclamationCircleFill, Link } from '../../../components/Icons';
 import { Button } from 'reactstrap';
 import FormsTemplatesAssociaton from '../../../components/FormsTemplatesAssociation';
 import useLoader from '../../../hooks/useLoader';
@@ -31,6 +31,7 @@ export type T_FormPannelActions = {
     onPickOne: (f: T_Form, onlyGetAnswer?: boolean) => Promise<T_Form>;
     onSubmit: (data: any, formItem: T_Form, callback?: () => void, onlyRefreshForm?: boolean) => void;
     onDelete?: (item: string, title?: string, subtitle?: any, callback?: () => void) => void;
+    onDeleteForm?: (item: number, subtitle: string | JSX.Element, callback?: () => void) => void;
     onObservationsDone: () => void;
 }
 
@@ -54,7 +55,6 @@ const FormPannel = ({
 
     const { alertData, openAlert, closeAlert } = useAlert();
 
-    // const { loading, closeLoader, openLoader } = useLoader()
     const { closeLoader, openLoader } = useLoader()
 
     const confirmSubmit = (data: any, formItem: T_Form, callback?: () => void) => {
@@ -64,6 +64,25 @@ const FormPannel = ({
             submitButton: { value: "Sí, guardar", onClick: () => submitAll(data, formItem, callback) },
             closeButton: { value: "No, cancelar" }
         })
+    }
+
+    const deleteFormItem = (item: number, subtitle: string | JSX.Element, callback?: () => void) => {
+        openAlert(
+            confirmDeleteAlertObject(subtitle, {
+                onClick: () => closeAlert(() => {
+                    openLoader("Eliminando formulario")
+                    return AXIOS_REQUEST(DESASOCIATE_FORM_TO_TASK + item, "DELETE").then(resp => {
+                        callback?.()
+                        setFormList(null)
+                        toast.success('Se ha eliminado el formulario correctamente', { position: "top-right" });
+                        closeLoader(getForms)
+                    }).catch(err => {
+                        closeLoader()
+                        toast.error('No se pudo eliminar el formulario', { position: "top-right" })
+                    })
+                })
+            })
+        )
     }
 
     const confirmDelete = (item: string, title = "¿Está seguro?", children: any = "", callback?: () => void) => {
@@ -210,25 +229,12 @@ const FormPannel = ({
         AXIOS_REQUEST(`${FORM_FIELDS}${fields}`).then(res => res.data)
 
     const getForms = () => {
-        !(formId) ? setFormList([]) : AXIOS_REQUEST(FORM + formId)
+        return !(formId) ? setFormList([]) : AXIOS_REQUEST(FORM + formId)
             .then(res => {
                 setFormList(res.data)
             }).catch(err => {
                 setFormList([])
             })
-    }
-  
-    const deleteForm = (form: T_Form) => {
-        openAlert(
-            confirmDeleteAlertObject(
-              <span>Se eliminará el formulario <b>{form.nomb_form}</b></span>,
-              {
-                onClick: () => closeAlert(() => {
-                    console.log("Bine")
-                })
-              }
-            )
-          )
     }
 
     useEffect(() => {
@@ -257,14 +263,11 @@ const FormPannel = ({
             id_cond={id_cond!}
             onObservationsDone={getForms}
             onPickOne={pickFormItem}
+            onDeleteForm={canAddForms ? deleteFormItem : undefined}
             onSubmit={confirmSubmit}
             onDelete={confirmDelete}
         >
             <div className='d-flex'>
-                {/* {!!(canAddForms) && <Button size="sm" color="link" className='link-danger' onClick={()=>deleteForm({} as T_Form)}>
-                    <i className='me-1'><XCircle /></i>
-                    <span>Eliminar formulario</span>
-                </Button>} */}
                 {!!(canAddForms) && <Button size="sm" color="primary2" className='ms-auto' onClick={toggleEditFormsPannel}>
                     <i className='me-1'><Link /></i>
                     <span>Agregar plantillas de formularios</span>
@@ -277,6 +280,7 @@ const FormPannel = ({
             formList={formList}
             id_cond={id_cond!}
             onObservationsDone={getForms}
+            onDeleteForm={canAddForms ? deleteFormItem : undefined}
             onPickOne={pickFormItem}
             onSubmit={confirmSubmit}
             onDelete={confirmDelete}
@@ -307,8 +311,12 @@ const FormPannel = ({
 
     return <>
         <Alert {...alertData} />
-        {/* <Loader {...loading} /> */}
-        {!!(canAddForms) && <FormsTemplatesAssociaton open={togglePannel} toggle={toggleEditFormsPannel} taskId={id_cond!} />}
+        {!!(canAddForms) && <FormsTemplatesAssociaton
+            open={togglePannel}
+            toggle={toggleEditFormsPannel}
+            taskId={id_cond!}
+        // selectedForms={`${formId}`.split(",")}
+        />}
         {content}
     </>
 }

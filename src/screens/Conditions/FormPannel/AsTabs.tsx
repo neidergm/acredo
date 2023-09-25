@@ -6,6 +6,7 @@ import { T_Form, T_FormPannelActions } from '.';
 import { T_ObservationsInFormResp } from '../../../interfaces/conditions.interface';
 import ObservationChat from '../../../components/ObservationChat';
 import FormContent from './FormContent';
+import { XCircle } from '../../../components/Icons';
 
 type T_Props = {
     canEdit: boolean,
@@ -22,6 +23,7 @@ const AsTabs = ({
     onDelete,
     onSubmit,
     children,
+    onDeleteForm,
     onObservationsDone
 }: T_Props) => {
     const [currentActiveTab, setCurrentActiveTab] = useState(0);
@@ -72,6 +74,10 @@ const AsTabs = ({
                 getFormFields();
             }
         )
+    }
+
+    const deleteForm = (item: T_Form) => {
+        onDeleteForm?.(item.id_fcamp, `El formulario "${item.nomb_form}" será eliminado de forma permanente`);
     }
 
     useEffect(() => {
@@ -174,8 +180,20 @@ const AsTabs = ({
                                             formItem={loadedItems[i]!}
                                         />
                                     }
+                                    {loadedItems[i]?.est_resp === 0 && !!(onDeleteForm) && <div className='text-end mt-4 pt-2'>
+                                        <Button
+                                            size="sm"
+                                            color="danger"
+                                            className='opacity-75'
+                                            onClick={() => { deleteForm(loadedItems[i]!) }}
+                                        >
+                                            <i className='me-1'><XCircle /></i>
+                                            <span>Eliminar este formulario</span>
+                                        </Button>
+                                    </div>}
                                 </>
                             }
+
                         </TabPane>
                     })}
                 </TabContent>

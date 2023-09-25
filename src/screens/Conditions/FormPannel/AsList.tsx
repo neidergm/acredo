@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button, Card, CardBody, CloseButton } from 'reactstrap';
-import { ChatDots, ChatDotsFill, CheckCircleFill, ExclamationCircleFill } from '../../../components/Icons';
+import { ChatDots, ChatDotsFill, CheckCircleFill, ExclamationCircleFill, XCircle } from '../../../components/Icons';
 import Loader from '../../../components/Loader';
 import classnames from 'classnames';
 import ObservationChat from '../../../components/ObservationChat';
@@ -22,10 +22,10 @@ const AsList = ({
     children,
     onPickOne,
     onSubmit,
+    onDeleteForm,
     onDelete,
     onObservationsDone
 }: T_Props) => {
-
 
     const [currentActiveTab, setCurrentActiveTab] = useState<number | null>(null);
     const [observationsIsOpen, setObservationsIsOpen] = useState<T_Form | null>(null);
@@ -36,6 +36,12 @@ const AsList = ({
     const selectItem = (item: typeof currentActiveTab, pick = true) => {
         if (item === null) return setCurrentActiveTab(null);
         setCurrentActiveTab(item);
+    }
+
+    const deleteForm = (item: T_Form) => {
+        onDeleteForm?.(item.id_fcamp, `El formulario "${item.nomb_form}" será eliminado de forma permanente`, () => {
+            selectItem(null)
+        });
     }
 
     const submit = (data: any, form: T_Form, callback?: () => void, onlyRefreshForm = false) => {
@@ -189,6 +195,12 @@ const AsList = ({
                                 />
                             }
                         </div>
+                        {selectedItem?.est_resp === 0 && !!(onDeleteForm) && !!(selectedItem.fields?.length) && <div className='text-end mt-4 pt-2'>
+                            <Button size="sm" color="danger" className='opacity-75' onClick={() => deleteForm(selectedItem)}>
+                                <i className='me-1'><XCircle /></i>
+                                <span>Eliminar este formulario</span>
+                            </Button>
+                        </div>}
                     </div>
                 </div>}
             </div>

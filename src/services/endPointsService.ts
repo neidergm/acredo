@@ -83,6 +83,12 @@ export const UPDATE_TASK = `cond`;
  */
 export const ASOCIATE_FORM_TO_TASK = `cond`;
 
+/**
+ * @method DELETE
+ * @params /id_form
+ */
+export const DESASOCIATE_FORM_TO_TASK = `form/`;
+
 
 /*---------------------------------------------*/
 // ANSWERS FORM
