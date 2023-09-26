@@ -40,7 +40,6 @@ const ConditionsDetails = () => {
 
   const processSelected = useAppSelector(state => state.process.selected);
   const conditionSelected = useAppSelector(state => state.conditions.selected);
-
   const [showAllPhases, setShowAllPhases] = useState(true);
 
   const phases = {
@@ -61,7 +60,7 @@ const ConditionsDetails = () => {
     const onlyView = isOnlyView(conditionSelected?.rol);
     const is_supervisor = isSupervisor(userRol);
     const is_lead = isLead(conditionSelected?.rol);
-    
+
     return [is_admin, !taskIsEnded && !is_supervisor && !onlyView && ((is_admin || is_lead) || !!(phases.active?.action?.finalizar))]
   }, [conditionSelected?.rol, userRol, taskIsEnded, phases.active?.action?.finalizar]);
 
@@ -114,7 +113,7 @@ const ConditionsDetails = () => {
       fullscreen: "lg",
       title: "Anexos de la fase",
       children: <>
-        <AllAttachments phaseId={processSelected.id_fase!} />
+        {phases.active?.phase?.id && <AllAttachments phaseId={phases.active.phase.id} />}
       </>,
       footer: <ModalFooter>
         <Button color='primary2' onClick={() => closeModal(setModalData)}>Cerrar</Button>

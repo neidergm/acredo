@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AXIOS_REQUEST } from '../../services/axiosService'
 import { ATTACHMENTS_BY_PHASE } from '../../services/endPointsService'
 import { T_AttachmentInPhase, T_AttachmentsOfPhases } from '../../interfaces/phasesAndStages.interface'
-import { AccordionBody, AccordionHeader, AccordionItem, DropdownToggle, Table, UncontrolledAccordion } from 'reactstrap'
+import { AccordionBody, AccordionHeader, AccordionItem, DropdownToggle, Input, Table, UncontrolledAccordion } from 'reactstrap'
 import CustomDropdown from '../CustomDropdown'
 import { toast } from 'react-hot-toast'
 import { Calendar2Event, ExclamationCircleFill, Link, People, Quote, ThreeDotsVertical } from '../Icons'
@@ -13,8 +13,12 @@ import { getNormalDate } from '../../utils/dateUtils'
 const AllAttachments = ({
     phaseId
 }: { phaseId: string | number }) => {
+    const fetchedData = useRef<T_AttachmentsOfPhases | null>(null)
 
     const [groups, setGroups] = useState<T_AttachmentsOfPhases | null>(null);
+
+    const [filter, setFilter] = useState("");
+    // const [list, setList] = useState<typeof _list>([]);
 
     const toClipboard = (text: string) => {
         navigator.clipboard.writeText(text);
@@ -31,7 +35,8 @@ const AllAttachments = ({
         }, {})
 
         try {
-            return data.ceanexo?.map((i: any, idx: number) => <tr key={`row-${nomb_anexo}-${idx}`}>
+            return data.ceanexo?.filter((a: any) => new RegExp(`${filter}`, "gi").test(`${nomb_anexo}-${data.anexo_nombre}`))
+            .map((i: any, idx: number) => <tr key={`row-${nomb_anexo}-${idx}`}>
                 {idx === 0 && <td
                     rowSpan={data.ceanexo?.length || 1}
                     // className="text-nowrap"
@@ -109,6 +114,15 @@ const AllAttachments = ({
         }
     }
 
+    const filterItems = (val: string) => {
+        const timeout = setTimeout(()=>{
+            setFilter(val)
+
+
+        }, 1500)
+
+    }
+
     useEffect(() => {
         AXIOS_REQUEST(ATTACHMENTS_BY_PHASE + phaseId).then(({ data }: { data: T_AttachmentsOfPhases }) => {
             const g = data.map((item) => {
@@ -119,6 +133,8 @@ const AllAttachments = ({
 
                 return { ...item, anexos_by_group_resp };
             })
+
+            fetchedData.current = g;
             setGroups(g);
         }).catch(() => {
             setGroups([]);
@@ -132,48 +148,57 @@ const AllAttachments = ({
         </div>
     } else if (groups.length === 0) {
         return <div className='text-muted my-5 text-center'>
-            <div className='opacity-50 mb-2'><ExclamationCircleFill size={30}/></div>
+            <div className='opacity-50 mb-2'><ExclamationCircleFill size={30} /></div>
             Sin anexos para mostrar
         </div>
     }
 
     return (
-        <div className='attach'>
-            <UncontrolledAccordion stayOpen flush defaultOpen={["0"]}>
-                {groups?.map((item, tid) =>
-                    <AccordionItem key={tid}>
-                        <div className='d-flex align-items-center justify-content-between'>
-                            <AccordionHeader targetId={`${tid}`}
-                                className="flex-grow-1 border"
-                                tag="div"
-                            >
-                                <span>
-                                    <span className="text-black fw-semibold">{item.nomb_cond}</span>
-                                </span>
-                            </AccordionHeader>
-                        </div>
-                        <AccordionBody accordionId={`${tid}`} className='bg-light  accordion-body-px-0 accordion-body-py-0'>
-                            {item.anexos.length ?
-                                <Table bordered responsive key={`TABLE-${tid}`} className='h-100'>
-                                    <thead className='small'>
-                                        <tr className="table-primary">
-                                            <th>Anexo</th>
-                                            <th>Ubicación evidencia</th>
-                                            <th>Criterios y evidencias</th>
-                                            {/* <th>Evidencia</th> */}
-                                        </tr>
-                                    </thead>
-                                    <tbody className='small'>
-                                        {Object.values(item.anexos_by_group_resp || {}).map((i, idx) => doRowByItem(i))}
-                                    </tbody>
-                                </Table>
-                                : <p>Sin anexos</p>}
-                        </AccordionBody>
-                    </AccordionItem>
-                )
-                }
-            </UncontrolledAccordion>
-        </div>
+        <>
+           <div className='text-end mb-3 row justify-content-end'>
+                <div className='col-md-6 col-lg-5 col-xl-4'>
+                    <Input placeholder='Filtrar por nombre de anexo' className='ms-auto'
+                        type='search'
+                        onChange={(e) => filterItems(e.target.value)} />
+                </div>
+            </div>
+            <div className='attach'>
+                <UncontrolledAccordion stayOpen flush defaultOpen={["0"]}>
+                    {groups?.map((item, tid) =>
+                        <AccordionItem key={tid}>
+                            <div className='d-flex align-items-center justify-content-between'>
+                                <AccordionHeader targetId={`${tid}`}
+                                    className="flex-grow-1 border"
+                                    tag="div"
+                                >
+                                    <span>
+                                        <span className="text-black fw-semibold">{item.nomb_cond}</span>
+                                    </span>
+                                </AccordionHeader>
+                            </div>
+                            <AccordionBody accordionId={`${tid}`} className='bg-light  accordion-body-px-0 accordion-body-py-0'>
+                                {item.anexos.length ?
+                                    <Table bordered responsive key={`TABLE-${tid}`} className='h-100'>
+                                        <thead className='small'>
+                                            <tr className="table-primary">
+                                                <th>Anexo</th>
+                                                <th>Ubicación evidencia</th>
+                                                <th>Criterios y evidencias</th>
+                                                {/* <th>Evidencia</th> */}
+                                            </tr>
+                                        </thead>
+                                        <tbody className='small'>
+                                            {Object.values(item.anexos_by_group_resp || {}).map((i, idx) => doRowByItem(i))}
+                                        </tbody>
+                                    </Table>
+                                    : <p>Sin anexos</p>}
+                            </AccordionBody>
+                        </AccordionItem>
+                    )
+                    }
+                </UncontrolledAccordion>
+            </div>
+        </>
     )
 }
 

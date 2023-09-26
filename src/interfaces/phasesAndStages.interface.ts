@@ -39,7 +39,7 @@ export type T_Phase = {
     stages_completed?: number;
 }
 
-export type T_ActivePhase = {
+export type T_SelectedPhase = {
     phase?: T_Phase,
     stage?: T_Stage,
     action?: T_Action

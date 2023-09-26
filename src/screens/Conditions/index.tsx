@@ -51,7 +51,6 @@ const Conditions = () => {
 
   const { alertData, closeAlert, openAlert } = useAlert()
 
-  // const { loading, closeLoader, openLoader } = useLoader()
   const { closeLoader, openLoader } = useLoader()
 
   const goToConditionDetailsScreen = (condition: I_Condition) => {

@@ -2,7 +2,7 @@ import { I_Condition } from "./conditions.interface";
 import { I_ProcessIndicators, T_ProgramsIndicators } from "./dashboard.interface";
 import { I_JSONObject } from "./generic.interface";
 import { I_Notification } from "./notification.interface";
-import { T_ActivePhase, T_Phase, T_PhasesWithConditions } from "./phasesAndStages.interface";
+import { T_SelectedPhase, T_Phase, T_PhasesWithConditions } from "./phasesAndStages.interface";
 import { I_Process } from "./process.interface";
 import { I_Program } from "./programs.interface";
 import { I_User } from "./user.interface";
@@ -34,7 +34,7 @@ export interface I_ProgramsState {
 
 export type T_SelectedConditionData = {
     phases?: T_Phase[] | null,
-    active?: T_ActivePhase | null,
+    active?: T_SelectedPhase | null,
 }
 
 export interface I_ConditionsState {
