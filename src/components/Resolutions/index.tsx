@@ -1,16 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { I_Resolutions } from '../../interfaces/programs.interface'
 import Card from '../Card'
 import classnames from 'classnames'
-import { Badge, Button, Nav, NavItem, NavLink, TabContent, TabPane, Table } from 'reactstrap'
+import { Badge, Button, Nav, NavItem, NavLink, Offcanvas, OffcanvasBody, OffcanvasHeader, TabContent, TabPane, Table } from 'reactstrap'
 import { CheckCircleFill, Edit, ExclamationCircleFill, FilePDF, Folder2Open, XCircle, XCircleFill } from '../Icons'
 import { getDateDiff, getNormalDate } from '../../utils/dateUtils'
 import { Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON, closeModal } from '../Modal'
 import Alert from '../Alert'
 import { AXIOS_REQUEST } from '../../services/axiosService'
 import { toast } from 'react-hot-toast'
-import { DELETE_PROGRAM_RESOLUTION, SAVE_PROGRAM_RESOLUTION } from '../../services/endPointsService'
-import Loader from '../Loader'
+import { DELETE_PROGRAM_RESOLUTION, GET_PROGRAM_RESOLUTIONS, SAVE_PROGRAM_RESOLUTION } from '../../services/endPointsService'
 import confirmDeleteAlertObject from '../../utils/confirmDeleteAlertObject'
 import Form from 'react-ngm-form'
 import resolutionForm from '../../forms/resolution.form'
@@ -18,25 +17,30 @@ import { I_JSONObject } from '../../interfaces/generic.interface'
 import { getDifferenceBetweenData, jsonToFormData } from '../../utils/formUtils'
 import useLoader from '../../hooks/useLoader'
 import useAlert from '../../hooks/useAlert'
+import Loader from '../Loader'
 
 type T_Props = {
-    list?: I_Resolutions[] | null,
-    actives?: I_Resolutions[] | null,
     program_id: number,
     canEdit?: boolean,
-    saveCallback?: () => void,
-    children?: (addResoFunction: () => void, updateResoFunction: () => void, hasActives: boolean) => JSX.Element,
+    saveCallback?: (needRefreshList?: boolean) => void,
+    children?: (addResoFunction: () => void,
+        updateResoFunction: () => void,
+        showAllResolutions: () => void,
+        hasActives: boolean) => JSX.Element,
 }
 
-const Resolutions = ({ list, program_id, saveCallback, canEdit = false, actives, children }: T_Props) => {
+const Resolutions = ({ program_id, saveCallback, canEdit = false, children }: T_Props) => {
 
     const [modal, setModal] = useState<T_ModalJSON | null>(null);
     const [activeTab, setActiveTab] = useState(0);
+    const [resolutions, setResolutions] = useState<null | false | I_Resolutions[]>(null);
+    const [showAll, setShowAll] = useState(false);
+
+    const actives = useMemo(() => resolutions ? resolutions.filter(e => e.estado === 1) : [], [resolutions])
 
     const { alertData, openAlert, closeAlert } = useAlert()
 
-    // const { loading, closeLoader, openLoader } = useLoader()
-const { closeLoader, openLoader } = useLoader()
+    const { closeLoader, openLoader } = useLoader();
 
     const getStatusName = (est: 0 | 1,
         expiration: string,
@@ -94,8 +98,8 @@ const { closeLoader, openLoader } = useLoader()
 
             AXIOS_REQUEST(`${DELETE_PROGRAM_RESOLUTION}`, "PUT", d).then(res => {
                 toast.success("Resolución eliminada correctamente", { position: "top-right" });
-                closeLoader(() => {
-                    saveCallback?.();
+                loadResolutions().then(() => {
+                    closeLoader(() => saveCallback?.(true))
                 })
             }).catch(e => {
                 closeLoader()
@@ -145,16 +149,17 @@ const { closeLoader, openLoader } = useLoader()
     }
 
     const saveResolutionData = (data: I_JSONObject, type: string) => {
-        openLoader(type === "PUT" ? "Actualizando resolución" : "Registrando resolución", () => {
+        openLoader(type === "PUT" ? "Modificando resolución" : "Registrando resolución", () => {
             const d = jsonToFormData(data, "resoluciones[0].");
             d.append("id_prog", `${program_id}`)
 
             AXIOS_REQUEST(SAVE_PROGRAM_RESOLUTION, type, d)
                 .then(res => {
-                    closeModal(setModal)
                     toast.success(`Resolución ${type === "PUT" ? "actualizada" : "registrada"} correctamente`, { position: "top-right" });
-                    closeLoader(() => {
-                        saveCallback?.();
+                    openLoader("Actualizando listado", null)
+                    loadResolutions().then(() => {
+                        closeModal(setModal)
+                        closeLoader(() => saveCallback?.(true))
                     })
                 })
                 .catch(err => {
@@ -164,15 +169,137 @@ const { closeLoader, openLoader } = useLoader()
         })
     }
 
+    const loadResolutions = () => {
+        return AXIOS_REQUEST(GET_PROGRAM_RESOLUTIONS + program_id).then(resp => {
+            setResolutions(resp.data)
+        }).catch(() => {
+            setResolutions(false)
+        })
+    }
+
+    const printAllResolutions = () => {
+        return resolutions && <>
+            {resolutions.map((r, idx) => <div key={r.reso_apro}>
+                {getStatusName(r.estado, r.fech_vige, (content, color) =>
+                    <Card className={`bg-${color} bg-opacity-10 shadow-none mb-3 px-2 px-lg-3 overflow-hidden`} key={idx}>
+                        <div className='d-flex gap-2 justify-content-between'>
+                            <div className='flex-grow-1 d-flex gap-1'>
+                                <div
+                                    className={`d-flex rounded-pill align-items-center pe-4 gap-2 bg-opacity-25 p-1 bg-${color || "success"}`}>
+                                    <Badge color={color || "success"} className={'bg-opacity-75 fs-6 py-1 px-2 rounded-pill'}>
+                                        <b className='fw-semibold'>{r.reso_apro}</b>
+                                    </Badge>
+                                    <div className={`text-${color} small fw-semibold ps-1`}>{content}</div>
+                                </div>
+
+                            </div>
+                            {canEdit && <><div>
+                                <Button
+                                    size="sm"
+                                    color="transparent"
+                                    className={classnames('rounded-circle p-1 d-inline-flex align-items-center')}
+                                    onClick={() => onEdit(r)}
+                                >
+                                    <Edit />
+                                </Button>
+                            </div>
+                                <div>
+                                    <Button
+                                        size="sm"
+                                        color='transparent'
+                                        className={classnames('text-danger rounded-circle p-1 d-inline-flex align-items-center')}
+                                        onClick={() => confirmDelete(r)}
+                                    >
+                                        <XCircle />
+                                    </Button>
+                                </div>
+                            </>
+                            }
+                        </div>
+                        <div className='small mt-3'>
+                            <b>Reconocimiento del ministerio: </b>{r.reco_min}
+                        </div>
+                        <div className='d-flex gap-4 mt-3 small mb-3 flex-wrap'>
+                            <div>
+                                <b className='d-block'>Fecha de resolución</b>
+                                <span>{r.fech_reso}</span>
+                            </div>
+                            <div>
+                                <b className='d-block'>Vigencia</b>
+                                <span>{r.vige_reso} año{r.vige_reso > 1 && "s"} ({r.fech_vige})</span>
+                            </div>
+                            <div>
+                                <b className='d-block'>Créditos</b>
+                                <span>{r.ncre_snies} créditos</span>
+                            </div>
+
+                        </div>
+                        <div className='small d-flex flex-column gap-2 text-secondary'>
+                            <div>
+                                <b className='fw-semibold'>Fecha de ejecución: </b>{getNormalDate(r.fech_ejec, { dateStyle: "long" })}
+                            </div>
+                            <div>
+                                <b className='fw-semibold'>Periodos: </b>
+                                <span>{r.nper_snies} periodo{r.nper_snies > 1 && "s"} | {r.peri_acad}</span>
+                            </div>
+
+                            <div>
+                                <b className='fw-semibold'>Justificación de resolución: </b>{r.just_reso || "No tiene"}
+                            </div>
+                            <div>
+                                <b className='fw-semibold'>Justificación detallada: </b>{r.jres_deta || "No tiene"}
+                            </div>
+                        </div>
+                        {/* <div className={`position-absolute text-${color}`} style={{
+                    bottom: "15%",
+                    opacity: 0.1,
+                    right: "7%",
+                    transform: "scale(6.5)"
+                }}>
+                    {icon}
+                </div> */}
+                    </Card>
+                )}
+            </div>)
+            }
+        </>
+    }
+
     useEffect(() => {
         if (actives?.length && !(actives[activeTab])) {
             setActiveTab(0)
         }
     }, [actives])
 
+    useEffect(() => { loadResolutions() }, [])
+
+    if (resolutions === false) {
+        return <>
+            <div className='p-5 text-center text-secondary opacity-50'>
+                <p className='text-secondary'><ExclamationCircleFill size={30} /></p>
+                <span>No se pudo cargar las resoluciones</span>
+            </div>
+            <div></div>
+        </>
+    } else if (resolutions === null) {
+        return <>
+            <div className='p-5 text-center'>
+                <Loader loaderAsModal={false} >
+                    <div className='small'>Consultando resoluciones</div>
+                </Loader>
+            </div>
+            <div></div>
+        </>
+    }
+
     return (
         <>
-            {/* <Loader {...loading} /> */}
+            <Offcanvas isOpen={showAll} style={{ minWidth: "40%", width: "auto" }} fade>
+                <OffcanvasHeader toggle={() => { setShowAll(false) }}>
+                    <span className='ps-3 border-start border-success border-4 py-1'>Eventos del programa</span>
+                </OffcanvasHeader>
+                <OffcanvasBody>{printAllResolutions()}</OffcanvasBody>
+            </Offcanvas>
             <Modal isOpen={modal?.isOpen} size={modal?.size}>
                 <ModalHeader textCenter toggle={() => closeModal(setModal)}>{modal?.title}</ModalHeader>
                 <ModalBody>{modal?.children}</ModalBody>
@@ -180,7 +307,7 @@ const { closeLoader, openLoader } = useLoader()
             </Modal>
             <Alert {...alertData} />
 
-            {!actives?.length && !list && <div className='text-center p-5 text-muted opacity-50'>
+            {!actives?.length && <div className='text-center p-5 text-muted opacity-50'>
                 <p><Folder2Open size={30} /></p>
                 No tiene resoluciones activas
             </div>}
@@ -266,91 +393,7 @@ const { closeLoader, openLoader } = useLoader()
                 </TabContent>
             </div>}
 
-            {list?.map((r, idx) => <div key={r.reso_apro}>
-                {getStatusName(r.estado, r.fech_vige, (content, color) =>
-                    <Card className={`bg-${color} bg-opacity-10 shadow-none mb-3 px-2 px-lg-3 overflow-hidden`} key={idx}>
-                        <div className='d-flex gap-2 justify-content-between'>
-                            <div className='flex-grow-1 d-flex gap-1'>
-                                <div
-                                    className={`d-flex rounded-pill align-items-center pe-4 gap-2 bg-opacity-25 p-1 bg-${color || "success"}`}>
-                                    <Badge color={color || "success"} className={'bg-opacity-75 fs-6 py-1 px-2 rounded-pill'}>
-                                        <b className='fw-semibold'>{r.reso_apro}</b>
-                                    </Badge>
-                                    <div className={`text-${color} small fw-semibold ps-1`}>{content}</div>
-                                </div>
-
-                            </div>
-                            {canEdit && <><div>
-                                <Button
-                                    size="sm"
-                                    color="transparent"
-                                    className={classnames('rounded-circle p-1 d-inline-flex align-items-center')}
-                                    onClick={() => onEdit(r)}
-                                >
-                                    <Edit />
-                                </Button>
-                            </div>
-                                <div>
-                                    <Button
-                                        size="sm"
-                                        color='transparent'
-                                        className={classnames('text-danger rounded-circle p-1 d-inline-flex align-items-center')}
-                                        onClick={() => confirmDelete(r)}
-                                    >
-                                        <XCircle />
-                                    </Button>
-                                </div>
-                            </>
-                            }
-                        </div>
-                        <div className='small mt-3'>
-                            <b>Reconocimiento del ministerio: </b>{r.reco_min}
-                        </div>
-                        <div className='d-flex gap-4 mt-3 small mb-3 flex-wrap'>
-                            <div>
-                                <b className='d-block'>Fecha de resolución</b>
-                                <span>{r.fech_reso}</span>
-                            </div>
-                            <div>
-                                <b className='d-block'>Vigencia</b>
-                                <span>{r.vige_reso} año{r.vige_reso > 1 && "s"} ({r.fech_vige})</span>
-                            </div>
-                            <div>
-                                <b className='d-block'>Créditos</b>
-                                <span>{r.ncre_snies} créditos</span>
-                            </div>
-
-                        </div>
-                        <div className='small d-flex flex-column gap-2 text-secondary'>
-                            <div>
-                                <b className='fw-semibold'>Fecha de ejecución: </b>{getNormalDate(r.fech_ejec, { dateStyle: "long" })}
-                            </div>
-                            <div>
-                                <b className='fw-semibold'>Periodos: </b>
-                                <span>{r.nper_snies} periodo{r.nper_snies > 1 && "s"} | {r.peri_acad}</span>
-                            </div>
-
-                            <div>
-                                <b className='fw-semibold'>Justificación de resolución: </b>{r.just_reso || "No tiene"}
-                            </div>
-                            <div>
-                                <b className='fw-semibold'>Justificación detallada: </b>{r.jres_deta || "No tiene"}
-                            </div>
-                        </div>
-                        {/* <div className={`position-absolute text-${color}`} style={{
-                            bottom: "15%",
-                            opacity: 0.1,
-                            right: "7%",
-                            transform: "scale(6.5)"
-                        }}>
-                            {icon}
-                        </div> */}
-                    </Card>
-                )}
-            </div>)
-            }
-
-            {children?.(onAdd, () => { actives && onEdit(actives[activeTab]) }, !!(actives?.length))}
+            {children?.(onAdd, () => { actives && onEdit(actives[activeTab]) }, () => setShowAll(true), !!(actives?.length))}
         </>
     )
 }

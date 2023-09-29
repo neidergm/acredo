@@ -252,15 +252,15 @@ const { closeLoader, openLoader } = useLoader()
                                                                         </>
                                                                     )
                                                                     :
-                                                                    <span className='text-warning'>Sin resoluciones</span>
+                                                                    <span className='text-warning'>Sin resoluciones activas</span>
                                                             }
                                                         </div>
                                                         <div className='text-end position-absolute end-0 pb-1 pe-1'>
-                                                            {item.eventos?.length && <Badge color='primary' className='me-1'>
-                                                                <span>{item.eventos.length} eventos</span>
+                                                            {!!(item.eventos) && <Badge color='primary' className='me-1'>
+                                                                <span>{item.eventos} eventos</span>
                                                             </Badge>}
-                                                            {item.procesos?.length && <Badge color='warning'>
-                                                                <span>{item.procesos.length} proceso</span>
+                                                            {!!(item.procesos) && <Badge color='warning'>
+                                                                <span>{item.procesos} proceso</span>
                                                             </Badge>}
                                                         </div>
                                                     </div>

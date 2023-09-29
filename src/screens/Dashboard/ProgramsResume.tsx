@@ -70,10 +70,10 @@ const ProgramsResume = () => {
           </div>
           <div>
             {!!(program.procesos) && <div>
-              <Badge color='warning'>{program.procesos.length} procesos</Badge>
+              <Badge color='warning'>{program.procesos} procesos</Badge>
             </div>}
             {!!(program.eventos) && <div>
-              <Badge color='primary'>{program.eventos.length} eventos</Badge>
+              <Badge color='primary'>{program.eventos} eventos</Badge>
             </div>}
           </div>
         </div>

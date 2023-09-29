@@ -346,6 +346,12 @@ export const DELETE_PROGRAM = `programas`;
  */
 export const GET_FACULTAD = `programas/facultades`;
 
+/**
+ * @method GET
+ * @params /id_program
+ */
+export const GET_ACTIVE_PROCESS = `programas/procesos/`;
+
 
 /*---------------------------------------------*/
 // NOTIFICATIONS
@@ -411,10 +417,23 @@ export const SAVE_PROGRAM_EVENT = `eventos`;
  */
 export const DELETE_PROGRAM_EVENT = `eventos/`;
 
+/**
+ * @method GET
+ * @params /program_id
+ */
+export const GET_PROGRAM_EVENTS = `eventos/`;
+
 
 /*---------------------------------------------*/
 // RESOLUTIONS
 /*---------------------------------------------*/
+
+/**
+ * @method GET
+ * @params /program_id
+ */
+export const GET_PROGRAM_RESOLUTIONS = `programas/resoluciones/`;
+
 
 /**
  * @method POST

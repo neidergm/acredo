@@ -52,7 +52,7 @@ export interface I_Program {
     depa_prog: string;
     est_prog: 0 | 1;
     estado: string;
-    eventos: null | I_ProgramEvent[];
+    eventos: number;
     facultad: string;
     fech_reso?: {
         fech_ven: string
@@ -67,8 +67,9 @@ export interface I_Program {
     nomb_ciud: string;
     nomb_depa: string;
     nomb_prog: string;
-    procesos: null | I_ProgramProcess[];
-    resoluciones: I_Resolutions[] | null;
+    // procesos: null | I_ProgramProcess[];
+    procesos: number;
+    resoluciones: number;
     tform_prog: string;
     titu_prog: string;
     // est_resolution: "Activa" | "Sin resolución" | "Vencida";

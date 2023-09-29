@@ -5,14 +5,12 @@ import Card from '../../components/Card';
 import { AXIOS_REQUEST } from '../../services/axiosService';
 import { DELETE_PROGRAM, GET_PROGRAMS_LIST, SAVE_PROGRAM_DATA } from '../../services/endPointsService';
 import Loader from '../../components/Loader';
-import { Button, Col, Offcanvas, OffcanvasBody, OffcanvasHeader, Row, Table } from 'reactstrap';
+import { Button, Col, Row, Table } from 'reactstrap';
 import { getNormalDate } from '../../utils/dateUtils';
-import { ArrowRightShort, Edit, ExclamationCircleFill, Kanban, Plus, XCircle } from '../../components/Icons';
+import { ArrowRightShort, Edit, ExclamationCircleFill, Plus, XCircle } from '../../components/Icons';
 import { isAdmin, isSupervisor } from '../../utils/userRolUtils';
 import { useAppSelector } from '../../hooks/useAppSelector';
-import { ProcessResumeItem } from '../Dashboard/ProcessResume';
 import ProgramEvent from '../../components/ProgramEvents';
-import Resolutions from '../../components/Resolutions';
 import { Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON, closeModal } from '../../components/Modal';
 import Alert from '../../components/Alert';
 import Form from 'react-ngm-form';
@@ -22,11 +20,12 @@ import { getDifferenceBetweenData, jsonToFormData } from '../../utils/formUtils'
 import { toast } from 'react-hot-toast';
 import confirmDeleteAlertObject from '../../utils/confirmDeleteAlertObject';
 import classnames from 'classnames';
-import { I_Process } from '../../interfaces/process.interface';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { getProgramsList, selectProgram, setNeedRefreshList } from '../../store/slices/programsSlice';
 import useLoader from '../../hooks/useLoader';
 import useAlert from '../../hooks/useAlert';
+import ActivedProcess from './ActivedProcess';
+import Resolutions from '../../components/Resolutions';
 
 const EVENT_LIMITS_SHOW = 3;
 
@@ -61,8 +60,8 @@ const Details = () => {
     }
 
     const deleteProgram = () => {
-        const hasProcess = program?.procesos?.length;
-        const hastReso = program?.resoluciones?.length;
+        const hasProcess = program?.procesos;
+        const hastReso = program?.resoluciones;
 
         if (hastReso || hasProcess) {
             let children = "El programa no puede ser eliminado ";
@@ -172,60 +171,29 @@ const Details = () => {
         })
     }
 
-    const showAllEvents = (show = true, prog = program) => {
-        if (program && show) {
-            setShowSidePanel({
-                title: "Eventos del programa",
-                body: <ProgramEvent events={prog!.eventos} program_id={prog!.id_prog} callback={updateEventCallback} canEdit={is_admin} />,
-                toggler: showAllEvents
-            })
-        } else {
-            setShowSidePanel(null)
-        }
-    }
-
-    const updateResolutionCallback = (showAllInPanel = true) => {
-        openLoader("Espere", () =>
-            getProgramInfo(true).then((p) => {
-                showAllInPanel && showAllResolutions(true, p);
-            }).finally(() => closeLoader())
-        )
-    }
-
-    const updateEventCallback = (showAllInPanel = true) => {
-        openLoader("Espere", null)
-        getProgramInfo(true).then((p) => {
-            showAllInPanel && showAllEvents(true, p)
-        }).finally(() => closeLoader())
-    }
-
-    const showAllResolutions = (show = true, prog = program) => {
-        if (prog && show) {
-            setShowSidePanel({
-                title: "Resoluciones del programa",
-                body: <Resolutions list={prog.resoluciones} program_id={prog.id_prog} canEdit={is_admin} saveCallback={updateResolutionCallback} />,
-                toggler: showAllResolutions
-            })
-        } else {
-            setShowSidePanel(null)
-        }
-    }
+    // const updateResolutionCallback = (showAllInPanel = true) => {
+    //     openLoader("Espere", () =>
+    //         getProgramInfo(true).then((p) => {
+    //             // showAllInPanel && showAllResolutions(true, p);
+    //         }).finally(() => closeLoader())
+    //     )
+    // }
 
     const showProgramUsers = (show = true) => {
         if (program && show) {
-            setShowSidePanel({
-                title: "Decanos y directores",
-                body: <div>
-                    {
-                        program.deca_dire.map((d, i) => <Card key={i} className='shadow-none bg-light mb-3'>
-                            <p className='fw-semibold'>{d.nomb_cargo}</p>
-                            <p className='mb-0'>{d.nomb_resp}</p>
-                            <span className='text-muted small'>Identificación: {d.iden_resp}</span>
-                        </Card>)
-                    }
-                </div>,
-                toggler: showAllResolutions
-            })
+            // setShowSidePanel({
+            //     title: "Decanos y directores",
+            //     body: <div>
+            //         {
+            //             program.deca_dire.map((d, i) => <Card key={i} className='shadow-none bg-light mb-3'>
+            //                 <p className='fw-semibold'>{d.nomb_cargo}</p>
+            //                 <p className='mb-0'>{d.nomb_resp}</p>
+            //                 <span className='text-muted small'>Identificación: {d.iden_resp}</span>
+            //             </Card>)
+            //         }
+            //     </div>,
+            //     toggler: showAllResolutions
+            // })
         } else {
             setShowSidePanel(null)
         }
@@ -257,18 +225,11 @@ const Details = () => {
             </Modal>
 
             <Alert {...alertData} />
-            {/* <Loader {...loading} /> */}
 
             <div className="container-fluid container-xxxl">
                 <div>
                     {!program ? <div className='p-5 mt-5'><Loader loaderAsModal={false} isOpen /></div>
                         : <>
-                            <Offcanvas isOpen={!!(showSidePanel)} style={{ minWidth: "40%", width: "auto" }} fade>
-                                <OffcanvasHeader toggle={() => { showAllEvents(false) }}>
-                                    <span className='ps-3 border-start border-success border-4 py-1'>{showSidePanel?.title}</span>
-                                </OffcanvasHeader>
-                                <OffcanvasBody>{showSidePanel?.body}</OffcanvasBody>
-                            </Offcanvas>
                             <Row>
                                 <Col lg="6" className='mb-4'>
                                     <Card className='h-100 justify-content-between'>
@@ -358,14 +319,13 @@ const Details = () => {
                                             </div>
                                         </div>
                                         <Resolutions
-                                            actives={program.resoluciones?.filter(r => r.estado === 1)}
                                             program_id={program.id_prog}
                                             canEdit={is_admin}
-                                            saveCallback={() => updateResolutionCallback(false)}>
-                                            {(add, edit, hasActives) => (
+                                            saveCallback={getProgramInfo}>
+                                            {(add, edit, showAllResolutions, hasActives) => (
                                                 <div className='flex-grow-1 mt-3 d-flex justify-content-between gap-1 align-items-end'>
                                                     <div className='d-inline-block'>
-                                                        {!!program.resoluciones?.length && <Button size='sm' color='link' onClick={() => showAllResolutions()}>
+                                                        {!!program.resoluciones && <Button size='sm' color='link' onClick={() => showAllResolutions()}>
                                                             Ver todas las resoluciones <ArrowRightShort size={16} />
                                                         </Button>}
                                                     </div>
@@ -397,17 +357,7 @@ const Details = () => {
                                             </div>
                                         </div>
                                         <div className='mt-4'>
-                                            {program.procesos ?
-                                                program.procesos.map((p, idx) => <React.Fragment key={`${p.id_conv}-${idx}`}>
-                                                    {idx !== 0 && <div className='mx-3 opacity-50'><hr className='border-secondary' /></div>}
-                                                    <ProcessResumeItem process={p as I_Process} pickItem={() => navigate(`/proceso/${p.id_conv}`)} />
-                                                </React.Fragment>)
-                                                :
-                                                <div className='p-5 text-center text-secondary opacity-50'>
-                                                    <p className='text-secondary'><Kanban size={30} /></p>
-                                                    <span>No tiene procesos en curso</span>
-                                                </div>
-                                            }
+                                            <ActivedProcess quantity={program.procesos} id_program={id_program!} />
                                         </div>
                                         {is_admin && <div className='h-100 d-flex align-items-end'>
                                             <Button size='sm' color='primary' className='ms-auto' onClick={() => navigate("/proceso")}>
@@ -428,15 +378,14 @@ const Details = () => {
                                             </div>
                                         </div>
                                         <ProgramEvent
-                                            events={program.eventos}
                                             limit={EVENT_LIMITS_SHOW}
                                             program_id={program.id_prog}
-                                            callback={() => updateEventCallback(false)}
+                                            callback={getProgramInfo}
                                             canEdit={is_admin}
                                         >
-                                            {(addEventFunction) => (
-                                                <div className='mt-3 d-flex justify-content-between gap-1'>
-                                                    {program.eventos && program.eventos.length > EVENT_LIMITS_SHOW && <Button size='sm' color='link' onClick={() => showAllEvents()}>
+                                            {(addEventFunction, showAllEvents) => (
+                                                <div className='mt-3 d-flex justify-content-between gap-1 align-items-end h-100'>
+                                                    {program.eventos > EVENT_LIMITS_SHOW && <Button size='sm' color='link' onClick={() => showAllEvents()}>
                                                         Ver todos los eventos <ArrowRightShort size={16} />
                                                     </Button>}
                                                     <Button size='sm' color='primary' className='ms-auto' onClick={() => addEventFunction()}>

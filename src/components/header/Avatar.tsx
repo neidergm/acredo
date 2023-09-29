@@ -13,7 +13,7 @@ const Avatar = () => {
         <div className='avatar'>
             <div>
                 {userInfo.picture ?
-                    <img src={userInfo.picture} />
+                    <img src={userInfo.picture} alt="User"/>
                     :
                     userInfo.mail[0]
                 }

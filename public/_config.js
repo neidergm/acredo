@@ -11,15 +11,4 @@ const _CONFIG = {
     maintenance_url: "https://axis.curn.edu.co/apiaxis/api/mantenimiento/masteru", //OPTIONAL TO VERIFY IF APP IS IN MAINTENANCE
 }
 
-window.onload = () => {
-    const script1 = document.createElement("script");
-    script1.type = "text/javascript";
-    script1.src = "https://www.googletagmanager.com/gtag/js?id=G-4MEN8QS7J1";
-    document.body.appendChild(script1)
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { window.dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', 'G-4MEN8QS7J1');
-}
-
 window._NGconfig = _CONFIG;
