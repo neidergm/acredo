@@ -33,4 +33,19 @@ const _CONFIG = {
     maintenance_url: "https://apiexample/maintenance/activau",
 }
 
+/*      
+    window.onload = () => {
+        // Add Analitycs or another function when document is loaded
+
+        const script1 = document.createElement("script");
+        script1.type = "text/javascript";
+        script1.src = "https://www.googletagmanager.com/gtag/js?id=EXAMPLE";
+        document.body.appendChild(script1)
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { window.dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'EXAMPLE');
+    }
+*/
+
 window._NGconfig = _CONFIG;

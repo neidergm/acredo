@@ -10,6 +10,8 @@ import { I_JSONObject } from '../../interfaces/generic.interface'
 import Loader from '../Loader'
 import { getNormalDate } from '../../utils/dateUtils'
 
+let timeout: any;
+
 const AllAttachments = ({
     phaseId
 }: { phaseId: string | number }) => {
@@ -36,69 +38,69 @@ const AllAttachments = ({
 
         try {
             return data.ceanexo?.filter((a: any) => new RegExp(`${filter}`, "gi").test(`${nomb_anexo}-${data.anexo_nombre}`))
-            .map((i: any, idx: number) => <tr key={`row-${nomb_anexo}-${idx}`}>
-                {idx === 0 && <td
-                    rowSpan={data.ceanexo?.length || 1}
-                    // className="text-nowrap"
-                    style={{ maxWidth: "300px" }}
-                >
-                    <div className="d-flex flex-column justify-content-between h-100">
-                        <div className='text-nowrap'>
-                            <div className='d-flex gap-1 mb-2 mt-1 align-items-start'>
-                                {!!(data.anexo) && <>
-                                    <div className='flex-grow-1 fw-semibold'>
-                                        <p className='mb-0 text-wrap'>
-                                            {nomb_anexo}-{data.anexo_nombre}
-                                        </p>
-                                    </div>
-                                </>}
-                                <CustomDropdown
-                                    options={[
-                                        {
-                                            text: "Copiar nombre",
-                                            icon: <Quote />,
-                                            click: () => toClipboard(`Anexo ${nomb_anexo}-${data.anexo_nombre}`)
-                                        },
-                                        {
-                                            text: "Copiar link",
-                                            icon: <Link />,
-                                            click: () => toClipboard(data.anexo[0].url)
+                .map((i: any, idx: number) => <tr key={`row-${nomb_anexo}-${idx}`}>
+                    {idx === 0 && <td
+                        rowSpan={data.ceanexo?.length || 1}
+                        // className="text-nowrap"
+                        style={{ maxWidth: "300px" }}
+                    >
+                        <div className="d-flex flex-column justify-content-between h-100">
+                            <div className='text-nowrap'>
+                                <div className='d-flex gap-1 mb-2 mt-1 align-items-start'>
+                                    {!!(data.anexo) && <>
+                                        <div className='flex-grow-1 fw-semibold'>
+                                            <p className='mb-0 text-wrap'>
+                                                {nomb_anexo}-{data.anexo_nombre}
+                                            </p>
+                                        </div>
+                                    </>}
+                                    <CustomDropdown
+                                        options={[
+                                            {
+                                                text: "Copiar nombre",
+                                                icon: <Quote />,
+                                                click: () => toClipboard(`Anexo ${nomb_anexo}-${data.anexo_nombre}`)
+                                            },
+                                            {
+                                                text: "Copiar link",
+                                                icon: <Link />,
+                                                click: () => toClipboard(data.anexo[0].url)
+                                            }
+                                        ]
                                         }
-                                    ]
-                                    }
-                                >
-                                    <DropdownToggle size="sm" color='link' className='text-dark p-0 position-relative'>
-                                        <ThreeDotsVertical />
-                                    </DropdownToggle>
-                                </CustomDropdown>
+                                    >
+                                        <DropdownToggle size="sm" color='link' className='text-dark p-0 position-relative'>
+                                            <ThreeDotsVertical />
+                                        </DropdownToggle>
+                                    </CustomDropdown>
+                                </div>
+                                {!!(data.anexo) &&
+                                    <p>
+                                        <a href={data.anexo[0].url} target="_blank" className="text-wrap"><small>{data.anexo[0].url}</small></a>
+                                    </p>
+                                }
                             </div>
-                            {!!(data.anexo) &&
-                                <p>
-                                    <a href={data.anexo[0].url} target="_blank" className="text-wrap"><small>{data.anexo[0].url}</small></a>
-                                </p>
-                            }
+                            <div className='text-muted'>
+                                <div>
+                                    <small><Calendar2Event size={13} /> Última modificación {getNormalDate(attachs[0].marc_update, { dateStyle: 'long' })}</small>
+                                </div>
+                                <div>
+                                    <small><People size={13} /> {attachs[0].usuario}</small>
+                                </div>
+                            </div>
                         </div>
-                        <div className='text-muted'>
-                            <div>
-                                <small><Calendar2Event size={13} /> Última modificación {getNormalDate(attachs[0].marc_update, { dateStyle: 'long' })}</small>
-                            </div>
-                            <div>
-                                <small><People size={13} /> {attachs[0].usuario}</small>
-                            </div>
+                    </td>}
+                    <td>{i.ubianexo}</td>
+                    <td>
+                        <div className='mb-2'>
+                            <b>Criterio:</b> <span>{i.criterio}</span>
                         </div>
-                    </div>
-                </td>}
-                <td>{i.ubianexo}</td>
-                <td>
-                    <div className='mb-2'>
-                        <b>Criterio:</b> <span>{i.criterio}</span>
-                    </div>
-                    <div>
-                        <b>Evidencia:</b> <span>{i.evidencias}</span>
-                    </div>
-                </td>
-                {/* <td style={{ maxWidth: "300px" }}>{i.evidencias}</td> */}
-            </tr>)
+                        <div>
+                            <b>Evidencia:</b> <span>{i.evidencias}</span>
+                        </div>
+                    </td>
+                    {/* <td style={{ maxWidth: "300px" }}>{i.evidencias}</td> */}
+                </tr>)
         } catch (error) {
             return <tr className='bg-danger bg-opacity-25'>
                 <td
@@ -115,12 +117,13 @@ const AllAttachments = ({
     }
 
     const filterItems = (val: string) => {
-        const timeout = setTimeout(()=>{
+        if (timeout) {
+            clearInterval(timeout)
+        }
+
+        timeout = setTimeout(() => {
             setFilter(val)
-
-
-        }, 1500)
-
+        }, 500)
     }
 
     useEffect(() => {
@@ -155,7 +158,7 @@ const AllAttachments = ({
 
     return (
         <>
-           <div className='text-end mb-3 row justify-content-end'>
+            <div className='text-end mb-3 row justify-content-end'>
                 <div className='col-md-6 col-lg-5 col-xl-4'>
                     <Input placeholder='Filtrar por nombre de anexo' className='ms-auto'
                         type='search'

@@ -175,7 +175,7 @@ const AsList = ({
                         )}
                     </div>
                 </div>
-                {selectedItem && <div className='col-xxl-9'>
+                {selectedItem && <div className='col-xxl-9 d-flex flex-column justify-content-between'>
                     <div className='pt-0 px-0 ps-2'>
                         <div className='float-end'>
                             <CloseButton onClick={() => selectItem(null)} className="ms-3" />
@@ -195,13 +195,15 @@ const AsList = ({
                                 />
                             }
                         </div>
-                        {selectedItem?.est_resp === 0 && !!(onDeleteForm) && !!(selectedItem.fields?.length) && <div className='text-end mt-4 pt-2'>
-                            <Button size="sm" color="danger" className='opacity-75' onClick={() => deleteForm(selectedItem)}>
-                                <i className='me-1'><XCircle /></i>
-                                <span>Eliminar este formulario</span>
-                            </Button>
-                        </div>}
                     </div>
+                    {selectedItem?.est_resp === 0 && !!(onDeleteForm) && !!(selectedItem.fields?.length) && <div className='text-end mt-4 pt-2'>
+                        <Button size="sm" color="danger" outline className='opacity-75'
+                            onClick={() => deleteForm(selectedItem)}
+                        >
+                            <i className='me-1'><XCircle size={16}/></i>
+                            <span>Eliminar este formulario</span>
+                        </Button>
+                    </div>}
                 </div>}
             </div>
         </>

@@ -5,7 +5,13 @@ import { CHARGE, CONDITIONS_TYPES, RESPONSIBLES_BY_CHARGE, ROLS } from "../servi
 import mapField from "../utils/mapField";
 
 // export const taskForm = (showGoogleDocField = true, showConditionTypeField = true): T_FieldsTypes[] => {
+
+let fetchedCharge: any;
+const fetchedUsers: any = {};
+let fetchedRole: any;
+
 export const taskForm = (showConditionTypeField = true, process_type?: number): T_FieldsTypes[] => {
+
     const f: T_FieldsTypes[] = [
         {
             "name": "nomb_cond",
@@ -87,11 +93,18 @@ export const taskForm = (showConditionTypeField = true, process_type?: number): 
                     params: {},
                     url: CHARGE
                 },
-                doRequest: ({ method, params, url }) => {
-                    return AXIOS_REQUEST(url, method, params).then(resp => {
-                        return { options: resp.data.map((i: I_JSONObject) => ({ value: i.id_cargo, label: i.nomb_cargo })) };
-                    })
+                doRequest: async ({ method, params, url }: I_JSONObject) => {
+                    if (!fetchedCharge) {
+                        const resp = await AXIOS_REQUEST(url, method, params)
+                        fetchedCharge = { options: resp.data.map((i: I_JSONObject) => ({ value: i.id_cargo, label: i.nomb_cargo })) };
+                    }
+                    return fetchedCharge;
                 }
+                // doRequest: ({ method, params, url }) => {
+                //     return AXIOS_REQUEST(url, method, params).then(resp => {
+                //         return { options: resp.data.map((i: I_JSONObject) => ({ value: i.id_cargo, label: i.nomb_cargo })) };
+                //     })
+                // }
             },
             mapField({
                 json_campo: {
@@ -109,11 +122,19 @@ export const taskForm = (showConditionTypeField = true, process_type?: number): 
                         url: RESPONSIBLES_BY_CHARGE
                     },
                     "dependsOn": "cargo",
-                    doRequest: ({ method, params, url }: I_JSONObject) => {
-                        return AXIOS_REQUEST(url, method, params).then(resp => {
-                            return { options: resp.data.map((i: I_JSONObject) => ({ value: i.id_rc, label: i.nomb_resp })) };
-                        })
+                    doRequest: async ({ method, params, url }: I_JSONObject) => {
+                        console.log(fetchedUsers, params)
+                        if (!fetchedUsers[params]) {
+                            const resp = await AXIOS_REQUEST(url, method, params)
+                            fetchedUsers[params] = { options: resp.data.map((i: I_JSONObject) => ({ value: i.id_rc, label: i.nomb_resp })) };
+                        }
+                        return fetchedUsers[params];
                     }
+                    // doRequest: ({ method, params, url }: I_JSONObject) => {
+                    //     return AXIOS_REQUEST(url, method, params).then(resp => {
+                    //         return { options: resp.data.map((i: I_JSONObject) => ({ value: i.id_rc, label: i.nomb_resp })) };
+                    //     })
+                    // }
                 }
             } as unknown as I_FormField),
             {
@@ -130,11 +151,18 @@ export const taskForm = (showConditionTypeField = true, process_type?: number): 
                     params: {},
                     url: ROLS + '/1'
                 },
-                doRequest: ({ method, params, url }: I_JSONObject) => {
-                    return AXIOS_REQUEST(url, method, params).then(resp => {
-                        return { options: resp.data.map((i: I_JSONObject) => ({ value: i.id_rol, label: i.nomb_rol, title: i.desc_rol })) };
-                    });
+                doRequest: async ({ method, params, url }: I_JSONObject) => {
+                    if (!fetchedRole) {
+                        const resp = await AXIOS_REQUEST(url, method, params)
+                        fetchedRole = { options: resp.data.map((i: I_JSONObject) => ({ value: i.id_rol, label: i.nomb_rol, title: i.desc_rol })) }
+                    }
+                    return fetchedRole;
                 }
+                // doRequest: ({ method, params, url }: I_JSONObject) => {
+                //     return AXIOS_REQUEST(url, method, params).then(resp => {
+                //         return { options: resp.data.map((i: I_JSONObject) => ({ value: i.id_rol, label: i.nomb_rol, title: i.desc_rol })) };
+                //     });
+                // }
             }
         ]
     });
