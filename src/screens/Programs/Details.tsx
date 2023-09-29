@@ -43,7 +43,6 @@ const Details = () => {
 
     const [modal, setModal] = useState<T_ModalJSON | null>(null)
 
-    // const { loading, closeLoader, openLoader } = useLoader()
     const { closeLoader, openLoader } = useLoader()
 
     const { id_program } = useParams();
@@ -194,11 +193,10 @@ const Details = () => {
     }
 
     const updateEventCallback = (showAllInPanel = true) => {
-        openLoader("Espere", () =>
-            getProgramInfo(true).then((p) => {
-                showAllInPanel && showAllEvents(true, p)
-            }).finally(() => closeLoader())
-        )
+        openLoader("Espere", null)
+        getProgramInfo(true).then((p) => {
+            showAllInPanel && showAllEvents(true, p)
+        }).finally(() => closeLoader())
     }
 
     const showAllResolutions = (show = true, prog = program) => {
