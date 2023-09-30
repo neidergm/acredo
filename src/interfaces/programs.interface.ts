@@ -38,7 +38,7 @@ export interface I_Resolutions {
     vige_reso: number;
 }
 
-export interface I_DecaAndDirector {
+export interface I_DeanAndDirector {
     iden_resp: string,
     nomb_resp: string,
     nomb_cargo: string
@@ -48,7 +48,7 @@ export interface I_Program {
     ciud_prog: string;
     cod_prog: string;
     cod_snies: string;
-    deca_dire: I_DecaAndDirector[];
+    deca_dire: I_DeanAndDirector[];
     depa_prog: string;
     est_prog: 0 | 1;
     estado: string;

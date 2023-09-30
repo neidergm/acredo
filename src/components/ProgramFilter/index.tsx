@@ -28,10 +28,6 @@ const ProgramFilter = ({ list, updateList }: T_Props) => {
             nomb_prog: {
                 label: "Buscar por nombre",
             },
-            est_resolution: {
-                label: "Resolución",
-                isSelect: true,
-            },
             estado: {
                 label: "Estado",
                 isSelect: true,

@@ -26,6 +26,7 @@ import useLoader from '../../hooks/useLoader';
 import useAlert from '../../hooks/useAlert';
 import ActivedProcess from './ActivedProcess';
 import Resolutions from '../../components/Resolutions';
+import DeansAndDirectors from './DeansAndDirectors';
 
 const EVENT_LIMITS_SHOW = 3;
 
@@ -45,7 +46,6 @@ const Details = () => {
     const { closeLoader, openLoader } = useLoader()
 
     const { id_program } = useParams();
-    const [showSidePanel, setShowSidePanel] = useState<null | { title: string; body: JSX.Element; toggler: (close: boolean) => void }>(null);
 
     const getProgramInfo = async (refreshList = false) => {
         if (refreshList) dispatch(setNeedRefreshList(true))
@@ -171,34 +171,6 @@ const Details = () => {
         })
     }
 
-    // const updateResolutionCallback = (showAllInPanel = true) => {
-    //     openLoader("Espere", () =>
-    //         getProgramInfo(true).then((p) => {
-    //             // showAllInPanel && showAllResolutions(true, p);
-    //         }).finally(() => closeLoader())
-    //     )
-    // }
-
-    const showProgramUsers = (show = true) => {
-        if (program && show) {
-            // setShowSidePanel({
-            //     title: "Decanos y directores",
-            //     body: <div>
-            //         {
-            //             program.deca_dire.map((d, i) => <Card key={i} className='shadow-none bg-light mb-3'>
-            //                 <p className='fw-semibold'>{d.nomb_cargo}</p>
-            //                 <p className='mb-0'>{d.nomb_resp}</p>
-            //                 <span className='text-muted small'>Identificación: {d.iden_resp}</span>
-            //             </Card>)
-            //         }
-            //     </div>,
-            //     toggler: showAllResolutions
-            // })
-        } else {
-            setShowSidePanel(null)
-        }
-    }
-
     useEffect(() => {
         if (!id_program) {
             navigate(-1)
@@ -208,6 +180,7 @@ const Details = () => {
         return () => {
             if (needRefreshList) dispatch(getProgramsList())
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return (
@@ -287,9 +260,13 @@ const Details = () => {
                                         </div>
                                         <div className='d-flex justify-content-between gap-3 mt-3'>
                                             <div>
-                                                <Button size='sm' color='link' onClick={() => showProgramUsers()}>
-                                                    Decanos y directores <ArrowRightShort size={16} />
-                                                </Button>
+                                                <DeansAndDirectors list={program.deca_dire}>
+                                                    {(toggle) =>
+                                                        <Button size='sm' color='link' onClick={() => toggle()}>
+                                                            Decanos y directores <ArrowRightShort size={16} />
+                                                        </Button>
+                                                    }
+                                                </DeansAndDirectors>
                                             </div>
                                             {is_admin && <div className='d-flex gap-1'>
                                                 <div className='text-end'>

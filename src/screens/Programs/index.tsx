@@ -42,8 +42,7 @@ const Programs = () => {
 
     const { alertData, openAlert } = useAlert();
 
-    // const { loading, closeLoader, openLoader } = useLoader()
-const { closeLoader, openLoader } = useLoader()
+    const { closeLoader, openLoader } = useLoader()
 
     const newProgram = () => {
         const FORM_ID = "PROGRAM_FORM";
@@ -106,10 +105,9 @@ const { closeLoader, openLoader } = useLoader()
         navigate(`${program.id_prog}`)
     }
 
-    // useEffect(() => { setList(programsList) }, [programsList]);
-
     useEffect(() => {
         if (!programsList || needRefreshList) { getPrograms() }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return (
@@ -120,7 +118,6 @@ const { closeLoader, openLoader } = useLoader()
                 className="container-xxxl"
             />
 
-            {/* <Loader {...loading} /> */}
             <Modal isOpen={modal?.isOpen} size={modal?.size}>
                 <ModalHeader textCenter toggle={() => closeModal(setModal)}>{modal?.title}</ModalHeader>
                 <ModalBody>{modal?.children}</ModalBody>

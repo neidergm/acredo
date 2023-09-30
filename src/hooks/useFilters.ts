@@ -69,9 +69,13 @@ const useFilters = <T>(
             // p.est_resolution = p.fech_reso ? (getDateDiff(p.fech_reso, new Date()) < 0 ? "Vencida" : "Activa") : "Sin resolución";
             for (const key in f) {
                 if (f[key].isSelect) {
-                    const val = (p as never)[`${key}`];
-                    if (!f[key].options) f[key].options = [];
-                    if (val && !f[key].options?.includes(val)) f[key].options?.push(val)
+                    try {
+                        const val = (p as never)[`${key}`];
+                        if (!(f[key].options)) f[key].options = [];
+                        if (val && !(f[key].options?.includes(val))) f[key].options?.push(val)
+                    } catch (e) {
+                        f[key].options = []
+                    }
                 }
             }
         }

@@ -47,6 +47,7 @@ const programsSlice = createSlice({
         builder.addCase(getProgramsList.fulfilled, (state, action) => {
             state.list = action.payload.list;
             state.selected = action.payload.selected;
+            state.needRefreshList = false;
         });
     }
 })
