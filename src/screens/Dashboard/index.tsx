@@ -11,19 +11,19 @@ import { JournalBoomark, Kanban, People } from '../../components/Icons'
 const Menu = () => {
     return <div className='d-flex gap-2'>
         <div>
-            <Link to="proceso" className='btn btn-primary2 d-flex gap-2 align-items-center'>
+            <Link to="proceso" className='btn btn-primary2 d-flex gap-1 gap-sm-2 align-items-center flex-column flex-sm-row'>
                 <Kanban size={17} />
-                Procesos
+                <span className='d-block d-sm-inline-block'>Procesos</span>
             </Link>
         </div>
         <div>
-            <Link to="programa" className='btn btn-primary2 d-flex gap-2 align-items-center'>
+            <Link to="programa" className='btn btn-primary2 d-flex gap-1 gap-sm-2 align-items-center flex-column flex-sm-row'>
                 <JournalBoomark size={17} />
                 Programas
             </Link>
         </div>
         <div>
-            <Link to="usuarios" className='btn btn-primary2 d-flex gap-2 align-items-center'>
+            <Link to="usuarios" className='btn btn-primary2 d-flex gap-1 gap-sm-2 align-items-center flex-column flex-sm-row'>
                 <People size={17} />
                 Usuarios
             </Link>
@@ -50,8 +50,8 @@ const Dashboard = () => {
                         <Menu />
                     </div>
                     <div className='d-none d-sm-block vr d-md-none'></div>
-                    <div className='d-flex align-items-center gap-2'>
-                        <small className='small opacity-50 d-none d-md-block'>Mostrar:</small>
+                    <div className=''>
+                        <small className='small opacity-50 d-md-block mb-1'>Mostrar resumen</small>
                         <div className={classnames('d-flex align-items-center  justify-content-end', styles["toggler-container"])}>
                             <div className='bg-white p-1 rounded-3'>
                                 <Button color={tab === 1 ? 'primary2 fw-semibold' : "link"} className='rounded-3 px-3' size='sm' onClick={() => pickTab(1)}>

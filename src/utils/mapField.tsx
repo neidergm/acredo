@@ -1,4 +1,4 @@
-import { Button } from "reactstrap";
+import { Button, Input } from "reactstrap";
 import { BoxArrowUpRight } from "../components/Icons";
 import TextEditor from "../components/TextEditor";
 import { I_FormField, I_FormFieldWithAnswer } from "../interfaces/conditions.interface";
@@ -6,6 +6,7 @@ import { I_JSONObject, T_FieldsTypes } from "../interfaces/generic.interface";
 import { AXIOS_REQUEST } from "../services/axiosService";
 import { getFormItemDefaultValue } from "./formUtils";
 import EvidenceSelect from "../components/EvidenceSelect";
+import DataListAttachmentInput from "../components/DataListAttachmentInput";
 
 export const isAGoogleDocField = (type: string) => ["googledocs", "googlesheets", "googleslides"].includes(type)
 
@@ -17,11 +18,6 @@ export const isAGoogleDocField = (type: string) => ["googledocs", "googlesheets"
 const mapField = (item: I_FormField, defaultValue?: any) => {
     let field = item.json_campo;
     field.key = field.name;
-
-    // if (field.name === "evidencias" && field.dependsOn === "criterio") {
-    //     field["tag"] = "custom";
-    //     field["type"] = "select";
-    // }
 
     if (field.tag === "custom") {
         if (field.type === "ckeditor") {
@@ -74,6 +70,20 @@ const mapField = (item: I_FormField, defaultValue?: any) => {
                     </div>
                 </>
             }
+        } else if (field.type === "pick_attach_ref") {
+            console.log({ field })
+            field.render = ({ field: { ref, onChange, onBlur, value, name, ...f } }: any) => {
+                console.log({ f })
+                return <DataListAttachmentInput
+                    name={name}
+                    onChange={onChange}
+                    innerRef={ref}
+                    onBlur={onBlur}
+                    className={f.className}
+                    value={value}
+                />
+            }
+
         } else if (field.type === "select") {
             if (field.dependsOn) {
                 field.watchingCallback = (value, callback) => {

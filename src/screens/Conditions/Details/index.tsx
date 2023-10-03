@@ -230,6 +230,7 @@ const ConditionsDetails = () => {
         dispatch(getContionData(Number(id_cond)))
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [processSelected])
 
   useEffect(() => {
@@ -239,6 +240,7 @@ const ConditionsDetails = () => {
     return () => {
       dispatch(setSelectedConditionData(null))
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

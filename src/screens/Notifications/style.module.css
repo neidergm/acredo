@@ -4,6 +4,8 @@
     padding-right: 0px;
     cursor: pointer;
     border-radius: 3px;
+    padding-top: 15px;
+    padding-bottom: 15px;
 }
 
 .noti-item:not(.active) {
@@ -93,9 +95,15 @@
 .noti-item .notification-html {
     display: inline;
     opacity: 0.55;
+    text-transform: lowercase !important;
+}
+
+.noti-item .notification-html>* {
+    margin: 0px 3px;
 }
 
 .noti-item .notification-html * {
+    padding: 0px !important;
     border: none !important;
     vertical-align: inherit !important;
     color: var(--bs-secondary) !important;
@@ -109,11 +117,34 @@
     height: auto !important;
     font-style: normal !important;
     text-decoration: none !important;
-    opacity: inherit !important;
+    /* opacity: inherit !important; */
     position: inherit !important;
+    font-size: 14px !important;
 }
-.noti-item .notification-html br{
-    display :none !important;
+
+.noti-item .notification-html table tr>* {
+    padding: 0px 3px !important;
+    text-transform: lowercase;
+}
+
+.noti-item .notification-html br {
+    display: none !important;
+}
+
+@media screen and (max-width: 575px) {
+    .noti-main-container {
+        background-color: transparent !important;
+    }
+
+    .noti-main-container .noti-item {
+        background-color: transparent;
+    }
+
+    .noti-item:hover:not(.active) {
+        background-color: #ffffff;
+        border-bottom-color: transparent;
+        border-radius: 3px;
+    }
 }
 
 /* .notification-html .table>:not(caption)>*>* {

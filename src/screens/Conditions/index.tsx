@@ -345,9 +345,9 @@ const Conditions = () => {
                       <Button size="sm" color="primary2" onClick={() => showUserResume()}>
                         Ver resumen de usuarios
                       </Button>
-                      <Button size="sm" color="primary2" className="ms-2" onClick={() => printReport()}>
+                      {/* <Button size="sm" color="primary2" className="ms-2" onClick={() => printReport()}>
                         <Printer size={16} />
-                      </Button>
+                      </Button> */}
                     </>
                     }
                   </div>
@@ -561,16 +561,16 @@ const Conditions = () => {
                                           :
                                           <div className="d-flex gap-3 gap-lg-4 text-dark opacity-50">
                                             <p className="mb-1 d-none d-sm-block">
-                                              <small className="d-block text-secondary fw-semibold lh-1">Etapa actual:</small>
+                                              <small className="d-block text-secondary fw-semibold lh-1 text-nowrap">Etapa actual:</small>
                                               <small>{item.etapa_actual.nomb_etapa}</small>
                                             </p>
                                             <p className="mb-1">
-                                              <small className="d-block text-secondary fw-semibold lh-1">Acción actual:</small>
+                                              <small className="d-block text-secondary fw-semibold lh-1 text-nowrap">Acción actual:</small>
                                               <small>{item.etapa_actual.nomb_accion}</small>
                                             </p>
                                             <p className="mb-1">
-                                              <small className="d-block text-secondary fw-semibold lh-1">Responsable de acción:</small>
-                                              <small>{item.etapa_actual.responsables}</small>
+                                              <small className="d-block text-secondary fw-semibold lh-1 text-nowrap">Responsable de acción:</small>
+                                              <small className="text-break">{item.etapa_actual.responsables.replace?.(",", "; ")}</small>
                                             </p>
                                           </div>)
                                         :
