@@ -97,6 +97,23 @@ const UsersManagement = () => {
     })
   }
 
+  const editUser = (user: any, chargeIdx: number) => {
+    const formID = "EDIT_USER_FORM";
+
+    setModal({
+      isOpen: true,
+      title: 'Modificar usuario',
+      children: <>
+        Edit user form
+      </>,
+      size: "lg",
+      footer: <ModalFooter>
+        <Button color='primary2' onClick={() => closeModal(setModal)}>Cancelar</Button>
+        <Button form={formID} color='primary'>Guardar</Button>
+      </ModalFooter>
+    })
+  }
+
   const deleteCharge = async (chargeIdx: number) => {
 
     const hasUsers = usersByGroup[chargeIdx];
@@ -280,28 +297,32 @@ const UsersManagement = () => {
                     </AccordionHeader>
                     <AccordionBody accordionId={`${idx}`}>
                       {usersByGroup[idx] ? <ListGroup flush>
+                        <div className='d-flex justify-content-between mb-3 align-items-center'>
+                          <div className='small text-muted'>Activo</div>
+                          <div>
+                            {is_admin && <Button size="sm" color='primary2' onClick={() => addUser(idx)} ><Plus size={17} /> Agregar usuario</Button>}
+                          </div>
+                        </div>
                         {usersByGroup[idx].length ?
                           usersByGroup[idx].map(u => <ListGroupItem key={`u-${u.id_rc}`} className='px-0 px-md-2'>
-                            <div className='d-flex justify-content-between mb-2'>
-                              <div className='small text-muted'>Activo</div>
+                            <div className='d-flex gap-3 text-secondary align-items-center'>
                               <div>
-                                {is_admin && <Button size="sm" color='primary2' onClick={() => addUser(idx)} ><Plus size={17} /> Agregar usuario</Button>}
+                                <FormGroup switch disabled>
+                                  <Input type="switch" className='cursor-pointer' role="switch"
+                                    disabled={!is_admin}
+                                    checked={u.disponible === 0}
+                                    onChange={() => {
+                                      toggleUser(u, idx)
+                                    }} />
+                                </FormGroup>
                               </div>
-                            </div>
-                            <div className='d-flex gap-3 text-secondary'>
-                              <div className=''>
-                                <div className='d-inline-block'>
-                                  <FormGroup switch disabled>
-                                    <Input type="switch" className='cursor-pointer' role="switch"
-                                      disabled={!is_admin}
-                                      checked={u.disponible === 0}
-                                      onChange={() => {
-                                        toggleUser(u, idx)
-                                      }} />
-                                  </FormGroup>
-                                </div>
+                              <div>
+                                {u.nomb_resp} <small className='d-none d-md-inline'>({u.iden_resp})</small>
+                                <Button color='link' className='py-0 mb-1' onClick={() => editUser(u, idx)}> <Edit size={16} /></Button>
                               </div>
-                              <div>{u.nomb_resp} <small className='d-none d-md-inline'>({u.iden_resp})</small></div>
+                              <div className='ms-auto d-none d-md-block'>
+                                ROL DE USUARIO
+                              </div>
                             </div>
                           </ListGroupItem>)
                           :
