@@ -201,7 +201,7 @@ const UsersManagement = () => {
   }
 
   const getUsersByGroup = (group: number, chargeIdx: number) => {
-    return AXIOS_REQUEST(`${RESPONSIBLES_BY_CHARGE}${group}`).then(r => r.data).then(r => {
+    return AXIOS_REQUEST(`${RESPONSIBLES_BY_CHARGE}${group}`).then(r => r.data || []).then(r => {
       setUsersByGroups(i => {
         if (!i) i = [];
         i[chargeIdx] = r
@@ -297,12 +297,12 @@ const UsersManagement = () => {
                     </AccordionHeader>
                     <AccordionBody accordionId={`${idx}`}>
                       {usersByGroup[idx] ? <ListGroup flush>
-                        <div className='d-flex justify-content-between mb-3 align-items-center'>
+                        {!!usersByGroup[idx].length && <div className='d-flex justify-content-between mb-3 align-items-center'>
                           <div className='small text-muted'>Activo</div>
                           <div>
                             {is_admin && <Button size="sm" color='primary2' onClick={() => addUser(idx)} ><Plus size={17} /> Agregar usuario</Button>}
                           </div>
-                        </div>
+                        </div>}
                         {usersByGroup[idx].length ?
                           usersByGroup[idx].map(u => <ListGroupItem key={`u-${u.id_rc}`} className='px-0 px-md-2'>
                             <div className='d-flex gap-3 text-secondary align-items-center'>
