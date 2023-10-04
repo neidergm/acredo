@@ -1,0 +1,17 @@
+.container-list {
+    --bs-accordion-border-width: 0px;
+    border-radius: 10px !important;
+    overflow: hidden;
+}
+.container-list>div{
+    border-bottom: 1px solid #f3f3f3;
+}
+.container-list>div:not(:first-child).active {
+    margin-top: 15px;
+    border-radius: 10px !important;
+    overflow: hidden;
+    border: 1px solid var(--bs-accordion-active-bg)
+}
+.container-list>div:not(:last-child).active {
+    margin-bottom: 15px;
+}
