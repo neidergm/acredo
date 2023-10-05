@@ -18,7 +18,6 @@ const Login = (props: I_Props) => {
 
     const appname = "Master U";
     const [loader, setLoader] = useState<boolean>(false);
-    // const [_alert, setAlert] = useState<null | I_AlertObject>(null);
 
     const dispatch = useAppDispatch();
 
@@ -29,8 +28,8 @@ const Login = (props: I_Props) => {
         setLoader(true);
 
         const resp = await dispatch(login(credential))
-
-        if (!resp) {
+        // eslint-disable-next-line no-debugger
+        if (!resp.payload) {
             setLoader(false);
         }
     }
