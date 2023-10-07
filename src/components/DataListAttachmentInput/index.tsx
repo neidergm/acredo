@@ -29,8 +29,6 @@ const DataListInput = ({ name, onChange, onBlur, value, ...props }: T_Props) => 
         const sel = list.find(i => `${i[0]}-${i[1]}` === val);
         setSelected(sel)
 
-        console.log(sel)
-
         onChange(sel && sel[4])
     }
 

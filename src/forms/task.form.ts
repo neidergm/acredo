@@ -123,7 +123,6 @@ export const taskForm = (showConditionTypeField = true, process_type?: number): 
                     },
                     "dependsOn": "cargo",
                     doRequest: async ({ method, params, url }: I_JSONObject) => {
-                        console.log(fetchedUsers, params)
                         if (!fetchedUsers[params]) {
                             const resp = await AXIOS_REQUEST(url, method, params)
                             fetchedUsers[params] = { options: resp.data.map((i: I_JSONObject) => ({ value: i.id_rc, label: i.nomb_resp })) };

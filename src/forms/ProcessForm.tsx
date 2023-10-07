@@ -58,10 +58,11 @@ const ProcessForm = ({
             "children": [
                 {
                     name: 'id_prog',
-                    showWhenValue: (val: any) => {
-                        // if (defaultValues.id_tcond && !fetchedProcessType.current.length) { return true }
-                        return !!fetchedProcessTypeRef.current.find((i: any) => `${i.id_tcond}` === val && i.camp_prog === 1)
-                    }
+                    showWhenValue: 2
+                    // showWhenValue: (val: any) => {
+                    //     // if (defaultValues.id_tcond && !fetchedProcessType.current.length) { return true }
+                    //     return !!fetchedProcessTypeRef.current.find((i: any) => `${i.id_tcond}` === val && i.camp_prog === 1)
+                    // }
                 }
             ],
             "validations": {

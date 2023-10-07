@@ -46,7 +46,8 @@ const UsersManagement = () => {
   const { openLoader, closeLoader } = useLoader()
 
   const user = useAppSelector(s => s.user.userInfo)
-  const is_admin = isAdmin(user?.rol)
+  // const is_admin = isAdmin(user?.rol)
+  const is_admin = false
 
   const pickGroup = (idx: number) => {
     const group = (groups as T_Charge[])[idx]
