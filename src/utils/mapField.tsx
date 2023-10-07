@@ -71,9 +71,8 @@ const mapField = (item: I_FormField, defaultValue?: any) => {
                 </>
             }
         } else if (field.type === "pick_attach_ref") {
-            console.log({ field })
             field.render = ({ field: { ref, onChange, onBlur, value, name, ...f } }: any) => {
-                console.log({ f })
+                const { validations, type, tag, ...props } = f;
                 return <DataListAttachmentInput
                     name={name}
                     onChange={onChange}
@@ -81,6 +80,7 @@ const mapField = (item: I_FormField, defaultValue?: any) => {
                     onBlur={onBlur}
                     className={f.className}
                     value={value}
+                {...props}
                 />
             }
 

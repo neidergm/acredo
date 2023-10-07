@@ -11,7 +11,7 @@ import AsTabs from './AsTabs';
 import { useParams } from 'react-router-dom';
 import { formToSubmitData, getDifferenceBetweenData } from '../../../utils/formUtils';
 import toast from 'react-hot-toast';
-import { ExclamationCircleFill, Link } from '../../../components/Icons';
+import { ExclamationCircleFill, LinkIcon } from '../../../components/Icons';
 import { Button } from 'reactstrap';
 import FormsTemplatesAssociaton from '../../../components/FormsTemplatesAssociation';
 import useLoader from '../../../hooks/useLoader';
@@ -252,7 +252,7 @@ const FormPannel = ({
             <i className="text-warning mb-2"><ExclamationCircleFill size={35} /></i>
             <span className="d-block mb-5"> No hay formularios asociados para mostrar</span>
             {!!(canAddForms) && <Button size="sm" color="primary" onClick={toggleEditFormsPannel}>
-                <i className='me-1'><Link /></i>
+                <i className='me-1'><LinkIcon /></i>
                 <span>Utilizar plantillas de formularios</span>
             </Button>}
         </div>
@@ -269,7 +269,7 @@ const FormPannel = ({
         >
             <div className='d-flex'>
                 {!!(canAddForms) && <Button size="sm" color="primary2" className='ms-auto' onClick={toggleEditFormsPannel}>
-                    <i className='me-1'><Link /></i>
+                    <i className='me-1'><LinkIcon /></i>
                     <span>Agregar plantillas de formularios</span>
                 </Button>}
             </div>
@@ -297,7 +297,7 @@ const FormPannel = ({
                     </div></div>
                 <div>
                     <Button size="sm" color="primary2" onClick={toggleEditFormsPannel}>
-                        <i className='me-1'><Link /></i>
+                        <i className='me-1'><LinkIcon /></i>
                         <span>Agregar plantillas de formularios</span>
                     </Button>
                 </div>

@@ -14,11 +14,11 @@ type T_Props = {
     [x: string]: any;
 }
 
-const DataListInput = ({ name, onChange, onBlur, ...props }: T_Props) => {
+const DataListInput = ({ name, onChange, onBlur, value, ...props }: T_Props) => {
     // const selectedProcess = useAppSelector(s => s.process.selected);
     const { active } = useAppSelector(s => s.conditions.selectedData);
 
-    const [list, setList] = useState<[string, string, string, { url: string, name: string }][]>([])
+    const [list, setList] = useState<[string, string, string, { url: string, name: string }, number][]>([])
     const [selected, setSelected] = useState<typeof list[0] | false>()
 
     const onInputHandle = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,11 +28,14 @@ const DataListInput = ({ name, onChange, onBlur, ...props }: T_Props) => {
 
         const sel = list.find(i => `${i[0]}-${i[1]}` === val);
         setSelected(sel)
-        onChange(sel && val)
+
+        console.log(sel)
+
+        onChange(sel && sel[4])
     }
 
     const onBlurHandle = () => {
-        onBlur(selected && selected[2])
+        onBlur(selected && selected[4])
 
         if (!selected) {
             setSelected(false)
@@ -42,6 +45,7 @@ const DataListInput = ({ name, onChange, onBlur, ...props }: T_Props) => {
     useEffect(() => {
         !list.length && AXIOS_REQUEST(ATTACHMENTS_BY_PHASE + active?.phase?.id).then(({ data }: { data: T_AttachmentsOfPhases }) => {
             let filteredByPhase: typeof list = [];
+            let valuePosition = -1;
 
             data.forEach(phase => {
                 filteredByPhase = [
@@ -52,6 +56,12 @@ const DataListInput = ({ name, onChange, onBlur, ...props }: T_Props) => {
                             p[c.grupo_resp][0] = c.nomb_anexo;
                             p[c.grupo_resp][2] = c.grupo_resp;
                             p[c.grupo_resp][3] = c.respuesta[0];
+                            p[c.grupo_resp][4] = c.id_resp;
+
+                            if (value === c.id_resp) {
+                                valuePosition = Object.keys(p[c.grupo_resp]).findIndex(i => i === c.grupo_resp);
+                            }
+
                         } else if (c.name_campo === "anexo_nombre") {
                             p[c.grupo_resp][1] = c.respuesta
                         }
@@ -60,6 +70,9 @@ const DataListInput = ({ name, onChange, onBlur, ...props }: T_Props) => {
                 ]
             })
             setList(filteredByPhase)
+            if (value) {
+                setSelected(filteredByPhase[valuePosition])
+            }
         })
     }, [])
 

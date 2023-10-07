@@ -5,7 +5,7 @@ import { T_AttachmentInPhase, T_AttachmentsOfPhases } from '../../interfaces/pha
 import { AccordionBody, AccordionHeader, AccordionItem, DropdownToggle, Input, Table, UncontrolledAccordion } from 'reactstrap'
 import CustomDropdown from '../CustomDropdown'
 import { toast } from 'react-hot-toast'
-import { Calendar2Event, ExclamationCircleFill, Link, People, Quote, ThreeDotsVertical } from '../Icons'
+import { Calendar2Event, ExclamationCircleFill, LinkIcon, People, Quote, ThreeDotsVertical } from '../Icons'
 import { I_JSONObject } from '../../interfaces/generic.interface'
 import Loader from '../Loader'
 import { getNormalDate } from '../../utils/dateUtils'
@@ -63,7 +63,7 @@ const AllAttachments = ({
                                             },
                                             {
                                                 text: "Copiar link",
-                                                icon: <Link />,
+                                                icon: <LinkIcon />,
                                                 click: () => toClipboard(data.anexo[0].url)
                                             }
                                         ]

@@ -40,8 +40,6 @@ const FormContent = ({ canEdit, formItem, onSubmit, onDelete, onObservationsDone
     }
 
     const submit = (data: any, form = formItem) => {
-        // eslint-disable-next-line no-debugger
-        debugger
         onSubmit(
             data,
             form,

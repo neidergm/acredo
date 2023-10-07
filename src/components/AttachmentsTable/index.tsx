@@ -4,7 +4,7 @@ import { useAppSelector } from '../../hooks/useAppSelector'
 import { I_FormFieldWithAnswer } from '../../interfaces/conditions.interface'
 import { T_Form, T_FormPannelActions } from './../../screens/Conditions/FormPannel'
 import Alert from '../Alert'
-import { ChatDots, ChatDotsFill, Edit, ExclamationCircleFill, Link, Quote, ThreeDotsVertical, XCircle } from '../Icons'
+import { Anex, ChatDots, ChatDotsFill, Edit, ExclamationCircleFill, LinkIcon, Quote, ThreeDotsVertical, XCircle } from '../Icons'
 import ObservationChat from '../ObservationChat'
 import toast from 'react-hot-toast';
 import CustomDropdown from '../CustomDropdown'
@@ -14,6 +14,7 @@ import { AXIOS_REQUEST } from '../../services/axiosService'
 import { ORDERING_ANSWERS } from '../../services/endPointsService'
 import { jsonToFormData } from '../../utils/formUtils'
 import useLoader from '../../hooks/useLoader'
+import classnames from 'classnames'
 import useAlert from '../../hooks/useAlert'
 
 type T_Props = {
@@ -25,6 +26,8 @@ type T_Props = {
 
 export type T_MapedItemList = {
     item: T_Form,
+    isReference: boolean,
+    deletedReference: boolean;
     attachment: any,
     criterio: any,
     evidencias: any,
@@ -72,9 +75,9 @@ const AttachmentsTable = ({
 
     const doRowByItem = (list_item: T_MapedItemList, key: string) => {
 
-        const { item, attachment, criterio, evidencias, nomb_anexo, respuesta } = list_item;
+        const { item, attachment, criterio, evidencias, nomb_anexo, respuesta, isReference, deletedReference } = list_item;
 
-        return item.defaultValues.ceanexo.map((i: any, idx: number) => <tr key={`row-${key}-${idx}`}>
+        return item.defaultValues.ceanexo.map((i: any, idx: number) => <tr key={`row-${key}-${idx}`} className={classnames({ "table-danger": deletedReference })}>
             {idx === 0 && <td
                 rowSpan={item.defaultValues.ceanexo.length || 1}
                 className="text-nowrap"
@@ -84,7 +87,7 @@ const AttachmentsTable = ({
                     {!!(attachment) && <>
                         <div className='flex-grow-1 fw-semibold'>
                             <p className='mb-0 text-wrap'>
-                                {nomb_anexo}-{item.defaultValues.anexo_nombre}
+                                {nomb_anexo}{!isReference && `-${item.defaultValues.anexo_nombre}`}
                             </p>
                         </div>
                         {!!(item.num_obs) && <div className="cursor-pointer ms-1 badge rounded-pill bg-danger" onClick={() => showObservations({ item, attachment })}>
@@ -100,7 +103,7 @@ const AttachmentsTable = ({
                             },
                             {
                                 text: "Copiar link",
-                                icon: <Link />,
+                                icon: <LinkIcon />,
                                 click: () => toClipboard(respuesta[0].url)
                             },
                             {
@@ -117,7 +120,7 @@ const AttachmentsTable = ({
                                 ,
                                 click: () => showObservations({ item, attachment })
                             },
-                        ].concat((canEdit && !!(onEdit)) ?
+                        ].concat(!isReference && (canEdit && !!(onEdit)) ?
                             [{
                                 text: "Editar anexo",
                                 icon: <Edit size={16} />,
@@ -125,7 +128,7 @@ const AttachmentsTable = ({
                             }] : []
                         ).concat((canEdit && !!(onDelete)) ?
                             [{
-                                text: "Eliminar anexo",
+                                text: `Eliminar ${isReference ? "referencia" : "anexo"}`,
                                 icon: <XCircle size={16} />,
                                 click: () => deleteAttach(item, attachment)
                             }] : []
@@ -139,8 +142,17 @@ const AttachmentsTable = ({
                 </div>
                 {!!(attachment) &&
                     <p>
-                        <a href={respuesta[0].url} target="_blank" className="text-wrap"><small>{respuesta[0].url}</small></a>
+                        <a href={respuesta?.[0].url} target="_blank" className="text-wrap"><small>{respuesta?.[0].url}</small></a>
                     </p>
+                }
+                {!!(isReference) && <>
+                    <h6>
+                        <Badge><LinkIcon /> Anexo referenciado</Badge>
+                    </h6>
+                    {deletedReference && <p className='text-danger fw-semibold'>
+                        <ExclamationCircleFill size={18} /> Este anexo ha sido eliminado
+                    </p>}
+                </>
                 }
             </td>}
             <td>{i.ubianexo}</td>
@@ -187,34 +199,38 @@ const AttachmentsTable = ({
 
     const saveNewOrder = () => {
         const o = orderRef.current;
-
-        const d = jsonToFormData({
-            orden: o.map(i => i.attachment.grupo_resp).join(","),
-            id_fcamp: o[0].attachment.id_fcamp
-        })
-
-        openLoader("Modificando orden")
-        AXIOS_REQUEST(ORDERING_ANSWERS, "PUT", d).then(r => {
-            toast.success("Orden actualizado", { position: "top-right" })
-            setMapedList([]);
-            closeLoader(() => {
-                orderingCallback?.();
-                closeModal(setModal)
+        try {
+            const d = jsonToFormData({
+                orden: o.map(i => i.attachment.grupo_resp).join(","),
+                id_fcamp: o[o.length - 1].attachment.id_fcamp
             })
-        }).catch(() => {
-            closeLoader()
-            toast.error("No se pudo actualizar el orden", { position: "top-right" })
-        })
+
+            openLoader("Modificando orden")
+            AXIOS_REQUEST(ORDERING_ANSWERS, "PUT", d).then(r => {
+                toast.success("Orden actualizado", { position: "top-right" })
+                setMapedList([]);
+                closeLoader(() => {
+                    orderingCallback?.();
+                    closeModal(setModal)
+                })
+            }).catch(() => {
+                closeLoader()
+                toast.error("No se pudo actualizar el orden", { position: "top-right" })
+            })
+        } catch (error) {
+            return toast.error("Hubo un error, por favor contacte al administrador", { position: "top-right" })
+        }
     }
 
     const mapList = (l: typeof list) => {
         const _list: T_MapedItemList[] = [];
-
         Object.keys(l).forEach((li, idx) => {
             const item = l[`${li}`];
             const original = item.originalFieldsObject as I_FormFieldWithAnswer[];
-            const attachment: any = original.find(i => !!i.nomb_anexo)!;
+            const isReference = item.defaultValues.tipo_anexo === "reference";
+            const attachment: any = isReference ? original.find(i => i.json_campo.name === "anexo_ref")! : original.find(i => !!i.nomb_anexo)!;
             const { nomb_anexo, respuesta } = attachment || {};
+            const deletedReference = attachment.est_anexo === 0;
 
             if (item.defaultValues.ceanexo?.length) {
                 const { criterio }: any = original.find((i: any) => !!i.criterio) || {};
@@ -222,6 +238,8 @@ const AttachmentsTable = ({
 
                 _list[item.orden_resp ? (item.orden_resp - 1) : _list.length] = {
                     item,
+                    deletedReference,
+                    isReference,
                     attachment,
                     criterio,
                     evidencias,
@@ -230,9 +248,33 @@ const AttachmentsTable = ({
                     id: idx + 1
                 }
             }
-        })
+        });
 
-        return _list;
+        // Object.keys(l).forEach((li, idx) => {
+        //     const item = l[`${li}`];
+        //     const original = item.originalFieldsObject as I_FormFieldWithAnswer[];
+        //     const attachment: any = original.find(i => !!i.nomb_anexo)!;
+        //     const { nomb_anexo, respuesta } = attachment || {};
+
+        //     console.dir(item)
+
+        //     if (item.defaultValues.ceanexo?.length) {
+        //         const { criterio }: any = original.find((i: any) => !!i.criterio) || {};
+        //         const { evidencias }: any = original.find((i: any) => !!i.evidencias) || {};
+
+        //         _list[item.orden_resp ? (item.orden_resp - 1) : _list.length] = {
+        //             item,
+        //             attachment,
+        //             criterio,
+        //             evidencias,
+        //             nomb_anexo,
+        //             respuesta,
+        //             id: idx + 1
+        //         }
+        //     }
+        // })
+
+        return _list.filter(l => !!l);
     }
 
     useEffect(() => {

@@ -59,6 +59,7 @@ export type T_PhasesWithConditions = {
 }
 
 export type T_AttachmentInPhase = {
+    id_resp: number;
     grupo_resp: string,
     nomb_campo: string,
     nomb_form: string,
