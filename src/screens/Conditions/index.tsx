@@ -320,7 +320,7 @@ const Conditions = () => {
                   {selectedProcess.programa && <div className="flex-grow-1">
                     <b>Programa: </b>
                     <span className="d-block">
-                      <Link className="link-dark" to={`/programa/${selectedProcess.id_prog}`}>{selectedProcess.programa}
+                      <Link className="link-dark" to={`/programa/${selectedProcess.id_prog}`}>{selectedProcess.programa} - {selectedProcess.cod_snies}
                         <i className="link-primary ms-1"><LinkIcon /></i>
                       </Link>
                     </span>

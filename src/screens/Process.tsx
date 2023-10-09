@@ -23,6 +23,7 @@ import confirmDeleteAlertObject from '../utils/confirmDeleteAlertObject';
 import ProcessForm from '../forms/ProcessForm';
 import useLoader from '../hooks/useLoader';
 import useAlert from '../hooks/useAlert';
+import { getNormalDate } from '../utils/dateUtils';
 
 const Process = () => {
 
@@ -217,7 +218,30 @@ const Process = () => {
             :
             processList.map(process => (
               // <Card className='mb-4 hover-scale-up flex-md-row gap-3 cursor' key={process.id_conv} style={{ cursor: "auto" }}>
-              <Card className='mb-4 hover-scale-up flex-row gap-3 cursor' key={process.id_conv} style={{ cursor: "auto" }}>
+              <Card className='ps-2 pe-2 px-sm-3 px-lg-4 mb-4 hover-scale-up gap-1 cursor position-relative'
+                key={process.id_conv}
+                style={{ cursor: "auto" }}
+              >
+                <div className='d-flex'>
+                  <div className='flex-grow-1 cursor-pointer' onClick={() => goToConditionsScreen(process)}>
+                    {!!(process.id_prog) && <>
+                      <span className=' fw-bold text-info'>{process.programa}</span>
+                      <span className='ps-1 text-info fw-semibold d-inline-block'> - {process.cod_snies}</span>
+                    </>
+                    }
+                  </div>
+                  {/* {is_admin && <div className='position-absolute end-0 pe-2 pe-sm-3 pe-lg-4'> */}
+                  {is_admin && <div className='ms-3'>
+                    <CustomDropdown options={[
+                      { text: "Modificar proceso", icon: <Edit size={16} />, click: () => modalToEditProcess(process) },
+                      { text: "Eliminar proceso", icon: <XCircle size={16} />, click: () => confirmDeleteProcess(process) },
+                    ]}>
+                      <DropdownToggle size="sm" color='light' className='rounded-3'>
+                        <ThreeDotsVertical size={18} />
+                      </DropdownToggle>
+                    </CustomDropdown>
+                  </div>}
+                </div>
                 <div onClick={() => goToConditionsScreen(process)} className='flex-grow-1 cursor-pointer'>
                   <div className="position-absolute" style={{ top: "-13px" }}>
                     <Badge
@@ -228,56 +252,45 @@ const Process = () => {
                       {process.tipo_cond}
                     </Badge>
                   </div>
-                  <div className="gap-3 d-flex flex-column flex-md-row">
-                    <div className="flex-grow-1">
-                      <div className='mb-3'>
-                        <b className="d-block small">Nombre:</b>
-                        <span>{process.nomb_conv}</span>
-                      </div>
-                      <div className='d-flex gap-3 flex-wrap'>
-                        {!!(process.id_prog) && <div>
-                          <b className="d-block small">Programa:</b>
-                          <span>{process.programa}</span>
-                        </div>
-                        }
+                  {/* <div className='mb-2'>
+                            <span className="d-block small">{process.est_conv === 1 ? "ABIERTO" : "CERRADO"}</span>
+                          </div> */}
+                  <div className=''>
+                    <div className='d-flex justify-content-between flex-bottom'>
+                      <table className='d-inline-block'>
+                        <tbody className='align-top'>
+                          <tr>
+                            <td className='fw-bold small pe-2 pb-2'>Proceso:</td>
+                            <td className='small pb-2'>{process.nomb_conv}
+                              <span className='d-none d-md-inline-block opacity-50 text-secondary ps-2'> (Creado el {getNormalDate(process.marc_temp)})</span>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className='fw-bold small pe-2 pb-2'>Sede:</td>
+                            <td className='small pb-2'>{process.sede}</td>
+                          </tr>
+                          <tr>
+                            <td className='fw-bold small pe-2'>Fase actual:</td>
+                            <td className='small'>{process.fase_actual}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+
+                      <div className='text-md-center d-inline-flex flex-column justify-content-end'>
+                        <b className="small d-none d-sm-block fw-semibold mt-1">Progreso</b>
                         <div>
-                          <b className="d-block small">Sede:</b>
-                          <span>{process.sede}</span>
+                          <CircleProgress
+                            progress={process.porcentaje || 0}
+                            stroke={4}
+                            radius={32}
+                            color={process.porcentaje >= 100 ? "#0d6efd" : undefined}
+                            content={`${process.porcentaje || 0}%`}
+                          />
                         </div>
-                        {!!(process.fase_actual) && <div>
-                          <b className="d-block small">Fase actual:</b>
-                          <span>{process.fase_actual}</span>
-                        </div>
-                        }
-                      </div>
-                    </div>
-                    <div className='text-md-center d-flex flex-md-column justify-content-between'>
-                      <div className='mb-2'>
-                        <b className="small">Estado:</b>
-                        <span className="d-block small">{process.est_conv === 1 ? "ABIERTA" : "CERRADA"}</span>
-                      </div>
-                      <div>
-                        <CircleProgress
-                          progress={process.porcentaje || 0}
-                          stroke={4}
-                          radius={32}
-                          color={process.porcentaje >= 100 ? "#0d6efd" : undefined}
-                          content={`${process.porcentaje || 0}%`}
-                        />
                       </div>
                     </div>
                   </div>
                 </div>
-                {is_admin && <div className='text-end'>
-                  <CustomDropdown options={[
-                    { text: "Modificar proceso", icon: <Edit size={16} />, click: () => modalToEditProcess(process) },
-                    { text: "Eliminar proceso", icon: <XCircle size={16} />, click: () => confirmDeleteProcess(process) },
-                  ]}>
-                    <DropdownToggle size="sm" color='light' className='rounded-3'>
-                      <ThreeDotsVertical size={18} />
-                    </DropdownToggle>
-                  </CustomDropdown>
-                </div>}
               </Card>
             ))
         }

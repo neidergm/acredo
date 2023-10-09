@@ -171,11 +171,13 @@ const Details = () => {
         })
     }
 
+    const needGetProgramData = `${program?.id_prog}` !== id_program;
+
     useEffect(() => {
         if (!id_program) {
             navigate(-1)
         } else {
-            !program && getProgramInfo()
+            needGetProgramData && getProgramInfo()
         }
         return () => {
             if (needRefreshList) dispatch(getProgramsList())
@@ -187,7 +189,7 @@ const Details = () => {
         <>
             <SubHeader
                 showBackButton
-                text={program?.nomb_prog || "Detalles del programa"}
+                text={(needGetProgramData || !program?.nomb_prog) ? "Detalles del programa" : program.nomb_prog }
                 className="container-xxxl"
             />
 
@@ -201,7 +203,7 @@ const Details = () => {
 
             <div className="container-fluid container-xxxl">
                 <div>
-                    {!program ? <div className='p-5 mt-5'><Loader loaderAsModal={false} isOpen /></div>
+                    {!program || needGetProgramData ? <div className='p-5 mt-5'><Loader loaderAsModal={false} isOpen /></div>
                         : <>
                             <Row>
                                 <Col lg="6" className='mb-4'>

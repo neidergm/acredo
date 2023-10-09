@@ -147,7 +147,7 @@ const AttachmentsTable = ({
                 }
                 {!!(isReference) && <>
                     <h6>
-                        <Badge><LinkIcon /> Anexo referenciado</Badge>
+                        <Badge><LinkIcon /> ANEXO REFERENCIADO</Badge>
                     </h6>
                     {deletedReference && <p className='text-danger fw-semibold'>
                         <ExclamationCircleFill size={18} /> Este anexo ha sido eliminado

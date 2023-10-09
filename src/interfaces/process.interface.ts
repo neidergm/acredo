@@ -1,5 +1,6 @@
 export interface I_Process {
     coment_conv: string;
+    cod_snies: string | null;
     est_conv: number,
     fase_actual: string,
     id_conv: number,
