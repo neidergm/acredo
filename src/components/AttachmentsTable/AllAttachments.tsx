@@ -11,7 +11,7 @@ import Loader from '../Loader'
 import classnames from 'classnames'
 import { getNormalDate } from '../../utils/dateUtils'
 
-let timeout: any;
+let timeout: ReturnType<typeof setTimeout>;
 
 const AllAttachments = ({
     phaseId

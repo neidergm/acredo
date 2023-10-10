@@ -1,19 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from "react-router-dom";
 import { SubHeader } from "../components/SubHeader";
-import { Badge, Button, DropdownToggle } from 'reactstrap';
+import { Badge, Button, DropdownToggle, Input } from 'reactstrap';
 import Loader from '../components/Loader';
 import { I_Process } from '../interfaces/process.interface';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import { useAppSelector } from '../hooks/useAppSelector';
-import { getProcessList, selectProcess } from '../store/slices/processSlice';
+import { getProcessList, selectProcess, setProcessList } from '../store/slices/processSlice';
 import CircleProgress from '../components/CircleProgress';
 import Card from '../components/Card';
 import { Edit, ExclamationCircleFill, Folder2Open, Plus, ThreeDotsVertical, XCircle } from '../components/Icons';
 import { Modal, ModalBody, ModalHeader, T_ModalJSON, closeModal, ModalFooter } from '../components/Modal';
 import Alert from '../components/Alert';
 import { AXIOS_REQUEST } from '../services/axiosService';
-import { CREATE_PROCESS, DELETE_PROCESS, UPDATE_PROCESS } from '../services/endPointsService';
+import { CREATE_PROCESS, DELETE_PROCESS, GET_PROCESS_BY_STATE, UPDATE_PROCESS } from '../services/endPointsService';
 import { toast } from 'react-hot-toast';
 import { getDifferenceBetweenData, jsonToFormData } from '../utils/formUtils';
 import { isAdmin, isSupervisor } from '../utils/userRolUtils';
@@ -24,6 +24,10 @@ import ProcessForm from '../forms/ProcessForm';
 import useLoader from '../hooks/useLoader';
 import useAlert from '../hooks/useAlert';
 import { getNormalDate } from '../utils/dateUtils';
+import { sessionStorageService } from '../services/localStorageService';
+
+let timeout: ReturnType<typeof setTimeout>;
+const selectFilterValue = "process/selectedFilterValue";
 
 const Process = () => {
 
@@ -33,9 +37,13 @@ const Process = () => {
   const userInfo = useAppSelector(state => state.user.userInfo);
   const [modal, setModal] = useState<null | T_ModalJSON>(null);
 
+  const [search, setSearch] = useState("")
+
   const { alertData, openAlert, closeAlert } = useAlert()
   const { closeLoader, openLoader } = useLoader()
   const is_admin = !isSupervisor(userInfo?.rol) && isAdmin(userInfo?.rol)
+
+  const SELECTED_FILTER_VALUE = useMemo(() => sessionStorageService.getItem(selectFilterValue) || "", [processList])
 
   const goToConditionsScreen = (process: I_Process) => {
     dispatch(selectProcess(process));
@@ -176,9 +184,30 @@ const Process = () => {
     })
   }
 
+  const filterListByState = (value: string) => {
+    sessionStorageService.setItem(selectFilterValue, value);
+    dispatch(setProcessList(null));
+    if (value) {
+      AXIOS_REQUEST(`${GET_PROCESS_BY_STATE}${value}`).then(resp => {
+        dispatch(setProcessList(resp.data));
+      })
+    } else {
+      dispatch(getProcessList())
+    }
+  }
+
+  const filterListByText = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value
+    if (timeout) clearInterval(timeout)
+
+    timeout = setTimeout(() => {
+      setSearch(val)
+    }, 500)
+  }
+
   useEffect(() => {
     // if (!(processList?.length) && !hasLoaded.current) {
-    dispatch(getProcessList())
+    filterListByState(SELECTED_FILTER_VALUE)
   }, [])
 
   return (
@@ -204,95 +233,108 @@ const Process = () => {
       </Modal>
       <Alert {...alertData} />
 
-      {/* <Loader {...loading} /> */}
-      <div className="container-fluid container-xxl pt-3 pb-5">
+      <div className="container-fluid container-xxl">
         {!(processList) ?
           <Loader loaderAsModal={false} isOpen />
           :
-          !(processList.length) ? <div className='mt-5 pt-5 text-center'>
-            <h3 className='text-muted opacity-25 mt-5 mb-5'>
-              <span className='my-4 d-block'><Folder2Open size={50} /></span>
-              No hay nada para mostrar
-            </h3>
-          </div>
-            :
-            processList.map(process => (
-              // <Card className='mb-4 hover-scale-up flex-md-row gap-3 cursor' key={process.id_conv} style={{ cursor: "auto" }}>
-              <Card className='ps-2 pe-2 px-sm-3 px-lg-4 mb-4 hover-scale-up gap-1 cursor position-relative'
-                key={process.id_conv}
-                style={{ cursor: "auto" }}
-              >
-                <div className='d-flex'>
-                  <div className='flex-grow-1 cursor-pointer' onClick={() => goToConditionsScreen(process)}>
-                    {!!(process.id_prog) && <>
-                      <span className=' fw-bold text-info'>{process.programa}</span>
-                      <span className='ps-1 text-info fw-semibold d-inline-block'> - {process.cod_snies}</span>
-                    </>
-                    }
-                  </div>
-                  {/* {is_admin && <div className='position-absolute end-0 pe-2 pe-sm-3 pe-lg-4'> */}
-                  {is_admin && <div className='ms-3'>
-                    <CustomDropdown options={[
-                      { text: "Modificar proceso", icon: <Edit size={16} />, click: () => modalToEditProcess(process) },
-                      { text: "Eliminar proceso", icon: <XCircle size={16} />, click: () => confirmDeleteProcess(process) },
-                    ]}>
-                      <DropdownToggle size="sm" color='light' className='rounded-3'>
-                        <ThreeDotsVertical size={18} />
-                      </DropdownToggle>
-                    </CustomDropdown>
-                  </div>}
-                </div>
-                <div onClick={() => goToConditionsScreen(process)} className='flex-grow-1 cursor-pointer'>
-                  <div className="position-absolute" style={{ top: "-13px" }}>
-                    <Badge
-                      color="warning"
-                      pill
-                      className="text-uppercase px-3"
-                    >
-                      {process.tipo_cond}
-                    </Badge>
-                  </div>
-                  {/* <div className='mb-2'>
+          <>
+            <div className='mb-4 pb-2 d-flex justify-content-between'>
+              <div>
+                {!!processList.length && <Input className='w-auto border-0' placeholder='Buscar...' type='search' onChange={filterListByText} />}
+              </div>
+              <div>
+                <Input className='w-auto border-0 text-primary text-opacity-75' type='select' defaultValue={SELECTED_FILTER_VALUE} onChange={e => filterListByState(e.target.value)}>
+                  <option value="">Procesos abiertos</option>
+                  <option value="Terminados">Procesos finalizados</option>
+                  {/* <option value="3">Procesos eliminados</option> */}
+                </Input>
+              </div>
+            </div>
+            {!(processList.length) ? <div className='mt-5 pt-5 text-center'>
+              <h3 className='text-muted opacity-25 mt-5 mb-5'>
+                <span className='my-4 d-block'><Folder2Open size={50} /></span>
+                No hay nada para mostrar
+              </h3>
+            </div>
+              :
+              processList.filter(p => new RegExp(`${search.trim()}`, "gi").test(`${p.nomb_conv} ${p.cod_snies} ${p.sede} ${p.programa}`))
+                .map(process => (
+                  // <Card className='mb-4 hover-scale-up flex-md-row gap-3 cursor' key={process.id_conv} style={{ cursor: "auto" }}>
+                  <Card className='ps-2 pe-2 px-sm-3 px-lg-4 mb-4 hover-scale-up gap-1 cursor position-relative'
+                    key={process.id_conv}
+                    style={{ cursor: "auto" }}
+                  >
+                    <div className='d-flex'>
+                      <div className='flex-grow-1 cursor-pointer' onClick={() => goToConditionsScreen(process)}>
+                        {!!(process.id_prog) && <>
+                          <span className=' fw-bold text-info'>{process.programa}</span>
+                          <span className='ps-1 text-info fw-semibold d-inline-block'> - {process.cod_snies}</span>
+                        </>
+                        }
+                      </div>
+                      {/* {is_admin && <div className='position-absolute end-0 pe-2 pe-sm-3 pe-lg-4'> */}
+                      {is_admin && <div className='ms-3'>
+                        <CustomDropdown options={[
+                          { text: "Modificar proceso", icon: <Edit size={16} />, click: () => modalToEditProcess(process) },
+                          { text: "Eliminar proceso", icon: <XCircle size={16} />, click: () => confirmDeleteProcess(process) },
+                        ]}>
+                          <DropdownToggle size="sm" color='light' className='rounded-3'>
+                            <ThreeDotsVertical size={18} />
+                          </DropdownToggle>
+                        </CustomDropdown>
+                      </div>}
+                    </div>
+                    <div onClick={() => goToConditionsScreen(process)} className='flex-grow-1 cursor-pointer'>
+                      <div className="position-absolute" style={{ top: "-13px" }}>
+                        <Badge
+                          color="warning"
+                          pill
+                          className="text-uppercase px-3"
+                        >
+                          {process.tipo_cond}
+                        </Badge>
+                      </div>
+                      {/* <div className='mb-2'>
                             <span className="d-block small">{process.est_conv === 1 ? "ABIERTO" : "CERRADO"}</span>
                           </div> */}
-                  <div className=''>
-                    <div className='d-flex justify-content-between flex-bottom'>
-                      <table className='d-inline-block'>
-                        <tbody className='align-top'>
-                          <tr>
-                            <td className='fw-bold small pe-2 pb-2'>Proceso:</td>
-                            <td className='small pb-2'>{process.nomb_conv}
-                              <span className='d-none d-md-inline-block opacity-50 text-secondary ps-2'> (Creado el {getNormalDate(process.marc_temp)})</span>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td className='fw-bold small pe-2 pb-2'>Sede:</td>
-                            <td className='small pb-2'>{process.sede}</td>
-                          </tr>
-                          <tr>
-                            <td className='fw-bold small pe-2'>Fase actual:</td>
-                            <td className='small'>{process.fase_actual}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-
-                      <div className='text-md-center d-inline-flex flex-column justify-content-end'>
-                        <b className="small d-none d-sm-block fw-semibold mt-1">Progreso</b>
-                        <div>
-                          <CircleProgress
-                            progress={process.porcentaje || 0}
-                            stroke={4}
-                            radius={32}
-                            color={process.porcentaje >= 100 ? "#0d6efd" : undefined}
-                            content={`${process.porcentaje || 0}%`}
-                          />
+                      <div className=''>
+                        <div className='d-flex justify-content-between flex-bottom'>
+                          <table className='d-inline-block'>
+                            <tbody className='align-top'>
+                              <tr>
+                                <td className='fw-bold small pe-2 pb-2'>Proceso:</td>
+                                <td className='small pb-2'>{process.nomb_conv}
+                                  <span className='d-none d-md-inline-block opacity-50 text-secondary ps-2'> (Creado el {getNormalDate(process.marc_temp)})</span>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td className='fw-bold small pe-2 pb-2'>Sede:</td>
+                                <td className='small pb-2'>{process.sede}</td>
+                              </tr>
+                              <tr>
+                                <td className='fw-bold small pe-2'>Fase actual:</td>
+                                <td className='small'>{process.fase_actual}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <div className='text-md-center d-inline-flex flex-column justify-content-end'>
+                            <b className="small d-none d-sm-block fw-semibold mt-1">Progreso</b>
+                            <div>
+                              <CircleProgress
+                                progress={process.porcentaje || 0}
+                                stroke={4}
+                                radius={32}
+                                color={process.porcentaje >= 100 ? "#0d6efd" : undefined}
+                                content={`${process.porcentaje || 0}%`}
+                              />
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </Card>
-            ))
+                  </Card>
+                ))
+            }</>
         }
       </div>
     </>
