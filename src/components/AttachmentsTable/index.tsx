@@ -4,7 +4,7 @@ import { useAppSelector } from '../../hooks/useAppSelector'
 import { I_FormFieldWithAnswer } from '../../interfaces/conditions.interface'
 import { T_Form, T_FormPannelActions } from './../../screens/Conditions/FormPannel'
 import Alert from '../Alert'
-import { Anex, ChatDots, ChatDotsFill, Edit, ExclamationCircleFill, LinkIcon, Quote, ThreeDotsVertical, XCircle } from '../Icons'
+import { ChatDots, ChatDotsFill, Edit, ExclamationCircleFill, LinkIcon, Quote, ThreeDotsVertical, XCircle } from '../Icons'
 import ObservationChat from '../ObservationChat'
 import toast from 'react-hot-toast';
 import CustomDropdown from '../CustomDropdown'
@@ -155,7 +155,9 @@ const AttachmentsTable = ({
                 </>
                 }
             </td>}
-            <td>{i.ubianexo}</td>
+            <td>
+                <div style={{maxWidth: "200px"}}>{i.ubianexo}</div>
+            </td>
             <td>
                 <div className='mb-2'>
                     <b>Criterio:</b> <span>{criterio}</span>
@@ -308,7 +310,7 @@ const AttachmentsTable = ({
 
         <div className='position-relative'>
             <Alert {...alertData} />
-            <Table bordered responsive="md" className='pb-5'>
+            <Table bordered responsive className='pb-5'>
                 <thead className='small'>
                     <tr className="table-primary align-middle">
                         <th>

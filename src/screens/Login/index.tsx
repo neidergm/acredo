@@ -28,7 +28,6 @@ const Login = (props: I_Props) => {
         setLoader(true);
 
         const resp = await dispatch(login(credential))
-        // eslint-disable-next-line no-debugger
         if (!resp.payload) {
             setLoader(false);
         }

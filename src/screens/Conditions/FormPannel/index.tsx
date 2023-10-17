@@ -112,6 +112,7 @@ const FormPannel = ({
     const submitAll = (data: any, formItem: T_Form, callback?: () => void) => {
         const method = formItem.est_resp === 1 ? "PUT" : "POST";
         data = getDifferenceBetweenData(formItem.defaultValues, data);
+        if (!Object.keys(data).length) return toast.error("No hay cambios para guardar", { position: "top-right", icon: <i className='text-warning'><ExclamationCircleFill /> </i> })
         openLoader("Guardando datos");
         const keysOnField = ["id_campo"];
         if (method === "PUT") {
@@ -165,6 +166,9 @@ const FormPannel = ({
         if (answers) {
             if (item.tipo_form !== 0) {
                 multiplesAnswers = answers.reduce((p, c) => {
+                    if (c.json_campo.name === "tipo_anexo") {
+                    (c.json_campo.validations as any).disabled = true;
+                    }
                     if (c.nomb_anexo) isAttachmentsTable = true;
                     p[c.grupo_resp] = [...(p[c.grupo_resp] || []), c];
                     return { ...p }

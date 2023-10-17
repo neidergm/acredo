@@ -77,7 +77,10 @@ const DataListInput = ({ name, onChange, onBlur, value, ...props }: T_Props) => 
     return (
         <Row>
             <Col>
-                <Input {...props} name={name} type="text" list={`data-${name}`} onChange={onInputHandle} onBlur={onBlurHandle} />
+                <Input {...props} name={name} type="text" list={`data-${name}`} onChange={onInputHandle} onBlur={onBlurHandle}
+                    readOnly={!list.length}
+                    placeholder={!list.length ? 'Cargando...' : props.placeholder}
+                />
                 <datalist id={`data-${name}`}>
                     {list.map((item, key) => <option key={key} value={`${item[0]}-${item[1]}`} />)}
                 </datalist>
@@ -89,13 +92,15 @@ const DataListInput = ({ name, onChange, onBlur, value, ...props }: T_Props) => 
                     type="text"
                     value={`${selected[3].url}`}
                     onClick={() => window.open(selected[3].url, "_blank")}
-                /> : (selected === false && <Input
-                    disabled
-                    invalid
-                    value={"No se encontró anexo con el código indicado"}
-                    className='text-danger disabled mt-1 mt-lg-0 bg-danger bg-opacity-10'
+                />
+                    : (selected === false && <Input
+                        disabled
+                        invalid
+                        value={"No se encontró anexo con el código indicado"}
+                        className='text-danger disabled mt-1 mt-lg-0 bg-danger bg-opacity-10'
 
-                />)}
+                    />)
+                }
             </Col>
         </Row>
     )
