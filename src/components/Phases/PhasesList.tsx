@@ -10,6 +10,7 @@ import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } f
 import CreateStage from './Create/CreateStage';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import Loader from '../Loader';
+import TimeLine from './TimeLine';
 
 type T_Props = {
   isAdmin: boolean,
@@ -24,12 +25,14 @@ const PhasesList = ({ isAdmin, taskEnded }: T_Props) => {
     phase: T_Phase,
   } | null>(null)
 
+  const [showTimeLine, setShowTimeLine] = useState(false)
+
   const list = useAppSelector(state => state.conditions.selectedData.phases)
   const active = useAppSelector(state => state.conditions.selectedData.active)
 
   const showActionDetails = (action: T_Action, stage: T_Stage, phase: T_Phase) => {
     const dateDiff = getDateDiff(new Date(action.fecha_accion));
-    
+
     setModal({
       isOpen: true,
       size: "lg",
@@ -150,12 +153,19 @@ const PhasesList = ({ isAdmin, taskEnded }: T_Props) => {
     }
   }
 
-  const createStageButton = <div className='text-end mt-3'>
+  const toggleTimeLine = () => setShowTimeLine(t => !t)
+
+  const createStageButton = <div className='mt-3 d-flex justify-content-between'>
     {isAdmin && !!list &&
-      <Button color='primary' size='sm' onClick={() => createNewStage(list[0])}>
-        <i><Plus /></i>
-        Crear nueva etapa
-      </Button>
+      <>
+        <Button size='sm' color='link' onClick={() => toggleTimeLine()}>
+          Línea de tiempo
+        </Button>
+        <Button color='primary' size='sm' className='ms-auto' onClick={() => createNewStage(list[0])}>
+          <i><Plus /></i>
+          Crear nueva etapa
+        </Button>
+      </>
     }
   </div>
 
@@ -207,6 +217,14 @@ const PhasesList = ({ isAdmin, taskEnded }: T_Props) => {
           />
         </OffcanvasBody>
       </Offcanvas>
+      <Offcanvas isOpen={showTimeLine} style={{ minWidth: "65%" }} fade>
+        <OffcanvasHeader toggle={toggleTimeLine}>
+          <span className='ps-3 border-start border-success border-4 py-1'>Línea de tiempo de acciones</span>
+        </OffcanvasHeader>
+        <OffcanvasBody>
+          <TimeLine list={list[0].stages!} canEdit={isAdmin} taskEnded={taskEnded} />
+        </OffcanvasBody>
+      </Offcanvas>
       {
         list?.map(item => {
           const key = `phase-${item.id}`;
@@ -214,11 +232,6 @@ const PhasesList = ({ isAdmin, taskEnded }: T_Props) => {
             className={classnames(styles.phase)}
             key={key}
           >
-            {/* <div className={classnames('d-flex align-items-center', { 'justify-content-between': isAdmin })}>
-              <div className={classnames(styles["phase-header"], "mb-3 fw-semibold text-muted")}>
-                <span>- {item.name}</span>
-              </div>
-            </div> */}
             <div className={classnames(styles["phase-body"], "ms-3")}>
               <UncontrolledAccordion stayOpen flush defaultOpen={taskEnded ? [""] : [`stage-${active?.stage?.id}`]}>
                 {item.stages ? doStages(item.stages, item) : <p>Sin etapas registradas</p>}

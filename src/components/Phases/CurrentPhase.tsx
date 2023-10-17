@@ -264,7 +264,7 @@ const CurrentPhase = ({
                     </div>
                     <div className='mt-4 d-flex justify-content-between '>
                         {!!(togglePhases) &&
-                            <Button onClick={togglePhases} size='sm' color='link' className='rounded-2 '>Mostrar fases y etapas</Button>
+                            <Button onClick={togglePhases} size='sm' color='link' className='rounded-2 '>Mostrar las etapas</Button>
                         }
                         {!!(canEndAction) && <div className='text-end flex-grow-1'>
                             {
