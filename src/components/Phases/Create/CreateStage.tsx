@@ -80,7 +80,8 @@ const CreateStage = ({
   }
 
   const onCreateAction = (data: any | T_Action[], multiple = false) => {
-
+// eslint-disable-next-line no-debugger
+debugger
     let d = new FormData();
 
     if (multiple && typeof data === "object" && !!(data?.length)) {

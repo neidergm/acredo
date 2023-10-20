@@ -95,7 +95,11 @@ export const formToSubmitData = (
                 } else {
                     // Object.keys(commonData).forEach(c => form.append(`resp[${i}].${c}`, `${commonData[c]}`));
                     keysOnField.forEach((p) => form.append(`${prefix}.${p}`, `${fieldProps![p]}`))
-                    form.append(`${prefix}.respuesta`, typeof currentData === "object" ? JSON.stringify(currentData) : currentData);
+                    let resp = currentData;
+                    if (currentData instanceof Date) resp = dateToString(resp, undefined, true)
+                    else if (typeof currentData === "object") resp = JSON.stringify(currentData)
+
+                    form.append(`${prefix}.respuesta`, resp);
                 }
 
                 Object.keys(commonData).forEach(c => form.append(`${prefix}.${c}`, `${commonData[c]}`));
