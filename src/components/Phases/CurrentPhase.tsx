@@ -52,7 +52,7 @@ const CurrentPhase = ({
             !taskIsEnded && !is_supervisor && !onlyView && ((is_admin || is_lead) || !!(active?.action?.finalizar)),
             !is_supervisor && (is_admin || is_lead)
         ]
-    }, [active?.action?.finalizar, task?.rol, taskIsEnded, userRol]);
+    }, [active?.action, task?.rol, taskIsEnded, userRol]);
 
     const { alertData, openAlert } = useAlert();
 

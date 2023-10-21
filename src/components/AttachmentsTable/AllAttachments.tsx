@@ -30,14 +30,15 @@ const AllAttachments = ({
     const doRowByItem = (attachs: T_AttachmentInPhase[]) => {
 
         let nomb_anexo = "";
+        let deletedReference = false;
 
         const data: I_JSONObject = attachs?.reduce((p, c) => {
             if (c.nomb_anexo) nomb_anexo = c.nomb_anexo;
+            if (c.est_anexo === 0) deletedReference = true;
             return { ...p, [c.name_campo]: c.respuesta }
         }, {}) || {}
 
         const isReference = data.tipo_anexo === "reference"
-        const deletedReference = data.est_anexo === 0;
 
         let attName = `${nomb_anexo}-${data.anexo_nombre}`;
         if (isReference) {

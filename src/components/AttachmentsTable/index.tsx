@@ -230,15 +230,17 @@ const AttachmentsTable = ({
             const item = l[`${li}`];
             const original = item.originalFieldsObject as I_FormFieldWithAnswer[];
             const isReference = item.defaultValues.tipo_anexo === "reference";
+          
             const attachment: any = isReference ? original.find(i => i.json_campo.name === "anexo_ref")! : original.find(i => !!i.nomb_anexo)!;
             const { nomb_anexo, respuesta } = attachment || {};
             const deletedReference = attachment.est_anexo === 0;
-
+           
+         
             if (item.defaultValues.ceanexo?.length) {
                 const { criterio }: any = original.find((i: any) => !!i.criterio) || {};
                 const { evidencias }: any = original.find((i: any) => !!i.evidencias) || {};
-
-                _list[item.orden_resp ? (item.orden_resp - 1) : _list.length] = {
+                const i = {
+                // _list[item.orden_resp] = {
                     item,
                     deletedReference,
                     isReference,
@@ -249,6 +251,7 @@ const AttachmentsTable = ({
                     respuesta,
                     id: idx + 1
                 }
+                _list[item.orden_resp ? (item.orden_resp - 1) : _list.length] = i;
             }
         });
 
@@ -277,6 +280,7 @@ const AttachmentsTable = ({
         // })
 
         return _list.filter(l => !!l);
+        // return _list;
     }
 
     useEffect(() => {
@@ -309,6 +313,7 @@ const AttachmentsTable = ({
         </Modal>
 
         <div className='position-relative'>
+        <p className='position-absolute end-0 text-muted' style={{top: "-50px"}}>{mapedList.length} items</p>
             <Alert {...alertData} />
             <Table bordered responsive className='pb-5'>
                 <thead className='small'>

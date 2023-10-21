@@ -146,7 +146,7 @@ const ConditionsDetails = () => {
     const fields = taskForm(false, processSelected?.id_tcond);
     const defaultValues = {
       nomb_cond: conditionSelected?.nomb_cond,
-      cod_cond: (conditionSelected?.cod_cond || processSelected?.id_tcond)?.toString(),
+      cod_cond: (conditionSelected?.cod_cond)?.toString(),
       detalle: conditionSelected?.detalle,
       responsable: conditionSelected?.usuarios?.map(u => ({ cargo: u.id_cargo, user: u.id_rc, role: u.rol }))
     }
