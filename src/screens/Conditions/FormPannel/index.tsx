@@ -112,8 +112,7 @@ const FormPannel = ({
     const submitAll = (data: any, formItem: T_Form, callback?: () => void) => {
         const method = formItem.est_resp === 1 ? "PUT" : "POST";
         data = getDifferenceBetweenData(formItem.defaultValues, data);
-        // eslint-disable-next-line no-debugger
-        debugger;
+     
         if (!Object.keys(data).length) return toast.error("No hay cambios para guardar", { position: "top-right", icon: <i className='text-warning'><ExclamationCircleFill /> </i> })
         openLoader("Guardando datos");
         const keysOnField = ["id_campo"];
@@ -126,7 +125,8 @@ const FormPannel = ({
             { "id_fcamp": formItem.id_fcamp },
             { id_cond }
         );
-
+   // eslint-disable-next-line no-debugger
+   debugger;
         return AXIOS_REQUEST(SAVE_ANSWERS, method, formData)
             .then(res => {
                 method === "POST" && formItem.est_resp === 0 && setFormList(e => {

@@ -65,8 +65,7 @@ export const formToSubmitData = (
     Object.keys(data).forEach((e) => {
         const prefix = `${dataPrefix}[${i}]`;
         const currentData = data[e];
-
-        if ((currentData)) {
+        if (currentData !== undefined && currentData !== null) {
             // let fieldProps = fields.find((f) => f.json_campo.name === e)
             const fieldProps = fieldsAsJson[e];
             if ((fieldProps)) {
