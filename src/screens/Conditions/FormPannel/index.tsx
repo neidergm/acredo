@@ -125,8 +125,6 @@ const FormPannel = ({
             { "id_fcamp": formItem.id_fcamp },
             { id_cond }
         );
-   // eslint-disable-next-line no-debugger
-   debugger;
         return AXIOS_REQUEST(SAVE_ANSWERS, method, formData)
             .then(res => {
                 method === "POST" && formItem.est_resp === 0 && setFormList(e => {

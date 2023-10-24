@@ -86,7 +86,11 @@ export const formToSubmitData = (
                                 const files = setFileAnswer(row[item.name]);
                                 files.forEach(f => form.append(`${itemid}.archivos`, f))
                             } else {
-                                form.append(`${itemid}.respuesta`, typeof row[item.name] === "object" ? JSON.stringify(row[item.name]) : (row[item.name] || null));
+                                let resp = row[item.name];
+                                if (resp instanceof Date) resp = dateToString(resp, undefined, true)
+                                else if (typeof resp === "object") resp = JSON.stringify(resp)
+                                form.append(`${itemid}.respuesta`, resp);
+                                // form.append(`${itemid}.respuesta`, typeof row[item.name] === "object" ? JSON.stringify(row[item.name]) : (row[item.name] || null));
                             }
                         })
                     })
@@ -95,8 +99,8 @@ export const formToSubmitData = (
                     // Object.keys(commonData).forEach(c => form.append(`resp[${i}].${c}`, `${commonData[c]}`));
                     keysOnField.forEach((p) => form.append(`${prefix}.${p}`, `${fieldProps![p]}`))
                     let resp = currentData;
-                    if (currentData instanceof Date) resp = dateToString(resp, undefined, true)
-                    else if (typeof currentData === "object") resp = JSON.stringify(currentData)
+                    if (resp instanceof Date) resp = dateToString(resp, undefined, true)
+                    else if (typeof resp === "object") resp = JSON.stringify(resp)
 
                     form.append(`${prefix}.respuesta`, resp);
                 }
