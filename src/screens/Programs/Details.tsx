@@ -189,7 +189,7 @@ const Details = () => {
         <>
             <SubHeader
                 showBackButton
-                text={(needGetProgramData || !program?.nomb_prog) ? "Detalles del programa" : program.nomb_prog }
+                text={(needGetProgramData || !program?.nomb_prog) ? "Detalles del programa" : program.nomb_prog}
                 className="container-xxxl"
             />
 
@@ -361,6 +361,7 @@ const Details = () => {
                                             program_id={program.id_prog}
                                             callback={getProgramInfo}
                                             canEdit={is_admin}
+                                            extraData={{ deansAndDirectors: program.deca_dire }}
                                         >
                                             {(addEventFunction, showAllEvents) => (
                                                 <div className='mt-3 d-flex justify-content-between gap-1 align-items-end h-100'>

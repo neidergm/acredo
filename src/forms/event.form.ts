@@ -59,7 +59,7 @@ const eventForm: T_FieldsTypes[] = [
     },
     {
         "name": "correo_add",
-        "label": "Usuarios particulares a notificar",
+        "label": "Otros usuarios a notificar",
         "tag": "list",
         "type": "div",
         "fields": [
@@ -76,7 +76,7 @@ const eventForm: T_FieldsTypes[] = [
                 }
             },
         ],
-        "wrapperClassName": "border-top pt-3",
+        "wrapperClassName": "pt-3 col",
         "validations": {
             // "required": true
         },

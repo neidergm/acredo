@@ -26,9 +26,10 @@ type T_Props = {
     canEdit?: boolean,
     callback?: (arg?: boolean) => void,
     children?: (addEventFunction: () => void, showAllEvents: () => void) => JSX.Element,
+    extraData?: I_JSONObject
 }
 
-const ProgramEvents = ({ events: evs, limit, program_id, callback, children, canEdit = false }: T_Props) => {
+const ProgramEvents = ({ events: evs, limit, program_id, callback, children, canEdit = false, extraData }: T_Props) => {
     const [modal, setModal] = useState<T_ModalJSON | null>(null);
     const [showAllEvents, setShowAllEvents] = useState(false);
     const [events, setEvents] = useState<I_ProgramEvent[] | null | false>(evs || null)
@@ -77,6 +78,22 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
     const editEvent = (event?: I_ProgramEvent) => {
         const FORM_ID = "FORM_EVENT";
         const form = structuredClone(eventForm);
+
+        if (extraData?.deansAndDirectors) {
+            form.splice(form.length - 1, 0, {
+                label: <b className='fw-semibold'>Usuarios a notificar</b>,
+                props: {
+                    // className: 'col col-md-6'
+                },
+                wrapperClassName: "border-top pt-3",
+                tag: 'HTML',
+                type: 'div',
+                value: `<div class="pt-2">
+               ${extraData.deansAndDirectors.map((i: I_JSONObject) => `<input style="width: 300px" class="form-control" disabled value="${i.nomb_resp}">`)}
+                </div>`
+            } as any)
+        }
+
         const defaultValues = event ? {
             nomb_evento: event.nomb_evento,
             desc_evento: event.desc_evento,
@@ -89,6 +106,7 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
             isOpen: true,
             title: event ? "Modificar evento" : "Crear evento",
             size: "lg",
+            fullscreen: "md",
             children: <>
                 <Form
                     formProps={{ id: FORM_ID }}
@@ -158,7 +176,7 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
                             <CustomDropdown
                                 options={
                                     [
-                                        { text: `Usuarios particulares a notificar`, optionProps: { header: true } },
+                                        { text: `Otros usuarios a notificar`, optionProps: { header: true } },
                                         ...(emails.map?.((e) => ({ text: `${e}`, optionProps: { disabled: true } })) || [])
                                     ]
                                 }                                >
@@ -201,7 +219,7 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
 
     return (<>
         <Alert {...alertData} />
-        <Modal isOpen={modal?.isOpen} size={modal?.size} onClosed={modal?.onClosed}>
+        <Modal isOpen={modal?.isOpen} size={modal?.size} onClosed={modal?.onClosed} fullscreen={modal?.fullscreen}>
             <ModalHeader textCenter toggle={() => closeModal(setModal)}>{modal?.title}</ModalHeader>
             <ModalBody>{modal?.children}</ModalBody>
             {modal?.footer}
