@@ -1,6 +1,7 @@
 export interface I_ProgramEvent {
     desc_evento: string;
     fech_evento: string;
+    correo_add: string;
     id_evento: number;
     nomb_evento: string;
     reco_evento: null | {

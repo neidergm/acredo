@@ -1,6 +1,6 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import { I_ProgramEvent } from '../../interfaces/programs.interface'
-import { Calendar2Event, Check, Edit, ExclamationCircleFill, History, XCircle } from '../Icons'
+import { Calendar2Event, Check, Edit, ExclamationCircleFill, History, People, XCircle } from '../Icons'
 import styles from "./styles.module.css";
 import classnames from "classnames";
 import { getNormalDate } from '../../utils/dateUtils';
@@ -80,9 +80,11 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
         const defaultValues = event ? {
             nomb_evento: event.nomb_evento,
             desc_evento: event.desc_evento,
-            fech_evento: event.fech_evento,
-            reco_evento: event.reco_evento?.map(e => ({ days: e.num_dia })) || []
+            fech_evento: event.fech_evento.split("T")[0],
+            reco_evento: event.reco_evento?.map(e => ({ days: e.num_dia })) || [],
+            correo_add: !event.correo_add ? [] : event.correo_add.split(",").map(correo => ({ correo })),
         } : {}
+
         setModal({
             isOpen: true,
             title: event ? "Modificar evento" : "Crear evento",
@@ -110,6 +112,7 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
     const saveEventData = (data: I_JSONObject, type: string) => {
         openLoader(data.id_evento ? "Modificando evento" : "Registrando evento", () => {
             data.reco_evento = data.reco_evento.map(({ days }: { days: number }) => days)
+            data.correo_add = data.correo_add.map(({ correo }: { correo: string }) => correo).join(",")
             AXIOS_REQUEST(SAVE_PROGRAM_EVENT, type, jsonToFormData({ ...data, id_prog: program_id }, "[0]."))
                 .then(res => {
                     toast.success(`Evento ${data.id_evento ? "actualizado" : "registrado"} correctamente`, { position: "top-right" });
@@ -128,13 +131,14 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
 
     const printEventList = (limit?: number) => {
         return events && <>
-            {events.slice(0, limit).map(event =>
-                <div key={event.id_evento} className={styles["event-item"]}>
+            {events.slice(0, limit).map(event => {
+                const emails = !(event.correo_add) ? [] : event.correo_add.split(",")
+                return <div key={event.id_evento} className={styles["event-item"]}>
                     <div className='d-flex justify-content-between'>
                         <div className={classnames("small bg-success bg-opacity-10 fw-semibold text-success text-opacity-75", styles["event-date"])}>
                             <small>{getNormalDate(event.fech_evento, { dateStyle: "full" })}</small>
                         </div>
-                        {event.reco_evento && <div className='position-relative' title='Recordatorios'>
+                        {event.reco_evento && <div className='position-relative me-3' title='Recordatorios'>
                             <CustomDropdown
                                 options={
                                     [
@@ -147,6 +151,22 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
                                         <span className='text-warning fw-bold'>{event.reco_evento.length}</span>
                                     </span>
                                     <i className='text-secondary'><History /></i>
+                                </DropdownToggle>
+                            </CustomDropdown>
+                        </div>}
+                        {!!(emails.length) && <div className='position-relative' title='Usuarios'>
+                            <CustomDropdown
+                                options={
+                                    [
+                                        { text: `Usuarios particulares a notificar`, optionProps: { header: true } },
+                                        ...(emails.map?.((e) => ({ text: `${e}`, optionProps: { disabled: true } })) || [])
+                                    ]
+                                }                                >
+                                <DropdownToggle size="sm" color='link' className='text-dark p-0 position-relative'>
+                                    <span className="position-absolute top-0 start-100 translate-middle rounded-pill badge bg-warning bg-opacity-25">
+                                        <span className='text-warning fw-bold'>{emails.length}</span>
+                                    </span>
+                                    <i className='text-secondary'><People /></i>
                                 </DropdownToggle>
                             </CustomDropdown>
                         </div>}
@@ -167,7 +187,7 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
                         <p className='text-secondary small'>{event.desc_evento ? `Descripción: ${event.desc_evento}` : "Sin descripción"}</p>
                     </div>
                 </div>
-            )}
+            })}
             {(!limit || limit >= events.length) && <div className={classnames(styles["event-item"], styles["no-more-item"])}>
                 <div>
                     <i className='me-2 text-success'><Check /></i>
