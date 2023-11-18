@@ -40,7 +40,7 @@ const Login = (props: I_Props) => {
                     <div className={classnames("card border-0", style["container"])}>
                         <div className={classnames("card-body", style["left"])}>
                             <div className={style["logo"]}>
-                                <img src={"https://axis.curn.edu.co/public/web/images/logos/logoGN.png"} alt="MasterU_partner" />
+                                <img src={"https://axis.curn.edu.co/images/uninunez/png/logoqteal192.png"} alt="MasterU_partner" />
                             </div>
                             <div className={style["title"]}>
                                 <b>Bienvenido</b>
