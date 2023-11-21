@@ -419,7 +419,7 @@ export const DELETE_PROGRAM_EVENT = `eventos/`;
 
 /**
  * @method GET
- * @params /program_id
+ * @params /program_id/{event_status = 2 for happened events}
  */
 export const GET_PROGRAM_EVENTS = `eventos/`;
 

@@ -4,9 +4,10 @@ import styles from './timeline.module.css';
 import classnames from 'classnames';
 import { getDateDiff, getNormalDate } from '../../utils/dateUtils';
 import { Badge } from 'reactstrap';
-import { Flag } from '../Icons';
+import { CheckCircleFill, Flag } from '../Icons';
 
 const TimeLine = ({ list, canEdit, taskEnded }: { list: T_Stage[], canEdit: boolean, taskEnded?: boolean }) => {
+    console.log(list)
     return (
         <div>
             {list.map(stage => <div>
@@ -30,14 +31,14 @@ const TimeLine = ({ list, canEdit, taskEnded }: { list: T_Stage[], canEdit: bool
 
                         return <div key={stage.id} className={classnames(styles["event-item"])}>
                             <div className='d-flex align-items-center'>
-                                <div className={classnames("bg-success bg-opacity-10 fw-semibold text-success text-opacity-75", styles["event-date"])}>
+                                <div className={classnames("bg-success bg-opacity-10 fw-semibold text-info text-opacity-75", styles["event-date"])}>
                                     <small>{getNormalDate(action.fecha_accion, { dateStyle: "full" })}</small>
                                 </div>
                                 <span className='opacity-75 d-none d-md-block'>
                                     {action.est_accion === 0 ?
                                         (taskEnded && <Badge className='float-end' pill>No se realizó</Badge>)
-                                        : (action.est_accion === 2 ?
-                                            <Badge pill color='success' className='float-end d-line-block'>Realizada</Badge> :
+                                        : (action.est_accion !== 2 &&
+                                            // <Badge pill color='success' className='float-end d-line-block'>Realizada</Badge> :
                                             <Badge pill color={dateDiff < 0 ? "danger" : "primary"} className='float-end d-line-block'>
                                                 {dateDiff < 0 ? `Vencido hace ${dateDiff * -1} días` : `Vence ${dateDiff === 0 ? "hoy" : "en " + dateDiff + " días"}`}
                                             </Badge>)}
@@ -60,6 +61,13 @@ const TimeLine = ({ list, canEdit, taskEnded }: { list: T_Stage[], canEdit: bool
                                     </ul>
                                 </div>
                             </div>
+                            {action.est_accion === 2 && <div className='small text-secondary opacity-75 mt-2'>
+                                <i className='text-success me-2'>
+                                    <CheckCircleFill size={14} />
+                                </i>
+                                <small>Realizada el {getNormalDate(action.marc_update, { dateStyle: "long", timeStyle: "short" })}</small>
+                            </div>
+                            }
                             {/* {event.reco_evento && <div className='position-relative' title='Recordatorios'>
                             <CustomDropdown
                                 options={

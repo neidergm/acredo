@@ -70,12 +70,14 @@ const ConditionsDetails = () => {
       title: "Detalles",
       fullscreen: "md",
       children: <div className=''>
-        <TextEditor
+        {conditionSelected?.detalle ? <TextEditor
           data={`${conditionSelected?.detalle}`}
           disabled
           className="disabled-editor"
           config={{ toolbar: [] }}
         />
+          : <p className='text-secondary opacity-75'>Sin detalles</p>
+        }
       </div>,
       size: "xl",
       footer: <ModalFooter>
@@ -230,7 +232,7 @@ const ConditionsDetails = () => {
         dispatch(getContionData(Number(id_cond)))
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [processSelected])
 
   useEffect(() => {
@@ -240,7 +242,7 @@ const ConditionsDetails = () => {
     return () => {
       dispatch(setSelectedConditionData(null))
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

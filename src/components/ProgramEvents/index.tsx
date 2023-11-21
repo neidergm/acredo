@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { I_ProgramEvent } from '../../interfaces/programs.interface'
 import { Calendar2Event, Check, Edit, ExclamationCircleFill, History, People, XCircle } from '../Icons'
 import styles from "./styles.module.css";
 import classnames from "classnames";
 import { getNormalDate } from '../../utils/dateUtils';
-import { Button, DropdownToggle, Offcanvas, OffcanvasBody, OffcanvasHeader } from 'reactstrap';
+import { Button, DropdownToggle, Nav, NavItem, NavLink, Offcanvas, OffcanvasBody, OffcanvasHeader } from 'reactstrap';
 import CustomDropdown from '../CustomDropdown'
 import { Modal, ModalHeader, ModalBody, T_ModalJSON, closeModal, ModalFooter } from '../Modal';
 import Form from 'react-ngm-form';
@@ -32,18 +32,34 @@ type T_Props = {
 const ProgramEvents = ({ events: evs, limit, program_id, callback, children, canEdit = false, extraData }: T_Props) => {
     const [modal, setModal] = useState<T_ModalJSON | null>(null);
     const [showAllEvents, setShowAllEvents] = useState(false);
-    const [events, setEvents] = useState<I_ProgramEvent[] | null | false>(evs || null)
+    const [events, setEvents] = useState<I_ProgramEvent[] | null | false>(evs || null);
+    const [oldEvents, setOldEvents] = useState<I_ProgramEvent[] | null | false>(null);
+    const [tab, setTab] = useState(1);
+
 
     const { alertData, openAlert } = useAlert();
 
     const { closeLoader, openLoader } = useLoader()
 
-    const loadEvents = () => {
-        return AXIOS_REQUEST(GET_PROGRAM_EVENTS + program_id).then(resp => {
+    const loadEvents = (_tab = tab) => {
+        if (_tab === 2) return loadOldEvents()
+        if (events) return new Promise((r) => r(true))
+        return AXIOS_REQUEST(`${GET_PROGRAM_EVENTS + program_id}`).then(resp => {
             setEvents(resp.data)
             return true;
         }).catch(() => {
             setEvents(false)
+            return false;
+        })
+    }
+    const loadOldEvents = () => {
+        if (oldEvents) return new Promise((r) => r(true))
+
+        return AXIOS_REQUEST(`${GET_PROGRAM_EVENTS + program_id}/2`).then(resp => {
+            setOldEvents(resp.data)
+            return true;
+        }).catch(() => {
+            setOldEvents(false)
             return false;
         })
     }
@@ -147,9 +163,9 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
         })
     }
 
-    const printEventList = (limit?: number) => {
-        return events && <>
-            {events.slice(0, limit).map(event => {
+    const printEventList = (list: typeof events, limit?: number) => {
+        return list && <>
+            {list.slice(0, limit).map(event => {
                 const emails = !(event.correo_add) ? [] : event.correo_add.split(",")
                 return <div key={event.id_evento} className={styles["event-item"]}>
                     <div className='d-flex justify-content-between'>
@@ -206,7 +222,7 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
                     </div>
                 </div>
             })}
-            {(!limit || limit >= events.length) && <div className={classnames(styles["event-item"], styles["no-more-item"])}>
+            {(!limit || limit >= list.length) && <div className={classnames(styles["event-item"], styles["no-more-item"])}>
                 <div>
                     <i className='me-2 text-success'><Check /></i>
                     <small>No hay más eventos para mostrar</small>
@@ -215,7 +231,7 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
         </>
     }
 
-    useEffect(() => { loadEvents() }, [])
+    useEffect(() => { loadEvents() }, [tab])
 
     return (<>
         <Alert {...alertData} />
@@ -225,10 +241,27 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
             {modal?.footer}
         </Modal>
         <Offcanvas isOpen={showAllEvents} style={{ minWidth: "40%", width: "auto" }} fade>
-            <OffcanvasHeader toggle={() => { setShowAllEvents(false) }}>
+            <OffcanvasHeader toggle={() => { setShowAllEvents(false) }} className='align-items-start'>
                 <span className='ps-3 border-start border-success border-4 py-1'>Eventos del programa</span>
+                <div className='pb-2 mt-4'>
+                    <div className={classnames('d-flex align-items-center', styles["toggler-container"])}>
+                        <div className='bg-secondary bg-opacity-10 p-1 rounded-3'>
+                            <Button color={tab === 1 ? 'primary2 fw-semibold' : "link-secondary"}
+                                className='rounded-3 px-3' size='sm' onClick={() => setTab(1)}>
+                                Próximos
+                            </Button>
+                            <Button color={tab === 2 ? 'primary2 fw-semibold' : "link-secondary"}
+                                className='rounded-3 px-3' size='sm' onClick={() => setTab(2)}>
+                                Pasados
+                            </Button>
+                        </div>
+                    </div>
+                </div>
             </OffcanvasHeader>
-            <OffcanvasBody>{printEventList()}</OffcanvasBody>
+            <OffcanvasBody>
+                {tab === 2 && !oldEvents && <div><Loader loaderAsModal={false}><p>Cargando eventos pasados</p></Loader></div>}
+                {printEventList(tab === 2 ? oldEvents : events)}
+            </OffcanvasBody>
         </Offcanvas>
         <div>
             {events === false ?
@@ -244,7 +277,7 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
                         </Loader>
                     </div>
                     :
-                    (events.length ? <div className={styles["events-container"]}>{printEventList(limit)}</div>
+                    (events.length ? <div className={styles["events-container"]}>{printEventList(events, limit)}</div>
                         :
                         <div className='p-5 text-center text-secondary opacity-50'>
                             <p className='text-secondary'><Calendar2Event size={30} /></p>

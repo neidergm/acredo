@@ -10,7 +10,7 @@ import { getNormalDate } from '../../utils/dateUtils';
 import { ArrowRightShort, Edit, ExclamationCircleFill, Plus, XCircle } from '../../components/Icons';
 import { isAdmin, isSupervisor } from '../../utils/userRolUtils';
 import { useAppSelector } from '../../hooks/useAppSelector';
-import ProgramEvent from '../../components/ProgramEvents';
+import ProgramEvents from '../../components/ProgramEvents';
 import { Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON, closeModal } from '../../components/Modal';
 import Alert from '../../components/Alert';
 import Form from 'react-ngm-form';
@@ -356,7 +356,7 @@ const Details = () => {
                                                 <small className='fw-bold text-uppercase '>Eventos</small>
                                             </div>
                                         </div>
-                                        <ProgramEvent
+                                        <ProgramEvents
                                             limit={EVENT_LIMITS_SHOW}
                                             program_id={program.id_prog}
                                             callback={getProgramInfo}
@@ -365,16 +365,18 @@ const Details = () => {
                                         >
                                             {(addEventFunction, showAllEvents) => (
                                                 <div className='mt-3 d-flex justify-content-between gap-1 align-items-end h-100'>
-                                                    {program.eventos > EVENT_LIMITS_SHOW && <Button size='sm' color='link' onClick={() => showAllEvents()}>
+                                                    {/* {program.eventos > EVENT_LIMITS_SHOW &&  */}
+                                                    <Button size='sm' color='link' onClick={() => showAllEvents()}>
                                                         Ver todos los eventos <ArrowRightShort size={16} />
-                                                    </Button>}
+                                                    </Button>
+                                                    {/* } */}
                                                     <Button size='sm' color='primary' className='ms-auto' onClick={() => addEventFunction()}>
                                                         <Plus size={16} />
                                                         Registrar evento
                                                     </Button>
                                                 </div>
                                             )}
-                                        </ProgramEvent>
+                                        </ProgramEvents>
                                     </Card>
                                 </Col>
                             </Row>
