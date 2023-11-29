@@ -114,7 +114,7 @@ const AllAttachments = ({
                                 <b>Criterio:</b> <span>{i.nomb_criterio}</span>
                             </div>
                             <div>
-                                <b>Evidencia:</b> <span>{i.nomb_evidencias}</span>
+                                <b>Evidencia:</b> <span>{i.nomb_evidencia}</span>
                             </div>
                         </td>
                         {/* <td style={{ maxWidth: "300px" }}>{i.evidencias}</td> */}
