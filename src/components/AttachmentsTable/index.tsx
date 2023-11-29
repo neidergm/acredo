@@ -29,8 +29,6 @@ export type T_MapedItemList = {
     isReference: boolean,
     deletedReference: boolean;
     attachment: any,
-    criterio: any,
-    evidencias: any,
     nomb_anexo: any,
     respuesta: any,
     id: number
@@ -75,7 +73,7 @@ const AttachmentsTable = ({
 
     const doRowByItem = (list_item: T_MapedItemList, key: string) => {
 
-        const { item, attachment, criterio, evidencias, nomb_anexo, respuesta, isReference, deletedReference } = list_item;
+        const { item, attachment, nomb_anexo, respuesta, isReference, deletedReference } = list_item;
 
         return item.defaultValues.ceanexo.map((i: any, idx: number) => <tr key={`row-${key}-${idx}`} className={classnames({ "table-danger": deletedReference })}>
             {idx === 0 && <td
@@ -156,14 +154,14 @@ const AttachmentsTable = ({
                 }
             </td>}
             <td>
-                <div style={{maxWidth: "200px"}}>{i.ubianexo}</div>
+                <div style={{ maxWidth: "200px" }}>{i.ubianexo}</div>
             </td>
             <td>
                 <div className='mb-2'>
-                    <b>Criterio:</b> <span>{criterio}</span>
+                    <b>Criterio:</b> <span>{i.nomb_criterio}</span>
                 </div>
                 <div>
-                    <b>Evidencia:</b> <span>{evidencias}</span>
+                    <b>Evidencia:</b> <span>{i.nomb_evidencia}</span>
                 </div>
             </td>
             {/* <td style={{ maxWidth: "300px" }}>{evidencias}</td> */}
@@ -230,23 +228,18 @@ const AttachmentsTable = ({
             const item = l[`${li}`];
             const original = item.originalFieldsObject as I_FormFieldWithAnswer[];
             const isReference = item.defaultValues.tipo_anexo === "reference";
-          
+
             const attachment: any = isReference ? original.find(i => i.json_campo.name === "anexo_ref")! : original.find(i => !!i.nomb_anexo)!;
             const { nomb_anexo, respuesta } = attachment || {};
             const deletedReference = attachment.est_anexo === 0;
-           
-         
+
+
             if (item.defaultValues.ceanexo?.length) {
-                const { criterio }: any = original.find((i: any) => !!i.criterio) || {};
-                const { evidencias }: any = original.find((i: any) => !!i.evidencias) || {};
                 const i = {
-                // _list[item.orden_resp] = {
                     item,
                     deletedReference,
                     isReference,
                     attachment,
-                    criterio,
-                    evidencias,
                     nomb_anexo,
                     respuesta,
                     id: idx + 1
@@ -255,32 +248,7 @@ const AttachmentsTable = ({
             }
         });
 
-        // Object.keys(l).forEach((li, idx) => {
-        //     const item = l[`${li}`];
-        //     const original = item.originalFieldsObject as I_FormFieldWithAnswer[];
-        //     const attachment: any = original.find(i => !!i.nomb_anexo)!;
-        //     const { nomb_anexo, respuesta } = attachment || {};
-
-        //     console.dir(item)
-
-        //     if (item.defaultValues.ceanexo?.length) {
-        //         const { criterio }: any = original.find((i: any) => !!i.criterio) || {};
-        //         const { evidencias }: any = original.find((i: any) => !!i.evidencias) || {};
-
-        //         _list[item.orden_resp ? (item.orden_resp - 1) : _list.length] = {
-        //             item,
-        //             attachment,
-        //             criterio,
-        //             evidencias,
-        //             nomb_anexo,
-        //             respuesta,
-        //             id: idx + 1
-        //         }
-        //     }
-        // })
-
         return _list.filter(l => !!l);
-        // return _list;
     }
 
     useEffect(() => {
@@ -313,7 +281,7 @@ const AttachmentsTable = ({
         </Modal>
 
         <div className='position-relative'>
-        <p className='position-absolute end-0 text-muted' style={{top: "-50px"}}>{mapedList.length} items</p>
+            <p className='position-absolute end-0 text-muted' style={{ top: "-50px" }}>{mapedList.length} items</p>
             <Alert {...alertData} />
             <Table bordered responsive className='pb-5'>
                 <thead className='small'>

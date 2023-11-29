@@ -49,7 +49,7 @@ const AllAttachments = ({
         try {
             return data.ceanexo?.filter((a: any) => new RegExp(`${filter}`, "gi").test(`${nomb_anexo}-${data.anexo_nombre}`))
                 .map((i: any, idx: number) => {
-
+                    console.log(i)
                     return <tr key={`row-${nomb_anexo}-${idx}`} className={classnames({ "table-danger": deletedReference })}>
                         {idx === 0 && <td
                             rowSpan={data.ceanexo?.length || 1}
@@ -111,10 +111,10 @@ const AllAttachments = ({
                         <td>{i.ubianexo}</td>
                         <td>
                             <div className='mb-2'>
-                                <b>Criterio:</b> <span>{i.criterio}</span>
+                                <b>Criterio:</b> <span>{i.nomb_criterio}</span>
                             </div>
                             <div>
-                                <b>Evidencia:</b> <span>{i.evidencias}</span>
+                                <b>Evidencia:</b> <span>{i.nomb_evidencias}</span>
                             </div>
                         </td>
                         {/* <td style={{ maxWidth: "300px" }}>{i.evidencias}</td> */}
