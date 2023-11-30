@@ -12,7 +12,7 @@ import { getProcessList } from "../../store/slices/processSlice";
 import Card from "../../components/Card";
 import classnames from 'classnames';
 import { getDateDiff, getNormalDate } from "../../utils/dateUtils";
-import { Clip, Edit, ExclamationCircleFill, Folder2Open, LinkIcon, PauseFill, Plus, Printer, ThreeDotsVertical, XCircle } from "../../components/Icons";
+import { Clip, Edit, ExclamationCircleFill, Folder2Open, LinkIcon, PauseFill, Plus, ThreeDotsVertical, XCircle } from "../../components/Icons";
 import styles from './../Process.module.css';
 import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } from "../../components/Modal";
 import AllAttachments from "../../components/AttachmentsTable/AllAttachments";

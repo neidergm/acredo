@@ -41,7 +41,7 @@ const ConditionsDetails = () => {
   const processSelected = useAppSelector(state => state.process.selected);
   const conditionSelected = useAppSelector(state => state.conditions.selected);
   const [showAllPhases, setShowAllPhases] = useState(true);
-
+  console.log(processSelected)
   const phases = {
     all: useAppSelector(state => state.conditions.selectedData.phases),
     active: useAppSelector(state => state.conditions.selectedData.active)
@@ -115,11 +115,11 @@ const ConditionsDetails = () => {
       fullscreen: "lg",
       title: "Anexos de la fase",
       children: <>
-        {phases.active?.phase?.id && <AllAttachments phaseId={phases.active.phase.id} />}
+        <AllAttachments phaseId={conditionSelected!.fase} />
       </>,
       footer: <ModalFooter>
         <Button color='primary2' onClick={() => closeModal(setModalData)}>Cerrar</Button>
-        <Link to={`/proceso/fases/anexos/${processSelected.id_fase!}`} target="_blank"
+        <Link to={`/proceso/fases/anexos/${conditionSelected?.fase}`} target="_blank"
           className="btn btn-primary">Abrir en nueva pestaña</Link>
       </ModalFooter>
     })

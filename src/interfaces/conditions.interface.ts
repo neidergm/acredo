@@ -29,6 +29,7 @@ export interface I_Condition {
         nomb_etapa: string;
         responsables: string;
     };
+    fase: number;
     form_cond: string;
     /**
      * TASK id

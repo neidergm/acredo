@@ -2,9 +2,9 @@ export interface I_Process {
     coment_conv: string;
     cod_snies: string | null;
     est_conv: number,
-    fase_actual: string,
+    fase_actual: string | null,
     id_conv: number,
-    id_fase: null | number,
+    // id_fase: null | number,
     id_prog: null | number,
     id_sede: number,
     id_tcond: number,

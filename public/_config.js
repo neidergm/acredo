@@ -1,6 +1,6 @@
 const _CONFIG = {
     storage_prefix: "masteru",
-    api_base_url: 'https://axis.curn.edu.co/apimasterdemo/api',
+    api_base_url: 'https://axis.curn.edu.co/apimaster/api',
     error_reporting_url: "https://axis.curn.edu.co/apildap/api/log/errorwrite",
     google_client: {
         active: true,
