@@ -41,9 +41,9 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
 
     const { closeLoader, openLoader } = useLoader()
 
-    const loadEvents = (_tab = tab) => {
+    const loadEvents = (_tab = tab, force = false) => {
         if (_tab === 2) return loadOldEvents()
-        if (events) return new Promise((r) => r(true))
+        if (events && !force) return new Promise((r) => r(true))
         return AXIOS_REQUEST(`${GET_PROGRAM_EVENTS + program_id}`).then(resp => {
             setEvents(resp.data)
             return true;
@@ -75,7 +75,7 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
                         AXIOS_REQUEST(`${DELETE_PROGRAM_EVENT}${event.id_evento}`, "DELETE").then(res => {
                             toast.success("Evento eliminado correctamente", { position: "top-right" });
                             openLoader("Actualizando lista", null)
-                            loadEvents().then(() => {
+                            loadEvents(undefined, true).then(() => {
                                 closeLoader(() => callback?.(true))
                             })
                         }).catch(e => {
@@ -93,7 +93,7 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
 
     const editEvent = (event?: I_ProgramEvent) => {
         const FORM_ID = "FORM_EVENT";
-        const form = structuredClone(eventForm);
+        const form = eventForm();
 
         if (extraData?.deansAndDirectors) {
             form.splice(form.length - 1, 0, {
@@ -151,7 +151,7 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
                 .then(res => {
                     toast.success(`Evento ${data.id_evento ? "actualizado" : "registrado"} correctamente`, { position: "top-right" });
                     openLoader("Actualizando listado", null)
-                    loadEvents().then(() => {
+                    loadEvents(undefined, true).then(() => {
                         closeModal(setModal)
                         closeLoader(() => !data.id_evento && callback?.(true))
                     })
@@ -218,7 +218,9 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
                     </div>
                     <div className='mt-2'>
                         <p className='fw-semibold mb-1'>{event.nomb_evento}</p>
-                        <p className='text-secondary small'>{event.desc_evento ? `Descripción: ${event.desc_evento}` : "Sin descripción"}</p>
+                        <div className='text-secondary small'>
+                            {event.desc_evento ? <div dangerouslySetInnerHTML={{ __html: `${event.desc_evento}` }}></div> : "Sin descripción"}
+                        </div>
                     </div>
                 </div>
             })}

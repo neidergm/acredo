@@ -1,6 +1,8 @@
+import { I_FormField } from '../interfaces/conditions.interface';
 import { T_FieldsTypes } from '../interfaces/generic.interface';
+import mapField from '../utils/mapField';
 
-const eventForm: T_FieldsTypes[] = [
+const eventForm = (): T_FieldsTypes[] => [
     {
         "name": "fech_evento",
         "label": "Fecha",
@@ -22,14 +24,29 @@ const eventForm: T_FieldsTypes[] = [
             "required": true
         }
     },
+    // {
+    //     "name": "desc_evento",
+    //     "label": "Descripción",
+    //     "tag": "input",
+    //     "type": "textarea",
+    //     "wrapperClassName": "col-12",
+    //     "style": { "minHeight": "150px" },
+    //     "validations": {}
+    // },
     {
-        "name": "desc_evento",
-        "label": "Descripción",
-        "tag": "input",
-        "type": "textarea",
-        "wrapperClassName": "col-12",
-        "style": { "minHeight": "150px" },
-        "validations": {}
+        ...mapField({
+            json_campo: {
+                "name": "desc_evento",
+                "label": "Descripción",
+                "tag": "custom",
+                "type": "ckeditor",
+                "validateAs": "input",
+                "wrapperClassName": "col-12",
+                // "config": {},
+                // "style": { "minHeight": "150px" },
+                "validations": {}
+            }
+        } as unknown as I_FormField)
     },
     {
         "name": "reco_evento",
