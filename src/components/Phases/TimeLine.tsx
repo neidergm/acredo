@@ -7,7 +7,6 @@ import { Badge } from 'reactstrap';
 import { CheckCircleFill, Flag } from '../Icons';
 
 const TimeLine = ({ list, canEdit, taskEnded }: { list: T_Stage[], canEdit: boolean, taskEnded?: boolean }) => {
-    console.log(list)
     return (
         <div>
             {list.map(stage => <div>
@@ -38,53 +37,35 @@ const TimeLine = ({ list, canEdit, taskEnded }: { list: T_Stage[], canEdit: bool
                                     {action.est_accion === 0 ?
                                         (taskEnded && <Badge className='float-end' pill>No se realizó</Badge>)
                                         : (action.est_accion !== 2 &&
-                                            // <Badge pill color='success' className='float-end d-line-block'>Realizada</Badge> :
                                             <Badge pill color={dateDiff < 0 ? "danger" : "primary"} className='float-end d-line-block'>
                                                 {dateDiff < 0 ? `Vencido hace ${dateDiff * -1} días` : `Vence ${dateDiff === 0 ? "hoy" : "en " + dateDiff + " días"}`}
                                             </Badge>)}
                                 </span>
                             </div>
-
-                            <div className='bg-light px-3 py-2 rounded-4 mt-1 d-inline-block'>
-                                <p className='fw-semibold'>{action.nomb_accion}</p>
-                                {/* {action.est_accion === 2 && <p>
-                                        <b className='d-block'>Fecha de realización: </b>
-                                        <span>
-                                            {getNormalDate(action.marc_update, { dateStyle: "full", timeStyle: "short" })}
-                                        </span>
-                                    </p>} */}
-                                <div className='text-secondary small'>
-                                    {/* <b className='d-block small'>Responsables: </b> */}
-                                    <ul className='ps-4'>
-                                        {action.usuarios?.map((u, i) => <li key={i} title={u.nomb_cargo}>
-                                            {u.responsable} <small className='opacity-50'> | {u.rol_nombre}</small></li>) || <li>Sin responsables</li>}
-                                    </ul>
+                            <div className={classnames('d-xl-flex gap-2 justify-content-between align-items-center rounded-4', styles["hover-light"])}>
+                                <div className='bg-light px-3 py-2 rounded-4 mt-1 d-inline-block'>
+                                    <p className='fw-semibold'>{action.nomb_accion}</p>
+                                    <div className='text-secondary small'>
+                                        <ul className='ps-4'>
+                                            {action.usuarios?.map((u, i) => <li key={i} title={u.nomb_cargo}>
+                                                {u.responsable} <small className='opacity-50'> | {u.rol_nombre}</small></li>) || <li>Sin responsables</li>}
+                                        </ul>
+                                    </div>
                                 </div>
-                            </div>
-                            {action.est_accion === 2 && <div className='small text-secondary opacity-75 mt-2'>
-                                <i className='text-success me-2'>
-                                    <CheckCircleFill size={14} />
-                                </i>
-                                <small>Realizada el {getNormalDate(action.marc_update, { dateStyle: "long", timeStyle: "short" })}</small>
-                            </div>
-                            }
-                            {/* {event.reco_evento && <div className='position-relative' title='Recordatorios'>
-                            <CustomDropdown
-                                options={
-                                    [
-                                        { text: `${event.reco_evento.length} Recordatorios`, optionProps: { header: true } },
-                                        ...(event.reco_evento.map?.((e) => ({ text: `${e.num_dia} días antes del evento`, optionProps: { disabled: true } })) || [])
-                                    ]
-                                }                                >
-                                <DropdownToggle size="sm" color='link' className='text-dark p-0 position-relative'>
-                                    <span className="position-absolute top-0 start-100 translate-middle rounded-pill badge bg-warning bg-opacity-25">
-                                        <span className='text-warning fw-bold'>{event.reco_evento.length}</span>
-                                    </span>
-                                    <i className='text-secondary'><History /></i>
-                                </DropdownToggle>
-                            </CustomDropdown>
-                        </div>} */}
 
+                                {action.est_accion === 2 && <>
+                                    <div className='flex-grow-1'><hr /></div>
+                                    <div className={classnames('small text-secondary opacity-75 mt-2 position-lg-absolute end-0 top-50 align-middle', styles["marc-temp"])}>
+                                        <div className='d-flex align-items-center gap-2'>
+                                            <div className='text-success'><CheckCircleFill size={16} /></div>
+                                            <div>
+                                                <small>Realizada el {getNormalDate(action.marc_update, { dateStyle: "long", timeStyle: "short" })}</small>
+                                                {action.usua_finalizar && <small className='d-block'>Por el usuario {action.usua_finalizar}</small>}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </>}
+                            </div>
                         </div>
                     })}
                 </div>

@@ -41,12 +41,18 @@ const PhasesList = ({ isAdmin, taskEnded }: T_Props) => {
         <Button color='primary2' onClick={() => closeModal(setModal)}>Cerrar</Button>
       </ModalFooter>,
       children: <div>
-        {action.est_accion === 2 && <p>
-          <b className='d-block'>Fecha de realización: </b>
-          <span>
-            {getNormalDate(action.marc_update, { dateStyle: "full", timeStyle: "short" })}
-          </span>
-        </p>}
+        {action.est_accion === 2 && <div >
+          <p className='border-start border-4 ps-2 border-success'>
+            <b className='d-block'>Fecha de realización: </b>
+            <span>
+              {getNormalDate(action.marc_update, { dateStyle: "full", timeStyle: "short" })}
+            </span>
+          </p>
+          {action.usua_finalizar && <p className='border-start border-4 ps-2 border-success'>
+            <b className='d-block'>Usuario que finalizó la acción: </b>
+            <span>{action.usua_finalizar}</span>
+          </p>}
+        </div>}
         <p>
           <b className='d-block'>Fecha límite: </b>
           <span>

@@ -41,7 +41,6 @@ const ConditionsDetails = () => {
   const processSelected = useAppSelector(state => state.process.selected);
   const conditionSelected = useAppSelector(state => state.conditions.selected);
   const [showAllPhases, setShowAllPhases] = useState(true);
-  console.log(processSelected)
   const phases = {
     all: useAppSelector(state => state.conditions.selectedData.phases),
     active: useAppSelector(state => state.conditions.selectedData.active)

@@ -22,6 +22,7 @@ export type T_Action = {
     rol_accion: T_UserRole;
     rol_nombre: string;
     usuarios?: T_UserOfAction[] | null;
+    usua_finalizar: null | string;
 }
 
 export type T_Stage = {

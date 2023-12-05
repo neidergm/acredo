@@ -144,8 +144,6 @@ const UsersManagement = () => {
       submitButton: {
         value: "Si, eliminar", onClick: () => {
           openLoader("Eliminando cargo", () => {
-            console.log("Eliminado cargo")
-
             setUsersByGroups([])
             getUsersByGroup((groups as T_Charge[])[chargeIdx].id_cargo, chargeIdx).then(() => {
               closeLoader()
