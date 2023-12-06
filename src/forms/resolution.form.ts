@@ -108,17 +108,17 @@ const resolutionForm: T_FieldsTypes[] = [
         "wrapperClassName": "col-12",
         "validations": {}
     },
-    // {
-    //     "name": "doc_reso",
-    //     "label": "Documento de resolución",
-    //     "tag": "file",
-    //     "type": "simple",
-    //     "accept": [".pdf"],
-    //     "wrapperClassName": "col-12",
-    //     "validations": {
-    //         maxFileSize: 20,
-    //     }
-    // },
+    {
+        "name": "file_reso",
+        "label": "Documento de resolución",
+        "tag": "file",
+        "type": "simple",
+        "accept": [".pdf"],
+        "wrapperClassName": "col-12",
+        "validations": {
+            maxFileSize: 20,
+        }
+    },
 ]
 
 export default resolutionForm;

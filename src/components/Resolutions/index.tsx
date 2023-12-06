@@ -116,8 +116,11 @@ const Resolutions = ({ program_id, saveCallback, canEdit = false, children }: T_
         let defaultValues = {};
 
         if (reso) {
-            const { fech_ejec, fech_reso, ncre_snies, nper_snies, vige_reso, peri_acad, reso_apro, reco_min, jres_deta, just_reso, estado } = reso;
-            defaultValues = { fech_ejec, fech_reso, ncre_snies, nper_snies, vige_reso, reso_apro, peri_acad, reco_min, jres_deta, just_reso, estado: `${estado}` }
+            const { fech_ejec, fech_reso, ncre_snies, nper_snies, vige_reso, peri_acad, reso_apro, reco_min, jres_deta, just_reso, estado, url_reso } = reso;
+            defaultValues = {
+                fech_ejec, fech_reso, ncre_snies, nper_snies, vige_reso, reso_apro, peri_acad, reco_min, jres_deta, just_reso, estado: `${estado}`,
+                file_reso: [{ name: "Documento resolución", url: url_reso}]
+            }
         }
 
         setModal({
@@ -129,7 +132,7 @@ const Resolutions = ({ program_id, saveCallback, canEdit = false, children }: T_
                     formProps={{ id: FORM_ID }}
                     defaultValues={defaultValues}
                     onSubmit={data => {
-                        data = getDifferenceBetweenData(defaultValues, data)
+                        data = getDifferenceBetweenData(defaultValues, data, false)
                         if (Object.keys(data).length) {
                             data.reso_apro ||= reso?.reso_apro;
                             reso?.id_reso && (data.id_reso = reso.id_reso);
@@ -249,6 +252,9 @@ const Resolutions = ({ program_id, saveCallback, canEdit = false, children }: T_
                             <div>
                                 <b className='fw-semibold'>Justificación detallada: </b>{r.jres_deta || "No tiene"}
                             </div>
+                            {r.url_reso && <div>
+                                <b className='fw-semibold'>Documento: </b><a target='_blank' href={r.url_reso}>Ver resolución</a>
+                            </div>}
                         </div>
                         {/* <div className={`position-absolute text-${color}`} style={{
                     bottom: "15%",
@@ -372,7 +378,7 @@ const Resolutions = ({ program_id, saveCallback, canEdit = false, children }: T_
                                     <tr>
                                         <td><b className="fw-semibold">Documento de resolución</b></td>
                                         <td>
-                                            {r.doc_reso ? <a className='link-dark' href={r.doc_reso} target='_blank' rel="noreferrer">
+                                            {r.url_reso ? <a className='link-dark' href={r.url_reso} target='_blank' rel="noreferrer">
                                                 <FilePDF size={18} /> Ver documento
                                             </a> : <span className='text-secondary'>Sin documento registrado</span>
                                             }

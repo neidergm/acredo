@@ -1,3 +1,4 @@
+import { isDebuggerStatement } from "typescript";
 import { I_FormField, I_FormFieldWithAnswer, T_FileAnswer } from "../interfaces/conditions.interface"
 import { I_JSONObject, T_FieldsTypes } from "../interfaces/generic.interface"
 import { dateToString, stringToDate } from "./dateUtils";
@@ -133,11 +134,14 @@ const setFileAnswer = (data: FileList) => {
  * @returns FormData
  */
 export const jsonToFormData = (json: I_JSONObject, prefix = "", formData = new FormData()): FormData => {
-
     for (const key in json) {
         let val = json[key]
-        if (json[key] instanceof Date) val = dateToString(val, undefined, true)
-        formData.append(`${prefix}${key}`, val || "");
+        if (val instanceof FileList) {
+            setFileAnswer(val).forEach(f => formData.append(`${prefix}${key}`, f));
+        } else {
+            if (val instanceof Date) val = dateToString(val, undefined, true)
+            formData.append(`${prefix}${key}`, val || "");
+        }
     }
     return formData;
 }
@@ -147,7 +151,7 @@ export const jsonToFormData = (json: I_JSONObject, prefix = "", formData = new F
  * @param {Array<T_FileAnswer>} files  
  * @returns { "name": string, "url": string } Array of files object
  */
-export const transformFileValue = (files: T_FileAnswer[]) => files.map((e) => ({ name: e.name || e.name, url: e.url }))
+export const transformFileValue = (files: T_FileAnswer[]) => files.map((e) => ({ name: e.name, url: e.url }))
 
 /**
  * Get correct item default value
@@ -170,21 +174,18 @@ export const getFormItemDefaultValue = ({ respuesta, json_campo }: I_FormFieldWi
     return rta
 }
 
-export const getDifferenceBetweenData = (oldValues: I_JSONObject, newValues: I_JSONObject) => {
+export const getDifferenceBetweenData = (oldValues: I_JSONObject, newValues: I_JSONObject, excludeEmptyValues = true) => {
 
     const diff: I_JSONObject = {};
-
     for (const key in newValues) {
 
         let ov: any = oldValues[key];
         const nv: any = newValues[key];
         let nvs: any = newValues[key];
 
-        if (
-            (nv === "")
-            &&
-            (ov === null || ov === undefined)
-        ) continue
+        if (excludeEmptyValues) {
+            if ((nv === "") && (ov === null || ov === undefined)) continue
+        }
 
         if (nvs instanceof Date && ov) {
             ov = stringToDate(ov)

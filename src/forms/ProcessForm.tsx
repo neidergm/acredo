@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import Form from 'react-ngm-form'
 import mapField from '../utils/mapField';
 import { I_FormField } from '../interfaces/conditions.interface';
@@ -19,12 +19,12 @@ const ProcessForm = ({
     onSubmit
 }: T_Props) => {
 
-    const [form, setForm] = useState<T_FieldsTypes[]>([]);
+    // const [form, setForm] = useState<T_FieldsTypes[]>([]);
     // const [selectProgram, setSelectProgram] = useState<any>();
     const fetchedProcessTypeRef = useRef<any>([]);
     const [_, setFP] = useState<any>([]);
 
-    const processForm: T_FieldsTypes[] = [
+    const form: T_FieldsTypes[] = useMemo(() => [
         {
             "name": "nomb_conv",
             "label": "Nombre",
@@ -70,28 +70,6 @@ const ProcessForm = ({
             }
         },
         {
-            "name": "id_prog",
-            "label": "Programa",
-            "tag": "select",
-            "type": "simple",
-            "wrapperClassName": "col-md-6",
-            "options": null,
-            "request": {
-                method: "GET",
-                params: {},
-                url: GET_PROGRAMS_FOR_SELECT
-            },
-            "dependsOn": "id_tcond",
-            doRequest: ({ method, params, url }: I_JSONObject) => {
-                return AXIOS_REQUEST(url, method, params).then(resp => {
-                    return { options: resp.data.map((i: I_JSONObject) => ({ value: i.id_prog, label: i.nomb_prog })) };
-                })
-            },
-            "validations": {
-                "required": true
-            }
-        },
-        {
             "name": "id_sede",
             "label": "Sede",
             "tag": "select",
@@ -113,6 +91,28 @@ const ProcessForm = ({
             }
         },
         {
+            "name": "id_prog",
+            "label": "Programa",
+            "tag": "select",
+            "type": "simple",
+            "wrapperClassName": "col-md-6",
+            "options": null,
+            "request": {
+                method: "GET",
+                params: "{id_sede}",
+                url: GET_PROGRAMS_FOR_SELECT + "/all/"
+            },
+            "dependsOn": "id_sede",
+            doRequest: ({ method, params, url }: I_JSONObject) => {
+                return AXIOS_REQUEST(url, method, params).then(resp => {
+                    return { options: resp.data.map((i: I_JSONObject) => ({ value: i.id_prog, label: i.nomb_prog })) };
+                })
+            },
+            "validations": {
+                "required": true
+            }
+        },
+        {
             "name": "coment_conv",
             "label": "Comentarios / observaciones",
             "tag": "input",
@@ -121,15 +121,15 @@ const ProcessForm = ({
             "wrapperClassName": "col-12",
             "validations": {}
         }
-    ]
+    ].map(i => mapField({ json_campo: i } as I_FormField)), [])
 
-    useEffect(() => {
-        setForm(
-            processForm.map(i => mapField({ json_campo: i } as I_FormField))
-        )
-    }, [])
+    // useEffect(() => {
+    //     setForm(
+    //         processForm.map(i => mapField({ json_campo: i } as I_FormField))
+    //     )
+    // }, [])
 
-    if (!form.length) return <></>
+    // if (!form.length) return <></>
 
     return (
         <Form

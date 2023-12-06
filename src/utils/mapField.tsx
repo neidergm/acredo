@@ -139,10 +139,10 @@ const mapField = (item: I_FormField, defaultValue?: any) => {
             }
         }
 
-
-
     } else if (field.tag === "list") {
         field.fields = field.fields.map((f, i) => mapField({ json_campo: f } as typeof item)!)
+    }else if(field.tag){
+        field.defaultValue = defaultValue;
     }
 
     return field;

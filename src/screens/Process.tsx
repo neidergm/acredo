@@ -167,7 +167,6 @@ const Process = () => {
         value: "Si, crear", onClick: () => {
           openLoader("Creando proceso", () => {
             const d = jsonToFormData(data);
-
             AXIOS_REQUEST(CREATE_PROCESS, "POST", d)
               .then(r => {
                 toast.success("Se ha creado el proceso correctamente", { position: "top-right" })
