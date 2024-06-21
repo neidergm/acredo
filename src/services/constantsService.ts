@@ -4,6 +4,8 @@ export const GOOGLE_CLIENT_ID = window._NGconfig.google_client.id;
 
 export const ERROR_REPORTING_URL = window._NGconfig.error_reporting_url;
 
+export const FORMATION_TYPES_LIST = window._NGconfig.formation_type;
+
 export const stringBase64 = (str: string | null, decrypt?: boolean) => {
     if (!str) return str;
     if (decrypt === true) {

@@ -69,7 +69,7 @@ const AXIOS_REQUEST = (url: string, method = "get", data: null | FormData | I_JS
         return resp?.data
     }).catch(err => {
         if(err.code === "ERR_NETWORK"){
-            toast.error("Error, por favor verifique su conexión a internet e intente nuevamente", {position: "bottom-center", duration: 15000, className: "bg-warning text-white"})
+            toast.error("Hubo un error, tal vez se deba a su conexión a internet", {id: "GEN_ERROR", position: "bottom-center", duration: 10000, className: "bg-warning text-white"})
         }
         throw new Error(err);
     })

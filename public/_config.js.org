@@ -1,10 +1,14 @@
 const _CONFIG = {
+       /**
+     * @type REQUIRED
+     * @description For programs details
+     */
+        formation_type: ["TÉCNICO", "TECNOLOGO", "PROFESIONAL", "ESPECIALIZACIÓN"],
     /**
      * @type REQUIRED
      * @description For browser storage
      */
     storage_prefix: "masteru",
-
     /**
      * @type REQUIRED
      */

@@ -1,6 +1,7 @@
 import { I_FormField } from '../interfaces/conditions.interface';
 import { I_JSONObject, T_FieldsTypes } from '../interfaces/generic.interface';
 import { AXIOS_REQUEST } from '../services/axiosService';
+import { FORMATION_TYPES_LIST } from '../services/constantsService';
 import { CITIES_BY_DEPARTMENT, DEPARTMENT_LIST, GET_FACULTAD } from '../services/endPointsService';
 import mapField from '../utils/mapField';
 
@@ -114,7 +115,7 @@ const programForm = (defaultValues: I_JSONObject): T_FieldsTypes[] => [
         "label": "Tipo de formación",
         "tag": "select",
         "type": "simple",
-        "options": ["TÉCNICO", "TECNOLOGO", "PROFESIONAL"],
+        "options": FORMATION_TYPES_LIST,
         "wrapperClassName": "col-6",
         "validations": {
             "required": true
