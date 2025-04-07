@@ -8,7 +8,7 @@ import { useAppSelector } from "../../hooks/useAppSelector";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { selectCondition, getPhasesWithConditions } from "../../store/slices/taskSlice";
 import CircleProgress from "../../components/CircleProgress";
-import { getProcessList } from "../../store/slices/processSlice";
+import { getProcessList, setProcessList } from "../../store/slices/processSlice";
 import Card from "../../components/Card";
 import classnames from 'classnames';
 import { getDateDiff, getNormalDate } from "../../utils/dateUtils";
@@ -21,7 +21,7 @@ import Form from "react-ngm-form";
 import { taskForm } from "../../forms/task.form";
 import { AXIOS_REQUEST } from "../../services/axiosService";
 import { jsonToFormData } from "../../utils/formUtils";
-import { DELETE_PHASE, SAVE_PHASE, SAVE_TASK } from "../../services/endPointsService";
+import { DELETE_PHASE, GET_PROCESS_BY_STATE, SAVE_PHASE, SAVE_TASK } from "../../services/endPointsService";
 import toast from 'react-hot-toast';
 import { T_PhasesWithConditions } from "../../interfaces/phasesAndStages.interface";
 import CustomDropdown from "../../components/CustomDropdown";
@@ -31,6 +31,8 @@ import UserResume from "../../components/UserResume";
 import phaseForm from "../../forms/phase.form";
 import useLoader from "../../hooks/useLoader";
 import useAlert from "../../hooks/useAlert";
+import { sessionStorageService } from "../../services/localStorageService";
+import { SELECT_PROCESS_TYPE_FILTER } from "../../services/constantsService";
 
 let lastAccordionOpen = [""];
 
@@ -254,7 +256,13 @@ const Conditions = () => {
   }
 
   const getData = () => {
-    return dispatch(getProcessList(Number(id_process))).then((r) =>
+    const filterType = sessionStorageService.getItem(SELECT_PROCESS_TYPE_FILTER);
+    // if (filterType) {
+    //   return AXIOS_REQUEST(`${GET_PROCESS_BY_STATE}${filterType}`).then(resp => {
+    //     dispatch(setProcessList(resp.data));
+    //   })
+    // }
+    return dispatch(getProcessList({ id_process: Number(id_process), status: filterType })).then((r) =>
       dispatch(getPhasesWithConditions(Number(id_process))).then(() => r.payload)
     )
   }

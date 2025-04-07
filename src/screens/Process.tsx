@@ -25,9 +25,9 @@ import useLoader from '../hooks/useLoader';
 import useAlert from '../hooks/useAlert';
 import { getNormalDate } from '../utils/dateUtils';
 import { sessionStorageService } from '../services/localStorageService';
+import { SELECT_PROCESS_TYPE_FILTER } from '../services/constantsService';
 
 let timeout: ReturnType<typeof setTimeout>;
-const selectFilterValue = "process/selectedFilterValue";
 
 const Process = () => {
 
@@ -43,7 +43,7 @@ const Process = () => {
   const { closeLoader, openLoader } = useLoader()
   const is_admin = !isSupervisor(userInfo?.rol) && isAdmin(userInfo?.rol)
 
-  const SELECTED_FILTER_VALUE = useMemo(() => sessionStorageService.getItem(selectFilterValue) || "", [processList])
+  const SELECTED_FILTER_VALUE = useMemo(() => sessionStorageService.getItem(SELECT_PROCESS_TYPE_FILTER) || "", [processList])
 
   const goToConditionsScreen = (process: I_Process) => {
     dispatch(selectProcess(process));
@@ -184,7 +184,7 @@ const Process = () => {
   }
 
   const filterListByState = (value: string) => {
-    sessionStorageService.setItem(selectFilterValue, value);
+    sessionStorageService.setItem(SELECT_PROCESS_TYPE_FILTER, value);
     dispatch(setProcessList(null));
     if (value) {
       AXIOS_REQUEST(`${GET_PROCESS_BY_STATE}${value}`).then(resp => {

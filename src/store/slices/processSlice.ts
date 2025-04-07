@@ -11,9 +11,14 @@ const initialState = (): I_ProcessState => ({
     selected: null
 })
 
-export const getProcessList = createAsyncThunk(`${name}/getProcessList`, async (id_process: number | undefined) => {
+export const getProcessList = createAsyncThunk(`${name}/getProcessList`, async (data: { id_process?: number, status?: string } | undefined) => {
 
-    const list: I_Process[] = await AXIOS_REQUEST(PROCESS_LIST).then(r => r.data)
+    const { id_process, status } = data || {}
+    let url = PROCESS_LIST;
+    
+    if (status) url += `/all/${status}`;
+
+    const list: I_Process[] = await AXIOS_REQUEST(url).then(r => r.data)
     return {
         selected: id_process ? list.find(p => p.id_conv === id_process) : null,
         list

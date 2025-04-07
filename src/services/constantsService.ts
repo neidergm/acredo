@@ -6,6 +6,8 @@ export const ERROR_REPORTING_URL = window._NGconfig.error_reporting_url;
 
 export const FORMATION_TYPES_LIST = window._NGconfig.formation_type;
 
+export const SELECT_PROCESS_TYPE_FILTER = "process/selectedFilterValue";
+
 export const stringBase64 = (str: string | null, decrypt?: boolean) => {
     if (!str) return str;
     if (decrypt === true) {

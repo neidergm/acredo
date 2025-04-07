@@ -224,7 +224,7 @@ const ConditionsDetails = () => {
     if (!id_process || !id_cond) return navigate("/", { replace: true })
 
     if (!processSelected) {
-      dispatch(getProcessList(Number(id_process)))
+      dispatch(getProcessList({ id_process: Number(id_process) }))
     }
     else {
       if (!(conditionSelected)) {
