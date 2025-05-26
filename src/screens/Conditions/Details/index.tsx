@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useEffect, useState, useMemo } from 'react'
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate, Link, useSearchParams } from "react-router-dom";
 import { CheckCircleFill, Clip, Edit, ExclamationCircleFill, InfoCircle, LinkIcon, People, ThreeDotsVertical, XCircle } from "../../../components/Icons";
 import { Badge, Button, CloseButton, DropdownToggle, Table } from 'reactstrap';
 import classnames from 'classnames';
@@ -36,6 +36,7 @@ const ConditionsDetails = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { id_process, id_cond } = useParams();
+  const [searchParams] = useSearchParams()
   const { closeLoader, openLoader } = useLoader();
 
   const processSelected = useAppSelector(state => state.process.selected);
@@ -222,9 +223,8 @@ const ConditionsDetails = () => {
 
   useEffect(() => {
     if (!id_process || !id_cond) return navigate("/", { replace: true })
-
     if (!processSelected) {
-      dispatch(getProcessList({ id_process: Number(id_process) }))
+      dispatch(getProcessList({ id_process: Number(id_process), status: searchParams.get("status") || "" }))
     }
     else {
       if (!(conditionSelected)) {

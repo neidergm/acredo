@@ -21,7 +21,7 @@ export interface I_NotificationsState {
 
 export interface I_ProcessState {
     list: Array<I_Process> | null;
-    selected: I_Process | null;
+    selected: I_Process | null | undefined;
 }
 
 export interface I_ProgramsState {

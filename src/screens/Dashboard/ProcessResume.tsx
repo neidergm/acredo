@@ -83,7 +83,9 @@ const ProcessResume = () => {
     }
 
     const pickItem = (process: I_Process) => {
-        navigate(`proceso/${process.id_conv}`)
+        let link = `proceso/${process.id_conv}`;
+        if (filter?.estado === "Terminados") link += `?status=${filter.estado}`;
+        navigate(link)
     }
 
     useEffect(() => {

@@ -47,7 +47,9 @@ const Process = () => {
 
   const goToConditionsScreen = (process: I_Process) => {
     dispatch(selectProcess(process));
-    navigate(`/proceso/${process.id_conv}`);
+    let link = `/proceso/${process.id_conv}`;
+    if (SELECTED_FILTER_VALUE) link += `?status=${SELECTED_FILTER_VALUE}`;
+    navigate(link);
   }
 
   const modalToCreateNewProcess = () => {

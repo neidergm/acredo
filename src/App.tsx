@@ -55,16 +55,18 @@ const App = () => {
 
   return (
     <div className="layout">
-      <Router>
+      <Router basename='/'>
         <header className='header'><Header /></header>
         <main className="main">
           <Suspense fallback={<FallbackComponen1 />}>
             <Routes >
-              <Route path='/' element={screenAvalaible(<Dashboard />, is_admin)} />
-              <Route path='/proceso' element={<Process />} />
-              <Route path='/proceso/:id_process/:id_cond' element={<IntitutionalConditions />} />
-              <Route path='/proceso/:id_process' element={<Conditions />} />
-              <Route path='/proceso/fases/anexos/:id_phase' element={<PhasesAttachments />} />
+              <Route index element={screenAvalaible(<Dashboard />, is_admin)} />
+              <Route path='/proceso'>
+                <Route index element={<Process />} />
+                <Route path=':id_process/:id_cond' element={<IntitutionalConditions />} />
+                <Route path=':id_process' element={<Conditions />} />
+                <Route path='fases/anexos/:id_phase' element={<PhasesAttachments />} />
+              </Route>
               <Route path='/notificaciones' element={<Notifications />} />
               <Route path='/usuarios' element={screenAvalaible(<UsersManagement />, is_admin)} />
               <Route path='/programa/:id_program' element={<ProgramDetails />} />

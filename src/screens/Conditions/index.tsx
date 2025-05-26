@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { SubHeader } from "../../components/SubHeader";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { I_Condition } from "../../interfaces/conditions.interface";
 import { Accordion, AccordionBody, AccordionHeader, AccordionItem, Badge, Button, DropdownToggle, ListGroup, ListGroupItem, Progress } from "reactstrap";
 import Loader from "../../components/Loader";
@@ -8,7 +8,7 @@ import { useAppSelector } from "../../hooks/useAppSelector";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { selectCondition, getPhasesWithConditions } from "../../store/slices/taskSlice";
 import CircleProgress from "../../components/CircleProgress";
-import { getProcessList, setProcessList } from "../../store/slices/processSlice";
+import { getProcessList } from "../../store/slices/processSlice";
 import Card from "../../components/Card";
 import classnames from 'classnames';
 import { getDateDiff, getNormalDate } from "../../utils/dateUtils";
@@ -21,7 +21,7 @@ import Form from "react-ngm-form";
 import { taskForm } from "../../forms/task.form";
 import { AXIOS_REQUEST } from "../../services/axiosService";
 import { jsonToFormData } from "../../utils/formUtils";
-import { DELETE_PHASE, GET_PROCESS_BY_STATE, SAVE_PHASE, SAVE_TASK } from "../../services/endPointsService";
+import { DELETE_PHASE, SAVE_PHASE, SAVE_TASK } from "../../services/endPointsService";
 import toast from 'react-hot-toast';
 import { T_PhasesWithConditions } from "../../interfaces/phasesAndStages.interface";
 import CustomDropdown from "../../components/CustomDropdown";
@@ -31,14 +31,13 @@ import UserResume from "../../components/UserResume";
 import phaseForm from "../../forms/phase.form";
 import useLoader from "../../hooks/useLoader";
 import useAlert from "../../hooks/useAlert";
-import { sessionStorageService } from "../../services/localStorageService";
-import { SELECT_PROCESS_TYPE_FILTER } from "../../services/constantsService";
 
 let lastAccordionOpen = [""];
 
 const Conditions = () => {
   const location = useLocation()
   const { id_process } = useParams();
+  const [searchParams] = useSearchParams()
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -57,7 +56,7 @@ const Conditions = () => {
 
   const goToConditionDetailsScreen = (condition: I_Condition) => {
     dispatch(selectCondition(condition));
-    navigate(`${location.pathname}/${condition.id_cond}`);
+    navigate(`${location.pathname}/${condition.id_cond}${location.search}`);
   }
 
   const selectItem = (item: string) => {
@@ -256,12 +255,13 @@ const Conditions = () => {
   }
 
   const getData = () => {
-    const filterType = sessionStorageService.getItem(SELECT_PROCESS_TYPE_FILTER);
+    const filterType = searchParams.get("status") || "";
     // if (filterType) {
     //   return AXIOS_REQUEST(`${GET_PROCESS_BY_STATE}${filterType}`).then(resp => {
     //     dispatch(setProcessList(resp.data));
     //   })
     // }
+    // return dispatch(getProcessList({ id_process: Number(id_process), status: filterType })).then((r) =>
     return dispatch(getProcessList({ id_process: Number(id_process), status: filterType })).then((r) =>
       dispatch(getPhasesWithConditions(Number(id_process))).then(() => r.payload)
     )
@@ -321,8 +321,8 @@ const Conditions = () => {
 
       <div className="container-xxl">
         <div className="mb-5">
-          {!selectedProcess ? <Loader isOpen loaderAsModal={false} /> :
-            <Card className="px-xl-4">
+          {selectedProcess === undefined ? <Loader isOpen loaderAsModal={false} /> :
+            selectedProcess && <Card className="px-xl-4">
               <div className="d-flex gap-4 flex-wrap flex-lg-nowrap">
                 <div className="flex-grow-1 d-flex gap-3 flex-column">
                   {selectedProcess.programa && <div className="flex-grow-1">
@@ -349,7 +349,7 @@ const Conditions = () => {
                   </div>}
 
                   <div className="mt-auto">
-                    {(is_admin || is_supervisor) && <>
+                    {(is_admin || is_supervisor) && phasesWithConditions[selectedProcess.id_conv] && <>
                       <Button size="sm" color="primary2" onClick={() => showUserResume()}>
                         Ver resumen de usuarios
                       </Button>
@@ -388,238 +388,242 @@ const Conditions = () => {
         </div>
 
         <div>
-          {!selectedProcess || !phasesWithConditions[selectedProcess.id_conv] ? <Loader isOpen loaderAsModal={false} />
-            : <>
-              <SubHeader
-                text={`Fases del proceso`}
-                className="p-0 align-items-center gap-3"
-              >
-                {is_admin && <div className='text-end'>
-                  <Button onClick={() => modalToCreatePhase()} size='sm' color='primary' className='ms-auto'>
-                    <i><Plus /></i>
-                    Crear nueva fase
-                  </Button>
-                </div>}
-              </SubHeader>
-              {
-                !phasesWithConditions[selectedProcess.id_conv].length ? <div className=" pt-4 mt-5 opacity-50 text-muted text-center">
-                  <Folder2Open size={40} />
-                  <p className="mt-3">No hay fases y tareas registradas en el proceso</p>
-                </div>
-                  :
-                  <Accordion open={accordionOpen} {...{ toggle: selectItem }} >
-                    {phasesWithConditions[selectedProcess.id_conv].map((phase) => {
-                      const dateDiffInPhase = getDateDiff(new Date(phase.fech_fin));
-                      return <AccordionItem
-                        key={phase.id_fase}
-                        className={
-                          classnames("d-flex gap-2 flex-column mb-3",
-                            styles["process-item"], { [styles["active"]]: accordionOpen.includes(`${phase.id_fase}`) })
-                        } >
-                        <AccordionHeader id={`${phase.id_fase}`} targetId={`${phase.id_fase}`} className=" d-flex mb-2 flex-wrap" tag={Card}>
-                          <div className="d-flex gap-2 flex-grow-1 align-content-center">
-                            <div>
-                              <div className="rounded-circle">
-                                <CircleProgress
-                                  progress={phase.porcentaje || 0}
-                                  stroke={4}
-                                  radius={32}
-                                  color="#06a099"
-                                  content={
-                                    !(phase.porcentaje) ?
-                                      <div className="text-muted"><PauseFill /></div>
-                                      :
-                                      <b>{phase.porcentaje || 0}%</b>
-                                  }
-                                />
+          {selectedProcess === null ? <div className="text-center text-secondary opacity-50">
+            <ExclamationCircleFill size={40} />
+            <h4 className="mt-3">No se encontró el proceso</h4>
+          </div>
+            : selectedProcess === undefined || !phasesWithConditions[selectedProcess.id_conv] ? <Loader isOpen loaderAsModal={false} />
+              : <>
+                <SubHeader
+                  text={`Fases del proceso`}
+                  className="p-0 align-items-center gap-3"
+                >
+                  {is_admin && <div className='text-end'>
+                    <Button onClick={() => modalToCreatePhase()} size='sm' color='primary' className='ms-auto'>
+                      <i><Plus /></i>
+                      Crear nueva fase
+                    </Button>
+                  </div>}
+                </SubHeader>
+                {
+                  !phasesWithConditions[selectedProcess.id_conv].length ? <div className=" pt-4 mt-5 opacity-50 text-muted text-center">
+                    <Folder2Open size={40} />
+                    <p className="mt-3">No hay fases y tareas registradas en el proceso</p>
+                  </div>
+                    :
+                    <Accordion open={accordionOpen} {...{ toggle: selectItem }} >
+                      {phasesWithConditions[selectedProcess.id_conv].map((phase) => {
+                        const dateDiffInPhase = getDateDiff(new Date(phase.fech_fin));
+                        return <AccordionItem
+                          key={phase.id_fase}
+                          className={
+                            classnames("d-flex gap-2 flex-column mb-3",
+                              styles["process-item"], { [styles["active"]]: accordionOpen.includes(`${phase.id_fase}`) })
+                          } >
+                          <AccordionHeader id={`${phase.id_fase}`} targetId={`${phase.id_fase}`} className=" d-flex mb-2 flex-wrap" tag={Card}>
+                            <div className="d-flex gap-2 flex-grow-1 align-content-center">
+                              <div>
+                                <div className="rounded-circle">
+                                  <CircleProgress
+                                    progress={phase.porcentaje || 0}
+                                    stroke={4}
+                                    radius={32}
+                                    color="#06a099"
+                                    content={
+                                      !(phase.porcentaje) ?
+                                        <div className="text-muted"><PauseFill /></div>
+                                        :
+                                        <b>{phase.porcentaje || 0}%</b>
+                                    }
+                                  />
+                                </div>
+                              </div>
+                              <div className="d-flex justify-content-center flex-column">
+                                <span className="d-block mb-1 fw-semibold">{phase.nomb_fase}</span>
+                                <small className="text-dark text-opacity-50">
+                                  <span className="d-none d-md-inline-block pe-1">Desde </span>
+                                  {getNormalDate(phase.fech_ini, { dateStyle: "long" })}
+                                  <span className="d-none d-md-inline-block px-1">hasta </span>
+                                  <span className="d-inline-block d-md-none px-1">a</span>
+                                  {getNormalDate(phase.fech_fin, { dateStyle: "long" })}
+                                </small>
                               </div>
                             </div>
-                            <div className="d-flex justify-content-center flex-column">
-                              <span className="d-block mb-1 fw-semibold">{phase.nomb_fase}</span>
-                              <small className="text-dark text-opacity-50">
-                                <span className="d-none d-md-inline-block pe-1">Desde </span>
-                                {getNormalDate(phase.fech_ini, { dateStyle: "long" })}
-                                <span className="d-none d-md-inline-block px-1">hasta </span>
-                                <span className="d-inline-block d-md-none px-1">a</span>
-                                {getNormalDate(phase.fech_fin, { dateStyle: "long" })}
-                              </small>
-                            </div>
-                          </div>
-                          {phase.porcentaje < 100 && <div>
-                            {dateDiffInPhase < 0 && <Badge color="secondary" className="bg-opacity-25 opacity-75 text-danger me-2">
-                              Venció hace {dateDiffInPhase * -1} días
-                            </Badge>}
-                          </div>}
-                        </AccordionHeader>
-                        <AccordionBody accordionId={`${phase.id_fase}`} tag={Card}>
-                          <ListGroup flush tag="div">
-                            <ListGroupItem
-                              tag="div"
-                              className="pb-5 pb-2 bg-transparent px-0 px-xl-3 d-flex gap-2 justify-content-between border-0"
-                            >
-                              <div className="opacity-50 border-bottom border-2">
-                                Tareas <span className="d-none d-sm-inline-block">en esta fase</span>: <b>{phase.condiciones?.length}</b>
-                              </div>
-                              <div className="d-flex gap-2">
-                                {is_admin ? <>
-                                  <Button
-                                    size='sm'
-                                    color='primary'
-                                    onClick={() => modalToCreateTask(phase)}
-                                  >
-                                    <i><Plus /></i>
-                                    Crear nueva tarea
-                                  </Button>
-
-                                  <CustomDropdown options={[
-                                    { text: "Ver todos los anexos de la fase", icon: <Clip size={16} />, click: () => showAllAttachment(phase) },
-                                    { text: "Modificar fase", icon: <Edit size={16} />, click: () => modalToEditPhase(phase) },
-                                    { text: "Eliminar fase", icon: <XCircle size={16} />, click: () => deletePhase(phase) },
-                                  ]}>
-                                    <DropdownToggle size="sm" color='primary'>
-                                      <ThreeDotsVertical />
-                                    </DropdownToggle>
-                                  </CustomDropdown>
-                                </>
-                                  :
-                                  <Button
-                                    size='sm'
-                                    color='primary'
-                                    onClick={() => showAllAttachment(phase)}
-                                  >
-                                    <i><Clip /></i>
-                                    Ver todos los anexos de la fase
-                                  </Button>
-                                }
-                              </div>
-
-                            </ListGroupItem>
-                            {!(phase.condiciones?.length) ?
+                            {phase.porcentaje < 100 && <div>
+                              {dateDiffInPhase < 0 && <Badge color="secondary" className="bg-opacity-25 opacity-75 text-danger me-2">
+                                Venció hace {dateDiffInPhase * -1} días
+                              </Badge>}
+                            </div>}
+                          </AccordionHeader>
+                          <AccordionBody accordionId={`${phase.id_fase}`} tag={Card}>
+                            <ListGroup flush tag="div">
                               <ListGroupItem
                                 tag="div"
-                                className="pt-4 pb-4 bg-transparent px-0 px-xl-3"
+                                className="pb-5 pb-2 bg-transparent px-0 px-xl-3 d-flex gap-2 justify-content-between border-0"
                               >
-                                <span className="text-warning align-text-bottom me-2">
-                                  <ExclamationCircleFill /> </span>
-                                <span className="text-muted">
-                                  No hay tareas registradas para mostrar
-                                </span>
+                                <div className="opacity-50 border-bottom border-2">
+                                  Tareas <span className="d-none d-sm-inline-block">en esta fase</span>: <b>{phase.condiciones?.length}</b>
+                                </div>
+                                <div className="d-flex gap-2">
+                                  {is_admin ? <>
+                                    <Button
+                                      size='sm'
+                                      color='primary'
+                                      onClick={() => modalToCreateTask(phase)}
+                                    >
+                                      <i><Plus /></i>
+                                      Crear nueva tarea
+                                    </Button>
+
+                                    <CustomDropdown options={[
+                                      { text: "Ver todos los anexos de la fase", icon: <Clip size={16} />, click: () => showAllAttachment(phase) },
+                                      { text: "Modificar fase", icon: <Edit size={16} />, click: () => modalToEditPhase(phase) },
+                                      { text: "Eliminar fase", icon: <XCircle size={16} />, click: () => deletePhase(phase) },
+                                    ]}>
+                                      <DropdownToggle size="sm" color='primary'>
+                                        <ThreeDotsVertical />
+                                      </DropdownToggle>
+                                    </CustomDropdown>
+                                  </>
+                                    :
+                                    <Button
+                                      size='sm'
+                                      color='primary'
+                                      onClick={() => showAllAttachment(phase)}
+                                    >
+                                      <i><Clip /></i>
+                                      Ver todos los anexos de la fase
+                                    </Button>
+                                  }
+                                </div>
+
                               </ListGroupItem>
-                              :
-                              phase.condiciones?.map((item) =>
+                              {!(phase.condiciones?.length) ?
                                 <ListGroupItem
-                                  key={item.id_cond}
                                   tag="div"
-                                  className="d-flex gap-3 px-0 px-xl-1"
+                                  className="pt-4 pb-4 bg-transparent px-0 px-xl-3"
                                 >
-                                  <div
-                                    className="pt-2 pb-0 hover-scale-up bg-transparent px-0 px-xl-3 flex-grow-1"
-                                    onClick={() => goToConditionDetailsScreen(item)}
+                                  <span className="text-warning align-text-bottom me-2">
+                                    <ExclamationCircleFill /> </span>
+                                  <span className="text-muted">
+                                    No hay tareas registradas para mostrar
+                                  </span>
+                                </ListGroupItem>
+                                :
+                                phase.condiciones?.map((item) =>
+                                  <ListGroupItem
+                                    key={item.id_cond}
+                                    tag="div"
+                                    className="d-flex gap-3 px-0 px-xl-1"
                                   >
-                                    <div className="float-end ps-2 d-inline-flex flex-column align-items-center">
-                                      <div className="d-none d-md-block">
-                                        <div className="px-3 rounded-pill badge opacity-50"
-                                          style={{ backgroundColor: `${item.color}` }}>
-                                          {item.estado}
+                                    <div
+                                      className="pt-2 pb-0 hover-scale-up bg-transparent px-0 px-xl-3 flex-grow-1"
+                                      onClick={() => goToConditionDetailsScreen(item)}
+                                    >
+                                      <div className="float-end ps-2 d-inline-flex flex-column align-items-center">
+                                        <div className="d-none d-md-block">
+                                          <div className="px-3 rounded-pill badge opacity-50"
+                                            style={{ backgroundColor: `${item.color}` }}>
+                                            {item.estado}
+                                          </div>
                                         </div>
-                                      </div>
-                                      <div className="ps-2">
-                                        <CircleProgress
-                                          progress={item.porcentaje || 0}
-                                          stroke={5}
-                                          radius={34}
-                                          color={item.porcentaje >= 100 ? "#31ac69" : undefined}
-                                          content={`${item.porcentaje || 0}%`}
-                                        />
-                                      </div>
-                                    </div>
-
-                                    <div className="float-md-end d-flex flex-md-column gap-2 mb-3 mb-md-0 flex-wrap">
-                                      <div className="d-block d-md-none">
-                                        <div className="px-3 rounded-pill badge opacity-50"
-                                          style={{ backgroundColor: `${item.color}` }}>
-                                          {item.estado}
+                                        <div className="ps-2">
+                                          <CircleProgress
+                                            progress={item.porcentaje || 0}
+                                            stroke={5}
+                                            radius={34}
+                                            color={item.porcentaje >= 100 ? "#31ac69" : undefined}
+                                            content={`${item.porcentaje || 0}%`}
+                                          />
                                         </div>
                                       </div>
 
-                                      {Number(item.num_obs) > 0 && <div className="text-end">
-                                        <Badge
-                                          pill
-                                          color="dark"
-                                          className="px-3 bg-opacity-10 text-muted"
-                                        >
-                                          {item.num_obs} Observaciones
-                                        </Badge>
-                                      </div>}
-                                    </div>
-                                    <div>
-                                      <p className="pb-1">{item.nomb_cond}</p>
-                                    </div>
-                                    <div className="d-flex gap-3">
-                                      {/* <p className="card-text d-none small d-xl-inline-block">
+                                      <div className="float-md-end d-flex flex-md-column gap-2 mb-3 mb-md-0 flex-wrap">
+                                        <div className="d-block d-md-none">
+                                          <div className="px-3 rounded-pill badge opacity-50"
+                                            style={{ backgroundColor: `${item.color}` }}>
+                                            {item.estado}
+                                          </div>
+                                        </div>
+
+                                        {Number(item.num_obs) > 0 && <div className="text-end">
+                                          <Badge
+                                            pill
+                                            color="dark"
+                                            className="px-3 bg-opacity-10 text-muted"
+                                          >
+                                            {item.num_obs} Observaciones
+                                          </Badge>
+                                        </div>}
+                                      </div>
+                                      <div>
+                                        <p className="pb-1">{item.nomb_cond}</p>
+                                      </div>
+                                      <div className="d-flex gap-3">
+                                        {/* <p className="card-text d-none small d-xl-inline-block">
                                           <small className="text-muted opacity-50" style={{ marginTop: "-50px" }}>
                                             Última actualización el {new Date(item.marc_update).toLocaleString([], { dateStyle: "long", timeStyle: "short" })}
                                           </small>
                                         </p> */}
-                                      {item.etapa_actual ?
-                                        (item.form_cond === "" ? <div><p className="mb-1 text-danger">
-                                          <small className="d-block lh-1 fw-semibold"><ExclamationCircleFill size={16} /> La tarea se encuentra incompleta</small>
-                                          <small className="ps-3 ms-1">No tiene formularios asociados</small>
-                                        </p></div>
-                                          :
-                                          <div className="d-flex gap-3 gap-lg-4 text-dark opacity-50">
-                                            <p className="mb-1 d-none d-sm-block">
-                                              <small className="d-block text-secondary fw-semibold lh-1 text-nowrap">Etapa actual:</small>
-                                              <small>{item.etapa_actual.nomb_etapa}</small>
-                                            </p>
-                                            <p className="mb-1">
-                                              <small className="d-block text-secondary fw-semibold lh-1 text-nowrap">Acción actual:</small>
-                                              <small>{item.etapa_actual.nomb_accion}</small>
-                                            </p>
-                                            <p className="mb-1">
-                                              <small className="d-block text-secondary fw-semibold lh-1 text-nowrap">Responsable de acción:</small>
-                                              <small className="text-break">{item.etapa_actual.responsables.replace?.(",", "; ")}</small>
-                                            </p>
-                                          </div>)
-                                        :
-                                        <div>
-                                          {
-                                            item.porcentaje < 100 ? (
-                                              item.porcentaje > 0 ?
-                                                <p className="mb-1 text-warning">
-                                                  <small className="d-block lh-1 fw-semibold"><ExclamationCircleFill size={16} /> Todas las etapas y acciones se encuentran completadas</small>
-                                                  <small className="ps-3 ms-1">Esta tarea debe ser marcada como finalizada</small>
-                                                </p>
-                                                :
-                                                <p className="mb-1 text-danger">
-                                                  <small className="d-block lh-1 fw-semibold"><ExclamationCircleFill size={16} /> La tarea se encuentra incompleta</small>
-                                                  <small className="ps-3 ms-1">No cuenta con etapas y acciones registradas</small>
-                                                  {
-                                                    item.form_cond === "" && <small className="ms-1">| No tiene formularios asociados</small>
-                                                  }
-                                                </p>
-                                            )
-                                              :
-                                              <p className="mb-1 opacity-50">
-                                                <small className="d-block text-secondary fw-semibold lh-1">Fecha de finalización:</small>
-                                                <small>{new Date(item.marc_update).toLocaleString([], { dateStyle: "long", timeStyle: "short" })}</small>
+                                        {item.etapa_actual ?
+                                          (item.form_cond === "" ? <div><p className="mb-1 text-danger">
+                                            <small className="d-block lh-1 fw-semibold"><ExclamationCircleFill size={16} /> La tarea se encuentra incompleta</small>
+                                            <small className="ps-3 ms-1">No tiene formularios asociados</small>
+                                          </p></div>
+                                            :
+                                            <div className="d-flex gap-3 gap-lg-4 text-dark opacity-50">
+                                              <p className="mb-1 d-none d-sm-block">
+                                                <small className="d-block text-secondary fw-semibold lh-1 text-nowrap">Etapa actual:</small>
+                                                <small>{item.etapa_actual.nomb_etapa}</small>
                                               </p>
-                                          }
-                                        </div>
-                                      }
+                                              <p className="mb-1">
+                                                <small className="d-block text-secondary fw-semibold lh-1 text-nowrap">Acción actual:</small>
+                                                <small>{item.etapa_actual.nomb_accion}</small>
+                                              </p>
+                                              <p className="mb-1">
+                                                <small className="d-block text-secondary fw-semibold lh-1 text-nowrap">Responsable de acción:</small>
+                                                <small className="text-break">{item.etapa_actual.responsables.replace?.(",", "; ")}</small>
+                                              </p>
+                                            </div>)
+                                          :
+                                          <div>
+                                            {
+                                              item.porcentaje < 100 ? (
+                                                item.porcentaje > 0 ?
+                                                  <p className="mb-1 text-warning">
+                                                    <small className="d-block lh-1 fw-semibold"><ExclamationCircleFill size={16} /> Todas las etapas y acciones se encuentran completadas</small>
+                                                    <small className="ps-3 ms-1">Esta tarea debe ser marcada como finalizada</small>
+                                                  </p>
+                                                  :
+                                                  <p className="mb-1 text-danger">
+                                                    <small className="d-block lh-1 fw-semibold"><ExclamationCircleFill size={16} /> La tarea se encuentra incompleta</small>
+                                                    <small className="ps-3 ms-1">No cuenta con etapas y acciones registradas</small>
+                                                    {
+                                                      item.form_cond === "" && <small className="ms-1">| No tiene formularios asociados</small>
+                                                    }
+                                                  </p>
+                                              )
+                                                :
+                                                <p className="mb-1 opacity-50">
+                                                  <small className="d-block text-secondary fw-semibold lh-1">Fecha de finalización:</small>
+                                                  <small>{new Date(item.marc_update).toLocaleString([], { dateStyle: "long", timeStyle: "short" })}</small>
+                                                </p>
+                                            }
+                                          </div>
+                                        }
+                                      </div>
                                     </div>
-                                  </div>
-                                </ListGroupItem>
-                              )
-                            }
-                          </ListGroup>
-                        </AccordionBody>
-                      </AccordionItem>
-                    })
-                    }
-                  </Accordion>
-              }
-            </>
+                                  </ListGroupItem>
+                                )
+                              }
+                            </ListGroup>
+                          </AccordionBody>
+                        </AccordionItem>
+                      })
+                      }
+                    </Accordion>
+                }
+              </>
           }
         </div>
       </div>

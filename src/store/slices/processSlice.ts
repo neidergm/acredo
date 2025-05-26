@@ -8,14 +8,14 @@ const name = "process";
 
 const initialState = (): I_ProcessState => ({
     list: null,
-    selected: null
+    selected: undefined
 })
 
 export const getProcessList = createAsyncThunk(`${name}/getProcessList`, async (data: { id_process?: number, status?: string } | undefined) => {
 
     const { id_process, status } = data || {}
     let url = PROCESS_LIST;
-    
+
     if (status) url += `/all/${status}`;
 
     const list: I_Process[] = await AXIOS_REQUEST(url).then(r => r.data)
@@ -33,11 +33,14 @@ const processSlice = createSlice({
         setProcessList: (state, action: PayloadAction<Array<I_Process> | null>) => {
             state.list = action.payload;
         },
-        selectProcess: (state, action: PayloadAction<I_Process | null>) => {
+        selectProcess: (state, action: PayloadAction<I_Process | null | undefined>) => {
             state.selected = action.payload;
         }
     },
     extraReducers: (builder) => {
+        builder.addCase(getProcessList.pending, (state) => {
+            state.selected = undefined;
+        });
         builder.addCase(getProcessList.fulfilled, (state, action) => {
             state.list = action.payload.list;
             state.selected = action.payload.selected || null;
