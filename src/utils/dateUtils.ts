@@ -10,10 +10,10 @@ export const stringToDate = (date: string) => {
 }
 
 export const dateToString = (date: Date, join = "-", reverse = false) => {
-    let d = date.toLocaleString([], { month: '2-digit', day: "2-digit", year: "numeric" }).split(/[-|/ |T :]/)
+    let d = date.toLocaleString('es-CO', { month: '2-digit', day: "2-digit", year: "numeric" }).split(/[-|/ |T :]/)
 
     if (reverse) d = d.reverse()
-
+        
     return d.join(join)
 }
 
@@ -36,7 +36,7 @@ export const getNormalDate = (value: string | number, options?: Intl.DateTimeFor
     }
 
     return date.toLocaleString(
-        [], options || { month: '2-digit', day: "2-digit", year: "numeric" }
+        'es-CO', options || { month: '2-digit', day: "2-digit", year: "numeric" }
     )
 }
 

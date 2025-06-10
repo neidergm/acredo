@@ -14,8 +14,8 @@ interface I_Props {
     callback: (data: I_User, toekn: string) => void;
 }
 
-const logo = 'logo-login.svg';
-const logoPartnert = 'logo-partner.png';
+const logo = '/logo-login.svg';
+const logoPartnert = '/logo-partner.png';
 
 const Login = (props: I_Props) => {
 

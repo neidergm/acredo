@@ -135,6 +135,7 @@ const setFileAnswer = (data: FileList) => {
  */
 export const jsonToFormData = (json: I_JSONObject, prefix = "", formData = new FormData()): FormData => {
     for (const key in json) {
+        
         let val = json[key]
         if (val instanceof FileList) {
             setFileAnswer(val).forEach(f => formData.append(`${prefix}${key}`, f));

@@ -10,7 +10,7 @@ import { getNotificationsReport } from '../../store/slices/notificationsSlice';
 import { isAdmin, isSupervisor } from '../../utils/userRolUtils';
 import { APP_COLORS, APP_HELP_LINK, APP_TITLE } from '../../services/constantsService';
 
-const logo = 'logo-header.svg';
+const logo = '/logo-header.svg';
 export const Header = ({ titulo = APP_TITLE }: { titulo?: string }) => {
 
   const unreadCount = useAppSelector(s => s.notifications.unreadCount);
