@@ -7,6 +7,12 @@ const _CONFIG = {
 
     /**
      * @type REQUIRED
+     * @description Link to show help
+     */
+    app_help_link: "",
+
+    /**
+     * @type REQUIRED
      * @description colors for app
      */
     app_colors: {
