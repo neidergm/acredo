@@ -1,4 +1,25 @@
 const _CONFIG = {
+    /**
+     * @type REQUIRED
+     * @description For app title
+     */
+    app_title: "Master U",
+
+    /**
+     * @type REQUIRED
+     * @description colors for app
+     */
+    app_colors: {
+        login: {
+            background: "#ff9400",
+            color: "#fff"
+        },
+        header: {
+            background: "linear-gradient(to right, #06A099 0%, #31AC69 100%)",
+            color: "#fff"
+        }
+    },
+
        /**
      * @type REQUIRED
      * @description For programs details

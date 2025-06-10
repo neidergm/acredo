@@ -9,7 +9,7 @@
     background-color: rgba(234, 234, 255, 0.341);
 }
 
-.login-screen > div{
+.login-screen>div {
     width: inherit;
     flex-grow: 1;
     display: grid;
@@ -66,7 +66,7 @@
     height: 30px;
     border-top-right-radius: 20px;
     border-bottom-right-radius: 20px;
-    background-color: #ff9400;
+    background-color: var(--login-backgroung-color, #ff9400);
     left: -10px;
 }
 
@@ -81,8 +81,8 @@
 }
 
 .login-screen .container .right {
-    color: #fff;
-    background-color: #ff9400;
+    color: var(--login-color, #fff);
+    background-color: var(--login-backgroung-color, #ff9400);
     align-items: center;
     column-gap: 30px;
     font-family: 'FredokaOne' !important;
@@ -127,7 +127,7 @@
 .bar-loader {
     border-radius: 15px;
     height: 8px;
-    background-color: #ff9400;
+    background-color: var(--login-backgroung-color, #ff9400);
     width: 50%;
     animation: loader-bar-animation 1.5s linear infinite;
 }
@@ -242,13 +242,13 @@
     }
 
     .login-screen .container .footer {
-        background-color: #ff9400;
-        color: white;
+        background-color: var(--login-backgroung-color, #ff9400);
+        color: var(--login-color, #fff);
         font-weight: 400;
         display: block !important;
     }
-   
-    .login-screen .container + .footer {
+
+    .login-screen .container+.footer {
         display: none;
     }
 
@@ -263,16 +263,17 @@
 }
 
 @media screen and (max-width: 460px) {
-    .login-screen .container{
+    .login-screen .container {
         width: 100vw;
     }
+
     .login-screen .container .right {
         padding: 30px 15px;
     }
 
     .login-screen .footer {
-        background-color: #ff9400;
-        color: white;
+        background-color: var(--login-backgroung-color, #ff9400);
+        color: var(--login-color, #fff);
         font-weight: 400;
         padding-top: 0px !important;
     }

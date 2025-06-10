@@ -1,4 +1,16 @@
 const _CONFIG = {
+    app_title: "Master U",
+    app_help_link: "https://sites.google.com/curn.edu.co/masterhelp",
+    app_colors: {
+        login: {
+            background: "#ff9400",
+            color: "#fff"
+        },
+        header: {
+            background: "linear-gradient(to right, #06A099 0%, #31AC69 100%)",
+            color: "#f8f9fa"
+        }
+    },
     formation_type: ["TÉCNICO", "TECNOLOGO", "PROFESIONAL", "ESPECIALIZACIÓN"],
     storage_prefix: "masteru",
     api_base_url: 'https://axis.uninunez.edu.co/apimasterdemo/api',

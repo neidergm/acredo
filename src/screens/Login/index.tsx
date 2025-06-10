@@ -4,9 +4,9 @@ import lazyLoaderComponents from "../../services/lazyLoadingService";
 import { I_User } from "../../interfaces/user.interface";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { login } from "../../store/slices/userSlice";
-import logo from './../../images/logo-master.svg';
 import classnames from 'classnames';
 import Footer from "../../components/Footer";
+import { APP_COLORS, APP_TITLE } from "../../services/constantsService";
 
 const GoogleLogin = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "GoogleLogin" */ './../../components/GoogleLogin')));
 
@@ -14,9 +14,12 @@ interface I_Props {
     callback: (data: I_User, toekn: string) => void;
 }
 
+const logo = 'logo-login.svg';
+const logoPartnert = 'logo-partner.png';
+
 const Login = (props: I_Props) => {
 
-    const appname = "Master U";
+    const appname = APP_TITLE;
     const [loader, setLoader] = useState<boolean>(false);
 
     const dispatch = useAppDispatch();
@@ -35,12 +38,18 @@ const Login = (props: I_Props) => {
 
     return (
         <>
-            <div className={style['login-screen']}>
+            <div
+                className={style['login-screen']}
+                style={APP_COLORS?.login ? {
+                    "--login-backgroung-color": APP_COLORS.login.background,
+                    "--login-color": APP_COLORS.login.color,
+                } as React.CSSProperties : undefined}
+            >
                 <div>
                     <div className={classnames("card border-0", style["container"])}>
                         <div className={classnames("card-body", style["left"])}>
                             <div className={style["logo"]}>
-                                <img src={"https://axis.curn.edu.co/images/uninunez/png/logoqteal192.png"} alt="MasterU_partner" />
+                                <img src={logoPartnert} alt="partner" />
                             </div>
                             <div className={style["title"]}>
                                 <b>Bienvenido</b>
@@ -59,7 +68,7 @@ const Login = (props: I_Props) => {
                         </div>
                         <div className={classnames("card-body text-center", style["right"])}>
                             <div className={style["logo"]}>
-                                <img src={logo} alt="MasterU" />
+                                <img src={logo} alt="login" />
                             </div>
                             <div className={style["title"]}>
                                 <h1>{appname}</h1>
@@ -73,7 +82,7 @@ const Login = (props: I_Props) => {
                 <footer className={classnames("small px-3", style["footer"])} >
                     <Footer />
                 </footer>
-            </div>
+            </div >
         </>
     )
 }
