@@ -19,6 +19,7 @@ import { toast } from 'react-hot-toast';
 import CustomDropdown from '../CustomDropdown';
 import useLoader from '../../hooks/useLoader';
 import useAlert from '../../hooks/useAlert';
+import { useSearchParams } from 'react-router-dom';
 
 type T_Props = {
     taskProgress: number,
@@ -36,6 +37,7 @@ const CurrentPhase = ({
     task
 }: T_Props) => {
     const dispatch = useAppDispatch();
+    const [searchParams, setSearchParams] = useSearchParams()
     const { active, phases } = useAppSelector(state => state.conditions.selectedData);
     const { action, phase, stage } = active || {};
 
@@ -95,6 +97,10 @@ const CurrentPhase = ({
         })
         ).then(() => {
             toast.success("Se ha desmarcado la tarea correctamente", { position: "top-right" });
+            if (searchParams.get("status")) {
+                searchParams.delete("status")
+                setSearchParams(searchParams, { replace: true })
+            }
             closeLoader(callback);
             dispatch(setProcessPhasesWithConditions(processId, null));
             dispatch(selectCondition(null));

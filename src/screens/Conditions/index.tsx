@@ -37,7 +37,7 @@ let lastAccordionOpen = [""];
 const Conditions = () => {
   const location = useLocation()
   const { id_process } = useParams();
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -151,6 +151,10 @@ const Conditions = () => {
 
     AXIOS_REQUEST(SAVE_PHASE, "POST", d).then(r => {
       toast.success("Se ha creado la fase correctamente", { position: "top-right" });
+      if (searchParams.get("status")) {
+        searchParams.delete("status")
+        setSearchParams(searchParams, { replace: true })
+      }
       refreshData()
     }).catch(e => {
       closeLoader();
@@ -386,7 +390,6 @@ const Conditions = () => {
             </Card>
           }
         </div>
-
         <div>
           {selectedProcess === null ? <div className="text-center text-secondary opacity-50">
             <ExclamationCircleFill size={40} />
