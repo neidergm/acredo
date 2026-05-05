@@ -1,0 +1,63 @@
+// Utility classes custom de la app. Estas son extensiones del set de utilities
+// de Bootstrap (las clases acá NO existen en Bootstrap nativo).
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+// === Hover scale ===
+// Transition específica (no `all`) para evitar costo de paint y animaciones inesperadas.
+.hover-scale-up {
+    cursor: pointer;
+    transition: transform 0.15s linear, box-shadow 0.15s linear;
+}
+
+.hover-scale-up:hover {
+    z-index: 1;
+    transform: scale(1.02);
+}
+
+.hover-scale-up:hover.hover-shadow-sm {
+    box-shadow: 0 2px 12px -3px #26262628;
+}
+
+// === Border radius ===
+.radius-15 { border-radius: 15px; }
+.radius-10 { border-radius: 10px; }
+
+// === Shadows ===
+.shadow-1 { box-shadow: 0 10px 15px -3px #8181810f; }
+.shadow-2 { box-shadow: 0 10px 15px -3px #8181811a; }
+.shadow-3 { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+
+// === Overflow on hover ===
+.show-overflow-on-hover { overflow: hidden; }
+.show-overflow-on-hover:hover { overflow-y: overlay; }
+
+// === Event recordatory grid ===
+// Grid layout para items de "recordatorio" en eventos del programa.
+div.event-recordatory-item {
+    display: grid;
+    align-items: center;
+    margin-bottom: 0;
+    column-gap: 1rem;
+}
+
+.event-recordatory-item > label { order: 2; margin-bottom: 0; }
+.event-recordatory-item > div { order: 1; }
+.event-recordatory-item > small {
+    margin-top: 0;
+    order: 3;
+    grid-column: 1 / span 2;
+    grid-row: 2;
+}
+
+.event-recordatory-item + div {
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+    opacity: 0.7;
+}
+
+// === Field list ===
+.field-list { margin-bottom: 1.5rem; }
+.field-list + div { opacity: 0.9; }

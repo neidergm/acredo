@@ -1,0 +1,13 @@
+// Theme colors custom. Debe ir DESPUÉS de `bootstrap/scss/variables` porque
+// hace map-merge con $theme-colors (definido ahí).
+//
+// Cada entry genera automáticamente el set completo de utilities:
+//   .btn-{name}, .btn-outline-{name}, .bg-{name}, .bg-{name}-subtle,
+//   .text-{name}, .text-{name}-emphasis, .border-{name}, .border-{name}-subtle,
+//   .link-{name}, .alert-{name}, etc.
+
+$custom-colors: (
+    "primary2": #c8e1ff,
+);
+
+$theme-colors: map-merge($theme-colors, $custom-colors);

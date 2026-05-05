@@ -1,0 +1,31 @@
+// Bootstrap source build con overrides organizados en partials.
+// El orden de imports es CRÍTICO — sigue el patrón canónico de Bootstrap 5.3.
+// Doc: https://getbootstrap.com/docs/5.3/customize/sass
+
+// 1. Required: functions debe ir primero.
+@import "bootstrap/scss/functions";
+
+// 2. Variable overrides ANTES de bootstrap variables (sobrescriben los !default).
+@import "variables";
+
+// 3. Bootstrap variables (definen $theme-colors, $white, etc.).
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/variables-dark";
+
+// 4. Theme colors custom DESPUÉS de variables (hace map-merge con $theme-colors).
+@import "theme-colors";
+
+// 5. Maps + mixins + utilities (necesarios para que Bootstrap genere las clases).
+@import "bootstrap/scss/maps";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/utilities";
+
+// 6. Bootstrap completo.
+@import "bootstrap/scss/bootstrap";
+
+// 7. Estilos de la app (post-Bootstrap, en orden de cascada).
+@import "typography";
+@import "layout";
+@import "components";
+@import "helpers";
+@import "print";

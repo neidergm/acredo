@@ -1,0 +1,62 @@
+// Estructura general: html/body, contenedor de la app, scrollbar custom y
+// breakpoints de container.
+
+:root {
+    --progress-circle-color: #ff862f;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    overflow: hidden auto;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body > #root {
+    min-height: inherit;
+    height: inherit;
+}
+
+.layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    row-gap: 3rem;
+}
+
+.layout > main.main {
+    flex-grow: 1;
+}
+
+// Sin underline en links de la app (Bootstrap los subraya por default).
+.layout a {
+    text-decoration: none;
+}
+
+// Container más amplio para layouts xxxl.
+@media (min-width: 1400px) {
+    .container-xxxl {
+        max-width: 1650px;
+    }
+}
+
+// Scrollbar custom (solo en desktop+).
+@media (min-width: 400px) {
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 9px;
+        background-color: #a9a9a912;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        border: 2px solid transparent;
+        border-radius: 2px;
+        background-color: darkgrey;
+    }
+}

@@ -7,8 +7,6 @@ import { CloseButton, Toast, ToastBody } from 'reactstrap';
 import { useAppDispatch } from './hooks/useAppDispatch';
 import { setUnauthorized } from './store/slices/userSlice';
 import Footer from './components/Footer';
-import './App.css';
-import './custom-colors.css';
 import { isAdmin, isSupervisor } from './utils/userRolUtils';
 
 const Login = lazy(() => import('./screens/Login'));

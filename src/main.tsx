@@ -3,7 +3,7 @@ import ErrorHandler from './components/ErrorHandler/ErrorComponent';
 import App from './App';
 import { Provider } from 'react-redux';
 import store from './store';
-import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import './styles/index.scss';
 import { Toaster } from 'react-hot-toast';
 import { AXIOS_REQUEST } from './services/axiosService';
 import Loader from './components/Loader';

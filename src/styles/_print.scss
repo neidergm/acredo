@@ -1,0 +1,28 @@
+// Estilos para impresión: fondo blanco, scroll natural, oculta botones, atenúa shadows.
+
+@media print {
+    body {
+        background: #fff;
+        overflow-y: auto;
+    }
+
+    body > #root {
+        overflow-y: initial;
+    }
+
+    body * {
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
+    }
+
+    button,
+    button[type="submit"],
+    input[type="button"],
+    input[type="submit"] {
+        display: none;
+    }
+
+    *[class*="shadow"] {
+        box-shadow: 0 0 1px #71717126;
+    }
+}

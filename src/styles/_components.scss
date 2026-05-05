@@ -1,0 +1,60 @@
+// Overrides puntuales de componentes Bootstrap que NO se pueden expresar como
+// variables Sass (comportamientos, no valores).
+
+// === Botones ===
+// $warning es naranja claro; el contraste auto de Bootstrap escogería negro,
+// pero queremos blanco por branding.
+.btn-warning, .btn-primary {
+    --bs-btn-color: #fff;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-active-color: #fff;
+    --bs-btn-disabled-color: #fff;
+}
+
+// .btn-primary2 base ya viene auto-generado por theme color.
+// Solo personalizamos el comportamiento especial: hover muta a `primary` completo
+// en lugar de oscurecer el color base.
+.btn-primary2 {
+    --bs-btn-color: #0077ff;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--bs-primary);
+    --bs-btn-hover-border-color: var(--bs-primary);
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: var(--bs-primary);
+    --bs-btn-active-border-color: var(--bs-primary);
+}
+
+// Btn group: primero/segundo elemento sin radius en bordes interiores.
+.btn-group > *:first-child {
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.btn-group > *:nth-child(2) {
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+}
+
+// === Forms ===
+.form-field-wrapper > label.form-label {
+    font-weight: 500;
+    font-size: 0.91em;
+}
+
+// Inputs deshabilitados sin border (excepto los tipo button que conservan apariencia).
+*[disabled]:not([type="radio"]):not([type="checkbox"]):not([type="button"]),
+.form-control.disabled {
+    border: none;
+}
+
+// === Card ===
+// Hereda el radius del contenedor padre (cards anidadas o con wrappers redondeados).
+.card-header {
+    border-top-left-radius: inherit;
+    border-top-right-radius: inherit;
+}
+
+// === Accordion ===
+// Modificadores para anular padding del body bajo demanda.
+.accordion-body-px-0 { --bs-accordion-body-padding-x: 0; }
+.accordion-body-py-0 { --bs-accordion-body-padding-y: 0; }
