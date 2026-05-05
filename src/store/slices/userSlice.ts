@@ -1,6 +1,6 @@
 import { type PayloadAction, createAction, createAsyncThunk, createSlice, } from "@reduxjs/toolkit";
 import localStorageService from "../../services/localStorageService";
-import { AXIOS_REQUEST, setTokenForAxiosRequest } from "../../services/axiosService";
+import { AXIOS_REQUEST } from "../../services/axiosService";
 import { LOGIN } from "../../services/endPointsService";
 import { type I_UserState } from "../../interfaces/store.interface";
 import { type I_User } from "../../interfaces/user.interface";
@@ -32,7 +32,6 @@ export const login = createAsyncThunk(`${name}/login`, async (credential: string
         "user": JSON.stringify(user),
         "token": resp.token
     });
-    setTokenForAxiosRequest("");
 
     return user;
 });

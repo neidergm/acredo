@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { InfoCircle } from '../Icons';
+import { BsInfoCircle,  } from 'react-icons/bs';
 // import { ExclamationTriangle, ThreeDotsVertical } from 'react-bootstrap-icons';
 
 type T_State = {
@@ -21,7 +21,6 @@ class ErrorComponent extends Component<any, T_State> {
     }
 
     static getDerivedStateFromError(error: any) {
-        // Actualiza el estado para que el siguiente renderizado muestre la interfaz de repuesto
         return { hasError: true, error, tryLoad: false };
     }
 
@@ -43,7 +42,7 @@ class ErrorComponent extends Component<any, T_State> {
     render() {
         if (this.state.hasError) {
             return (
-                <div className={"d-flex align-items-center justify-content-center mt-3 mb-3 p-4 text-center h-100 " + this.props.className} style={this.props.style || {}}>
+                <div className={"d-flex align-items-center justify-content-center mb-3 p-4 text-center h-100 " + this.props.className} style={this.props.style || {}}>
                     <div
                         onClick={() => this.setState({ tryNumber: -1, hasError: false })}
                         style={{
@@ -56,7 +55,7 @@ class ErrorComponent extends Component<any, T_State> {
                     <div className="row">
                         <div className="col-12 text-muted">
                             <h6>
-                                <InfoCircle size={25} /><br /><br />
+                                <BsInfoCircle size={25} /><br /><br />
                                 <small>No se pudo cargar esta sección</small>
                             </h6>
                             <button disabled={!!(this.state.tryLoad)} className="btn btn-sm btn-outline-dark mt-2"

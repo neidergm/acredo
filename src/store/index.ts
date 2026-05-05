@@ -1,8 +1,8 @@
-import { type AnyAction, combineReducers } from 'redux';
+import { type UnknownAction, combineReducers } from 'redux';
 import { configureStore } from '@reduxjs/toolkit'
 import { logout, setUnauthorized } from './slices/userSlice';
 
-import { setOtherAxiosConfig, setTokenForAxiosRequest } from '../services/axiosService'
+import { setOnUnauthorized } from '../services/axiosService'
 import localStorageService from '../services/localStorageService';
 import userSlice from './slices/userSlice';
 import taskSlice from './slices/taskSlice';
@@ -24,7 +24,7 @@ const slices = {
 
 const combinedSlices = combineReducers(slices);
 
-const reducer = (state: any, action: AnyAction) => {
+const reducer = (state: any, action: UnknownAction) => {
     if (logout.match(action) || (setUnauthorized.match(action) && !!(action.payload))) {
         localStorageService.deleteItems(["user", "token"]);
         state = undefined;
@@ -41,26 +41,7 @@ const store = configureStore({
 });
 
 export const startUserConfigurations = () => {
-
-    setTokenForAxiosRequest(localStorageService.getItem("token"));
-
-    setOtherAxiosConfig({
-        validateStatus: (status: number) => {
-            if (status === 401) {
-                store.dispatch(setUnauthorized("Su sesión a expirado"));
-            }
-            return status >= 200 && status < 300; // default
-        }
-    });
-
-    // try {
-    //     const config = sessionStorageService.getItem("config");
-
-    //     // if (!(config) || !(config?.expireAt) || config?.expireAt < new Date().getTime()) {
-    //     if (!(Object.keys(config).length) || !(config?.expireAt) || config?.expireAt < new Date().getTime()) {
-    //         throw new Error
-    //     }
-    // } catch (error) { store.dispatch(getConfig()) }
+    setOnUnauthorized((msg) => store.dispatch(setUnauthorized(msg)));
 }
 
 startUserConfigurations();
