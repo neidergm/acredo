@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { T_PhasesWithConditions } from '../../interfaces/phasesAndStages.interface'
+import { type T_PhasesWithConditions } from '../../interfaces/phasesAndStages.interface'
 import { AccordionBody, AccordionHeader, Alert, Input, Table, UncontrolledAccordion } from 'reactstrap'
 import classnames from 'classnames'
-import { I_Condition } from '../../interfaces/conditions.interface'
+import { type I_Condition } from '../../interfaces/conditions.interface'
 import { isLead } from '../../utils/userRolUtils'
 import style from './style.module.css';
 
@@ -55,7 +55,7 @@ const UserResume = ({ list: _list, goToConditionDetailsScreen }: T_Props) => {
             }
             {(!(filter) ? _list : list)
                 .map((phase) => {
-                    return <UncontrolledAccordion key={phase.id_fase} stayOpen defaultOpen={_list.length === 1 ? `${_list[0].id_fase}` : undefined} className={style["item-list"]}>
+                    return <UncontrolledAccordion key={phase.id_fase} stayOpen defaultOpen={_list.length === 1 ? `${_list[0].id_fase}` : undefined} className={style["item-list"]} toggle={() => { }}>
                         <AccordionHeader targetId={`${phase.id_fase}`}>
                             <b className='opacity-50 me-2'>FASE: </b>  <b>{phase.nomb_fase}</b>
                         </AccordionHeader>

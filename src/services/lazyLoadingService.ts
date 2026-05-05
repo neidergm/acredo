@@ -1,4 +1,4 @@
-import { ComponentType } from "react";
+import { type ComponentType } from "react";
 
 /**
  * Function to try load 'split' react components

@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react'
 import { TabContent, TabPane, Nav, NavItem, NavLink, Button } from 'reactstrap';
 import Loader from '../../../components/Loader';
 import classnames from 'classnames';
-import { T_Form, T_FormPannelActions } from '.';
-import { T_ObservationsInFormResp } from '../../../interfaces/conditions.interface';
+import { type T_Form, type T_FormPannelActions } from '.';
+import { type T_ObservationsInFormResp } from '../../../interfaces/conditions.interface';
 import ObservationChat from '../../../components/ObservationChat';
 import FormContent from './FormContent';
 import { XCircle } from '../../../components/Icons';
@@ -27,7 +27,7 @@ const AsTabs = ({
     onObservationsDone
 }: T_Props) => {
     const [currentActiveTab, setCurrentActiveTab] = useState(0);
-    const [loadedItems, setLoadedItems] = useState<Array<T_Form | null>>(formList.map(i => null));
+    const [loadedItems, setLoadedItems] = useState<Array<T_Form | null>>(formList.map(_i => null));
     const [observationsIsOpen, setObservationsIsOpen] = useState<T_Form | null>(null);
 
     const showObservations = (item: T_Form | null) => setObservationsIsOpen(item)

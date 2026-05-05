@@ -1,6 +1,6 @@
 {
-  "short_name": "MasterU",
-  "name": "Master U",
+  "short_name": "Acredo",
+  "name": "Acredo",
   "icons": [
     {
       "src": "favicon.ico",

@@ -1,10 +1,10 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
+ 
 import { useEffect, useState, useMemo } from 'react'
 import { useParams, useNavigate, Link, useSearchParams } from "react-router-dom";
 import { CheckCircleFill, Clip, Edit, ExclamationCircleFill, InfoCircle, LinkIcon, People, ThreeDotsVertical, XCircle } from "../../../components/Icons";
 import { Badge, Button, CloseButton, DropdownToggle, Table } from 'reactstrap';
 import classnames from 'classnames';
-import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } from "../../../components/Modal";
+import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, type T_ModalJSON } from "../../../components/Modal";
 import { SubHeader } from "../../../components/SubHeader";
 import { DELETE_TASK, UPDATE_TASK } from "../../../services/endPointsService";
 import { AXIOS_REQUEST } from "../../../services/axiosService";
@@ -24,7 +24,7 @@ import toast from 'react-hot-toast';
 import { taskForm } from '../../../forms/task.form';
 import Form from 'react-ngm-form';
 import TextEditor from '../../../components/TextEditor';
-import { I_JSONObject } from '../../../interfaces/generic.interface';
+import { type I_JSONObject } from '../../../interfaces/generic.interface';
 import confirmDeleteAlertObject from '../../../utils/confirmDeleteAlertObject';
 import AllAttachments from '../../../components/AttachmentsTable/AllAttachments';
 import useLoader from '../../../hooks/useLoader';
@@ -133,10 +133,10 @@ const ConditionsDetails = () => {
           onClick: () => closeAlert(() => {
             openLoader("Eliminando tarea")
 
-            AXIOS_REQUEST(DELETE_TASK + conditionSelected?.id_cond, "DELETE").then(r => {
+            AXIOS_REQUEST(DELETE_TASK + conditionSelected?.id_cond, "DELETE").then(_r => {
               toast.success("Se ha eliminado la tarea", { position: "top-right" });
               navigate(-1);
-            }).catch(e => toast.error("No se pudo eliminar la tarea", { position: "top-right" }))
+            }).catch(_e => toast.error("No se pudo eliminar la tarea", { position: "top-right" }))
               .finally(() => closeLoader())
           })
         }
@@ -215,7 +215,7 @@ const ConditionsDetails = () => {
 
       closeLoader()
       closeModal(setModalData)
-    }).catch(r => {
+    }).catch(_r => {
       closeLoader()
       toast.error("No se pudo actualizar la tarea", { position: "top-right" })
     })

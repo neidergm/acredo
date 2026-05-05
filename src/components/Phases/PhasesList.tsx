@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { AccordionBody, AccordionHeader, AccordionItem, Badge, Button, Offcanvas, OffcanvasBody, OffcanvasHeader, UncontrolledAccordion } from 'reactstrap';
-import { T_Action, T_Phase, T_Stage } from '../../interfaces/phasesAndStages.interface'
+import { type T_Action, type T_Phase, type T_Stage } from '../../interfaces/phasesAndStages.interface'
 import styles from './phases.module.css';
 import classnames from 'classnames';
 import { CheckCircleFill, Edit, ExclamationCircleFill, Plus } from '../Icons';
 import { getDateDiff, getNormalDate } from '../../utils/dateUtils';
-import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } from '../Modal';
+import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, type T_ModalJSON } from '../Modal';
 
 import CreateStage from './Create/CreateStage';
 import { useAppSelector } from '../../hooks/useAppSelector';
@@ -239,7 +239,7 @@ const PhasesList = ({ isAdmin, taskEnded }: T_Props) => {
             key={key}
           >
             <div className={classnames(styles["phase-body"], "ms-3")}>
-              <UncontrolledAccordion stayOpen flush defaultOpen={taskEnded ? [""] : [`stage-${active?.stage?.id}`]}>
+              <UncontrolledAccordion stayOpen flush defaultOpen={taskEnded ? [""] : [`stage-${active?.stage?.id}`]} toggle={() => { }}>
                 {item.stages ? doStages(item.stages, item) : <p>Sin etapas registradas</p>}
               </UncontrolledAccordion>
             </div>

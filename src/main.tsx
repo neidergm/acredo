@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom/client';
-import ErrorHandler from './components/ErrorHandler';
+import ErrorHandler from './components/ErrorHandler/ErrorComponent';
 import App from './App';
 import { Provider } from 'react-redux';
 import store from './store';

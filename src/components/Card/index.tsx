@@ -1,5 +1,4 @@
-import React from 'react';
-import { Card as CardB, CardProps } from 'reactstrap';
+import { Card as CardB, type CardProps } from 'reactstrap';
 import classnames from 'classnames';
 
 const Card = ({ className, children, ...props }: CardProps) =>

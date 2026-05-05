@@ -1,12 +1,11 @@
-import React from 'react'
-import { T_Stage } from '../../interfaces/phasesAndStages.interface'
+import { type T_Stage } from '../../interfaces/phasesAndStages.interface'
 import styles from './timeline.module.css';
 import classnames from 'classnames';
 import { getDateDiff, getNormalDate } from '../../utils/dateUtils';
 import { Badge } from 'reactstrap';
 import { CheckCircleFill, Flag } from '../Icons';
 
-const TimeLine = ({ list, canEdit, taskEnded }: { list: T_Stage[], canEdit: boolean, taskEnded?: boolean }) => {
+const TimeLine = ({ list, canEdit: _canEdit, taskEnded }: { list: T_Stage[], canEdit: boolean, taskEnded?: boolean }) => {
     return (
         <div>
             {list.map(stage => <div>

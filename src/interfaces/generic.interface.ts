@@ -1,4 +1,4 @@
-import { T_FieldsTypes as FT } from "react-ngm-form/dist/interfaces/FormElements.interface";
+import type { T_FieldsTypes as FT } from "react-ngm-form/dist/interfaces/FormElements.interface";
 export type T_FieldsTypes = FT;
 export interface I_JSONObject { [key: string]: any }
 

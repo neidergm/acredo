@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { Badge, Button, DropdownToggle, Table } from 'reactstrap'
 import { useAppSelector } from '../../hooks/useAppSelector'
-import { I_FormFieldWithAnswer } from '../../interfaces/conditions.interface'
-import { T_Form, T_FormPannelActions } from './../../screens/Conditions/FormPannel'
+import { type I_FormFieldWithAnswer } from '../../interfaces/conditions.interface'
+import { type T_Form, type T_FormPannelActions } from './../../screens/Conditions/FormPannel'
 import Alert from '../Alert'
 import { ChatDots, ChatDotsFill, Edit, ExclamationCircleFill, LinkIcon, Quote, ThreeDotsVertical, XCircle } from '../Icons'
 import ObservationChat from '../ObservationChat'
 import toast from 'react-hot-toast';
 import CustomDropdown from '../CustomDropdown'
-import { Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON, closeModal } from '../Modal'
+import { Modal, ModalBody, ModalFooter, ModalHeader, type T_ModalJSON, closeModal } from '../Modal'
 import Ordering from './Ordering'
 import { AXIOS_REQUEST } from '../../services/axiosService'
 import { ORDERING_ANSWERS } from '../../services/endPointsService'
@@ -206,7 +206,7 @@ const AttachmentsTable = ({
             })
 
             openLoader("Modificando orden")
-            AXIOS_REQUEST(ORDERING_ANSWERS, "PUT", d).then(r => {
+            AXIOS_REQUEST(ORDERING_ANSWERS, "PUT", d).then(_r => {
                 toast.success("Orden actualizado", { position: "top-right" })
                 setMapedList([]);
                 closeLoader(() => {

@@ -1,8 +1,6 @@
-import { isDebuggerStatement } from "typescript";
-import { I_FormField, I_FormFieldWithAnswer, T_FileAnswer } from "../interfaces/conditions.interface"
-import { I_JSONObject, T_FieldsTypes } from "../interfaces/generic.interface"
+import { type I_FormFieldWithAnswer, type T_FileAnswer } from "../interfaces/conditions.interface"
+import { type I_JSONObject, type T_FieldsTypes } from "../interfaces/generic.interface"
 import { dateToString, stringToDate } from "./dateUtils";
-import mapField from "./mapField";
 
 export type T_FetchedFormData = {
     fields: { [name: string]: any },

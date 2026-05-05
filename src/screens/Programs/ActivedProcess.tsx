@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { AXIOS_REQUEST } from '../../services/axiosService'
 import { GET_ACTIVE_PROCESS } from '../../services/endPointsService'
-import { I_Process } from '../../interfaces/process.interface';
+import { type I_Process } from '../../interfaces/process.interface';
 import { ExclamationCircleFill, Kanban } from '../../components/Icons';
 import { ProcessResumeItem } from '../Dashboard/ProcessResume';
 import { useNavigate } from 'react-router-dom';
@@ -23,7 +23,7 @@ const ActivedProcess = ({ id_program, quantity }: T_Props) => {
         } else {
             AXIOS_REQUEST(GET_ACTIVE_PROCESS + id_program).then(res => {
                 setProcess(res.data)
-            }).catch(e => {
+            }).catch(_e => {
                 setProcess(false)
             })
         }

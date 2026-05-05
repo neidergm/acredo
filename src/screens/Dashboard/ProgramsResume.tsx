@@ -4,7 +4,7 @@ import classnames from "classnames";
 import Loader from '../../components/Loader';
 import { AXIOS_REQUEST } from '../../services/axiosService';
 import { GET_PROGRAMS_BY_STATE } from '../../services/endPointsService';
-import { I_Program } from '../../interfaces/programs.interface';
+import { type I_Program } from '../../interfaces/programs.interface';
 import { Badge } from 'reactstrap';
 import { ExclamationCircleFill, Stack } from '../../components/Icons';
 import { useNavigate } from 'react-router-dom';
@@ -27,7 +27,7 @@ const ProgramsResume = () => {
 
   const chooseFilter = (_filter: typeof filter) => {
     if ((_filter?.estado !== filter?.estado)) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+       
       dispatch(setProgramsSelectedFilter(_filter!))
     }
   }

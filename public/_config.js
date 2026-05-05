@@ -1,6 +1,6 @@
 const _CONFIG = {
-    app_title: "Master U",
-    app_help_link: "https://sites.google.com/curn.edu.co/masterhelp",
+    app_title: "Acredo",
+    app_help_link: "https://sites.google.com/curn.edu.co/acredohelp",
     app_colors: {
         login: {
             background: "#ff9400",
@@ -12,7 +12,7 @@ const _CONFIG = {
         }
     },
     formation_type: ["TÉCNICO", "TECNOLOGO", "PROFESIONAL", "ESPECIALIZACIÓN"],
-    storage_prefix: "masteru",
+    storage_prefix: "acredo",
     api_base_url: 'https://axis.uninunez.edu.co/apimasterdemo/api',
     error_reporting_url: "https://axis.uninunez.edu.co/apildap/api/log/errorwrite",
     google_client: {
@@ -21,7 +21,7 @@ const _CONFIG = {
         id: '227610805652-c451askq3usbv82f8e7v6g3qd6i1vdpq.apps.googleusercontent.com',
         show_one_tap: true,
     },
-    maintenance_url: "https://axis.uninunez.edu.co/apiaxis/api/mantenimiento/masteru", //OPTIONAL TO VERIFY IF APP IS IN MAINTENANCE
+    maintenance_url: null
 }
 
 window._NGconfig = _CONFIG;

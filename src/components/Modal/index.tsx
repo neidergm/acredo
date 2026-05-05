@@ -4,9 +4,9 @@ import {
     ModalHeader as ModalHeaderB,
     ModalBody as ModalBodyB,
     ModalFooter as ModalFooterB,
-    ModalHeaderProps,
-    ModalProps,
-    ModalFooterProps
+    type ModalHeaderProps,
+    type ModalProps,
+    type ModalFooterProps
 } from 'reactstrap';
 import classnames from 'classnames';
 

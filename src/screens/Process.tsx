@@ -3,14 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { SubHeader } from "../components/SubHeader";
 import { Badge, Button, DropdownToggle, Input } from 'reactstrap';
 import Loader from '../components/Loader';
-import { I_Process } from '../interfaces/process.interface';
+import { type I_Process } from '../interfaces/process.interface';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import { useAppSelector } from '../hooks/useAppSelector';
 import { getProcessList, selectProcess, setProcessList } from '../store/slices/processSlice';
 import CircleProgress from '../components/CircleProgress';
 import Card from '../components/Card';
 import { Edit, ExclamationCircleFill, Folder2Open, Plus, ThreeDotsVertical, XCircle } from '../components/Icons';
-import { Modal, ModalBody, ModalHeader, T_ModalJSON, closeModal, ModalFooter } from '../components/Modal';
+import { Modal, ModalBody, ModalHeader, type T_ModalJSON, closeModal, ModalFooter } from '../components/Modal';
 import Alert from '../components/Alert';
 import { AXIOS_REQUEST } from '../services/axiosService';
 import { CREATE_PROCESS, DELETE_PROCESS, GET_PROCESS_BY_STATE, UPDATE_PROCESS } from '../services/endPointsService';
@@ -18,7 +18,7 @@ import { toast } from 'react-hot-toast';
 import { getDifferenceBetweenData, jsonToFormData } from '../utils/formUtils';
 import { isAdmin, isSupervisor } from '../utils/userRolUtils';
 import CustomDropdown from '../components/CustomDropdown';
-import { I_JSONObject } from '../interfaces/generic.interface';
+import { type I_JSONObject } from '../interfaces/generic.interface';
 import confirmDeleteAlertObject from '../utils/confirmDeleteAlertObject';
 import ProcessForm from '../forms/ProcessForm';
 import useLoader from '../hooks/useLoader';
@@ -119,7 +119,7 @@ const Process = () => {
 
   const deleteProcess = (process: I_Process) => {
     openLoader("Eliminando proceso")
-    AXIOS_REQUEST(DELETE_PROCESS + process.id_conv, "DELETE").then(r => {
+    AXIOS_REQUEST(DELETE_PROCESS + process.id_conv, "DELETE").then(_r => {
       openLoader("Actualizando listado", null)
       dispatch(getProcessList()).then(() => { closeModal(setModal); closeLoader() })
       toast.success("Se ha eliminado el proceso correctamente", { position: "top-right" })
@@ -145,7 +145,7 @@ const Process = () => {
         value: "Si, modificar", onClick: () => {
           openLoader("Modificando proceso", () => {
             const d = jsonToFormData({ id_conv: process.id_conv, ...data });
-            AXIOS_REQUEST(UPDATE_PROCESS, "PUT", d).then(r => {
+            AXIOS_REQUEST(UPDATE_PROCESS, "PUT", d).then(_r => {
               toast.success("Se ha modificado el proceso correctamente", { position: "top-right" })
               openLoader("Actualizando listado", null)
               dispatch(getProcessList()).then(() => { closeModal(setModal); closeLoader() })
@@ -170,7 +170,7 @@ const Process = () => {
           openLoader("Creando proceso", () => {
             const d = jsonToFormData(data);
             AXIOS_REQUEST(CREATE_PROCESS, "POST", d)
-              .then(r => {
+              .then(_r => {
                 toast.success("Se ha creado el proceso correctamente", { position: "top-right" })
                 openLoader("Actualizando listado", null)
                 dispatch(getProcessList()).then(() => { closeModal(setModal); closeLoader() })

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import {
     closestCenter,
     DndContext,
-    DragEndEvent,
+    type DragEndEvent,
     KeyboardSensor,
     PointerSensor,
     useSensor,
@@ -19,7 +19,7 @@ import {
 
 import { CSS } from '@dnd-kit/utilities'
 import { restrictToVerticalAxis, restrictToWindowEdges } from '@dnd-kit/modifiers';
-import { T_MapedItemList } from '.';
+import { type T_MapedItemList } from '.';
 import { Badge } from 'reactstrap';
 
 // const dropAnimation: DropAnimation = {

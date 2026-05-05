@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react'
+import { useState, useRef, useMemo } from 'react'
 import Form from 'react-ngm-form'
 import mapField from '../utils/mapField';
-import { I_FormField } from '../interfaces/conditions.interface';
-import { I_JSONObject, T_FieldsTypes } from '../interfaces/generic.interface';
+import { type I_FormField } from '../interfaces/conditions.interface';
+import { type I_JSONObject, type T_FieldsTypes } from '../interfaces/generic.interface';
 import { AXIOS_REQUEST } from '../services/axiosService';
 import { CAMPUS_LIST, GET_PROCESS_TYPE, GET_PROGRAMS_FOR_SELECT } from '../services/endPointsService';
 

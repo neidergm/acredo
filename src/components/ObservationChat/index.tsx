@@ -7,9 +7,9 @@ import Loader from '../Loader';
 import style from './style.module.css';
 import classnames from 'classnames';
 import useAutoGrowField from '../../hooks/useAutoGrowField';
-import { I_JSONObject } from '../../interfaces/generic.interface';
+import { type I_JSONObject } from '../../interfaces/generic.interface';
 import { jsonToFormData } from '../../utils/formUtils';
-import { I_Observation } from '../../interfaces/observations.interface';
+import { type I_Observation } from '../../interfaces/observations.interface';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { toast } from 'react-hot-toast';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
@@ -144,7 +144,7 @@ const ObservationChat = ({
 
         const fd = jsonToFormData(data)
 
-        AXIOS_REQUEST(SAVE_OBSERVATION, "POST", fd).then(resp => {
+        AXIOS_REQUEST(SAVE_OBSERVATION, "POST", fd).then(_resp => {
             toast.success("Se ha registrado la observación", { position: 'top-right' })
             shouldRequestOnUnmount.current = true;
         })
@@ -188,7 +188,7 @@ const ObservationChat = ({
         (!messages || !Object.keys(messages)?.length)
             && AXIOS_REQUEST(`${url}`).then(resp => {
                 buildMessages(resp.data);
-            }).catch(err => {
+            }).catch(_err => {
                 setMessages(undefined)
             })
     }

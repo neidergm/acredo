@@ -1,5 +1,5 @@
-import { PayloadAction, createSlice, } from "@reduxjs/toolkit";
-import { T_LoaderProps } from "../../hooks/useLoader";
+import { type PayloadAction, createSlice, } from "@reduxjs/toolkit";
+import { type T_LoaderProps } from "../../hooks/useLoader";
 
 const name = "loader";
 

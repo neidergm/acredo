@@ -1,10 +1,10 @@
-import { PayloadAction, createAction, createAsyncThunk, createSlice, } from "@reduxjs/toolkit";
+import { type PayloadAction, createAction, createAsyncThunk, createSlice, } from "@reduxjs/toolkit";
 import { AXIOS_REQUEST } from "../../services/axiosService";
 import { CONDITION_DETAILS, PHASES_WITH_COND_BY_PROCESS, STAGES } from "../../services/endPointsService";
-import { I_ConditionsState } from "../../interfaces/store.interface";
-import { T_Phase, T_PhasesWithConditions, T_Stage } from "../../interfaces/phasesAndStages.interface";
-import { I_JSONObject } from "../../interfaces/generic.interface";
-import { I_Condition } from "../../interfaces/conditions.interface";
+import { type I_ConditionsState } from "../../interfaces/store.interface";
+import { type T_Phase, type T_PhasesWithConditions, type T_Stage } from "../../interfaces/phasesAndStages.interface";
+import { type I_JSONObject } from "../../interfaces/generic.interface";
+import { type I_Condition } from "../../interfaces/conditions.interface";
 
 const name = "task";
 
@@ -35,7 +35,7 @@ export const getPhasesAndStagesOfCondition = createAsyncThunk(`${name}/getPhases
 
     const resp = await AXIOS_REQUEST(`${STAGES}${id_cond}`).catch((err) => ({ ...err, error: true }))
 
-    const ps = (resp.data as any[]).reduce((p, c, idx) => {
+    const ps = (resp.data as any[]).reduce((p, c, _idx) => {
         const stage: T_Stage = {
             name: c.nomb_etapa,
             id: c.id_etapa,

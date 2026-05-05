@@ -1,11 +1,11 @@
-import { I_FormField } from '../interfaces/conditions.interface';
-import { I_JSONObject, T_FieldsTypes } from '../interfaces/generic.interface';
+import { type I_FormField } from '../interfaces/conditions.interface';
+import { type I_JSONObject, type T_FieldsTypes } from '../interfaces/generic.interface';
 import { AXIOS_REQUEST } from '../services/axiosService';
 import { FORMATION_TYPES_LIST } from '../services/constantsService';
 import { CITIES_BY_DEPARTMENT, DEPARTMENT_LIST, GET_FACULTAD } from '../services/endPointsService';
 import mapField from '../utils/mapField';
 
-const programForm = (defaultValues: I_JSONObject): T_FieldsTypes[] => [
+const programForm = (_defaultValues: I_JSONObject): T_FieldsTypes[] => [
     {
         "name": "nomb_prog",
         "label": "Nombre del programa",

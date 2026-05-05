@@ -4,7 +4,7 @@ import { ChatDots, ChatDotsFill, CheckCircleFill, ExclamationCircleFill, XCircle
 import Loader from '../../../components/Loader';
 import classnames from 'classnames';
 import ObservationChat from '../../../components/ObservationChat';
-import { T_Form, T_FormPannelActions } from '.';
+import { type T_Form, type T_FormPannelActions } from '.';
 import FormContent from './FormContent';
 import './../Details/style.css';
 
@@ -29,11 +29,11 @@ const AsList = ({
 
     const [currentActiveTab, setCurrentActiveTab] = useState<number | null>(null);
     const [observationsIsOpen, setObservationsIsOpen] = useState<T_Form | null>(null);
-    const [loadedItems, setLoadedItems] = useState<Array<T_Form | null>>(formList.map(i => null));
+    const [loadedItems, setLoadedItems] = useState<Array<T_Form | null>>(formList.map(_i => null));
 
     const showObservations = (item: T_Form | null) => setObservationsIsOpen(item)
 
-    const selectItem = (item: typeof currentActiveTab, pick = true) => {
+    const selectItem = (item: typeof currentActiveTab, _pick = true) => {
         if (item === null) return setCurrentActiveTab(null);
         setCurrentActiveTab(item);
     }

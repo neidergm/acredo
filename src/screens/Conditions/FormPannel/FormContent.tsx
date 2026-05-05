@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import Form from 'react-ngm-form'
 import { Button } from 'reactstrap'
-import { T_Form, T_FormPannelActions } from '.'
+import { type T_Form, type T_FormPannelActions } from '.'
 import AttachmentsTable from '../../../components/AttachmentsTable'
 import { Edit, PlusCircleFill, XCircle } from '../../../components/Icons'
-import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } from '../../../components/Modal'
+import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, type T_ModalJSON } from '../../../components/Modal'
 import { isAGoogleDocField } from '../../../utils/mapField'
 
 type T_Props = {

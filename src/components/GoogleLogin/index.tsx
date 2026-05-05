@@ -51,7 +51,7 @@ const GoogleLogin = (props: I_Props) => {
     }
 
     const showOneTapPrompt = () => {
-        window.google.accounts.id.prompt((notification: any) => {
+        window.google.accounts.id.prompt((_notification: any) => {
             // console.log(notification)
             // if (notification.isNotDisplayed()) {
             //     console.log(notification.getNotDisplayedReason())

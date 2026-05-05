@@ -1,5 +1,5 @@
-import { I_FormField } from "../interfaces/conditions.interface";
-import { I_JSONObject, T_FieldsTypes } from "../interfaces/generic.interface";
+import { type I_FormField } from "../interfaces/conditions.interface";
+import { type I_JSONObject, type T_FieldsTypes } from "../interfaces/generic.interface";
 import { AXIOS_REQUEST } from "../services/axiosService";
 import { CHARGE, RESPONSIBLES_BY_CHARGE } from "../services/endPointsService";
 import mapField from "../utils/mapField";

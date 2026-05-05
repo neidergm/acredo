@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { I_AlertObject } from '../components/Alert';
+import { type I_AlertObject } from '../components/Alert';
 
 // type T_State = Pick<I_AlertObject, "isOpen" | "children" | "onClosed" | "onOpened">;
 

@@ -1,5 +1,4 @@
-import React from 'react'
-import { DropdownItem, DropdownItemProps, DropdownMenu, UncontrolledDropdown } from 'reactstrap'
+import { DropdownItem, type DropdownItemProps, DropdownMenu, UncontrolledDropdown } from 'reactstrap'
 
 type T_Option = {
     text: string | JSX.Element,

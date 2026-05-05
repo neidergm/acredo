@@ -1,4 +1,4 @@
-import { T_Action } from '../../interfaces/phasesAndStages.interface';
+import { type T_Action } from '../../interfaces/phasesAndStages.interface';
 import Card from '../Card';
 import classnames from 'classnames';
 import { Badge, Button } from 'reactstrap';

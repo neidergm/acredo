@@ -1,15 +1,15 @@
-import { useState, useEffect, useRef } from 'react'
-import { I_ProgramEvent } from '../../interfaces/programs.interface'
+import { useState, useEffect } from 'react'
+import { type I_ProgramEvent } from '../../interfaces/programs.interface'
 import { Calendar2Event, Check, Edit, ExclamationCircleFill, History, People, XCircle } from '../Icons'
 import styles from "./styles.module.css";
 import classnames from "classnames";
 import { getNormalDate } from '../../utils/dateUtils';
-import { Button, DropdownToggle, Nav, NavItem, NavLink, Offcanvas, OffcanvasBody, OffcanvasHeader } from 'reactstrap';
+import { Button, DropdownToggle, Offcanvas, OffcanvasBody, OffcanvasHeader } from 'reactstrap';
 import CustomDropdown from '../CustomDropdown'
-import { Modal, ModalHeader, ModalBody, T_ModalJSON, closeModal, ModalFooter } from '../Modal';
+import { Modal, ModalHeader, ModalBody, type T_ModalJSON, closeModal, ModalFooter } from '../Modal';
 import Form from 'react-ngm-form';
 import eventForm from '../../forms/event.form';
-import { I_JSONObject } from '../../interfaces/generic.interface';
+import { type I_JSONObject } from '../../interfaces/generic.interface';
 import { AXIOS_REQUEST } from '../../services/axiosService';
 import { DELETE_PROGRAM_EVENT, GET_PROGRAM_EVENTS, SAVE_PROGRAM_EVENT } from '../../services/endPointsService';
 import { jsonToFormData } from '../../utils/formUtils';
@@ -72,13 +72,13 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
             submitButton: {
                 value: "Si, eliminar", onClick: () => {
                     openLoader("Eliminando evento", () => {
-                        AXIOS_REQUEST(`${DELETE_PROGRAM_EVENT}${event.id_evento}`, "DELETE").then(res => {
+                        AXIOS_REQUEST(`${DELETE_PROGRAM_EVENT}${event.id_evento}`, "DELETE").then(_res => {
                             toast.success("Evento eliminado correctamente", { position: "top-right" });
                             openLoader("Actualizando lista", null)
                             loadEvents(undefined, true).then(() => {
                                 closeLoader(() => callback?.(true))
                             })
-                        }).catch(e => {
+                        }).catch(_e => {
                             closeLoader()
                             toast.error("No se pudo eliminar el evento", { position: "top-right" });
                         })
@@ -148,7 +148,7 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
             data.reco_evento = data.reco_evento.map(({ days }: { days: number }) => days)
             data.correo_add = data.correo_add.map(({ correo }: { correo: string }) => correo).join(",")
             AXIOS_REQUEST(SAVE_PROGRAM_EVENT, type, jsonToFormData({ ...data, id_prog: program_id }, "[0]."))
-                .then(res => {
+                .then(_res => {
                     toast.success(`Evento ${data.id_evento ? "actualizado" : "registrado"} correctamente`, { position: "top-right" });
                     openLoader("Actualizando listado", null)
                     loadEvents(undefined, true).then(() => {
@@ -156,7 +156,7 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
                         closeLoader(() => !data.id_evento && callback?.(true))
                     })
                 })
-                .catch(err => {
+                .catch(_err => {
                     closeLoader()
                     toast.error(`No se pudo ${data.id_evento ? "actualizar" : "registrar"} el evento`, { position: "top-right" });
                 })

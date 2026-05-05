@@ -1,5 +1,5 @@
-import { I_FormField } from '../interfaces/conditions.interface';
-import { T_FieldsTypes } from '../interfaces/generic.interface';
+import { type I_FormField } from '../interfaces/conditions.interface';
+import { type T_FieldsTypes } from '../interfaces/generic.interface';
 import mapField from '../utils/mapField';
 
 const eventForm = (): T_FieldsTypes[] => [

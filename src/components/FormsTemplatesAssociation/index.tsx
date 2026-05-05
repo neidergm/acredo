@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import { Accordion, AccordionBody, AccordionHeader, AccordionItem, Badge, Button, ListGroup, ListGroupItem, Offcanvas, OffcanvasBody, OffcanvasHeader } from 'reactstrap';
 import { AXIOS_REQUEST } from '../../services/axiosService';
 import { ASOCIATE_FORM_TO_TASK, GET_TEMPLATES, GET_TEMPLATES_CATEGORIES } from '../../services/endPointsService';
-import { T_Template, T_TemplateCategories } from '../../interfaces/conditions.interface';
+import { type T_Template, type T_TemplateCategories } from '../../interfaces/conditions.interface';
 import { jsonToFormData } from '../../utils/formUtils';
 import { toast } from 'react-hot-toast';
 import { ExclamationCircleFill } from '../Icons';
@@ -99,7 +99,7 @@ const FormsTemplatesAssociaton = ({
     const doAssotiation = (idsTemplates: number[]) => {
         const data = jsonToFormData({ form_cond: idsTemplates.join(","), id_cond: taskId });
         openLoader("Asociando plantillas");
-        AXIOS_REQUEST(ASOCIATE_FORM_TO_TASK, "PUT", data).then(async (resp) => {
+        AXIOS_REQUEST(ASOCIATE_FORM_TO_TASK, "PUT", data).then(async (_resp) => {
             toast.success("Formularios asociados correctamente", { position: "top-right" });
             openLoader("Espere", null)
             return dispatch(getContionData(Number(taskId!))).then(() => {

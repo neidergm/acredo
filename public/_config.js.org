@@ -3,7 +3,7 @@ const _CONFIG = {
      * @type REQUIRED
      * @description For app title
      */
-    app_title: "Master U",
+    app_title: "Acredo",
 
     /**
      * @type REQUIRED
@@ -35,7 +35,7 @@ const _CONFIG = {
      * @type REQUIRED
      * @description For browser storage
      */
-    storage_prefix: "masteru",
+    storage_prefix: "acredo",
     /**
      * @type REQUIRED
      */

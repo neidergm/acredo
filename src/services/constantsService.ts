@@ -1,4 +1,4 @@
-export const BASE_URL = process.env.NODE_ENV === "production" ? window._NGconfig.api_base_url : window._NGconfig.api_base_url;
+export const BASE_URL = window._NGconfig.api_base_url;
 
 export const GOOGLE_CLIENT_ID = window._NGconfig.google_client.id;
 

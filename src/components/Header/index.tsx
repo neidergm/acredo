@@ -38,7 +38,7 @@ export const Header = ({ titulo = APP_TITLE }: { titulo?: string }) => {
         <div className='position-relative'>
           <div className='fs-3 brand d-flex justify-content-xl-center'>
             <div onClick={goToHome} className='gap-3 d-flex align-items-end cursor-pointer'>
-              <img alt='MasterU' src={logo} height={52} />
+              <img alt='LogoHeader' src={logo} height={52} />
               <span className='text-nowrap title d-none d-sm-block'>{titulo}</span>
             </div>
           </div>

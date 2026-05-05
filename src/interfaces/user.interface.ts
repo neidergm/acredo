@@ -1,4 +1,4 @@
-import { T_UserRole } from "./generic.interface";
+import { type T_UserRole } from "./generic.interface";
 
 export interface I_User {
     token: string;

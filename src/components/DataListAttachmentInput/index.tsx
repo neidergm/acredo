@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { Col, Input, Row } from 'reactstrap'
 import { AXIOS_REQUEST } from '../../services/axiosService';
 import { ATTACHMENTS_BY_PHASE } from '../../services/endPointsService';
-import { T_AttachmentsOfPhases } from '../../interfaces/phasesAndStages.interface';
+import { type T_AttachmentsOfPhases } from '../../interfaces/phasesAndStages.interface';
 import { useAppSelector } from '../../hooks/useAppSelector';
-import { I_JSONObject } from '../../interfaces/generic.interface';
+import { type I_JSONObject } from '../../interfaces/generic.interface';
 
 type T_Props = {
     name: string;

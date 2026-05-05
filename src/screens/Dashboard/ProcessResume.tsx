@@ -4,7 +4,7 @@ import Loader from "../../components/Loader";
 import classnames from "classnames";
 import { AXIOS_REQUEST } from "../../services/axiosService";
 import { GET_PROCESS_BY_STATE, PROCESS_LIST } from "../../services/endPointsService";
-import { I_Process } from "../../interfaces/process.interface";
+import { type I_Process } from "../../interfaces/process.interface";
 import CircleProgress from "../../components/CircleProgress";
 import { ExclamationCircleFill } from "../../components/Icons";
 import { useNavigate } from "react-router-dom";
@@ -68,7 +68,7 @@ const ProcessResume = () => {
 
     const chooseFilter = (_filter: typeof filter) => {
         if ((_filter?.estado !== filter?.estado)) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+             
             dispatch(setProcessSelectedFilter(_filter!))
         }
     }

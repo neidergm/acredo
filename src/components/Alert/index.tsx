@@ -1,6 +1,6 @@
 import { CheckCircleFill, ExclamationCircleFill, InfoCircleFill, QuestionCircleFill, XCircleFill } from '../Icons';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from '../Modal';
-import { ButtonProps, Button } from 'reactstrap';
+import { type ButtonProps, Button } from 'reactstrap';
 
 type T_Btn = Omit<ButtonProps, 'onClick'> & {
   /**

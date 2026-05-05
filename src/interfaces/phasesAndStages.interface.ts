@@ -1,5 +1,5 @@
-import { I_Condition, T_FileAnswer } from "./conditions.interface";
-import { T_UserRole } from "./generic.interface";
+import { type I_Condition, type T_FileAnswer } from "./conditions.interface";
+import { type T_UserRole } from "./generic.interface";
 
 type T_UserOfAction = {
     nomb_cargo: string;

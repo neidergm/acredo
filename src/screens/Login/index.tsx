@@ -1,7 +1,7 @@
 import { lazy, useState } from "react";
 import style from "./login.module.css";
 import lazyLoaderComponents from "../../services/lazyLoadingService";
-import { I_User } from "../../interfaces/user.interface";
+import { type I_User } from "../../interfaces/user.interface";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { login } from "../../store/slices/userSlice";
 import classnames from 'classnames';
@@ -17,7 +17,7 @@ interface I_Props {
 const logo = '/logo-login.svg';
 const logoPartnert = '/logo-partner.png';
 
-const Login = (props: I_Props) => {
+const Login = (_props: I_Props) => {
 
     const appname = APP_TITLE;
     const [loader, setLoader] = useState<boolean>(false);

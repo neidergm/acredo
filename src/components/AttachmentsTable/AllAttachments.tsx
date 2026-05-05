@@ -1,16 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
 import { AXIOS_REQUEST } from '../../services/axiosService'
 import { ATTACHMENTS_BY_PHASE } from '../../services/endPointsService'
-import { T_AttachmentInPhase, T_AttachmentsOfPhases } from '../../interfaces/phasesAndStages.interface'
+import { type T_AttachmentInPhase, type T_AttachmentsOfPhases } from '../../interfaces/phasesAndStages.interface'
 import { AccordionBody, AccordionHeader, AccordionItem, Badge, Button, DropdownToggle, Input, Table, UncontrolledAccordion } from 'reactstrap'
 import CustomDropdown from '../CustomDropdown'
 import { toast } from 'react-hot-toast'
 import { Calendar2Event, CloudArrowDownFill, ExclamationCircleFill, LinkIcon, People, Quote, ThreeDotsVertical } from '../Icons'
-import { I_JSONObject } from '../../interfaces/generic.interface'
+import { type I_JSONObject } from '../../interfaces/generic.interface'
 import Loader from '../Loader'
 import classnames from 'classnames'
 import { getNormalDate } from '../../utils/dateUtils'
-import { XLSX, XLSX_Range, generateSheetInBook } from '../../utils/xslxUtils'
+import { XLSX, type XLSX_Range, generateSheetInBook } from '../../utils/xslxUtils'
 
 const generateExcelBookData = (list: T_AttachmentMetaData[]) => {
     const extraCells = ["Ubicación", "Criterios", "Evidencias"];
@@ -107,7 +107,7 @@ const AllAttachments = ({
         const { _attName_completed, _deletedReference, _isReference, _nomb_anexo, _user, _lastUpdate, ...data } = attachs;
 
         try {
-            return data.ceanexo?.filter((a: any) => new RegExp(`${filter}`, "gi").test(`${_nomb_anexo}-${data.anexo_nombre}`))
+            return data.ceanexo?.filter((_a: any) => new RegExp(`${filter}`, "gi").test(`${_nomb_anexo}-${data.anexo_nombre}`))
                 .map((i: any, idx: number) => {
                     return <tr key={`row-${_nomb_anexo}-${idx}`} className={classnames({ "table-danger": _deletedReference })}>
                         {idx === 0 && <td
@@ -276,7 +276,7 @@ const AllAttachments = ({
                 </div>
             </div>
             <div className='attach'>
-                <UncontrolledAccordion stayOpen flush defaultOpen={groups.length ? [] : ["0"]}>
+                <UncontrolledAccordion stayOpen flush defaultOpen={groups.length ? [] : ["0"]} toggle={() => { }}>
                     {groups?.map((item, tid) =>
                         <AccordionItem key={tid}>
                             <div className='d-flex align-items-center justify-content-between'>

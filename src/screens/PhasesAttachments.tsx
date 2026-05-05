@@ -6,7 +6,7 @@ import { Button } from 'reactstrap';
 import { XCircle } from '../components/Icons';
 import { AXIOS_REQUEST } from '../services/axiosService';
 import { PHASE_DETAILS } from '../services/endPointsService';
-import { T_PhasesWithConditions } from '../interfaces/phasesAndStages.interface';
+import { type T_PhasesWithConditions } from '../interfaces/phasesAndStages.interface';
 import Loader from '../components/Loader';
 import Card from '../components/Card';
 

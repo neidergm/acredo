@@ -1,4 +1,4 @@
-import { T_FieldsTypes } from '../interfaces/generic.interface';
+import { type T_FieldsTypes } from '../interfaces/generic.interface';
 
 const resolutionForm: T_FieldsTypes[] = [
     {

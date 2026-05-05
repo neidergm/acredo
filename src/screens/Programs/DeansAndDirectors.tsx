@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Offcanvas, OffcanvasBody, OffcanvasHeader } from 'reactstrap'
-import { I_DeanAndDirector } from '../../interfaces/programs.interface';
+import { type I_DeanAndDirector } from '../../interfaces/programs.interface';
 import Card from '../../components/Card';
 
 type T_Props = {

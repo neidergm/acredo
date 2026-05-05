@@ -1,8 +1,8 @@
-import { PayloadAction, createAsyncThunk, createSlice, } from "@reduxjs/toolkit";
+import { type PayloadAction, createAsyncThunk, createSlice, } from "@reduxjs/toolkit";
 import { AXIOS_REQUEST } from "../../services/axiosService";
 import { PROCESS_LIST } from "../../services/endPointsService";
-import { I_ProcessState } from "../../interfaces/store.interface";
-import { I_Process } from "../../interfaces/process.interface";
+import { type I_ProcessState } from "../../interfaces/store.interface";
+import { type I_Process } from "../../interfaces/process.interface";
 
 const name = "process";
 

@@ -1,7 +1,7 @@
-import { PayloadAction, createAsyncThunk, createSlice, } from "@reduxjs/toolkit";
-import { I_ProgramsState } from "../../interfaces/store.interface";
-import { I_Program } from "../../interfaces/programs.interface";
-import { I_JSONObject } from "../../interfaces/generic.interface";
+import { type PayloadAction, createAsyncThunk, createSlice, } from "@reduxjs/toolkit";
+import { type I_ProgramsState } from "../../interfaces/store.interface";
+import { type I_Program } from "../../interfaces/programs.interface";
+import { type I_JSONObject } from "../../interfaces/generic.interface";
 import { GET_PROGRAMS_LIST } from "../../services/endPointsService";
 import { AXIOS_REQUEST } from "../../services/axiosService";
 

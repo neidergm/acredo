@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { InfoCircle } from '../Icons';
 // import { ExclamationTriangle, ThreeDotsVertical } from 'react-bootstrap-icons';
 
@@ -26,7 +26,7 @@ class ErrorComponent extends Component<any, T_State> {
     }
 
     componentDidCatch(error: any, errorInfo: any) {
-        let data = {
+        const data = {
             error,
             message: error.message || "NG",
             stack: error.stack || "NG",

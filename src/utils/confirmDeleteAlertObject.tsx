@@ -1,4 +1,4 @@
-import { I_AlertObject } from "../components/Alert"
+import { type I_AlertObject } from "../components/Alert"
 import Form from 'react-ngm-form';
 
 const confirmDeleteAlertObject = (subtitle: I_AlertObject["children"], submitBtn: Required<I_AlertObject["submitButton"]>): I_AlertObject => {

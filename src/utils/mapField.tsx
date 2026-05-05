@@ -1,8 +1,8 @@
-import { Button, Input } from "reactstrap";
+import { Button } from "reactstrap";
 import { BoxArrowUpRight } from "../components/Icons";
 import TextEditor from "../components/TextEditor";
-import { I_FormField, I_FormFieldWithAnswer } from "../interfaces/conditions.interface";
-import { I_JSONObject, T_FieldsTypes } from "../interfaces/generic.interface";
+import { type I_FormField, type I_FormFieldWithAnswer } from "../interfaces/conditions.interface";
+import { type I_JSONObject, type T_FieldsTypes } from "../interfaces/generic.interface";
 import { AXIOS_REQUEST } from "../services/axiosService";
 import { getFormItemDefaultValue } from "./formUtils";
 import EvidenceSelect from "../components/EvidenceSelect";
@@ -31,11 +31,11 @@ const mapField = (item: I_FormField, defaultValue?: any) => {
                     data={defaultValue || value}
                     inputRef={ref}
                     // style={f.style}
-                    onChange={(event: any, editor: any) => {
+                    onChange={(_event: any, editor: any) => {
                         // console.log({ event, editor, data });
                         onChange(editor.getData())
                     }}
-                    onBlur={(event: any, editor: any) => {
+                    onBlur={(_event: any, editor: any) => {
                         // console.log({ event, editor, data });
                         onBlur(editor.getData())
                     }}
@@ -43,7 +43,7 @@ const mapField = (item: I_FormField, defaultValue?: any) => {
             }
         } else if (isAGoogleDocField(field.type)) {
             const baseurl = field.defaultValue;
-            field.render = ({ field: { ref, onChange, onBlur, value, ...f } }: any) => {
+            field.render = ({ field: { value } }: any) => {
                 return <>
                     <div className="text-end">
                         <Button
@@ -130,7 +130,7 @@ const mapField = (item: I_FormField, defaultValue?: any) => {
             }
         }
         if (field.dependsOn) {
-            field.watchingCallback = (value, callback, formMethods) => {
+            field.watchingCallback = (value, callback, _formMethods) => {
                 // console.log(field)
                 // formMethods?.setValue(field.name, "")
                 if (!value) {
@@ -140,7 +140,7 @@ const mapField = (item: I_FormField, defaultValue?: any) => {
         }
 
     } else if (field.tag === "list") {
-        field.fields = field.fields.map((f, i) => mapField({ json_campo: f } as typeof item)!)
+        field.fields = field.fields.map((f, _i) => mapField({ json_campo: f } as typeof item)!)
     }else if(field.tag){
         field.defaultValue = defaultValue;
     }

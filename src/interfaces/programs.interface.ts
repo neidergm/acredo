@@ -12,15 +12,6 @@ export interface I_ProgramEvent {
     }[];
 }
 
-interface I_ProgramProcess {
-    id_conv: number;
-    nomb_conv: string;
-    porcentaje: number;
-    programa: string;
-    sede: string;
-    tipo_cond: string;
-}
-
 export interface I_Resolutions {
     estado: 1 | 0;
     fech_ejec: string;

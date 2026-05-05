@@ -1,8 +1,8 @@
-import { PayloadAction, createAsyncThunk, createSlice, } from "@reduxjs/toolkit";
+import { type PayloadAction, createAsyncThunk, createSlice, } from "@reduxjs/toolkit";
 import { AXIOS_REQUEST } from "../../services/axiosService";
 import { GET_NOTIFICATIONS_REPORT } from "../../services/endPointsService";
-import { I_Notification } from "../../interfaces/notification.interface";
-import { I_NotificationsState } from "../../interfaces/store.interface";
+import { type I_Notification } from "../../interfaces/notification.interface";
+import { type I_NotificationsState } from "../../interfaces/store.interface";
 
 const name = "notifications";
 

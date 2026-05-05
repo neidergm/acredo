@@ -1,10 +1,10 @@
-import { PayloadAction, createAction, createAsyncThunk, createSlice, } from "@reduxjs/toolkit";
+import { type PayloadAction, createAction, createAsyncThunk, createSlice, } from "@reduxjs/toolkit";
 import { AXIOS_REQUEST } from "../../services/axiosService";
 
-import { I_DashboardState } from "../../interfaces/store.interface";
-import { I_Process } from "../../interfaces/process.interface";
-import { I_ProcessIndicators, T_ProgramsIndicators } from "../../interfaces/dashboard.interface";
-import { I_Program } from "../../interfaces/programs.interface";
+import { type I_DashboardState } from "../../interfaces/store.interface";
+import { type I_Process } from "../../interfaces/process.interface";
+import { type I_ProcessIndicators, type T_ProgramsIndicators } from "../../interfaces/dashboard.interface";
+import { type I_Program } from "../../interfaces/programs.interface";
 import { GET_PROCESS_INDICATORS, GET_PROGRAMS_INDICATORS } from "../../services/endPointsService";
 
 const name = "dashboard";

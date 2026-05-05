@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react"
 import { Badge, Button, CloseButton, ListGroup, ListGroupItem } from "reactstrap"
 import Card from "../../components/Card"
 import { SubHeader } from "../../components/SubHeader"
-import { I_Notification } from "../../interfaces/notification.interface"
+import { type I_Notification } from "../../interfaces/notification.interface"
 import classnames from "classnames";
 import style from "./style.module.css";
 import { getDateDiff, getNormalDate } from "../../utils/dateUtils"
@@ -43,7 +43,7 @@ const Notifications = () => {
     const printNotiContent = (content: string) => <div className={style["notification-html"]} dangerouslySetInnerHTML={{ __html: content }}></div>
 
     const markAsRead = (id_noti: number) => {
-        AXIOS_REQUEST(MARK_AS_READ_NOTIFICATION, "PUT", jsonToFormData({ id_noti: id_noti })).then(r => {
+        AXIOS_REQUEST(MARK_AS_READ_NOTIFICATION, "PUT", jsonToFormData({ id_noti: id_noti })).then(_r => {
             // const _list = list!;
             // const i = _list.findIndex((i) => id_noti === i.id_noti);
             // _list[i].est_noti = 1;

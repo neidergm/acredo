@@ -1,11 +1,11 @@
-import { I_Condition } from "./conditions.interface";
-import { I_ProcessIndicators, T_ProgramsIndicators } from "./dashboard.interface";
-import { I_JSONObject } from "./generic.interface";
-import { I_Notification } from "./notification.interface";
-import { T_SelectedPhase, T_Phase, T_PhasesWithConditions } from "./phasesAndStages.interface";
-import { I_Process } from "./process.interface";
-import { I_Program } from "./programs.interface";
-import { I_User } from "./user.interface";
+import { type I_Condition } from "./conditions.interface";
+import { type I_ProcessIndicators, type T_ProgramsIndicators } from "./dashboard.interface";
+import { type I_JSONObject } from "./generic.interface";
+import { type I_Notification } from "./notification.interface";
+import { type T_SelectedPhase, type T_Phase, type T_PhasesWithConditions } from "./phasesAndStages.interface";
+import { type I_Process } from "./process.interface";
+import { type I_Program } from "./programs.interface";
+import { type I_User } from "./user.interface";
 
 export interface I_AppAction<T = any> { type: string, payload: T }
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SubHeader } from '../../components/SubHeader'
 import { useNavigate, useParams } from 'react-router-dom'
 import Card from '../../components/Card';
@@ -11,11 +11,11 @@ import { ArrowRightShort, Edit, ExclamationCircleFill, Plus, XCircle } from '../
 import { isAdmin, isSupervisor } from '../../utils/userRolUtils';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import ProgramEvents from '../../components/ProgramEvents';
-import { Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON, closeModal } from '../../components/Modal';
+import { Modal, ModalBody, ModalFooter, ModalHeader, type T_ModalJSON, closeModal } from '../../components/Modal';
 import Alert from '../../components/Alert';
 import Form from 'react-ngm-form';
 import programForm from '../../forms/program.form';
-import { I_JSONObject } from '../../interfaces/generic.interface';
+import { type I_JSONObject } from '../../interfaces/generic.interface';
 import { getDifferenceBetweenData, jsonToFormData } from '../../utils/formUtils';
 import { toast } from 'react-hot-toast';
 import confirmDeleteAlertObject from '../../utils/confirmDeleteAlertObject';
@@ -94,7 +94,7 @@ const Details = () => {
                                     navigate(-1)
                                 })
 
-                            }).catch(e => {
+                            }).catch(_e => {
                                 closeLoader()
                                 toast.error("No se pudo eliminar el programa", { position: "top-right" });
                             })
@@ -160,11 +160,11 @@ const Details = () => {
             departamento && (data.depa_prog = departamento);
             data.id_prog = program?.id_prog;
 
-            return AXIOS_REQUEST(SAVE_PROGRAM_DATA, "PUT", jsonToFormData(data, "[0].")).then(resp => {
+            return AXIOS_REQUEST(SAVE_PROGRAM_DATA, "PUT", jsonToFormData(data, "[0].")).then(_resp => {
                 toast.success("Datos del programa actualizados correctamente", { position: 'top-right' })
                 closeLoader(() => closeModal(setModal))
                 return getProgramInfo(true)
-            }).catch(err => {
+            }).catch(_err => {
                 closeLoader()
                 toast.error("No se pudo actualizar datos del programa", { position: 'top-right' })
             })

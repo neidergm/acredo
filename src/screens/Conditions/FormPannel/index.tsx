@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import Loader from '../../../components/Loader';
-import { I_Form, I_FormField, I_FormFieldWithAnswer } from '../../../interfaces/conditions.interface';
-import { I_JSONObject, T_FieldsTypes } from '../../../interfaces/generic.interface';
+import { type I_Form, type I_FormField, type I_FormFieldWithAnswer } from '../../../interfaces/conditions.interface';
+import { type I_JSONObject, type T_FieldsTypes } from '../../../interfaces/generic.interface';
 import { AXIOS_REQUEST } from '../../../services/axiosService';
 import { ANSWER_BY_FORM, DELETE_ANSWER, DESASOCIATE_FORM_TO_TASK, FORM, FORM_FIELDS, SAVE_ANSWERS } from '../../../services/endPointsService';
 import { mapFieldAndDefaultValues } from '../../../utils/mapField';
@@ -46,7 +46,7 @@ const FormPannel = ({
     formId,
     canEdit = false,
     canAddForms,
-    codCond
+    codCond: _codCond
 }: T_Props) => {
     const { id_cond } = useParams();
 
@@ -71,12 +71,12 @@ const FormPannel = ({
             confirmDeleteAlertObject(subtitle, {
                 onClick: () => closeAlert(() => {
                     openLoader("Eliminando formulario")
-                    return AXIOS_REQUEST(DESASOCIATE_FORM_TO_TASK + item, "DELETE").then(resp => {
+                    return AXIOS_REQUEST(DESASOCIATE_FORM_TO_TASK + item, "DELETE").then(_resp => {
                         callback?.()
                         setFormList(null)
                         toast.success('Se ha eliminado el formulario correctamente', { position: "top-right" });
                         closeLoader(getForms)
-                    }).catch(err => {
+                    }).catch(_err => {
                         closeLoader()
                         toast.error('No se pudo eliminar el formulario', { position: "top-right" })
                     })
@@ -98,12 +98,12 @@ const FormPannel = ({
     const deleteItem = (item: string, callback?: () => void) => {
         openLoader("Eliminando")
 
-        return AXIOS_REQUEST(DELETE_ANSWER + item, "DELETE").then(resp => {
+        return AXIOS_REQUEST(DELETE_ANSWER + item, "DELETE").then(_resp => {
             toast.success('Se ha eliminado correctamente', { position: "top-right" });
             closeLoader(() => {
                 callback?.();
             })
-        }).catch(err => {
+        }).catch(_err => {
             closeLoader()
             toast.error('No se pudo eliminar', { position: "top-right" })
         })
@@ -126,7 +126,7 @@ const FormPannel = ({
             { id_cond }
         );
         return AXIOS_REQUEST(SAVE_ANSWERS, method, formData)
-            .then(res => {
+            .then(_res => {
                 method === "POST" && formItem.est_resp === 0 && setFormList(e => {
                     const current = e!.findIndex(i => i.id_fcamp === formItem.id_fcamp);
                     if (current) e![current] = { ...e![current], est_resp: 1 }
@@ -138,7 +138,7 @@ const FormPannel = ({
                 toast.success("Se registraron los datos correctamente", { position: "top-right" })
                 return true;
             })
-            .catch(err => {
+            .catch(_err => {
                 closeLoader();
                 toast.error("No se pudo registrar la información", { position: "top-right" });
                 return false;
@@ -239,7 +239,7 @@ const FormPannel = ({
         return !(formId) ? setFormList([]) : AXIOS_REQUEST(FORM + formId)
             .then(res => {
                 setFormList(res.data)
-            }).catch(err => {
+            }).catch(_err => {
                 setFormList([])
             })
     }

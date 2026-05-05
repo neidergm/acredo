@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SubHeader } from '../../components/SubHeader'
 import { AXIOS_REQUEST } from '../../services/axiosService';
 import { CHARGE, RESPONSIBLES_BY_CHARGE } from '../../services/endPointsService';
@@ -10,9 +10,7 @@ import classnames from 'classnames';
 import useAlert from '../../hooks/useAlert';
 import Alert from '../../components/Alert';
 import CustomDropdown from '../../components/CustomDropdown';
-import { isAdmin } from '../../utils/userRolUtils';
-import { useAppSelector } from '../../hooks/useAppSelector';
-import { Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON, closeModal } from '../../components/Modal';
+import { Modal, ModalBody, ModalFooter, ModalHeader, type T_ModalJSON, closeModal } from '../../components/Modal';
 import useLoader from '../../hooks/useLoader';
 
 type T_Charge = {
@@ -45,7 +43,7 @@ const UsersManagement = () => {
 
   const { openLoader, closeLoader } = useLoader()
 
-  const user = useAppSelector(s => s.user.userInfo)
+  // const user = useAppSelector(s => s.user.userInfo)
   // const is_admin = isAdmin(user?.rol)
   const is_admin = false
 
@@ -98,7 +96,7 @@ const UsersManagement = () => {
     })
   }
 
-  const editUser = (user: any, chargeIdx: number) => {
+  const editUser = (_user: any, _chargeIdx: number) => {
     const formID = "EDIT_USER_FORM";
 
     setModal({
@@ -213,7 +211,7 @@ const UsersManagement = () => {
   useEffect(() => {
     AXIOS_REQUEST(CHARGE).then(r => {
       setGroups(r.data)
-    }).catch(e => {
+    }).catch(_e => {
       setGroups(false)
     })
   }, [])
@@ -262,7 +260,7 @@ const UsersManagement = () => {
                     {is_admin && <Button size="sm" color='primary' onClick={createCharge}><Plus size={17} /> Crear nuevo cargo</Button>}
                   </div>
                 </div>
-                <Accordion className={style["container-list"]} open={opened} {...{ toggle: (idx: number) => pickGroup(idx) }}>
+                <Accordion className={style["container-list"]} open={opened} toggle={(targetId: string) => pickGroup(Number(targetId))}>
                   {groups.map((g, idx) => <AccordionItem key={`${idx}`}
                     className={classnames({ [style["active"]]: opened.includes(`${idx}`) })}
                   >

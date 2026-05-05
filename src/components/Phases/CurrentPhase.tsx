@@ -14,7 +14,7 @@ import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { getPhasesAndStagesOfCondition, selectCondition, setProcessPhasesWithConditions } from '../../store/slices/taskSlice';
 import { selectProcess } from '../../store/slices/processSlice';
 import { isAdmin, isLead, isOnlyView, isSupervisor } from '../../utils/userRolUtils';
-import { I_Condition } from '../../interfaces/conditions.interface';
+import { type I_Condition } from '../../interfaces/conditions.interface';
 import { toast } from 'react-hot-toast';
 import CustomDropdown from '../CustomDropdown';
 import useLoader from '../../hooks/useLoader';

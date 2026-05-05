@@ -1,4 +1,4 @@
-import { AnyAction, combineReducers } from 'redux';
+import { type AnyAction, combineReducers } from 'redux';
 import { configureStore } from '@reduxjs/toolkit'
 import { logout, setUnauthorized } from './slices/userSlice';
 
@@ -8,7 +8,7 @@ import userSlice from './slices/userSlice';
 import taskSlice from './slices/taskSlice';
 import dashboardSlice from './slices/dashboardSlice';
 import notificationsSlice from './slices/notificationsSlice';
-import loaderSlice, { close, open } from './slices/loaderSlice';
+import loaderSlice, {} from './slices/loaderSlice';
 import programsSlice from './slices/programsSlice';
 import processSlice from './slices/processSlice';
 

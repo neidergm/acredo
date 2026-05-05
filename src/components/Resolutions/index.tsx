@@ -1,11 +1,11 @@
 import { useEffect, useState, useMemo } from 'react'
-import { I_Resolutions } from '../../interfaces/programs.interface'
+import { type I_Resolutions } from '../../interfaces/programs.interface'
 import Card from '../Card'
 import classnames from 'classnames'
 import { Badge, Button, Nav, NavItem, NavLink, Offcanvas, OffcanvasBody, OffcanvasHeader, TabContent, TabPane, Table } from 'reactstrap'
 import { CheckCircleFill, Edit, ExclamationCircleFill, FilePDF, Folder2Open, XCircle, XCircleFill } from '../Icons'
 import { getDateDiff, getNormalDate } from '../../utils/dateUtils'
-import { Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON, closeModal } from '../Modal'
+import { Modal, ModalBody, ModalFooter, ModalHeader, type T_ModalJSON, closeModal } from '../Modal'
 import Alert from '../Alert'
 import { AXIOS_REQUEST } from '../../services/axiosService'
 import { toast } from 'react-hot-toast'
@@ -13,7 +13,7 @@ import { DELETE_PROGRAM_RESOLUTION, GET_PROGRAM_RESOLUTIONS, SAVE_PROGRAM_RESOLU
 import confirmDeleteAlertObject from '../../utils/confirmDeleteAlertObject'
 import Form from 'react-ngm-form'
 import resolutionForm from '../../forms/resolution.form'
-import { I_JSONObject } from '../../interfaces/generic.interface'
+import { type I_JSONObject } from '../../interfaces/generic.interface'
 import { getDifferenceBetweenData, jsonToFormData } from '../../utils/formUtils'
 import useLoader from '../../hooks/useLoader'
 import useAlert from '../../hooks/useAlert'
@@ -96,12 +96,12 @@ const Resolutions = ({ program_id, saveCallback, canEdit = false, children }: T_
             const d = jsonToFormData({ id_reso, estado: -1 }, "resoluciones[0].");
             d.append(`id_prog`, `${program_id}`)
 
-            AXIOS_REQUEST(`${DELETE_PROGRAM_RESOLUTION}`, "PUT", d).then(res => {
+            AXIOS_REQUEST(`${DELETE_PROGRAM_RESOLUTION}`, "PUT", d).then(_res => {
                 toast.success("Resolución eliminada correctamente", { position: "top-right" });
                 loadResolutions().then(() => {
                     closeLoader(() => saveCallback?.(true))
                 })
-            }).catch(e => {
+            }).catch(_e => {
                 closeLoader()
                 toast.error("No se pudo eliminar la resolución", { position: "top-right" });
             })
@@ -157,7 +157,7 @@ const Resolutions = ({ program_id, saveCallback, canEdit = false, children }: T_
             d.append("id_prog", `${program_id}`)
 
             AXIOS_REQUEST(SAVE_PROGRAM_RESOLUTION, type, d)
-                .then(res => {
+                .then(_res => {
                     toast.success(`Resolución ${type === "PUT" ? "actualizada" : "registrada"} correctamente`, { position: "top-right" });
                     openLoader("Actualizando listado", null)
                     loadResolutions().then(() => {
@@ -165,7 +165,7 @@ const Resolutions = ({ program_id, saveCallback, canEdit = false, children }: T_
                         closeLoader(() => saveCallback?.(true))
                     })
                 })
-                .catch(err => {
+                .catch(_err => {
                     closeLoader()
                     toast.error(`No se pudo ${type === "PUT" ? "actualizar" : "registrar"} la resolución`, { position: "top-right" });
                 })

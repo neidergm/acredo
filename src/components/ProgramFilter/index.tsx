@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Badge, DropdownToggle, Input } from 'reactstrap';
 import useFilters from '../../hooks/useFilters';
-import { I_Program } from '../../interfaces/programs.interface';
+import { type I_Program } from '../../interfaces/programs.interface';
 import CustomDropdown from '../CustomDropdown';
 import { Funnel } from '../Icons';
 import classnames from "classnames";

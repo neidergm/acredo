@@ -1,15 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react'
+import { useState, useRef } from 'react'
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 // import * as Font from '@ckeditor/ckeditor5-font/src/font';
 
 import './style.css';
-import { WordCount } from '@ckeditor/ckeditor5-word-count';
-
-type T_EventInfo = {
-    EventInfo: { name: string, path: Array<any>, source: any },
-    Editor: any
-}
 
 interface I_Props {
     data: string;
@@ -21,15 +15,15 @@ interface I_Props {
 
 export default function TextEditor({ data, config, disabled, style, className, ...props }: I_Props) {
 
-    const [editor, setEditor] = useState<any>(null);
+    const [_editor, setEditor] = useState<any>(null);
 
     const counterContainer = useRef<any>();
 
-    const [wordCountConfig, setWordCountConfig] = useState({
+    const [_wordCountConfig, _setWordCountConfig] = useState({
             container: counterContainer.current,
             displayCharacters: true,
             displayWords: true,
-            onUpdate: (stats: any) => {
+            onUpdate: (_stats: any) => {
                 // console.log("states", stats);
             }
     });
@@ -85,7 +79,7 @@ export default function TextEditor({ data, config, disabled, style, className, .
     }
 
 
-    const onError = (phase: 'initialization' | 'runtime', willEditorRestart: boolean) => {
+    const onError = (_phase: 'initialization' | 'runtime', _willEditorRestart: boolean) => {
         // console.log({ phase, willEditorRestart })
     }
 

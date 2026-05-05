@@ -1,4 +1,4 @@
-import { T_UserRole, T_FieldsTypes } from "./generic.interface";
+import { type T_UserRole, type T_FieldsTypes } from "./generic.interface";
 
 type T_UserOfTask = {
     nomb_cargo: string;

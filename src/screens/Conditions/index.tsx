@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { SubHeader } from "../../components/SubHeader";
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { I_Condition } from "../../interfaces/conditions.interface";
+import { type I_Condition } from "../../interfaces/conditions.interface";
 import { Accordion, AccordionBody, AccordionHeader, AccordionItem, Badge, Button, DropdownToggle, ListGroup, ListGroupItem, Progress } from "reactstrap";
 import Loader from "../../components/Loader";
 import { useAppSelector } from "../../hooks/useAppSelector";
@@ -14,7 +14,7 @@ import classnames from 'classnames';
 import { getDateDiff, getNormalDate } from "../../utils/dateUtils";
 import { Clip, Edit, ExclamationCircleFill, Folder2Open, LinkIcon, PauseFill, Plus, ThreeDotsVertical, XCircle } from "../../components/Icons";
 import styles from './../Process.module.css';
-import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } from "../../components/Modal";
+import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, type T_ModalJSON } from "../../components/Modal";
 import AllAttachments from "../../components/AttachmentsTable/AllAttachments";
 import { isAdmin, isSupervisor } from "../../utils/userRolUtils";
 import Form from "react-ngm-form";
@@ -23,7 +23,7 @@ import { AXIOS_REQUEST } from "../../services/axiosService";
 import { jsonToFormData } from "../../utils/formUtils";
 import { DELETE_PHASE, SAVE_PHASE, SAVE_TASK } from "../../services/endPointsService";
 import toast from 'react-hot-toast';
-import { T_PhasesWithConditions } from "../../interfaces/phasesAndStages.interface";
+import { type T_PhasesWithConditions } from "../../interfaces/phasesAndStages.interface";
 import CustomDropdown from "../../components/CustomDropdown";
 import Alert from "../../components/Alert";
 import confirmDeleteAlertObject from "../../utils/confirmDeleteAlertObject";
@@ -149,14 +149,14 @@ const Conditions = () => {
       "[0].fech_fin": data.fecha_fin
     });
 
-    AXIOS_REQUEST(SAVE_PHASE, "POST", d).then(r => {
+    AXIOS_REQUEST(SAVE_PHASE, "POST", d).then(_r => {
       toast.success("Se ha creado la fase correctamente", { position: "top-right" });
       if (searchParams.get("status")) {
         searchParams.delete("status")
         setSearchParams(searchParams, { replace: true })
       }
       refreshData()
-    }).catch(e => {
+    }).catch(_e => {
       closeLoader();
       toast.error("No se pudo crear la fase", { position: "top-right" });
     })
@@ -175,11 +175,11 @@ const Conditions = () => {
       d.append(`responsable[${i}].rol_cond`, r.role);
     })
 
-    AXIOS_REQUEST(SAVE_TASK, "POST", d).then(r => {
+    AXIOS_REQUEST(SAVE_TASK, "POST", d).then(_r => {
       toast.success("Se ha creado la tarea correctamente", { position: "top-right" });
       openLoader("Actualizando", null)
       refreshData()
-    }).catch(r => {
+    }).catch(_r => {
       closeLoader()
       toast.error("No se pudo crear la tarea", { position: "top-right" })
     })
@@ -194,10 +194,10 @@ const Conditions = () => {
             onClick: () => closeAlert(() => {
               openLoader("Eliminando fase")
               AXIOS_REQUEST(DELETE_PHASE + phase.id_fase, "DELETE")
-                .then(r => {
+                .then(_r => {
                   toast.success("Se eliminó la fase correctamente", { position: "top-right" });
                   refreshData()
-                }).catch(r => toast.error("No se pudo eliminar la fase", { position: "top-right" }))
+                }).catch(_r => toast.error("No se pudo eliminar la fase", { position: "top-right" }))
                 .finally(() => closeLoader())
             })
           }
@@ -240,11 +240,11 @@ const Conditions = () => {
       "[0].fech_fin": data.fecha_fin
     });
 
-    AXIOS_REQUEST(SAVE_PHASE, "PUT", d).then(r => {
+    AXIOS_REQUEST(SAVE_PHASE, "PUT", d).then(_r => {
       toast.success("Se ha modificado la fase correctamente", { position: "top-right" });
       openLoader("Actualizando", null)
       refreshData()
-    }).catch(e => {
+    }).catch(_e => {
       closeLoader()
       toast.error("No se pudo modificar la fase", { position: "top-right" })
     })
@@ -282,10 +282,6 @@ const Conditions = () => {
       }
     })
   }, [])
-
-  const printReport = () => {
-    window.print()
-  }
 
   useEffect(() => {
     const beforeprint = () => {

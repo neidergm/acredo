@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { BASE_URL } from './constantsService';
 import localStorageService from './localStorageService';
-import { I_JSONObject } from '../interfaces/generic.interface';
+import { type I_JSONObject } from '../interfaces/generic.interface';
 import { toast } from 'react-hot-toast';
 
 let token_storaged = "";

@@ -1,9 +1,9 @@
-import { PayloadAction, createAction, createAsyncThunk, createSlice, } from "@reduxjs/toolkit";
+import { type PayloadAction, createAction, createAsyncThunk, createSlice, } from "@reduxjs/toolkit";
 import localStorageService from "../../services/localStorageService";
 import { AXIOS_REQUEST, setTokenForAxiosRequest } from "../../services/axiosService";
 import { LOGIN } from "../../services/endPointsService";
-import { I_UserState } from "../../interfaces/store.interface";
-import { I_User } from "../../interfaces/user.interface";
+import { type I_UserState } from "../../interfaces/store.interface";
+import { type I_User } from "../../interfaces/user.interface";
 
 export type T_LoginData = {
     correo: string,

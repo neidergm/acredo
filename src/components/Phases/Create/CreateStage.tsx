@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from 'react'
 import Form from 'react-ngm-form'
 import { Button } from 'reactstrap';
-import { T_FieldsTypes } from '../../../interfaces/generic.interface';
-import { T_Action, T_Phase, T_Stage } from '../../../interfaces/phasesAndStages.interface'
+import { type T_FieldsTypes } from '../../../interfaces/generic.interface';
+import { type T_Action, type T_Phase, type T_Stage } from '../../../interfaces/phasesAndStages.interface'
 import stageformfields from './../../../forms/stage.form.json';
-import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON } from '../../Modal';
+import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, type T_ModalJSON } from '../../Modal';
 import { actionFields } from './../../../forms/action.form';
 import Alert from '../../Alert';
 import { AXIOS_REQUEST } from '../../../services/axiosService';
@@ -118,7 +118,7 @@ debugger
 
     openLoader("Creando nueva acción")
 
-    AXIOS_REQUEST(PUT_ACTION, "POST", d).then(r => {
+    AXIOS_REQUEST(PUT_ACTION, "POST", d).then(_r => {
       toast.success("Se ha creado la acción correctamente", {
         position: "top-right"
       });
@@ -127,7 +127,7 @@ debugger
         closeModal(setModal);
       })
       dispatch(getPhasesAndStagesOfCondition(Number(id_cond)));
-    }).catch(e => {
+    }).catch(_e => {
       closeLoader()
       toast.error("No se pudo crear la acción", {
         position: "top-right"
@@ -152,7 +152,7 @@ debugger
 
     openLoader("Actualizando acción")
 
-    AXIOS_REQUEST(PUT_ACTION, "PUT", d).then(r => {
+    AXIOS_REQUEST(PUT_ACTION, "PUT", d).then(_r => {
       toast.success("Se actualizó la acción correctamente", {
         position: "top-right"
       })
@@ -161,7 +161,7 @@ debugger
       closeLoader(() => {
         closeModal(setModal);
       })
-    }).catch(e => {
+    }).catch(_e => {
       closeLoader()
       toast.error("No se pudo actualizar la acción", {
         position: "top-right"
@@ -207,7 +207,7 @@ debugger
 
   const onDeleteAction = (action: T_Action) => {
     openLoader("Eliminando")
-    AXIOS_REQUEST(DELETE_ACTION + action.id_accion, "DELETE").then(resp => {
+    AXIOS_REQUEST(DELETE_ACTION + action.id_accion, "DELETE").then(_resp => {
       toast.success('Acción eliminada correctamente', { position: 'top-right' });
       updateDataOnUnmount.current = true;
       dispatch(getPhasesAndStagesOfCondition(Number(id_cond)))
@@ -220,7 +220,7 @@ debugger
 
   const onDeleteStage = (stage: T_Stage) => {
     openLoader("Eliminando etapa")
-    AXIOS_REQUEST(DELETE_STAGE + stage.id, "DELETE").then(resp => {
+    AXIOS_REQUEST(DELETE_STAGE + stage.id, "DELETE").then(_resp => {
       updateDataOnUnmount.current = true;
       toast.success('Etapa eliminada correctamente', { position: 'top-right' });
       dispatch(getPhasesAndStagesOfCondition(Number(id_cond)));
@@ -246,11 +246,11 @@ debugger
 
     openLoader("Actualizando etapa");
 
-    AXIOS_REQUEST(PUT_STAGE, "PUT", data).then(r => {
+    AXIOS_REQUEST(PUT_STAGE, "PUT", data).then(_r => {
       updateDataOnUnmount.current = true;
       dispatch(getPhasesAndStagesOfCondition(Number(id_cond)));
       toast.success("Se actualizó la etapa correctamente", { position: "top-right" });
-    }).catch(e => {
+    }).catch(_e => {
       toast.error("No se pudo actualizar la etapa", { position: "top-right" })
     }).finally(() => closeLoader())
   }
@@ -265,12 +265,12 @@ debugger
 
     openLoader("Registrando nueva etapa");
 
-    AXIOS_REQUEST(PUT_STAGE, "POST", data).then(r => {
+    AXIOS_REQUEST(PUT_STAGE, "POST", data).then(_r => {
       toast.success("Se ha registrado la etapa correctamente", { position: "top-right" });
       updateDataOnUnmount.current = true;
       dispatch(getPhasesAndStagesOfCondition(Number(id_cond)));
       // dispatch(getPhasesAndStagesOfCondition(Number(id_cond)));
-    }).catch(e => {
+    }).catch(_e => {
       toast.error("No se pudo registrar la etapa", { position: "top-right" })
     }).finally(() => closeLoader())
   }

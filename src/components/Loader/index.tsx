@@ -1,6 +1,6 @@
 
 import { Spinner, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
-import { T_LoaderProps } from '../../hooks/useLoader';
+import { type T_LoaderProps } from '../../hooks/useLoader';
 import { useAppSelector } from '../../hooks/useAppSelector';
 
 type T_Props = T_LoaderProps;

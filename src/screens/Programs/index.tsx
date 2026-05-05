@@ -8,12 +8,12 @@ import Card from '../../components/Card';
 import { Badge, Button, CardBody, CardHeader } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import { getDateDiff, getNormalDate } from '../../utils/dateUtils';
-import { Modal, ModalBody, ModalFooter, ModalHeader, T_ModalJSON, closeModal } from '../../components/Modal';
+import { Modal, ModalBody, ModalFooter, ModalHeader, type T_ModalJSON, closeModal } from '../../components/Modal';
 import Alert from '../../components/Alert';
 import Form from 'react-ngm-form';
 import programForm from '../../forms/program.form';
 import { jsonToFormData } from '../../utils/formUtils';
-import { I_JSONObject } from '../../interfaces/generic.interface';
+import { type I_JSONObject } from '../../interfaces/generic.interface';
 import { toast } from 'react-hot-toast';
 import classnames from 'classnames';
 import { isAdmin } from '../../utils/userRolUtils';
@@ -21,7 +21,7 @@ import { useAppSelector } from '../../hooks/useAppSelector';
 import ProgramFilter from '../../components/ProgramFilter';
 import { getProgramsList, selectProgram } from '../../store/slices/programsSlice';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
-import { I_Program } from '../../interfaces/programs.interface';
+import { type I_Program } from '../../interfaces/programs.interface';
 import useLoader from '../../hooks/useLoader';
 import useAlert from '../../hooks/useAlert';
 
@@ -85,13 +85,13 @@ const Programs = () => {
         openLoader("Registrando programa", () => {
             departamento && (data.depa_prog = departamento);
 
-            AXIOS_REQUEST(SAVE_PROGRAM_DATA, "POST", jsonToFormData(data, "[0].")).then(resp => {
+            AXIOS_REQUEST(SAVE_PROGRAM_DATA, "POST", jsonToFormData(data, "[0].")).then(_resp => {
                 toast.success("Programa registrado correctamente", { position: 'top-right' });
                 getPrograms().then(() => {
                     closeModal(setModal);
                     closeLoader()
                 })
-            }).catch(err => {
+            }).catch(_err => {
                 closeLoader()
                 toast.error("No se pudo registrar el programa", { position: 'top-right' })
             })

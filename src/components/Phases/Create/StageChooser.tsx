@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { T_Action, T_Phase, T_Stage } from '../../../interfaces/phasesAndStages.interface'
+import { type T_Action, type T_Phase, type T_Stage } from '../../../interfaces/phasesAndStages.interface'
 import { Badge, Input, Label } from 'reactstrap';
 import classnames from 'classnames';
 
