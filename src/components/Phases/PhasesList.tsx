@@ -3,7 +3,7 @@ import { AccordionBody, AccordionHeader, AccordionItem, Badge, Button, Offcanvas
 import { type T_Action, type T_Phase, type T_Stage } from '../../interfaces/phasesAndStages.interface'
 import styles from './phases.module.css';
 import classnames from 'classnames';
-import { CheckCircleFill, Edit, ExclamationCircleFill, Plus } from '../Icons';
+import { BsCheckCircleFill, BsPencilSquare, BsExclamationCircleFill, BsPlus } from 'react-icons/bs';
 import { getDateDiff, getNormalDate } from '../../utils/dateUtils';
 import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, type T_ModalJSON } from '../Modal';
 
@@ -95,13 +95,13 @@ const PhasesList = ({ isAdmin, taskEnded }: T_Props) => {
             tag="div"
           >
             <span>
-              <i className={item.status === 1 ? "text-success" : ""}><CheckCircleFill /></i>
+              <i className={item.status === 1 ? "text-success" : ""}><BsCheckCircleFill /></i>
               <span className={item.status === 1 ? "text-black fw-semibold" : ""}>{item.name}</span>
             </span>
           </AccordionHeader>
           {isAdmin && (!(item.actions?.length) || !(item.actions_completed === item.actions?.length)) &&
             <Button color='link' className='pe-0' onClick={() => toggleEditStagePannel(item, phase)}>
-              <Edit size={16} />
+              <BsPencilSquare size={16} />
             </Button>
           }
         </div>
@@ -168,7 +168,7 @@ const PhasesList = ({ isAdmin, taskEnded }: T_Props) => {
           Línea de tiempo
         </Button>
         <Button color='primary' size='sm' className='ms-auto' onClick={() => createNewStage(list[0])}>
-          <i><Plus /></i>
+          <i><BsPlus /></i>
           Crear nueva etapa
         </Button>
       </>
@@ -191,7 +191,7 @@ const PhasesList = ({ isAdmin, taskEnded }: T_Props) => {
     return <div className='mb-3'><Loader loaderAsModal={false} /></div>
   } else if (!(list.length)) {
     return <><div className='w-100 h-100 d-flex justify-content-center align-items-center flex-column mb-5 mt-5'>
-      <i className='text-warning mb-2'><ExclamationCircleFill size={35} /></i>
+      <i className='text-warning mb-2'><BsExclamationCircleFill size={35} /></i>
       <span className="d-block"> No hay nada para mostar</span>
     </div>
       {createStageButton}

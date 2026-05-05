@@ -6,7 +6,7 @@ import classnames from 'classnames';
 import Alert from '../Alert';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import Loader from '../Loader';
-import { ArrowCounterclockwise, Check, ExclamationCircleFill, UiChecks } from '../Icons';
+import { BsArrowCounterclockwise, BsCheckLg, BsExclamationCircleFill, BsUiChecks } from 'react-icons/bs';
 import { AXIOS_REQUEST } from '../../services/axiosService';
 import { PUT_ACTION, UPDATE_TASK } from '../../services/endPointsService';
 import { jsonToFormData } from '../../utils/formUtils';
@@ -199,7 +199,7 @@ const CurrentPhase = ({
         return <div className='py-5'><Loader isOpen loaderAsModal={false} /></div>
     } else if (!action && phases?.[0]?.stages_completed === 0) {
         return <div className='w-100 h-100 d-flex justify-content-center align-items-center flex-column'>
-            <i className='text-warning mb-2'><ExclamationCircleFill size={35} /></i>
+            <i className='text-warning mb-2'><BsExclamationCircleFill size={35} /></i>
             <span className="d-block"> No hay nada para mostar</span>
         </div>
     }
@@ -226,12 +226,12 @@ const CurrentPhase = ({
                         {!!(canEndTask) && (
                             taskIsEnded ?
                                 <Button onClick={() => undoMarkTaskAsCompleted()} size='sm' color='primary' className='ms-auto' disabled={!(taskProgress)}>
-                                    <i className='me-1'><ArrowCounterclockwise /></i>
+                                    <i className='me-1'><BsArrowCounterclockwise /></i>
                                     Desmarcar tarea como completada
                                 </Button>
                                 :
                                 <Button onClick={() => markTaskAsCompleted()} size='sm' color='primary' className='ms-auto' disabled={!(taskProgress)}>
-                                    <i className='me-1'><Check /></i>
+                                    <i className='me-1'><BsCheckLg /></i>
                                     Marcar tarea como completada
                                 </Button>
                         )}
@@ -275,10 +275,10 @@ const CurrentPhase = ({
                         {!!(canEndAction) && <div className='text-end flex-grow-1'>
                             {
                                 <CustomDropdown
-                                    options={[{ text: "Marcar tarea como completada", click: () => { markTaskAsCompleted(true) }, icon: <UiChecks /> }]}
+                                    options={[{ text: "Marcar tarea como completada", click: () => { markTaskAsCompleted(true) }, icon: <BsUiChecks /> }]}
                                     group={canEndTask}>
                                     <Button onClick={markActionAsCompleted} size='sm' color='primary' className='ms-auto'>
-                                        <i className='me-1'><Check /></i>
+                                        <i className='me-1'><BsCheckLg /></i>
                                         Finalizar esta acción
                                     </Button>
                                     {canEndTask ? <DropdownToggle

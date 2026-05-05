@@ -3,7 +3,7 @@ import Form from 'react-ngm-form'
 import { Button } from 'reactstrap'
 import { type T_Form, type T_FormPannelActions } from '.'
 import AttachmentsTable from '../../../components/AttachmentsTable'
-import { Edit, PlusCircleFill, XCircle } from '../../../components/Icons'
+import { BsPencilSquare, BsPlusCircleFill, BsXCircle } from 'react-icons/bs';
 import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, type T_ModalJSON } from '../../../components/Modal'
 import { isAGoogleDocField } from '../../../utils/mapField'
 
@@ -69,7 +69,7 @@ const FormContent = ({ canEdit, formItem, onSubmit, onDelete, onObservationsDone
                         className="rounded-pill btn-sm px-3 mb-4 d-flex align-items-center"
                         onClick={() => { canEdit && openFormAsModal(formItem) }}
                     >
-                        <PlusCircleFill size={17} />
+                        <BsPlusCircleFill size={17} />
                         <span className="ms-2">Agregar</span>
                     </Button>
                 </>
@@ -104,7 +104,7 @@ const FormContent = ({ canEdit, formItem, onSubmit, onDelete, onObservationsDone
                                     {canEdit && <div className='position-absolute end-0 top-0'>
                                         <Button onClick={() => openFormAsModal(respItem, "Modificar")}
                                             color='' title="Modificar" className='p-1 text-warning me-1' size='sm'>
-                                            <Edit size={16} />
+                                            <BsPencilSquare size={16} />
                                         </Button>
                                         <Button onClick={() => {
                                             onDelete!(`${respItem.id_fcamp}/${r}`,
@@ -113,7 +113,7 @@ const FormContent = ({ canEdit, formItem, onSubmit, onDelete, onObservationsDone
                                             )
                                         }}
                                             color='' title="Eliminar" className='p-1 text-danger' size='sm'>
-                                            <XCircle size={16} />
+                                            <BsXCircle size={16} />
                                         </Button>
                                     </div>}
                                     <Form

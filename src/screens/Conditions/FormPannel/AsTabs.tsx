@@ -6,7 +6,7 @@ import { type T_Form, type T_FormPannelActions } from '.';
 import { type T_ObservationsInFormResp } from '../../../interfaces/conditions.interface';
 import ObservationChat from '../../../components/ObservationChat';
 import FormContent from './FormContent';
-import { XCircle } from '../../../components/Icons';
+import { BsXCircle } from 'react-icons/bs';
 
 type T_Props = {
     canEdit: boolean,
@@ -187,7 +187,7 @@ const AsTabs = ({
                                             className='opacity-75'
                                             onClick={() => { deleteForm(loadedItems[i]!) }}
                                         >
-                                            <i className='me-1'><XCircle /></i>
+                                            <i className='me-1'><BsXCircle /></i>
                                             <span>Eliminar este formulario</span>
                                         </Button>
                                     </div>}

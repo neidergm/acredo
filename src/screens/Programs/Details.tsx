@@ -7,7 +7,7 @@ import { DELETE_PROGRAM, GET_PROGRAMS_LIST, SAVE_PROGRAM_DATA } from '../../serv
 import Loader from '../../components/Loader';
 import { Button, Col, Row, Table } from 'reactstrap';
 import { getNormalDate } from '../../utils/dateUtils';
-import { ArrowRightShort, Edit, ExclamationCircleFill, Plus, XCircle } from '../../components/Icons';
+import { BsArrowRightShort, BsPencilSquare, BsExclamationCircleFill, BsPlus, BsXCircle } from 'react-icons/bs';
 import { isAdmin, isSupervisor } from '../../utils/userRolUtils';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import ProgramEvents from '../../components/ProgramEvents';
@@ -142,7 +142,7 @@ const Details = () => {
                                 }
                             })
                         } else {
-                            toast.error("No hay cambios para actualizar", { position: "top-right", icon: <i className='text-warning'><ExclamationCircleFill /> </i> })
+                            toast.error("No hay cambios para actualizar", { position: "top-right", icon: <i className='text-warning'><BsExclamationCircleFill /> </i> })
                         }
                     }}
                     fields={form}
@@ -265,7 +265,7 @@ const Details = () => {
                                                 <DeansAndDirectors list={program.deca_dire}>
                                                     {(toggle) =>
                                                         <Button size='sm' color='link' onClick={() => toggle()}>
-                                                            Decanos y directores <ArrowRightShort size={16} />
+                                                            Decanos y directores <BsArrowRightShort size={16} />
                                                         </Button>
                                                     }
                                                 </DeansAndDirectors>
@@ -273,12 +273,12 @@ const Details = () => {
                                             {is_admin && <div className='d-flex gap-1'>
                                                 <div className='text-end'>
                                                     <Button size='sm' color='danger' onClick={() => deleteProgram()}>
-                                                        <i className='me-1'><XCircle size={15} /></i> Eliminar
+                                                        <i className='me-1'><BsXCircle size={15} /></i> Eliminar
                                                     </Button>
                                                 </div>
                                                 <div className='text-end'>
                                                     <Button size='sm' color='primary' onClick={() => updateProgramData()}>
-                                                        <i className='me-1'><Edit size={15} /></i> Actualizar información
+                                                        <i className='me-1'><BsPencilSquare size={15} /></i> Actualizar información
                                                     </Button>
                                                 </div>
                                             </div>}
@@ -305,18 +305,18 @@ const Details = () => {
                                                 <div className='flex-grow-1 mt-3 d-flex justify-content-between gap-1 align-items-end'>
                                                     <div className='d-inline-block'>
                                                         {!!program.resoluciones && <Button size='sm' color='link' onClick={() => showAllResolutions()}>
-                                                            Ver todas las resoluciones <ArrowRightShort size={16} />
+                                                            Ver todas las resoluciones <BsArrowRightShort size={16} />
                                                         </Button>}
                                                     </div>
                                                     {is_admin && <>
                                                         {hasActives && <div className='ms-auto d-inline-block'>
                                                             <Button size='sm' color='primary' onClick={() => edit()}>
-                                                                <i className='me-1'><Edit size={15} /></i> Editar
+                                                                <i className='me-1'><BsPencilSquare size={15} /></i> Editar
                                                             </Button>
                                                         </div>}
                                                         <div className='d-inline-block text-end'>
                                                             <Button size='sm' color='primary' onClick={() => add()}>
-                                                                <i className='me-1'><Plus size={16} /></i> Nueva resolución
+                                                                <i className='me-1'><BsPlus size={16} /></i> Nueva resolución
                                                             </Button>
                                                         </div>
                                                     </>}
@@ -340,7 +340,7 @@ const Details = () => {
                                         </div>
                                         {is_admin && <div className='h-100 d-flex align-items-end'>
                                             <Button size='sm' color='primary' className='ms-auto' onClick={() => navigate("/proceso")}>
-                                                <Plus size={16} />
+                                                <BsPlus size={16} />
                                                 Crear proceso para el programa
                                             </Button>
                                         </div>}
@@ -367,11 +367,11 @@ const Details = () => {
                                                 <div className='mt-3 d-flex justify-content-between gap-1 align-items-end h-100'>
                                                     {/* {program.eventos > EVENT_LIMITS_SHOW &&  */}
                                                     <Button size='sm' color='link' onClick={() => showAllEvents()}>
-                                                        Ver todos los eventos <ArrowRightShort size={16} />
+                                                        Ver todos los eventos <BsArrowRightShort size={16} />
                                                     </Button>
                                                     {/* } */}
                                                     <Button size='sm' color='primary' className='ms-auto' onClick={() => addEventFunction()}>
-                                                        <Plus size={16} />
+                                                        <BsPlus size={16} />
                                                         Registrar evento
                                                     </Button>
                                                 </div>

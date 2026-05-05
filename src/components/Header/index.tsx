@@ -3,7 +3,7 @@ import Avatar from './Avatar';
 import Menu from './Menu';
 import './header.css';
 import { NavLink, useNavigate } from 'react-router';
-import { Bell, BellFill, HouseGear, QuestionCircle } from '../Icons';
+import { BsBell, BsBellFill, BsHouseGear, BsQuestionCircle } from 'react-icons/bs';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { getNotificationsReport } from '../../store/slices/notificationsSlice';
@@ -45,14 +45,14 @@ export const Header = ({ titulo = APP_TITLE }: { titulo?: string }) => {
           <div className='d-flex gap-3 gap-sm-4 justify-content-end ms-auto align-items-center navigation-items'>
             <NavLink to={is_admin ? "/" : "/proceso"} className={({ isActive }) => isActive ? `active` : ""} >
               <div className='hover-scale-up position-relative text-center'>
-                <HouseGear size={24} />
+                <BsHouseGear size={24} />
                 <small className='small d-block'>Inicio</small>
               </div>
             </NavLink>
             <NavLink to={"/notificaciones"} className={({ isActive }) => isActive ? `active` : ""} >
               <div className='hover-scale-up text-center'>
                 <span className='position-relative'>
-                  {unreadCount === 0 ? <Bell size={24} /> : <BellFill size={24} />}
+                  {unreadCount === 0 ? <BsBell size={24} /> : <BsBellFill size={24} />}
                   {unreadCount !== 0 && <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                     <small>{unreadCount > 99 ? "99+" : unreadCount}</small>
                   </span>}
@@ -62,7 +62,7 @@ export const Header = ({ titulo = APP_TITLE }: { titulo?: string }) => {
             </NavLink>
             <a target="_blank" className='hover-shadow-sm' href={APP_HELP_LINK} rel="noreferrer">
               <div className='hover-scale-up text-center'>
-                <QuestionCircle size={24} />
+                <BsQuestionCircle size={24} />
                 <small className='small d-block'>Ayuda</small>
               </div>
             </a>

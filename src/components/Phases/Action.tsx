@@ -2,7 +2,7 @@ import { type T_Action } from '../../interfaces/phasesAndStages.interface';
 import Card from '../Card';
 import classnames from 'classnames';
 import { Badge, Button } from 'reactstrap';
-import { Edit, XCircle } from '../Icons';
+import { BsPencilSquare, BsXCircle } from 'react-icons/bs';
 import { getNormalDate } from '../../utils/dateUtils';
 import { isLead } from '../../utils/userRolUtils';
 
@@ -57,7 +57,7 @@ const Action = ({
                     }
                     onClick={onEdit}
                 >
-                    <Edit />
+                    <BsPencilSquare />
                 </Button>
             </div>
             <div>
@@ -70,7 +70,7 @@ const Action = ({
                     disabled={data.est_accion === 2}
                     onClick={onDelete}
                 >
-                    <XCircle />
+                    <BsXCircle />
                 </Button>
             </div>
         </div>

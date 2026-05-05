@@ -6,7 +6,7 @@ import { AXIOS_REQUEST } from '../../services/axiosService';
 import { GET_PROGRAMS_BY_STATE } from '../../services/endPointsService';
 import { type I_Program } from '../../interfaces/programs.interface';
 import { Badge } from 'reactstrap';
-import { ExclamationCircleFill, Stack } from '../../components/Icons';
+import { BsExclamationCircleFill, BsStack } from 'react-icons/bs';
 import { useNavigate } from 'react-router';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
@@ -42,7 +42,7 @@ const ProgramsResume = () => {
       <div className="mx-3 cursor hover-scale-up" onClick={() => pickItem(program)}>
         <div className='mb-2'>
           <i className='me-2 text-primary opacity-50'>
-            <Stack size={15} />
+            <BsStack size={15} />
           </i>
           <small>{program.nomb_prog} <span className='opacity-50 fw-semibold small'>({program.cod_prog})</span></small>
         </div>
@@ -166,7 +166,7 @@ const ProgramsResume = () => {
                 </div>
                 :
                 <div className='py-5 text-center text-secondary'>
-                  <p className='text-warning'><ExclamationCircleFill size={30} /></p>
+                  <p className='text-warning'><BsExclamationCircleFill size={30} /></p>
                   Sin programas
                 </div>
               )

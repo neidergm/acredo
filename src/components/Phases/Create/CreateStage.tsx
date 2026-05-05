@@ -18,7 +18,7 @@ import toast from 'react-hot-toast';
 import { jsonToFormData } from '../../../utils/formUtils';
 import { selectProcess } from '../../../store/slices/processSlice';
 import confirmDeleteAlertObject from '../../../utils/confirmDeleteAlertObject';
-import { ExclamationCircleFill, UiChecks } from '../../Icons';
+import { BsExclamationCircleFill, BsUiChecks } from 'react-icons/bs';
 import StageChooser from './StageChooser';
 import { isLead } from '../../../utils/userRolUtils';
 import useLoader from '../../../hooks/useLoader';
@@ -235,7 +235,7 @@ debugger
 
   const updateStage = ({ nomb_etapa }: any) => {
 
-    if (nomb_etapa === stage?.name) return toast.error("Nada para actualizar", { position: "top-right", icon: <i className='text-warning'><ExclamationCircleFill /> </i> })
+    if (nomb_etapa === stage?.name) return toast.error("Nada para actualizar", { position: "top-right", icon: <i className='text-warning'><BsExclamationCircleFill /> </i> })
 
     const data = jsonToFormData({
       "[0].id_fase": phase?.id,
@@ -369,7 +369,7 @@ debugger
                   !(actions.length) ? <div className='text-secondary pt-5 text-center'>
                     <p className='mt-5'>No hay acciones registradas</p>
                     <div className='mt-3'>
-                      <Button disabled={(phase?.stages?.length || 0) <= 1} color="primary2" size='sm' onClick={() => copyActionsFromPhase()}><UiChecks /> Copiar acciones desde etapa</Button>
+                      <Button disabled={(phase?.stages?.length || 0) <= 1} color="primary2" size='sm' onClick={() => copyActionsFromPhase()}><BsUiChecks /> Copiar acciones desde etapa</Button>
                     </div>
                   </div>
                     :

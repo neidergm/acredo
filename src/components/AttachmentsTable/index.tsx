@@ -4,7 +4,7 @@ import { useAppSelector } from '../../hooks/useAppSelector'
 import { type I_FormFieldWithAnswer } from '../../interfaces/conditions.interface'
 import { type T_Form, type T_FormPannelActions } from './../../screens/Conditions/FormPannel'
 import Alert from '../Alert'
-import { ChatDots, ChatDotsFill, Edit, ExclamationCircleFill, LinkIcon, Quote, ThreeDotsVertical, XCircle } from '../Icons'
+import { BsChatDots, BsChatDotsFill, BsPencilSquare, BsExclamationCircleFill, BsLink, BsQuote, BsThreeDotsVertical, BsXCircle } from 'react-icons/bs';
 import ObservationChat from '../ObservationChat'
 import toast from 'react-hot-toast';
 import CustomDropdown from '../CustomDropdown'
@@ -96,12 +96,12 @@ const AttachmentsTable = ({
                         options={[
                             {
                                 text: "Copiar nombre",
-                                icon: <Quote />,
+                                icon: <BsQuote />,
                                 click: () => toClipboard(`Anexo ${nomb_anexo}-${item.defaultValues.anexo_nombre}`)
                             },
                             {
                                 text: "Copiar link",
-                                icon: <LinkIcon />,
+                                icon: <BsLink />,
                                 click: () => toClipboard(respuesta[0].url)
                             },
                             {
@@ -109,10 +109,10 @@ const AttachmentsTable = ({
                                     <small className='ms-4'><Badge pill className='bg-opacity-50'>{item.num_obs as number || 0}</Badge></small>
                                 </span>,
                                 icon: !(item.num_obs) ?
-                                    <ChatDots size={16} />
+                                    <BsChatDots size={16} />
                                     :
                                     <span className='position-relative text-primary text-opacity-75'>
-                                        <ChatDotsFill size={16} />
+                                        <BsChatDotsFill size={16} />
                                         <span className="position-absolute top-50 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
                                     </span>
                                 ,
@@ -121,20 +121,20 @@ const AttachmentsTable = ({
                         ].concat(!isReference && (canEdit && !!(onEdit)) ?
                             [{
                                 text: "Editar anexo",
-                                icon: <Edit size={16} />,
+                                icon: <BsPencilSquare size={16} />,
                                 click: () => onEdit(item, "Modificar")
                             }] : []
                         ).concat((canEdit && !!(onDelete)) ?
                             [{
                                 text: `Eliminar ${isReference ? "referencia" : "anexo"}`,
-                                icon: <XCircle size={16} />,
+                                icon: <BsXCircle size={16} />,
                                 click: () => deleteAttach(item, attachment)
                             }] : []
                         )
                         }
                     >
                         <DropdownToggle size="sm" color='link' className='text-dark p-0 position-relative'>
-                            <ThreeDotsVertical />
+                            <BsThreeDotsVertical />
                         </DropdownToggle>
                     </CustomDropdown>
                 </div>
@@ -145,10 +145,10 @@ const AttachmentsTable = ({
                 }
                 {!!(isReference) && <>
                     <h6>
-                        <Badge><LinkIcon /> ANEXO REFERENCIADO</Badge>
+                        <Badge><BsLink /> ANEXO REFERENCIADO</Badge>
                     </h6>
                     {deletedReference && <p className='text-danger fw-semibold'>
-                        <ExclamationCircleFill size={18} /> Este anexo ha sido eliminado
+                        <BsExclamationCircleFill size={18} /> Este anexo ha sido eliminado
                     </p>}
                 </>
                 }
@@ -180,7 +180,7 @@ const AttachmentsTable = ({
                 <Button color="primary2" onClick={() => closeModal(setModal)}>Cancelar</Button>
                 <Button color="primary" onClick={() => {
                     if (!orderRef.current.length) {
-                        return toast.error("No hay cambios para guardar", { position: "top-right", icon: <i className='text-warning'><ExclamationCircleFill /> </i> })
+                        return toast.error("No hay cambios para guardar", { position: "top-right", icon: <i className='text-warning'><BsExclamationCircleFill /> </i> })
                     }
                     openAlert({
                         type: "warning",

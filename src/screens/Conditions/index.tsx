@@ -12,7 +12,7 @@ import { getProcessList } from "../../store/slices/processSlice";
 import Card from "../../components/Card";
 import classnames from 'classnames';
 import { getDateDiff, getNormalDate } from "../../utils/dateUtils";
-import { Clip, Edit, ExclamationCircleFill, Folder2Open, LinkIcon, PauseFill, Plus, ThreeDotsVertical, XCircle } from "../../components/Icons";
+import { BsPaperclip, BsPencilSquare, BsExclamationCircleFill, BsFolder2Open, BsLink, BsPauseFill, BsPlus, BsThreeDotsVertical, BsXCircle } from 'react-icons/bs';
 import styles from './../Process.module.css';
 import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, type T_ModalJSON } from "../../components/Modal";
 import AllAttachments from "../../components/AttachmentsTable/AllAttachments";
@@ -330,7 +330,7 @@ const Conditions = () => {
                     <b>Programa: </b>
                     <span className="d-block">
                       <Link className="link-dark" to={`/programa/${selectedProcess.id_prog}`}>{selectedProcess.programa} - {selectedProcess.cod_snies}
-                        <i className="link-primary ms-1"><LinkIcon /></i>
+                        <i className="link-primary ms-1"><BsLink /></i>
                       </Link>
                     </span>
                   </div>}
@@ -389,7 +389,7 @@ const Conditions = () => {
         </div>
         <div>
           {selectedProcess === null ? <div className="text-center text-secondary opacity-50">
-            <ExclamationCircleFill size={40} />
+            <BsExclamationCircleFill size={40} />
             <h4 className="mt-3">No se encontró el proceso</h4>
           </div>
             : selectedProcess === undefined || !phasesWithConditions[selectedProcess.id_conv] ? <Loader isOpen loaderAsModal={false} />
@@ -400,14 +400,14 @@ const Conditions = () => {
                 >
                   {is_admin && <div className='text-end'>
                     <Button onClick={() => modalToCreatePhase()} size='sm' color='primary' className='ms-auto'>
-                      <i><Plus /></i>
+                      <i><BsPlus /></i>
                       Crear nueva fase
                     </Button>
                   </div>}
                 </SubHeader>
                 {
                   !phasesWithConditions[selectedProcess.id_conv].length ? <div className=" pt-4 mt-5 opacity-50 text-muted text-center">
-                    <Folder2Open size={40} />
+                    <BsFolder2Open size={40} />
                     <p className="mt-3">No hay fases y tareas registradas en el proceso</p>
                   </div>
                     :
@@ -431,7 +431,7 @@ const Conditions = () => {
                                     color="#06a099"
                                     content={
                                       !(phase.porcentaje) ?
-                                        <div className="text-muted"><PauseFill /></div>
+                                        <div className="text-muted"><BsPauseFill /></div>
                                         :
                                         <b>{phase.porcentaje || 0}%</b>
                                     }
@@ -471,17 +471,17 @@ const Conditions = () => {
                                       color='primary'
                                       onClick={() => modalToCreateTask(phase)}
                                     >
-                                      <i><Plus /></i>
+                                      <i><BsPlus /></i>
                                       Crear nueva tarea
                                     </Button>
 
                                     <CustomDropdown options={[
-                                      { text: "Ver todos los anexos de la fase", icon: <Clip size={16} />, click: () => showAllAttachment(phase) },
-                                      { text: "Modificar fase", icon: <Edit size={16} />, click: () => modalToEditPhase(phase) },
-                                      { text: "Eliminar fase", icon: <XCircle size={16} />, click: () => deletePhase(phase) },
+                                      { text: "Ver todos los anexos de la fase", icon: <BsPaperclip size={16} />, click: () => showAllAttachment(phase) },
+                                      { text: "Modificar fase", icon: <BsPencilSquare size={16} />, click: () => modalToEditPhase(phase) },
+                                      { text: "Eliminar fase", icon: <BsXCircle size={16} />, click: () => deletePhase(phase) },
                                     ]}>
                                       <DropdownToggle size="sm" color='primary'>
-                                        <ThreeDotsVertical />
+                                        <BsThreeDotsVertical />
                                       </DropdownToggle>
                                     </CustomDropdown>
                                   </>
@@ -491,7 +491,7 @@ const Conditions = () => {
                                       color='primary'
                                       onClick={() => showAllAttachment(phase)}
                                     >
-                                      <i><Clip /></i>
+                                      <i><BsPaperclip /></i>
                                       Ver todos los anexos de la fase
                                     </Button>
                                   }
@@ -504,7 +504,7 @@ const Conditions = () => {
                                   className="pt-4 pb-4 bg-transparent px-0 px-xl-3"
                                 >
                                   <span className="text-warning align-text-bottom me-2">
-                                    <ExclamationCircleFill /> </span>
+                                    <BsExclamationCircleFill /> </span>
                                   <span className="text-muted">
                                     No hay tareas registradas para mostrar
                                   </span>
@@ -567,7 +567,7 @@ const Conditions = () => {
                                         </p> */}
                                         {item.etapa_actual ?
                                           (item.form_cond === "" ? <div><p className="mb-1 text-danger">
-                                            <small className="d-block lh-1 fw-semibold"><ExclamationCircleFill size={16} /> La tarea se encuentra incompleta</small>
+                                            <small className="d-block lh-1 fw-semibold"><BsExclamationCircleFill size={16} /> La tarea se encuentra incompleta</small>
                                             <small className="ps-3 ms-1">No tiene formularios asociados</small>
                                           </p></div>
                                             :
@@ -591,12 +591,12 @@ const Conditions = () => {
                                               item.porcentaje < 100 ? (
                                                 item.porcentaje > 0 ?
                                                   <p className="mb-1 text-warning">
-                                                    <small className="d-block lh-1 fw-semibold"><ExclamationCircleFill size={16} /> Todas las etapas y acciones se encuentran completadas</small>
+                                                    <small className="d-block lh-1 fw-semibold"><BsExclamationCircleFill size={16} /> Todas las etapas y acciones se encuentran completadas</small>
                                                     <small className="ps-3 ms-1">Esta tarea debe ser marcada como finalizada</small>
                                                   </p>
                                                   :
                                                   <p className="mb-1 text-danger">
-                                                    <small className="d-block lh-1 fw-semibold"><ExclamationCircleFill size={16} /> La tarea se encuentra incompleta</small>
+                                                    <small className="d-block lh-1 fw-semibold"><BsExclamationCircleFill size={16} /> La tarea se encuentra incompleta</small>
                                                     <small className="ps-3 ms-1">No cuenta con etapas y acciones registradas</small>
                                                     {
                                                       item.form_cond === "" && <small className="ms-1">| No tiene formularios asociados</small>

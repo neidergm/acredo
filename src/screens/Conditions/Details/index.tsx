@@ -1,7 +1,7 @@
  
 import { useEffect, useState, useMemo } from 'react'
 import { useParams, useNavigate, Link, useSearchParams } from "react-router";
-import { CheckCircleFill, Clip, Edit, ExclamationCircleFill, InfoCircle, LinkIcon, People, ThreeDotsVertical, XCircle } from "../../../components/Icons";
+import { BsCheckCircleFill, BsPaperclip, BsPencilSquare, BsExclamationCircleFill, BsInfoCircle, BsLink, BsPeople, BsThreeDotsVertical, BsXCircle } from 'react-icons/bs';
 import { Badge, Button, CloseButton, DropdownToggle, Table } from 'reactstrap';
 import classnames from 'classnames';
 import { closeModal, Modal, ModalBody, ModalFooter, ModalHeader, type T_ModalJSON } from "../../../components/Modal";
@@ -175,7 +175,7 @@ const ConditionsDetails = () => {
 
             if (!(responsablesChanged?.length)) {
               if (Object.keys(dataToSend).length === 0) {
-                return toast("No hay nada para actualizar", { position: "top-right", icon: <i className='text-warning'><ExclamationCircleFill /></i> })
+                return toast("No hay nada para actualizar", { position: "top-right", icon: <i className='text-warning'><BsExclamationCircleFill /></i> })
               }
             } else {
               responsable.forEach((r: { user: string, role: string }, i: number) => {
@@ -306,7 +306,7 @@ const ConditionsDetails = () => {
                     <b>Programa:</b>
                     <span className="d-block">
                       <Link className="link-dark" to={`/programa/${processSelected.id_prog}`}>{processSelected.programa}
-                        <i className="link-primary ms-1"><LinkIcon /></i>
+                        <i className="link-primary ms-1"><BsLink /></i>
                       </Link>
                     </span>
                   </div>}
@@ -324,15 +324,15 @@ const ConditionsDetails = () => {
                     <div className='d-flex gap-2 mt-auto ms-auto'>
                       <div>
                         <CustomDropdown options={[
-                          { text: "Ver detalles", icon: <InfoCircle size={16} />, click: showConditionDetails },
-                          { text: "Ver todos los anexos de la fase", icon: <Clip size={16} />, click: showGeneralAttachmentsTable },
+                          { text: "Ver detalles", icon: <BsInfoCircle size={16} />, click: showConditionDetails },
+                          { text: "Ver todos los anexos de la fase", icon: <BsPaperclip size={16} />, click: showGeneralAttachmentsTable },
                           ...((!taskIsEnded && is_admin) ? [
-                            { text: "Modificar tarea", icon: <Edit size={16} />, click: editTask },
-                            { text: "Eliminar tarea", icon: <XCircle size={16} />, click: deleteTask }
+                            { text: "Modificar tarea", icon: <BsPencilSquare size={16} />, click: editTask },
+                            { text: "Eliminar tarea", icon: <BsXCircle size={16} />, click: deleteTask }
                           ] : [])
                         ]}>
                           <DropdownToggle size="sm" color='primary' className='pe-3'>
-                            <ThreeDotsVertical size={16} /> Opciones
+                            <BsThreeDotsVertical size={16} /> Opciones
                           </DropdownToggle>
                         </CustomDropdown>
                       </div>
@@ -350,9 +350,9 @@ const ConditionsDetails = () => {
                             [
                               { text: "Asociados a la tarea actual", optionProps: { header: true, className: "mb-2" } },
                               ...conditionSelected.usuarios.map(u => ({
-                                icon: <span className='d-inline-block text-success align-top opacity-75'><CheckCircleFill size={14} /></span>,
+                                icon: <span className='d-inline-block text-success align-top opacity-75'><BsCheckCircleFill size={14} /></span>,
                                 text: <>
-                                  {/* <span className='d-inline-block text-success pe-2 align-top opacity-75'><CheckCircleFill size={13} /></span> */}
+                                  {/* <span className='d-inline-block text-success pe-2 align-top opacity-75'><BsCheckCircleFill size={13} /></span> */}
                                   <span className='d-inline-block'>
                                     {u.responsable}
                                     <span className='d-block small fw-semibold'>{u.rol_nombre}</span>
@@ -361,18 +361,18 @@ const ConditionsDetails = () => {
                                 optionProps: { className: "d-block pb-2", disabled: true }
                               })),
                               {
-                                icon: <i className='text-primary'><People size={14} /></i>,
+                                icon: <i className='text-primary'><BsPeople size={14} /></i>,
                                 text: <small className='text-primary'>Ver responsables de las acciones</small>, optionProps: { className: "mt-4" }, click: showUserResume
                               },
                               ...(!taskIsEnded && is_admin ? [{
-                                icon: <i className='text-primary'><Edit size={14} /></i>,
+                                icon: <i className='text-primary'><BsPencilSquare size={14} /></i>,
                                 text: <small className='text-primary'>Modificar usuarios</small>, click: editTask
                               }] : [])
                             ]
 
                         }>
                           <DropdownToggle size="sm" color='primary' className='pe-3'>
-                            <i className='ps-1 pe-1'><People size={16} /></i>
+                            <i className='ps-1 pe-1'><BsPeople size={16} /></i>
                             <span className='ps-1 pe-1'>Usuarios</span>
                           </DropdownToggle>
                         </CustomDropdown>

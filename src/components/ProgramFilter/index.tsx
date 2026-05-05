@@ -3,7 +3,7 @@ import { Badge, DropdownToggle, Input } from 'reactstrap';
 import useFilters from '../../hooks/useFilters';
 import { type I_Program } from '../../interfaces/programs.interface';
 import CustomDropdown from '../CustomDropdown';
-import { Funnel } from '../Icons';
+import { BsFunnel } from 'react-icons/bs';
 import classnames from "classnames";
 import style from './style.module.css'
 import { useAppDispatch } from '../../hooks/useAppDispatch';
@@ -93,7 +93,7 @@ const ProgramFilter = ({ list, updateList }: T_Props) => {
                         }]
                     }>
                     <DropdownToggle size="sm" color='light' className='text-primary position-relative text-end'>
-                        {!!(filtersLength) && <Badge color='warning' pill>{filtersLength}</Badge>} <Funnel /> Aplicar filtros
+                        {!!(filtersLength) && <Badge color='warning' pill>{filtersLength}</Badge>} <BsFunnel /> Aplicar filtros
                     </DropdownToggle>
                 </CustomDropdown>
             </div>

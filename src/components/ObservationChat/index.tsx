@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import { Button, CloseButton, Input, Offcanvas, OffcanvasBody, OffcanvasHeader } from 'reactstrap';
 import { AXIOS_REQUEST } from '../../services/axiosService';
 import { OBSERVATION_BY_ATTACHMENT, SAVE_OBSERVATION } from '../../services/endPointsService';
-import { ReplyFill, Send } from '../Icons';
+import { BsReplyFill, BsSend } from 'react-icons/bs';
 import Loader from '../Loader';
 import style from './style.module.css';
 import classnames from 'classnames';
@@ -167,7 +167,7 @@ const ObservationChat = ({
                 {!onlyRead && !message.sent && <>
                     <div className={style["message-options"]}>
                         <div onClick={() => selectMessageToReply(message)}>
-                            <ReplyFill size={18} />
+                            <BsReplyFill size={18} />
                         </div>
                         {/* <div>
                             <Check size={18} />
@@ -275,7 +275,7 @@ const ObservationChat = ({
                     />
                 </div>
                 <div>
-                    <Button color='light' onClick={() => send()}><Send /></Button>
+                    <Button color='light' onClick={() => send()}><BsSend /></Button>
                 </div>
             </div>}
         </Offcanvas>

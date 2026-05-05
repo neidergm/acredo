@@ -11,7 +11,7 @@ import AsTabs from './AsTabs';
 import { useParams } from 'react-router';
 import { formToSubmitData, getDifferenceBetweenData } from '../../../utils/formUtils';
 import toast from 'react-hot-toast';
-import { ExclamationCircleFill, LinkIcon } from '../../../components/Icons';
+import { BsExclamationCircleFill, BsLink } from 'react-icons/bs';
 import { Button } from 'reactstrap';
 import FormsTemplatesAssociaton from '../../../components/FormsTemplatesAssociation';
 import useLoader from '../../../hooks/useLoader';
@@ -113,7 +113,7 @@ const FormPannel = ({
         const method = formItem.est_resp === 1 ? "PUT" : "POST";
         data = getDifferenceBetweenData(formItem.defaultValues, data);
      
-        if (!Object.keys(data).length) return toast.error("No hay cambios para guardar", { position: "top-right", icon: <i className='text-warning'><ExclamationCircleFill /> </i> })
+        if (!Object.keys(data).length) return toast.error("No hay cambios para guardar", { position: "top-right", icon: <i className='text-warning'><BsExclamationCircleFill /> </i> })
         openLoader("Guardando datos");
         const keysOnField = ["id_campo"];
         if (method === "PUT") {
@@ -256,10 +256,10 @@ const FormPannel = ({
         </div>
     } else if (formList.length === 0) {
         content = <div className="w-100 h-100 d-flex justify-content-center align-items-center flex-column py-5">
-            <i className="text-warning mb-2"><ExclamationCircleFill size={35} /></i>
+            <i className="text-warning mb-2"><BsExclamationCircleFill size={35} /></i>
             <span className="d-block mb-5"> No hay formularios asociados para mostrar</span>
             {!!(canAddForms) && <Button size="sm" color="primary" onClick={toggleEditFormsPannel}>
-                <i className='me-1'><LinkIcon /></i>
+                <i className='me-1'><BsLink /></i>
                 <span>Utilizar plantillas de formularios</span>
             </Button>}
         </div>
@@ -276,7 +276,7 @@ const FormPannel = ({
         >
             <div className='d-flex'>
                 {!!(canAddForms) && <Button size="sm" color="primary2" className='ms-auto' onClick={toggleEditFormsPannel}>
-                    <i className='me-1'><LinkIcon /></i>
+                    <i className='me-1'><BsLink /></i>
                     <span>Agregar plantillas de formularios</span>
                 </Button>}
             </div>
@@ -304,7 +304,7 @@ const FormPannel = ({
                     </div></div>
                 <div>
                     <Button size="sm" color="primary2" onClick={toggleEditFormsPannel}>
-                        <i className='me-1'><LinkIcon /></i>
+                        <i className='me-1'><BsLink /></i>
                         <span>Agregar plantillas de formularios</span>
                     </Button>
                 </div>

@@ -6,25 +6,25 @@ import classnames from 'classnames';
 import styles from './style.module.css';
 import { Button } from 'reactstrap'
 import { Link } from 'react-router'
-import { JournalBoomark, Kanban, People } from '../../components/Icons'
+import { BsJournalBookmark, BsKanban, BsPeople } from 'react-icons/bs';
 
 const Menu = () => {
     return <div className='d-flex gap-2'>
         <div>
             <Link to="proceso" className='btn btn-primary2 d-flex gap-1 gap-sm-2 align-items-center flex-column flex-sm-row'>
-                <Kanban size={17} />
+                <BsKanban size={17} />
                 <span className='d-block d-sm-inline-block'>Procesos</span>
             </Link>
         </div>
         <div>
             <Link to="programa" className='btn btn-primary2 d-flex gap-1 gap-sm-2 align-items-center flex-column flex-sm-row'>
-                <JournalBoomark size={17} />
+                <BsJournalBookmark size={17} />
                 Programas
             </Link>
         </div>
         <div>
             <Link to="usuarios" className='btn btn-primary2 d-flex gap-1 gap-sm-2 align-items-center flex-column flex-sm-row'>
-                <People size={17} />
+                <BsPeople size={17} />
                 Usuarios
             </Link>
         </div>

@@ -3,7 +3,7 @@ import { SubHeader } from '../../components/SubHeader'
 import { AXIOS_REQUEST } from '../../services/axiosService';
 import { CHARGE, RESPONSIBLES_BY_CHARGE } from '../../services/endPointsService';
 import Loader from '../../components/Loader';
-import { Edit, ExclamationCircleFill, Plus, ThreeDotsVertical, XCircle } from '../../components/Icons';
+import { BsPencilSquare, BsExclamationCircleFill, BsPlus, BsThreeDotsVertical, BsXCircle } from 'react-icons/bs';
 import { Accordion, AccordionBody, AccordionHeader, AccordionItem, Button, DropdownToggle, FormGroup, Input, ListGroup, ListGroupItem } from 'reactstrap';
 import style from './styles.module.css';
 import classnames from 'classnames';
@@ -103,7 +103,7 @@ const UsersManagement = () => {
       isOpen: true,
       title: 'Modificar usuario',
       children: <>
-        Edit user form
+        BsPencilSquare user form
       </>,
       size: "lg",
       footer: <ModalFooter>
@@ -165,7 +165,7 @@ const UsersManagement = () => {
       children: <>
         <p>Cargo: {group.nomb_cargo}</p>
         <p>Nivel del cargo: {group.nivel_cargo}</p>
-        Edit charge form
+        BsPencilSquare charge form
       </>,
       size: "lg",
       footer: <ModalFooter>
@@ -245,7 +245,7 @@ const UsersManagement = () => {
             :
             groups === false ?
               <div className='p-5 text-center text-secondary opacity-50'>
-                <p className='text-secondary'><ExclamationCircleFill size={30} /></p>
+                <p className='text-secondary'><BsExclamationCircleFill size={30} /></p>
                 <span>No se pudo obtener el listado de cargos</span>
               </div>
               :
@@ -257,7 +257,7 @@ const UsersManagement = () => {
                     </Button>
                   </div>
                   <div>
-                    {is_admin && <Button size="sm" color='primary' onClick={createCharge}><Plus size={17} /> Crear nuevo cargo</Button>}
+                    {is_admin && <Button size="sm" color='primary' onClick={createCharge}><BsPlus size={17} /> Crear nuevo cargo</Button>}
                   </div>
                 </div>
                 <Accordion className={style["container-list"]} open={opened} toggle={(targetId: string) => pickGroup(Number(targetId))}>
@@ -269,19 +269,19 @@ const UsersManagement = () => {
                         options={[
                           {
                             text: "Modificar cargo",
-                            icon: <Edit size={17} />,
+                            icon: <BsPencilSquare size={17} />,
                             click: () => { editCharge(idx) }
                           },
                           {
                             text: "Eliminar cargo",
-                            icon: <XCircle size={17} />,
+                            icon: <BsXCircle size={17} />,
                             click: () => { deleteCharge(idx) }
                           }
                         ]}
                       >
                         <DropdownToggle tag={'div'} className='position-absolute mt-2 ms-2' style={{ zIndex: 10 }}>
                           <Button size='sm' outline color='light' className='text-dark border-0'>
-                            <ThreeDotsVertical size={16} />
+                            <BsThreeDotsVertical size={16} />
                           </Button>
                         </DropdownToggle>
                       </CustomDropdown>
@@ -297,7 +297,7 @@ const UsersManagement = () => {
                         {!!usersByGroup[idx].length && <div className='d-flex justify-content-between mb-3 align-items-center'>
                           <div className='small text-muted'>Activo</div>
                           <div>
-                            {is_admin && <Button size="sm" color='primary2' onClick={() => addUser(idx)} ><Plus size={17} /> Agregar usuario</Button>}
+                            {is_admin && <Button size="sm" color='primary2' onClick={() => addUser(idx)} ><BsPlus size={17} /> Agregar usuario</Button>}
                           </div>
                         </div>}
                         {usersByGroup[idx].length ?
@@ -315,7 +315,7 @@ const UsersManagement = () => {
                               </div>
                               <div>
                                 {u.nomb_resp} <small className='d-none d-md-inline'>({u.iden_resp})</small>
-                                <Button color='link' className='py-0 mb-1' onClick={() => editUser(u, idx)}> <Edit size={16} /></Button>
+                                <Button color='link' className='py-0 mb-1' onClick={() => editUser(u, idx)}> <BsPencilSquare size={16} /></Button>
                               </div>
                               <div className='ms-auto d-none d-md-block'>
                                 ROL DE USUARIO
@@ -325,13 +325,13 @@ const UsersManagement = () => {
                           :
                           <ListGroupItem key={`u-add`} className='px-0 px-md-2'>
                             <div className='text-warning'>
-                              <ExclamationCircleFill />
+                              <BsExclamationCircleFill />
                               <span className='ps-2'>
                                 No tiene usuarios asociados
                               </span>
 
                               <div className='float-end'>
-                                <Button size="sm" color='primary2'><Plus /> Agregar usuario</Button>
+                                <Button size="sm" color='primary2'><BsPlus /> Agregar usuario</Button>
                               </div>
                             </div>
                           </ListGroupItem>

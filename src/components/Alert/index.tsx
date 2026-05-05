@@ -1,4 +1,4 @@
-import { CheckCircleFill, ExclamationCircleFill, InfoCircleFill, QuestionCircleFill, XCircleFill } from '../Icons';
+import { BsCheckCircleFill, BsExclamationCircleFill, BsInfoCircleFill, BsQuestionCircleFill, BsXCircleFill } from 'react-icons/bs';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from '../Modal';
 import { type ButtonProps, Button } from 'reactstrap';
 
@@ -25,11 +25,11 @@ export interface I_AlertObject {
 }
 
 const alertType = {
-  info: <i className='text-primary'><InfoCircleFill size={55} /></i>,
-  success: <i className='text-success'><CheckCircleFill size={55} /></i>,
-  error: <i className='text-danger'><XCircleFill size={55} /></i>,
-  warning: <i className='text-warning'><ExclamationCircleFill size={55} /></i>,
-  question: <i className='text-info'><QuestionCircleFill size={55} /></i>,
+  info: <i className='text-primary'><BsInfoCircleFill size={55} /></i>,
+  success: <i className='text-success'><BsCheckCircleFill size={55} /></i>,
+  error: <i className='text-danger'><BsXCircleFill size={55} /></i>,
+  warning: <i className='text-warning'><BsExclamationCircleFill size={55} /></i>,
+  question: <i className='text-info'><BsQuestionCircleFill size={55} /></i>,
 }
 
 const Alert = ({
@@ -97,7 +97,7 @@ export default Alert;
 
 
 // import { useState, useEffect } from 'react';
-// import { CheckCircleFill, ExclamationCircleFill, InfoCircleFill, QuestionCircleFill, XCircleFill } from '../Icons';
+// import { BsCheckCircleFill, BsExclamationCircleFill, BsInfoCircleFill, BsQuestionCircleFill, BsXCircleFill } from '../Icons';
 // import { Modal, ModalBody, ModalFooter, ModalHeader } from '../Modal';
 // import { ButtonProps, Button } from 'reactstrap';
 
@@ -124,11 +124,11 @@ export default Alert;
 // }
 
 // const alertType = {
-//   info: <i className='text-primary'><InfoCircleFill size={55} /></i>,
-//   success: <i className='text-success'><CheckCircleFill size={55} /></i>,
-//   error: <i className='text-danger'><XCircleFill size={55} /></i>,
-//   warning: <i className='text-warning'><ExclamationCircleFill size={55} /></i>,
-//   question: <i className='text-info'><QuestionCircleFill size={55} /></i>,
+//   info: <i className='text-primary'><BsInfoCircleFill size={55} /></i>,
+//   success: <i className='text-success'><BsCheckCircleFill size={55} /></i>,
+//   error: <i className='text-danger'><BsXCircleFill size={55} /></i>,
+//   warning: <i className='text-warning'><BsExclamationCircleFill size={55} /></i>,
+//   question: <i className='text-info'><BsQuestionCircleFill size={55} /></i>,
 // }
 
 // const Alert = ({

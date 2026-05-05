@@ -13,7 +13,7 @@ import { AXIOS_REQUEST } from "../../services/axiosService"
 import { GET_NOTIFICATIONS, MARK_AS_READ_NOTIFICATION } from "../../services/endPointsService"
 import Loader from "../../components/Loader";
 import { jsonToFormData } from "../../utils/formUtils"
-import { ArrowDownUp, Bell } from "../../components/Icons"
+import { BsArrowDownUp, BsBell } from 'react-icons/bs';
 
 const notitypes = {
     "0": "Resumen",
@@ -199,7 +199,7 @@ const Notifications = () => {
                                     {list?.length && <Button outline color="primary" size="sm" active={onlyUnread} disabled={!unreadCount}
                                         className="ms-1 position-absolute end-0 border-0 d-inline-flex p-1 rounded-1"
                                         onClick={() => toggleOrder()}>
-                                        <ArrowDownUp size={15} />
+                                        <BsArrowDownUp size={15} />
                                     </Button>}
                                 </h6>
                             </div>}
@@ -212,7 +212,7 @@ const Notifications = () => {
                                 :
                                 (list.length === 0 ?
                                     <div className="w-100 d-flex flex-column justify-content-center align-items-center text-secondary text-opacity-50 gap-4" style={{ minHeight: "inherit" }}>
-                                        <h4><Bell size={40} /></h4>
+                                        <h4><BsBell size={40} /></h4>
                                         <h4 className="">No hay nada para mostrar</h4>
                                     </div>
                                     :

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { type I_ProgramEvent } from '../../interfaces/programs.interface'
-import { Calendar2Event, Check, Edit, ExclamationCircleFill, History, People, XCircle } from '../Icons'
+import { BsCalendar2Event, BsCheckLg, BsPencilSquare, BsExclamationCircleFill, BsClockHistory, BsPeople, BsXCircle } from 'react-icons/bs';
 import styles from "./styles.module.css";
 import classnames from "classnames";
 import { getNormalDate } from '../../utils/dateUtils';
@@ -184,7 +184,7 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
                                     <span className="position-absolute top-0 start-100 translate-middle rounded-pill badge bg-warning bg-opacity-25">
                                         <span className='text-warning fw-bold'>{event.reco_evento.length}</span>
                                     </span>
-                                    <i className='text-secondary'><History /></i>
+                                    <i className='text-secondary'><BsClockHistory /></i>
                                 </DropdownToggle>
                             </CustomDropdown>
                         </div>}
@@ -200,7 +200,7 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
                                     <span className="position-absolute top-0 start-100 translate-middle rounded-pill badge bg-warning bg-opacity-25">
                                         <span className='text-warning fw-bold'>{emails.length}</span>
                                     </span>
-                                    <i className='text-secondary'><People /></i>
+                                    <i className='text-secondary'><BsPeople /></i>
                                 </DropdownToggle>
                             </CustomDropdown>
                         </div>}
@@ -208,10 +208,10 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
                         {canEdit && <div className='flex-grow-1 text-end'>
                             <div>
                                 <Button size='sm' color='link' className='py-0 px-1' onClick={() => editEvent(event)}>
-                                    <Edit size={18} />
+                                    <BsPencilSquare size={18} />
                                 </Button>
                                 <Button size='sm' color='link link-danger' className='py-0 ps-1 pe-0' onClick={() => deleteEvent(event)}>
-                                    <XCircle size={18} />
+                                    <BsXCircle size={18} />
                                 </Button>
                             </div>
                         </div>}
@@ -226,7 +226,7 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
             })}
             {(!limit || limit >= list.length) && <div className={classnames(styles["event-item"], styles["no-more-item"])}>
                 <div>
-                    <i className='me-2 text-success'><Check /></i>
+                    <i className='me-2 text-success'><BsCheckLg /></i>
                     <small>No hay más eventos para mostrar</small>
                 </div>
             </div>}
@@ -268,7 +268,7 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
         <div>
             {events === false ?
                 <div className='p-5 text-center text-secondary opacity-50'>
-                    <p className='text-secondary'><ExclamationCircleFill size={30} /></p>
+                    <p className='text-secondary'><BsExclamationCircleFill size={30} /></p>
                     <span>No se pudo cargar eventos</span>
                 </div>
                 :
@@ -282,7 +282,7 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
                     (events.length ? <div className={styles["events-container"]}>{printEventList(events, limit)}</div>
                         :
                         <div className='p-5 text-center text-secondary opacity-50'>
-                            <p className='text-secondary'><Calendar2Event size={30} /></p>
+                            <p className='text-secondary'><BsCalendar2Event size={30} /></p>
                             <span>No tiene eventos</span>
                         </div>
                     )

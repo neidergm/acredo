@@ -3,7 +3,7 @@ import { type I_Resolutions } from '../../interfaces/programs.interface'
 import Card from '../Card'
 import classnames from 'classnames'
 import { Badge, Button, Nav, NavItem, NavLink, Offcanvas, OffcanvasBody, OffcanvasHeader, TabContent, TabPane, Table } from 'reactstrap'
-import { CheckCircleFill, Edit, ExclamationCircleFill, FilePDF, Folder2Open, XCircle, XCircleFill } from '../Icons'
+import { BsCheckCircleFill, BsPencilSquare, BsExclamationCircleFill, BsFilePdf, BsFolder2Open, BsXCircle, BsXCircleFill } from 'react-icons/bs';
 import { getDateDiff, getNormalDate } from '../../utils/dateUtils'
 import { Modal, ModalBody, ModalFooter, ModalHeader, type T_ModalJSON, closeModal } from '../Modal'
 import Alert from '../Alert'
@@ -58,17 +58,17 @@ const Resolutions = ({ program_id, saveCallback, canEdit = false, children }: T_
             text = "Activa"
             if (v >= 0) {
                 text += " y vigente"
-                icon = <CheckCircleFill size={16} />;
+                icon = <BsCheckCircleFill size={16} />;
             } else {
                 text += " y vencida"
                 color = expiredColor;
-                icon = <XCircleFill size={16} />;
+                icon = <BsXCircleFill size={16} />;
             }
         } else {
             text = "Inactiva"
 
             if (v >= 0) {
-                icon = <ExclamationCircleFill size={16} />;
+                icon = <BsExclamationCircleFill size={16} />;
                 text += " y vigente"
                 color = inactiveColor;
             } else {
@@ -138,7 +138,7 @@ const Resolutions = ({ program_id, saveCallback, canEdit = false, children }: T_
                             reso?.id_reso && (data.id_reso = reso.id_reso);
                             saveResolutionData(data, reso ? "PUT" : "POST")
                         } else {
-                            toast.error("No hay cambios para actualizar", { position: "top-right", icon: <i className='text-warning'><ExclamationCircleFill /> </i> })
+                            toast.error("No hay cambios para actualizar", { position: "top-right", icon: <i className='text-warning'><BsExclamationCircleFill /> </i> })
                         }
                     }}
                     fields={form}
@@ -203,7 +203,7 @@ const Resolutions = ({ program_id, saveCallback, canEdit = false, children }: T_
                                     className={classnames('rounded-circle p-1 d-inline-flex align-items-center')}
                                     onClick={() => onEdit(r)}
                                 >
-                                    <Edit />
+                                    <BsPencilSquare />
                                 </Button>
                             </div>
                                 <div>
@@ -213,7 +213,7 @@ const Resolutions = ({ program_id, saveCallback, canEdit = false, children }: T_
                                         className={classnames('text-danger rounded-circle p-1 d-inline-flex align-items-center')}
                                         onClick={() => confirmDelete(r)}
                                     >
-                                        <XCircle />
+                                        <BsXCircle />
                                     </Button>
                                 </div>
                             </>
@@ -282,7 +282,7 @@ const Resolutions = ({ program_id, saveCallback, canEdit = false, children }: T_
     if (resolutions === false) {
         return <>
             <div className='p-5 text-center text-secondary opacity-50'>
-                <p className='text-secondary'><ExclamationCircleFill size={30} /></p>
+                <p className='text-secondary'><BsExclamationCircleFill size={30} /></p>
                 <span>No se pudo cargar las resoluciones</span>
             </div>
             <div></div>
@@ -314,7 +314,7 @@ const Resolutions = ({ program_id, saveCallback, canEdit = false, children }: T_
             <Alert {...alertData} />
 
             {!actives?.length && <div className='text-center p-5 text-muted opacity-50'>
-                <p><Folder2Open size={30} /></p>
+                <p><BsFolder2Open size={30} /></p>
                 No tiene resoluciones activas
             </div>}
 
@@ -379,7 +379,7 @@ const Resolutions = ({ program_id, saveCallback, canEdit = false, children }: T_
                                         <td><b className="fw-semibold">Documento de resolución</b></td>
                                         <td>
                                             {r.url_reso ? <a className='link-dark' href={r.url_reso} target='_blank' rel="noreferrer">
-                                                <FilePDF size={18} /> Ver documento
+                                                <BsFilePdf size={18} /> Ver documento
                                             </a> : <span className='text-secondary'>Sin documento registrado</span>
                                             }
                                         </td>

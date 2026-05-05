@@ -5,7 +5,7 @@ import { ASOCIATE_FORM_TO_TASK, GET_TEMPLATES, GET_TEMPLATES_CATEGORIES } from '
 import { type T_Template, type T_TemplateCategories } from '../../interfaces/conditions.interface';
 import { jsonToFormData } from '../../utils/formUtils';
 import { toast } from 'react-hot-toast';
-import { ExclamationCircleFill } from '../Icons';
+import { BsExclamationCircleFill } from 'react-icons/bs';
 import Alert from '../Alert';
 import Loader from '../Loader';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
@@ -66,7 +66,7 @@ const FormsTemplatesAssociaton = ({
         const selectedItems = Object.values(selectedList).sort((a, b) => a.position - b.position);
 
         if (!(selectedItems.length)) {
-            return toast.error("Debe seleccionar al menos 1", { position: "top-right", icon: <i className='text-warning'><ExclamationCircleFill /> </i> })
+            return toast.error("Debe seleccionar al menos 1", { position: "top-right", icon: <i className='text-warning'><BsExclamationCircleFill /> </i> })
         }
 
         const idsTemplates: number[] = [];

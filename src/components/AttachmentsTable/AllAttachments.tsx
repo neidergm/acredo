@@ -5,7 +5,7 @@ import { type T_AttachmentInPhase, type T_AttachmentsOfPhases } from '../../inte
 import { AccordionBody, AccordionHeader, AccordionItem, Badge, Button, DropdownToggle, Input, Table, UncontrolledAccordion } from 'reactstrap'
 import CustomDropdown from '../CustomDropdown'
 import { toast } from 'react-hot-toast'
-import { Calendar2Event, CloudArrowDownFill, ExclamationCircleFill, LinkIcon, People, Quote, ThreeDotsVertical } from '../Icons'
+import { BsCalendar2Event, BsCloudArrowDownFill, BsExclamationCircleFill, BsLink, BsPeople, BsQuote, BsThreeDotsVertical } from 'react-icons/bs';
 import { type I_JSONObject } from '../../interfaces/generic.interface'
 import Loader from '../Loader'
 import classnames from 'classnames'
@@ -126,19 +126,19 @@ const AllAttachments = ({
                                             options={[
                                                 {
                                                     text: "Copiar nombre",
-                                                    icon: <Quote />,
+                                                    icon: <BsQuote />,
                                                     click: () => toClipboard(`Anexo ${_attName_completed}`)
                                                 },
                                                 {
                                                     text: "Copiar link",
-                                                    icon: <LinkIcon />,
+                                                    icon: <BsLink />,
                                                     click: () => toClipboard(data.anexo[0].url)
                                                 }
                                             ]
                                             }
                                         >
                                             <DropdownToggle size="sm" color='link' className='text-dark p-0 position-relative'>
-                                                <ThreeDotsVertical />
+                                                <BsThreeDotsVertical />
                                             </DropdownToggle>
                                         </CustomDropdown>
                                     </div>
@@ -150,19 +150,19 @@ const AllAttachments = ({
                                 </div>
                                 {_isReference && <div>
                                     <Badge className='gap-1 d-inline-flex align-items-center'>
-                                        <LinkIcon />
+                                        <BsLink />
                                         <span>ANEXO REFERENCIADO</span>
                                     </Badge>
                                 </div>}
                                 {_deletedReference && <p className='text-danger fw-semibold'>
-                                    <ExclamationCircleFill size={18} /> Este anexo ha sido eliminado
+                                    <BsExclamationCircleFill size={18} /> Este anexo ha sido eliminado
                                 </p>}
                                 <div className='text-muted'>
                                     <div>
-                                        <small><Calendar2Event size={13} /> Última modificación {getNormalDate(_lastUpdate, { dateStyle: 'long' })}</small>
+                                        <small><BsCalendar2Event size={13} /> Última modificación {getNormalDate(_lastUpdate, { dateStyle: 'long' })}</small>
                                     </div>
                                     <div>
-                                        <small><People size={13} /> {_user}</small>
+                                        <small><BsPeople size={13} /> {_user}</small>
                                     </div>
                                 </div>
                             </div>
@@ -266,7 +266,7 @@ const AllAttachments = ({
         </div>
     } else if (groups.length === 0) {
         return <div className='text-muted my-5 text-center'>
-            <div className='opacity-50 mb-2'><ExclamationCircleFill size={30} /></div>
+            <div className='opacity-50 mb-2'><BsExclamationCircleFill size={30} /></div>
             Sin anexos para mostrar
         </div>
     }
@@ -276,7 +276,7 @@ const AllAttachments = ({
             <div className='text-end mb-3 row justify-content-end'>
                 <div className='col'>
                     <Button color='primary2' onClick={() => { downloadAllInExcelDoc() }}>
-                        <i className='me-2'><CloudArrowDownFill /></i>Descargar todo
+                        <i className='me-2'><BsCloudArrowDownFill /></i>Descargar todo
                     </Button>
                 </div>
                 <div className='col-md-6 col-lg-5 col-xl-4'>
@@ -302,7 +302,7 @@ const AllAttachments = ({
                                             {Object.values(item.anexos_by_group_resp || {}).length}
                                         </Badge>
                                         <span title="Descargar Excel" className='btn btn-link link-secondary ms-1 btn-sm' onClick={() => { downloadExcelDoc(Object.values(item.attachments), item.nomb_cond) }}>
-                                            <i><CloudArrowDownFill /></i>
+                                            <i><BsCloudArrowDownFill /></i>
                                         </span>
                                     </span>
                                 </AccordionHeader>
@@ -323,7 +323,7 @@ const AllAttachments = ({
                                             {/* {Object.values(item.anexos_by_group_resp!).map((i, idx) => doRowByItem(i))} */}
                                         </tbody>
                                     </Table>
-                                    : <p className='p-3 fw-bold text-warning'><ExclamationCircleFill /> Sin anexos</p>}
+                                    : <p className='p-3 fw-bold text-warning'><BsExclamationCircleFill /> Sin anexos</p>}
                             </AccordionBody>
                         </AccordionItem>
                     )

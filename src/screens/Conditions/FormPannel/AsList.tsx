@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button, Card, CardBody, CloseButton } from 'reactstrap';
-import { ChatDots, ChatDotsFill, CheckCircleFill, ExclamationCircleFill, XCircle } from '../../../components/Icons';
+import { BsChatDots, BsChatDotsFill, BsCheckCircleFill, BsExclamationCircleFill, BsXCircle } from 'react-icons/bs';
 import Loader from '../../../components/Loader';
 import classnames from 'classnames';
 import ObservationChat from '../../../components/ObservationChat';
@@ -141,10 +141,10 @@ const AsList = ({
                                                 }
                                             >
                                                 {f.est_resp === 1 ?
-                                                    <CheckCircleFill size={selectedItem ? 32 : 42} />
+                                                    <BsCheckCircleFill size={selectedItem ? 32 : 42} />
                                                     :
                                                     <i className='text-dark text-opacity-25'>
-                                                        <ExclamationCircleFill size={selectedItem ? 32 : 42} />
+                                                        <BsExclamationCircleFill size={selectedItem ? 32 : 42} />
                                                     </i>
                                                 }
                                             </div>
@@ -161,7 +161,7 @@ const AsList = ({
                                             <span className={classnames('position-relative', {
                                                 "text-primary": !!(f.num_obs)
                                             })}>
-                                                {!(f.num_obs) ? <ChatDots /> : <ChatDotsFill />}
+                                                {!(f.num_obs) ? <BsChatDots /> : <BsChatDotsFill />}
                                                 {!!(f.num_obs) && typeof f.num_obs === 'number' &&
                                                     <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                                                         {f.num_obs}
@@ -200,7 +200,7 @@ const AsList = ({
                         <Button size="sm" color="danger" outline className='opacity-75'
                             onClick={() => deleteForm(selectedItem)}
                         >
-                            <i className='me-1'><XCircle size={16}/></i>
+                            <i className='me-1'><BsXCircle size={16}/></i>
                             <span>Eliminar este formulario</span>
                         </Button>
                     </div>}

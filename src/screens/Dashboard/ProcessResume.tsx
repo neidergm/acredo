@@ -6,7 +6,7 @@ import { AXIOS_REQUEST } from "../../services/axiosService";
 import { GET_PROCESS_BY_STATE, PROCESS_LIST } from "../../services/endPointsService";
 import { type I_Process } from "../../interfaces/process.interface";
 import CircleProgress from "../../components/CircleProgress";
-import { ExclamationCircleFill } from "../../components/Icons";
+import { BsExclamationCircleFill } from 'react-icons/bs';
 import { useNavigate } from "react-router";
 import { getProcessIndicators, setProcessList, setProcessSelectedFilter } from "../../store/slices/dashboardSlice";
 import { useAppSelector } from "../../hooks/useAppSelector";
@@ -168,7 +168,7 @@ const ProcessResume = () => {
                         </div>
                             :
                             <div className='py-5 text-center text-secondary'>
-                                <p className='text-warning'><ExclamationCircleFill size={30} /></p>
+                                <p className='text-warning'><BsExclamationCircleFill size={30} /></p>
                                 Sin procesos
                             </div>
                         )

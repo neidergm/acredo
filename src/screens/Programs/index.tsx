@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { SubHeader } from '../../components/SubHeader'
 import Loader from '../../components/Loader';
-import { ExclamationCircleFill } from '../../components/Icons';
+import { BsExclamationCircleFill } from 'react-icons/bs';
 import { AXIOS_REQUEST } from '../../services/axiosService';
 import { SAVE_PROGRAM_DATA } from '../../services/endPointsService';
 import Card from '../../components/Card';
@@ -270,7 +270,7 @@ const Programs = () => {
                             </div>
                             :
                             <div className='py-5 text-center text-secondary'>
-                                <p className='text-warning'><ExclamationCircleFill size={30} /></p>
+                                <p className='text-warning'><BsExclamationCircleFill size={30} /></p>
                                 Sin programas
                             </div>
                         )

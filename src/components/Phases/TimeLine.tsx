@@ -3,7 +3,7 @@ import styles from './timeline.module.css';
 import classnames from 'classnames';
 import { getDateDiff, getNormalDate } from '../../utils/dateUtils';
 import { Badge } from 'reactstrap';
-import { CheckCircleFill, Flag } from '../Icons';
+import { BsCheckCircleFill, BsFlagFill } from 'react-icons/bs';
 
 const TimeLine = ({ list, canEdit: _canEdit, taskEnded }: { list: T_Stage[], canEdit: boolean, taskEnded?: boolean }) => {
     return (
@@ -12,7 +12,7 @@ const TimeLine = ({ list, canEdit: _canEdit, taskEnded }: { list: T_Stage[], can
                 {/* <div className='d-flex justify-content-between px-4 py-3 my-3 position-relative bg-primary bg-opacity-10 rounded-3'> */}
                 <div className='d-flex justify-content-between py-2 mb-3 mt-2 position-relative border-bottom'>
                     <div className={styles["stage-name"]}>
-                        <i className='me-2 opacity-25'><Flag /></i>
+                        <i className='me-2 opacity-25'><BsFlagFill /></i>
                         <span className='text-secondary fw-bold opacity-50'>{stage.name}</span>
                     </div>
                     {/* {canEdit && <div className=''>
@@ -56,7 +56,7 @@ const TimeLine = ({ list, canEdit: _canEdit, taskEnded }: { list: T_Stage[], can
                                     <div className='flex-grow-1'><hr /></div>
                                     <div className={classnames('small text-secondary opacity-75 mt-2 position-lg-absolute end-0 top-50 align-middle', styles["marc-temp"])}>
                                         <div className='d-flex align-items-center gap-2'>
-                                            <div className='text-success'><CheckCircleFill size={16} /></div>
+                                            <div className='text-success'><BsCheckCircleFill size={16} /></div>
                                             <div>
                                                 <small>Realizada el {getNormalDate(action.marc_update, { dateStyle: "long", timeStyle: "short" })}</small>
                                                 {action.usua_finalizar && <small className='d-block'>Por el usuario {action.usua_finalizar}</small>}

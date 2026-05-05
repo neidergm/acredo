@@ -9,7 +9,7 @@ import { useAppSelector } from '../hooks/useAppSelector';
 import { getProcessList, selectProcess, setProcessList } from '../store/slices/processSlice';
 import CircleProgress from '../components/CircleProgress';
 import Card from '../components/Card';
-import { Edit, ExclamationCircleFill, Folder2Open, Plus, ThreeDotsVertical, XCircle } from '../components/Icons';
+import { BsPencilSquare, BsExclamationCircleFill, BsFolder2Open, BsPlus, BsThreeDotsVertical, BsXCircle } from 'react-icons/bs';
 import { Modal, ModalBody, ModalHeader, type T_ModalJSON, closeModal, ModalFooter } from '../components/Modal';
 import Alert from '../components/Alert';
 import { AXIOS_REQUEST } from '../services/axiosService';
@@ -133,7 +133,7 @@ const Process = () => {
     data = getDifferenceBetweenData(defaultData, data);
     if (!Object.values(data).length) {
       return toast.error("No hay modificaciones para guardar", {
-        icon: <i className='text-warning'><ExclamationCircleFill /></i>,
+        icon: <i className='text-warning'><BsExclamationCircleFill /></i>,
         position: "top-right"
       })
     }
@@ -217,7 +217,7 @@ const Process = () => {
         <div className='d-flex align-items-center'>
           {/* {is_admin && <Button color='primary' size='sm' className='opacity-75 rounded-2' onClick={modalToCreateNewProcess}> */}
           {is_admin && <Button color='primary' size='sm' onClick={modalToCreateNewProcess}>
-            <i><Plus /></i>
+            <i><BsPlus /></i>
             Crear nuevo proceso
           </Button>}
         </div>
@@ -253,7 +253,7 @@ const Process = () => {
             </div>
             {!(processList.length) ? <div className='mt-5 pt-5 text-center'>
               <h3 className='text-muted opacity-25 mt-5 mb-5'>
-                <span className='my-4 d-block'><Folder2Open size={50} /></span>
+                <span className='my-4 d-block'><BsFolder2Open size={50} /></span>
                 No hay nada para mostrar
               </h3>
             </div>
@@ -276,11 +276,11 @@ const Process = () => {
                       {/* {is_admin && <div className='position-absolute end-0 pe-2 pe-sm-3 pe-lg-4'> */}
                       {is_admin && <div className='ms-3'>
                         <CustomDropdown options={[
-                          { text: "Modificar proceso", icon: <Edit size={16} />, click: () => modalToEditProcess(process) },
-                          { text: "Eliminar proceso", icon: <XCircle size={16} />, click: () => confirmDeleteProcess(process) },
+                          { text: "Modificar proceso", icon: <BsPencilSquare size={16} />, click: () => modalToEditProcess(process) },
+                          { text: "Eliminar proceso", icon: <BsXCircle size={16} />, click: () => confirmDeleteProcess(process) },
                         ]}>
                           <DropdownToggle size="sm" color='light' className='rounded-3'>
-                            <ThreeDotsVertical size={18} />
+                            <BsThreeDotsVertical size={18} />
                           </DropdownToggle>
                         </CustomDropdown>
                       </div>}

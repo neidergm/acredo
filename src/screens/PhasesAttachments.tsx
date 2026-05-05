@@ -3,7 +3,7 @@ import { SubHeader } from '../components/SubHeader'
 import AllAttachments from '../components/AttachmentsTable/AllAttachments'
 import { useParams } from 'react-router';
 import { Button } from 'reactstrap';
-import { XCircle } from '../components/Icons';
+import { BsXCircle } from 'react-icons/bs';
 import { AXIOS_REQUEST } from '../services/axiosService';
 import { PHASE_DETAILS } from '../services/endPointsService';
 import { type T_PhasesWithConditions } from '../interfaces/phasesAndStages.interface';
@@ -35,7 +35,7 @@ const PhasesAttachments = () => {
                         onClick={() => {
                             window.close()
                         }}>
-                        <XCircle />
+                        <BsXCircle />
                         Cerrar y volver
                     </Button>
                 </div>

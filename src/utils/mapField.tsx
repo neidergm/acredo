@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
 import { Button, Spinner } from "reactstrap";
-import { BoxArrowUpRight } from "../components/Icons";
+import { BsBoxArrowUpRight } from 'react-icons/bs';
 import { type I_FormField, type I_FormFieldWithAnswer } from "../interfaces/conditions.interface";
 import { type I_JSONObject, type T_FieldsTypes } from "../interfaces/generic.interface";
 import { AXIOS_REQUEST } from "../services/axiosService";
@@ -61,7 +61,7 @@ const mapField = (item: I_FormField, defaultValue?: any) => {
                             onClick={() => { window.open(`${baseurl}${value}`, "_blank") }}
                         >
                             <div className='d-flex gap-2 justify-content-center align-items-center'>
-                                <BoxArrowUpRight size={16} /> Abrir documento en pestaña nueva
+                                <BsBoxArrowUpRight size={16} /> Abrir documento en pestaña nueva
                             </div>
                         </Button>
                     </div>
