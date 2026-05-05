@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import Avatar from './Avatar';
 import Menu from './Menu';
 import './header.css';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router';
 import { Bell, BellFill, HouseGear, QuestionCircle } from '../Icons';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { useAppDispatch } from '../../hooks/useAppDispatch';

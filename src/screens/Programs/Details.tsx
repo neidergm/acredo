@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { SubHeader } from '../../components/SubHeader'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router'
 import Card from '../../components/Card';
 import { AXIOS_REQUEST } from '../../services/axiosService';
 import { DELETE_PROGRAM, GET_PROGRAMS_LIST, SAVE_PROGRAM_DATA } from '../../services/endPointsService';

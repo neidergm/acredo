@@ -12,7 +12,7 @@ import { DELETE_ACTION, DELETE_STAGE, PUT_ACTION, PUT_STAGE } from '../../../ser
 import Loader from '../../Loader';
 import { useAppDispatch } from '../../../hooks/useAppDispatch';
 import { getContionData, getPhasesAndStagesOfCondition, setProcessPhasesWithConditions } from '../../../store/slices/taskSlice';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import Action from '../Action';
 import toast from 'react-hot-toast';
 import { jsonToFormData } from '../../../utils/formUtils';

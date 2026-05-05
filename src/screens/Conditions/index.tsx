@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { SubHeader } from "../../components/SubHeader";
-import { Link, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from "react-router";
 import { type I_Condition } from "../../interfaces/conditions.interface";
 import { Accordion, AccordionBody, AccordionHeader, AccordionItem, Badge, Button, DropdownToggle, ListGroup, ListGroupItem, Progress } from "reactstrap";
 import Loader from "../../components/Loader";
@@ -273,7 +273,8 @@ const Conditions = () => {
 
   useEffect(() => {
     if (!id_process) {
-      return navigate("/")
+      navigate("/")
+      return
     }
 
     getData().then((r: any) => {

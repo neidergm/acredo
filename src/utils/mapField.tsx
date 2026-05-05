@@ -1,12 +1,24 @@
-import { Button } from "reactstrap";
+import { lazy, Suspense } from "react";
+import { Button, Spinner } from "reactstrap";
 import { BoxArrowUpRight } from "../components/Icons";
-import TextEditor from "../components/TextEditor";
 import { type I_FormField, type I_FormFieldWithAnswer } from "../interfaces/conditions.interface";
 import { type I_JSONObject, type T_FieldsTypes } from "../interfaces/generic.interface";
 import { AXIOS_REQUEST } from "../services/axiosService";
 import { getFormItemDefaultValue } from "./formUtils";
 import EvidenceSelect from "../components/EvidenceSelect";
 import DataListAttachmentInput from "../components/DataListAttachmentInput";
+
+const TextEditor = lazy(() => import("../components/TextEditor"));
+
+const EditorPlaceholder = () => (
+    <div
+        className="border rounded d-flex align-items-center justify-content-center text-muted small"
+        style={{ minHeight: 240 }}
+    >
+        <Spinner size="sm" />
+        <span className="ms-2">Cargando editor...</span>
+    </div>
+);
 
 export const isAGoogleDocField = (type: string) => ["googledocs", "googlesheets", "googleslides"].includes(type)
 
@@ -22,24 +34,20 @@ const mapField = (item: I_FormField, defaultValue?: any) => {
     if (field.tag === "custom") {
         if (field.type === "ckeditor") {
             field.render = ({ field: { ref, onChange, onBlur, value, ...f } }: any) => {
-                // console.log({ field, f });
-                return <TextEditor
-                    {...f}
-                    className={f.invalid ? "is-invalid" : ""}
-                    // config={field.config}
-                    // style={field.style}
-                    data={defaultValue || value}
-                    inputRef={ref}
-                    // style={f.style}
-                    onChange={(_event: any, editor: any) => {
-                        // console.log({ event, editor, data });
-                        onChange(editor.getData())
-                    }}
-                    onBlur={(_event: any, editor: any) => {
-                        // console.log({ event, editor, data });
-                        onBlur(editor.getData())
-                    }}
-                />
+                return <Suspense fallback={<EditorPlaceholder />}>
+                    <TextEditor
+                        {...f}
+                        className={f.invalid ? "is-invalid" : ""}
+                        data={defaultValue || value}
+                        inputRef={ref}
+                        onChange={(_event: any, editor: any) => {
+                            onChange(editor.getData())
+                        }}
+                        onBlur={(_event: any, editor: any) => {
+                            onBlur(editor.getData())
+                        }}
+                    />
+                </Suspense>
             }
         } else if (isAGoogleDocField(field.type)) {
             const baseurl = field.defaultValue;
@@ -80,7 +88,7 @@ const mapField = (item: I_FormField, defaultValue?: any) => {
                     onBlur={onBlur}
                     className={f.className}
                     value={value}
-                {...props}
+                    {...props}
                 />
             }
 
@@ -141,7 +149,7 @@ const mapField = (item: I_FormField, defaultValue?: any) => {
 
     } else if (field.tag === "list") {
         field.fields = field.fields.map((f, _i) => mapField({ json_campo: f } as typeof item)!)
-    }else if(field.tag){
+    } else if (field.tag) {
         field.defaultValue = defaultValue;
     }
 

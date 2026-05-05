@@ -8,7 +8,7 @@ import { mapFieldAndDefaultValues } from '../../../utils/mapField';
 import Alert from '../../../components/Alert';
 import AsList from './AsList';
 import AsTabs from './AsTabs';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import { formToSubmitData, getDifferenceBetweenData } from '../../../utils/formUtils';
 import toast from 'react-hot-toast';
 import { ExclamationCircleFill, LinkIcon } from '../../../components/Icons';

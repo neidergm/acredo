@@ -7,7 +7,7 @@ import { GET_PROCESS_BY_STATE, PROCESS_LIST } from "../../services/endPointsServ
 import { type I_Process } from "../../interfaces/process.interface";
 import CircleProgress from "../../components/CircleProgress";
 import { ExclamationCircleFill } from "../../components/Icons";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { getProcessIndicators, setProcessList, setProcessSelectedFilter } from "../../store/slices/dashboardSlice";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { useAppDispatch } from "../../hooks/useAppDispatch";

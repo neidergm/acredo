@@ -10,7 +10,7 @@ import { type I_JSONObject } from '../../interfaces/generic.interface'
 import Loader from '../Loader'
 import classnames from 'classnames'
 import { getNormalDate } from '../../utils/dateUtils'
-import { XLSX, type XLSX_Range, generateSheetInBook } from '../../utils/xslxUtils'
+import type { XLSX_Range } from '../../utils/xslxUtils'
 
 const generateExcelBookData = (list: T_AttachmentMetaData[]) => {
     const extraCells = ["Ubicación", "Criterios", "Evidencias"];
@@ -203,18 +203,26 @@ const AllAttachments = ({
         }, 500)
     }
 
-    const downloadAllInExcelDoc = () => {
-        const workbook = XLSX.utils.book_new();
-        groups!.forEach((g) => {
-            const { data, merges } = generateExcelBookData(Object.values(g.attachments))
-            const sheetname = g.nomb_cond.substring(0, 30).replaceAll("/", "_");
-            generateSheetInBook(workbook, data, sheetname)['!merges'] = merges;
-        })
-        XLSX.writeFile(workbook, `Todos los anexos.xlsx`)
+    const downloadAllInExcelDoc = async () => {
+        const tid = toast.loading("Generando archivo...");
+        try {
+            const { XLSX, generateSheetInBook } = await import('../../utils/xslxUtils');
+            const workbook = XLSX.utils.book_new();
+            groups!.forEach((g) => {
+                const { data, merges } = generateExcelBookData(Object.values(g.attachments))
+                const sheetname = g.nomb_cond.substring(0, 30).replaceAll("/", "_");
+                generateSheetInBook(workbook, data, sheetname)['!merges'] = merges;
+            })
+            XLSX.writeFile(workbook, `Todos los anexos.xlsx`)
+        } finally {
+            toast.dismiss(tid);
+        }
     }
 
-    const downloadExcelDoc = (_data: T_AttachmentMetaData[], name: string) => {
+    const downloadExcelDoc = async (_data: T_AttachmentMetaData[], name: string) => {
+        const tid = toast.loading("Generando archivo...");
         try {
+            const { XLSX, generateSheetInBook } = await import('../../utils/xslxUtils');
             const workbook = XLSX.utils.book_new();
             const { data, merges } = generateExcelBookData(_data)
             // eslint-disable-next-line no-useless-escape
@@ -223,6 +231,8 @@ const AllAttachments = ({
             XLSX.writeFile(workbook, `ANEXOS ${docName}.xlsx`)
         } catch (error) {
             downloadExcelDoc(_data, "ANEXOS DEL PROCESO")
+        } finally {
+            toast.dismiss(tid);
         }
     }
 

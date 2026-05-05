@@ -4,7 +4,7 @@ import { GET_ACTIVE_PROCESS } from '../../services/endPointsService'
 import { type I_Process } from '../../interfaces/process.interface';
 import { ExclamationCircleFill, Kanban } from '../../components/Icons';
 import { ProcessResumeItem } from '../Dashboard/ProcessResume';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import Loader from '../../components/Loader';
 
 type T_Props = {

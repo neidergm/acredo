@@ -5,7 +5,7 @@ import ProgramsResume from './ProgramsResume'
 import classnames from 'classnames';
 import styles from './style.module.css';
 import { Button } from 'reactstrap'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { JournalBoomark, Kanban, People } from '../../components/Icons'
 
 const Menu = () => {

@@ -7,7 +7,7 @@ import { GET_PROGRAMS_BY_STATE } from '../../services/endPointsService';
 import { type I_Program } from '../../interfaces/programs.interface';
 import { Badge } from 'reactstrap';
 import { ExclamationCircleFill, Stack } from '../../components/Icons';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { getProgramsIndicators, setProgramsList, setProgramsSelectedFilter } from '../../store/slices/dashboardSlice';

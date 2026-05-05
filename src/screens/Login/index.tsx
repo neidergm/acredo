@@ -1,23 +1,17 @@
 import { lazy, useState } from "react";
 import style from "./login.module.css";
-import lazyLoaderComponents from "../../services/lazyLoadingService";
-import { type I_User } from "../../interfaces/user.interface";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { login } from "../../store/slices/userSlice";
 import classnames from 'classnames';
 import Footer from "../../components/Footer";
 import { APP_COLORS, APP_TITLE } from "../../services/constantsService";
 
-const GoogleLogin = lazy(lazyLoaderComponents(() => import(/* webpackChunkName: "GoogleLogin" */ './../../components/GoogleLogin')));
-
-interface I_Props {
-    callback: (data: I_User, toekn: string) => void;
-}
+const GoogleLogin = lazy(() => import('./../../components/GoogleLogin'));
 
 const logo = '/logo-login.svg';
 const logoPartnert = '/logo-partner.png';
 
-const Login = (_props: I_Props) => {
+const Login = () => {
 
     const appname = APP_TITLE;
     const [loader, setLoader] = useState<boolean>(false);

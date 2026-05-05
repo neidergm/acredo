@@ -4,7 +4,7 @@ import { GOOGLE_CLIENT_ID } from '../../services/constantsService';
 import './index.css';
 
 interface I_Props {
-    color: string,
+    color?: string,
     disabled: boolean,
     successCallback: (credential: string) => void,
     failureCallback?: (error: string) => void,

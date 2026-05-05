@@ -19,7 +19,7 @@ import { toast } from 'react-hot-toast';
 import CustomDropdown from '../CustomDropdown';
 import useLoader from '../../hooks/useLoader';
 import useAlert from '../../hooks/useAlert';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router';
 
 type T_Props = {
     taskProgress: number,

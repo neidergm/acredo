@@ -6,7 +6,7 @@ import { AXIOS_REQUEST } from '../../services/axiosService';
 import { SAVE_PROGRAM_DATA } from '../../services/endPointsService';
 import Card from '../../components/Card';
 import { Badge, Button, CardBody, CardHeader } from 'reactstrap';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { getDateDiff, getNormalDate } from '../../utils/dateUtils';
 import { Modal, ModalBody, ModalFooter, ModalHeader, type T_ModalJSON, closeModal } from '../../components/Modal';
 import Alert from '../../components/Alert';

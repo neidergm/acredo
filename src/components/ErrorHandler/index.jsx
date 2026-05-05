@@ -5,6 +5,16 @@ import localStorageService, { sessionStorageService } from '../../services/local
 
 let timerValue = 0;
 
+const CHUNK_RELOAD_KEY = 'NG_chunkReloadAt';
+const CHUNK_RELOAD_WINDOW_MS = 10_000;
+
+// Why: chunk errors tras deploy (HTML viejo apunta a JS que ya no existe) se ven distintos
+// en webpack vs Vite/Rolldown. Cubrimos ambos y también el name "ChunkLoadError" estándar.
+const isChunkLoadError = (error) => {
+    const text = `${error?.name || ''} ${error?.message || ''} ${error?.stack || ''}`;
+    return /ChunkLoadError|Loading chunk \d+ failed|Failed to fetch dynamically imported module|error loading dynamically imported module|Importing a module script failed/i.test(text);
+};
+
 export const sendReport = (_data, successCallback, errorCallback, progressCallback) => {
     if (!(/^http[s]?:\/\/localhost.*$/.test(window.location.href))) {
         _data.device = navigator.userAgent;
@@ -53,50 +63,48 @@ class ErrorHandler extends Component {
     reloadChildren = () => { window.location.reload() }
 
     componentDidCatch(error, errorInfo) {
-        // Registrar el error en un servicio de reporte de errores
-        // logErrorToMyService(error, errorInfo);
-        if (timerValue === 0) {
-            if (!(/^http[s]?:\/\/localhost.*$/.test(window.location.href))) {
-                timerValue = 1;
-                window.location.reload(true);
-            }
-        } else {
-            if ((error?.message && /Loading [A-Z\s]*chunk [\d]+ failed/ig.test(error.message))
-                || (error?.stack && /Loading [A-Z]*chunk [\d]+ failed/ig.test(error.stack))) {
-                window.location.reload(true);
-            } else {
-                this.setState({ error, loading: 1 });
+        const isLocalhost = /^http[s]?:\/\/localhost.*$/.test(window.location.href);
 
-                let data = {
-                    error,
-                    stack: error.stack || "NG",
-                    errorInfo,
-                    path: window.location.href
-                }
-
-                sendReport(data, this.reloadWithTimer, this.reloadWithTimer, (progress) => {
-                    this.setState({ loading: Math.round((progress.loaded * 100) / progress.total) })
-                })
+        // Chunk error tras deploy: el bundle viejo pide un JS que ya no existe.
+        // Recargamos para tomar el HTML/chunks nuevos. Anti-loop: si recargamos hace
+        // <10s y volvió a fallar, dejamos de recargar y mostramos UI de error.
+        if (!isLocalhost && isChunkLoadError(error)) {
+            const lastReload = Number(sessionStorageService.getItem(CHUNK_RELOAD_KEY)) || 0;
+            if (Date.now() - lastReload > CHUNK_RELOAD_WINDOW_MS) {
+                sessionStorageService.setItem(CHUNK_RELOAD_KEY, `${Date.now()}`);
+                window.location.reload();
+                return;
             }
         }
+
+        // Bootstrap del backoff exponencial (1s, 3s, 9s, 27s -> origin).
+        if (timerValue === 0) timerValue = 1;
+
+        this.setState({ error, loading: 1 });
+
+        const data = {
+            error,
+            stack: error.stack || "NG",
+            errorInfo,
+            path: window.location.href
+        }
+
+        sendReport(data, this.reloadWithTimer, this.reloadWithTimer, (progress) => {
+            this.setState({ loading: Math.round((progress.loaded * 100) / progress.total) })
+        })
     }
 
     reloadWithTimer = () => {
         this.setState({ timer: timerValue, loading: null })
-        let interval = setInterval(() => {
+        const interval = setInterval(() => {
             if (this.state.timer > 0) {
                 this.setState({ timer: this.state.timer - 1 })
             } else {
                 clearInterval(interval)
-                if (this.state.error?.message && /Loading chunk [\d]+ failed/ig.test(this.state.error.message)) {
-                    window.location.reload(true);
-                } else {
-                    this.setState({ hasError: false, error: null, timer: null, loading: null });
-                    // timerValue = (timerValue * 2 < 60) ? timerValue * 2 : 60;
-                    timerValue = timerValue * 3
-                    if (timerValue > 10) {
-                        window.location.href = window.location.origin
-                    }
+                this.setState({ hasError: false, error: null, timer: null, loading: null });
+                timerValue = timerValue * 3;
+                if (timerValue > 10) {
+                    window.location.href = window.location.origin;
                 }
             }
         }, 1000)

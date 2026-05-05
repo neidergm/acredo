@@ -1,6 +1,6 @@
  
 import { useEffect, useState, useMemo } from 'react'
-import { useParams, useNavigate, Link, useSearchParams } from "react-router-dom";
+import { useParams, useNavigate, Link, useSearchParams } from "react-router";
 import { CheckCircleFill, Clip, Edit, ExclamationCircleFill, InfoCircle, LinkIcon, People, ThreeDotsVertical, XCircle } from "../../../components/Icons";
 import { Badge, Button, CloseButton, DropdownToggle, Table } from 'reactstrap';
 import classnames from 'classnames';
@@ -222,7 +222,10 @@ const ConditionsDetails = () => {
   }
 
   useEffect(() => {
-    if (!id_process || !id_cond) return navigate("/", { replace: true })
+    if (!id_process || !id_cond) {
+      navigate("/", { replace: true })
+      return
+    }
     if (!processSelected) {
       dispatch(getProcessList({ id_process: Number(id_process), status: searchParams.get("status") || "" }))
     }

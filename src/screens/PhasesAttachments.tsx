@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { SubHeader } from '../components/SubHeader'
 import AllAttachments from '../components/AttachmentsTable/AllAttachments'
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import { Button } from 'reactstrap';
 import { XCircle } from '../components/Icons';
 import { AXIOS_REQUEST } from '../services/axiosService';
