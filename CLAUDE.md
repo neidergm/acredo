@@ -7,6 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run dev` — start the Vite dev server.
 - `npm run build` — type-check the whole project (`tsc -b`) then produce a production bundle. Type errors fail the build.
 - `npm run lint` — run ESLint across the repo (flat config in `eslint.config.js`).
+- `npm run typecheck` — run only `tsc -b` (no bundling). Fast feedback loop for type errors.
 - `npm run preview` — serve the built `dist/` for a local smoke test.
 
 There is no test runner configured. Don't fabricate test commands; if a change needs verification, run `npm run build` (which executes the TypeScript project references) and/or hit the relevant screen in `npm run dev`.
@@ -29,12 +30,15 @@ The app does not read environment variables. Instead, `public/_config.js` assign
 
 ### Auth + HTTP
 
-All HTTP goes through `AXIOS_REQUEST` in `src/services/axiosService.ts`. It:
-- Prepends `BASE_URL` unless the URL is already absolute.
-- Pulls the bearer token from a module-level cache, falling back to `localStorageService.getItem("token")`.
-- Switches to multipart headers when `data instanceof FormData`.
-- For `get`/`delete`, sends a string `data` as URL suffix and an object `data` as query params.
-- On 401, dispatches `setUnauthorized("Su sesión a expirado")` (wired up in `src/store/index.ts` via `setOtherAxiosConfig`), which the store reducer interprets as "wipe user/token from localStorage and reset all state."
+All HTTP goes through `AXIOS_REQUEST` in `src/services/axiosService.ts`, a wrapper around an `axios.create({ baseURL })` instance with two interceptors:
+- **Request**: reads the token from `localStorageService` on every request and sets `Authorization`. No in-memory cache to keep in sync.
+- **Response**: unwraps `resp.data` on success; on rejection preserves the `AxiosError` shape (so callers can `.catch(({ response }) => ...)`), toasts on `ERR_NETWORK`, and on 401 invokes a registered `onUnauthorized` callback.
+- For `FormData` bodies, the wrapper deletes any `Content-Type` so axios infers `multipart/form-data` with the correct boundary.
+- For `get`/`delete`, a string `data` appends to the URL; an object becomes query params.
+
+The store registers its 401 handler at boot via `setOnUnauthorized((msg) => store.dispatch(setUnauthorized(msg)))` in `startUserConfigurations` (see `src/store/index.ts`). This callback pattern intentionally breaks the `axios → store → userSlice → axios` import cycle.
+
+`AXIOS_REQUEST<T>(url, method?, data?, headers?, onUploadProgress?)` is generic — pass a type to get a typed response without casts.
 
 Endpoint paths live in `src/services/endPointsService.ts` with JSDoc comments describing method and params. The API is in Spanish (`conv` = process/convocatoria, `cond` = condition/task, `fases` = phases, `resp` = answers/responses, `obs` = observations, `etapas` = stages, `acciones` = actions, `programas` = programs, `noti` = notifications). Add new endpoints here rather than hardcoding strings in slices.
 
@@ -52,13 +56,15 @@ Use the typed hooks `useAppSelector` / `useAppDispatch` from `src/hooks/`, never
 
 `src/utils/userRolUtils.ts` and `src/interfaces/generic.interface.ts` define the role codes:
 `A` = Lead, `B` = Reviewer, `C` = Admin, `D` = View-only, `E` = Supervisor.
-Admin-only screens use the `screenAvalaible` helper in `src/App.tsx`, which redirects non-admin/non-supervisor users to `/proceso`.
+Admin/supervisor-only screens are gated by a `<RequireAdmin>` wrapper component in `src/App.tsx` that reads the role via `useAppSelector` and either renders `children` or `<Navigate to="/proceso" replace />`.
 
 ### Routing and lazy loading
 
-All screens in `src/App.tsx` are lazy-loaded through `lazyLoaderComponents` (`src/services/lazyLoadingService.ts`), which retries dynamic-import failures up to 3 times at 1.5s intervals — useful when a deploy invalidates cached chunks. When adding a screen, follow the same pattern instead of plain `React.lazy`.
+Routing uses **React Router v7 declarative mode**. Imports come from `react-router` (the unified v7 package — there is no `react-router-dom` dep). The Spanish path names (`/proceso`, `/usuarios`, `/programa`, `/notificaciones`) match the domain language.
 
-Routes use `BrowserRouter` with `basename='/'`. The Spanish path names (`/proceso`, `/usuarios`, `/programa`, `/notificaciones`) match the domain language.
+Screens in `src/App.tsx` are lazy-loaded with plain `lazy(() => import('./screens/...'))`. Stale-chunk failures after a deploy are handled centrally in `src/components/ErrorHandler/index.jsx`: `componentDidCatch` detects chunk-load errors via a regex covering Vite/Rolldown (`Failed to fetch dynamically imported module`, `error loading dynamically imported module`, `Importing a module script failed`) and webpack-style messages, then triggers `window.location.reload()`. An anti-loop guard via `sessionStorage` prevents infinite reload loops (won't reload again within 10s of the previous reload). For non-chunk errors, ErrorHandler renders an error UI and reports via `sendReport`.
+
+Note: `react-router@7` made `navigate()` return `Promise<void>`. Don't `return navigate(...)` from a `useEffect` callback (it makes the effect async and breaks). Use `navigate(...); return;` instead.
 
 ### Forms
 
@@ -66,10 +72,16 @@ The app uses `react-ngm-form`. Form definitions are colocated in `src/forms/` as
 
 ### UI and locale
 
-- Bootstrap 5 + Reactstrap. `src/App.css` and `src/custom-colors.css` carry app-specific styles; header/login colors come from `_config.js` `app_colors`.
+- **Bootstrap 5 built from Sass source** via `src/styles/index.scss` (entry point) — requires `sass` devDep. Customization is split into partials following the canonical Bootstrap order:
+  - `_variables.scss` — Sass overrides (`$primary`, `$warning`, `$card-bg`, `$btn-disabled-opacity`, …) BEFORE Bootstrap's `variables` import.
+  - `_theme-colors.scss` — `map-merge` with `$theme-colors` AFTER Bootstrap's variables; defines `primary2` as a real theme color so Bootstrap auto-generates `.btn-primary2`, `.bg-primary2`, `.text-primary2`, `.border-primary2`, etc.
+  - `_typography.scss`, `_layout.scss`, `_components.scss`, `_helpers.scss`, `_print.scss` — post-Bootstrap layers in cascade order.
+  - **No `!important` in customization** — overrides happen at the Sass source, not by CSS specificity battles. Header/login colors still come from `_config.js` `app_colors`.
+- **Reactstrap** for component primitives. Caveat: `UncontrolledAccordion` in 9.2.x has a typing bug requiring `toggle={() => {}}` no-op prop (see existing usages in `Phases/PhasesList.tsx`, `AttachmentsTable/AllAttachments.tsx`, `UserResume/index.tsx`).
+- **Icons** come from `react-icons/bs` (Bootstrap Icons set). Names use the `Bs` prefix: `BsBell`, `BsPencilSquare`, `BsExclamationCircleFill`, etc. There is NO local icons file.
 - The UI is Spanish; dates are formatted with `'es-CO'` locale via `src/utils/dateUtils.ts`.
 - Toast/loader are mounted globally in `src/main.tsx` (`react-hot-toast` + `<Loader />` driven by `loaderSlice`); use the `useLoader` hook rather than mounting your own.
-- Rich text uses `@ckeditor/ckeditor5-build-classic`; drag-and-drop uses `@dnd-kit`; spreadsheet IO uses `xlsx`.
+- Rich text uses `@ckeditor/ckeditor5-build-classic` — heavyweight (~1MB), so `TextEditor` is `lazy()`-loaded inside `src/utils/mapField.tsx` with a local `<Suspense>` boundary and a fixed-height placeholder. Drag-and-drop uses `@dnd-kit`; spreadsheet IO uses `xlsx` (also lazy — dynamic-imported only inside the export functions of `AttachmentsTable/AllAttachments.tsx` to keep it out of the main chunk).
 
 ## Conventions worth following
 

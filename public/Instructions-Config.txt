@@ -27,12 +27,13 @@
 
 
 7. APP ICON FOR WPA
-	- Replace "logo512.png" and "logo192.png" for another files with the same name.
+	- Replace "images/logos/logo512.png" and "images/logos/logo192.png" with files of the same name.
 
 
 8: RENAME FILES
-	- You have to rename all files with ".org" extention, only quit the ".org" word 
+	- You have to rename all files with ".org" extention, only quit the ".org" word
 	- EXAMPLE: Rename "_config.js.org" to "_config.js"
+	- For PWA icons: rename "images/logos/logo192.png.org" → "images/logos/logo192.png" (idem 512).
 
 
 9: APP CONFIGURATION FILE
@@ -40,6 +41,7 @@
 	- Here you have to config parameters and login methods (GSI, MSLA, Email), maintenance url, etc...
 
 10: SET IMAGES AND ICONS
-	- logo-login.svg
-	- logo-header.svg
-	- logo-partner.png
+	All deployment-specific logos live under "public/images/logos/":
+	- images/logos/logo-login.svg
+	- images/logos/logo-header.svg
+	- images/logos/logo-partner.png

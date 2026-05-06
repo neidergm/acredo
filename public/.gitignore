@@ -10,12 +10,12 @@ _config.js
 manifest.json
 index.html
 .htaccess
-logo192.png
-logo512.png
 favicon.ico
-logo-header.svg
-logo-login.svg
-logo-partner.png
+images/logos/logo192.png
+images/logos/logo512.png
+images/logos/logo-header.svg
+images/logos/logo-login.svg
+images/logos/logo-partner.png
 
 # testing
 /coverage

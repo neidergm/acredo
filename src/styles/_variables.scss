@@ -8,12 +8,6 @@ $primary: #449bff;
 $warning: #ff862f;
 $info: #06a099;
 $success: #31ac69;
-$body-bg: #f3f4f6;
 
 // === Componentes ===
 $btn-disabled-opacity: 0.45;
-
-// Cards en blanco aunque $body-bg sea gris (default de BS 5.3 es var(--bs-body-bg)).
-// Si quisieras también `$accordion-bg: #fff;` y `$list-group-bg: #fff;`, agregalos acá.
-$card-bg: #fff;
-$table-bg: inherit; 

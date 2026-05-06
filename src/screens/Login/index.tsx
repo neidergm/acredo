@@ -8,8 +8,8 @@ import { APP_COLORS, APP_TITLE } from "../../services/constantsService";
 
 const GoogleLogin = lazy(() => import('./../../components/GoogleLogin'));
 
-const logo = '/logo-login.svg';
-const logoPartnert = '/logo-partner.png';
+const logo = '/images/logos/logo-login.svg';
+const logoPartnert = '/images/logos/logo-partner.png';
 
 const Login = () => {
 

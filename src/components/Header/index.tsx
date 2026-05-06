@@ -8,10 +8,14 @@ import { useAppSelector } from '../../hooks/useAppSelector';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { getNotificationsReport } from '../../store/slices/notificationsSlice';
 import { isAdmin, isSupervisor } from '../../utils/userRolUtils';
-import { APP_COLORS, APP_HELP_LINK, APP_TITLE } from '../../services/constantsService';
+import { APP_COLORS, APP_HELP_LINK } from '../../services/constantsService';
 
-const logo = '/logo-header.svg';
-export const Header = ({ titulo = APP_TITLE }: { titulo?: string }) => {
+const logo = '/images/logos/logo-header.svg';
+const logo_wordmark = '/images/logos/logo-header-wordmark-dark.png';
+
+// const title = APP_TITLE;
+
+export const Header = () => {
 
   const unreadCount = useAppSelector(s => s.notifications.unreadCount);
   const user = useAppSelector(s => s.user.userInfo);
@@ -38,8 +42,11 @@ export const Header = ({ titulo = APP_TITLE }: { titulo?: string }) => {
         <div className='position-relative'>
           <div className='fs-3 brand d-flex justify-content-xl-center'>
             <div onClick={goToHome} className='gap-3 d-flex align-items-end cursor-pointer'>
-              <img alt='LogoHeader' src={logo} height={52} />
-              <span className='text-nowrap title d-none d-sm-block'>{titulo}</span>
+              <picture>
+                <source srcSet={logo_wordmark} media="(min-width: 576px)" />
+                <img alt='LogoHeader' src={logo} height={52} />
+              </picture>
+              {/* <span className='text-nowrap title d-none d-sm-block'>{title}</span> */}
             </div>
           </div>
           <div className='d-flex gap-3 gap-sm-4 justify-content-end ms-auto align-items-center navigation-items'>
