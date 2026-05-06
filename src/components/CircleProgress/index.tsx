@@ -1,49 +1,67 @@
+import type { ReactElement } from 'react';
 import style from './style.module.css';
 
 type T_Props = {
     radius: number,
     progress: number,
-    stroke: number,
-    content: any,
+    stroke?: number,
+    children?: string | null | ReactElement | ReactElement[],
+    padding?: number,
+    margin?: number,
     color?: string,
+    strokeStyle?: "round" | "butt" | "square" | "inherit",
 }
 
 export const CircleProgress = (props: T_Props) => {
 
-    const { radius, stroke, progress, content } = props;
-    const normalizedRadius = radius - stroke * 2;
-    const circumference = normalizedRadius * 2 * Math.PI;
+    const { children, radius: _radius = 10, stroke = 10, progress, padding = 0, margin = 0 } = props;
+    let { strokeStyle = "butt" } = props;
+    let strokeDashoffset = 0;
 
-    const strokeDashoffset = circumference - progress / 100 * circumference;
     const color = props.color || "var(--progress-circle-color)";
+    // const size = (_radius + padding) * 2;
+    const size = (_radius) * 2;
+    const halfSize = size / 2;
+    const radius = (size - stroke - padding) / 2;
+    const circumference = radius * Math.PI * 2;
+
+    let dash = (progress * circumference) / 100;
+
+    if (["round", "square"].includes(strokeStyle)) {
+        if (progress < 100) {
+            strokeDashoffset -= stroke / 2;
+            dash -= stroke
+        }
+
+        if (dash < 0) {
+            strokeStyle = "butt";
+            dash = progress
+        }
+    }
+
+    const circleProps = {
+        stroke: color,
+        strokeWidth: stroke,
+        cx: halfSize,
+        cy: halfSize,
+        r: radius
+    }
+
     return (
-        <div className={style["circleprogress-container"]} style={{ width: `${radius * 2}px` }}>
-            <div className={style["content-text"]}>{content}</div>
+        <div className={style.container}>
+            <div className={style.content}>{children}</div>
             <svg
-                height={radius * 2}
-                width={radius * 2}
+                height={size}
+                width={size}
+                viewBox={`0 0 ${size} ${size}`}
             >
+                <circle {...circleProps} />
                 <circle
-                    stroke={color}
-                    className={style["circle"]}
-                    fill="transparent"
-                    strokeWidth={stroke}
-                    strokeDasharray={circumference + ' ' + circumference}
-                    style={{ strokeDashoffset: 0, opacity: "0.2" }}
-                    r={normalizedRadius}
-                    cx={radius}
-                    cy={radius}
-                />
-                <circle
-                    stroke={color}
-                    className={style["circle"]}
-                    fill="transparent"
-                    strokeWidth={stroke}
-                    strokeDasharray={circumference + ' ' + circumference}
-                    style={{ strokeDashoffset }}
-                    r={normalizedRadius}
-                    cx={radius}
-                    cy={radius}
+                    {...circleProps}
+                    strokeWidth={circleProps.strokeWidth + padding - margin}
+                    strokeDashoffset={strokeDashoffset}
+                    strokeLinecap={strokeStyle}
+                    strokeDasharray={`${dash} ${circumference - dash}`}
                 />
             </svg>
         </div>

@@ -219,9 +219,10 @@ const CurrentPhase = ({
                         progress={taskProgress}
                         color={expiredDate ? "#dc3545" : '#198754'}
                         stroke={8}
-                        radius={55}
-                        content={<b>{taskProgress}%</b>}
-                    />
+                        radius={10}
+                    >
+                        <b>{taskProgress}%</b>
+                    </CircleProgress>
                     <div>
                         {!!(canEndTask) && (
                             taskIsEnded ?
@@ -245,9 +246,10 @@ const CurrentPhase = ({
                                 progress={taskProgress}
                                 color={expiredDate ? "#dc3545" : '#198754'}
                                 stroke={8}
-                                radius={55}
-                                content={<b>{taskProgress}%</b>}
-                            />
+                                radius={10}
+                            >
+                                <b>{taskProgress}%</b>
+                            </CircleProgress>
                         </div>
                         <div className='flex-grow-1 small'>
                             <p className="mb-2"><b className='fw-semibold'>Acción:</b> {action?.nomb_accion}</p>

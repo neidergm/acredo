@@ -3,8 +3,8 @@ import { type I_JSONObject, type T_FieldsTypes } from "../interfaces/generic.int
 import { dateToString, stringToDate } from "./dateUtils";
 
 export type T_FetchedFormData = {
-    fields: { [name: string]: any },
-    defaultValues: { [name: string]: any },
+    fields: Record<string, unknown>,
+    defaultValues: Record<string, unknown>,
     fetchedForm: I_FormFieldWithAnswer[] | null,
 }
 
@@ -56,10 +56,11 @@ export const formToSubmitData = (
     const form = new FormData();
     let i = 0;
 
-    const fieldsAsJson = fields.reduce((p, c: any) => {
-        const jc: any = !(Object.prototype.hasOwnProperty.call(c, "json_campo")) ? { json_campo: c } : c;
+    type T_FieldEntry = { json_campo: I_JSONObject } & I_JSONObject;
+    const fieldsAsJson = fields.reduce<Record<string, T_FieldEntry>>((p, c) => {
+        const jc = (Object.prototype.hasOwnProperty.call(c, "json_campo") ? c : { json_campo: c }) as T_FieldEntry;
         return { ...p, [jc.json_campo.name]: jc }
-    }, {} as { [name: string]: { json_campo: I_JSONObject } & I_JSONObject })
+    }, {})
 
     Object.keys(data).forEach((e) => {
         const prefix = `${dataPrefix}[${i}]`;
@@ -77,7 +78,7 @@ export const formToSubmitData = (
                 } else if (fieldProps.json_campo.tag === "list") {
                     keysOnField.forEach((p) => form.append(`${prefix}.${p}`, `${fieldProps![p]}`));
 
-                    currentData.forEach((row: any, rowID: number) => {
+                    currentData.forEach((row: I_JSONObject, rowID: number) => {
                         fieldProps!.json_campo.fields.forEach((item: I_JSONObject, idx: number) => {
                             const itemid = `${prefix}.item[${rowID}].campo[${idx}]`;
                             form.append(`${itemid}.nombre`, item.name);
@@ -178,15 +179,15 @@ export const getDifferenceBetweenData = (oldValues: I_JSONObject, newValues: I_J
     const diff: I_JSONObject = {};
     for (const key in newValues) {
 
-        let ov: any = oldValues[key];
-        const nv: any = newValues[key];
-        let nvs: any = newValues[key];
+        let ov: unknown = oldValues[key];
+        const nv: unknown = newValues[key];
+        let nvs: unknown = newValues[key];
 
         if (excludeEmptyValues) {
             if ((nv === "") && (ov === null || ov === undefined)) continue
         }
 
-        if (nvs instanceof Date && ov) {
+        if (nvs instanceof Date && typeof ov === "string") {
             ov = stringToDate(ov)
         }
 

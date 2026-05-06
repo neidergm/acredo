@@ -14,17 +14,17 @@ export const APP_COLORS = window._NGconfig.app_colors;
 
 export const APP_HELP_LINK = window._NGconfig.app_help_link;
 
-export const stringBase64 = (str: string | null, decrypt?: boolean) => {
-    if (!str) return str;
+export const stringBase64 = (value: unknown, decrypt?: boolean) => {
+    if (!value) return value;
+    let result = value;
     if (decrypt === true) {
         try {
-            str = decodeURIComponent(escape(window.atob(str)));
-            return JSON.parse(str);
-        } catch (error) {
-            return str;
+            result = decodeURIComponent(escape(window.atob(String(value))));
+            return JSON.parse(result as string);
+        } catch {
+            return result;
         }
-    } else {
-        if (typeof str === "object") { str = JSON.stringify(str) }
-        return window.btoa(unescape(encodeURIComponent(str)));
     }
+    const str = typeof result === "object" ? JSON.stringify(result) : String(result);
+    return window.btoa(unescape(encodeURIComponent(str)));
 }

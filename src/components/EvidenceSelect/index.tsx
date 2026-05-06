@@ -1,28 +1,27 @@
-import { useEffect, useState } from 'react'
+import { type Ref, useEffect, useState } from 'react'
 import { Input } from 'reactstrap';
 import { AXIOS_REQUEST } from '../../services/axiosService';
-// import { T_SelectWithValidationsProps } from 'react-ngm-form/dist/interfaces/FormElements.interface';
 
-// type T_Props = Omit<T_SelectWithValidationsProps, "tag" | "type" | "validations"> & {
 type T_Xprops = {
-    // ref: Ref<any>,
     onChange: (data: string) => void,
-    onBlur: (data: string) => void,
-    value: string
+    onBlur: () => void,
+    value?: string,
 };
 
+// Props que `react-ngm-form` puede o no inyectar dependiendo del schema.
+// Marcadas opcionales para que el render-prop spread (`{...f}`) tipechee.
 type T_Props = {
     name: string;
-    invalid: boolean;
-    disabled: boolean;
-    key: string;
-    options: Array<any>;
+    invalid?: boolean;
+    disabled?: boolean;
+    options?: unknown[];
+    innerRef?: Ref<HTMLInputElement | HTMLTextAreaElement>;
     request?: {
         "url": string,
         "method": string,
-        "params": { [x: string]: any }
+        "params": Record<string, unknown>
     };
-    wrapperClassName: string;
+    wrapperClassName?: string;
     defaultValue?: string;
     className?: string;
     placeholder?: string;

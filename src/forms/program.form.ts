@@ -36,8 +36,8 @@ const programForm = (_defaultValues: I_JSONObject): T_FieldsTypes[] => [
             params: {},
             url: GET_FACULTAD
         },
-        "doRequest": ({ method, params, url }: any) => AXIOS_REQUEST(url, method, params).then(resp => {
-            return { options: resp.data?.map((i: any) => ({ value: i.id_facu, label: i.nomb_facu })) };
+        "doRequest": ({ method, params, url }: I_JSONObject) => AXIOS_REQUEST(url, method, params).then(resp => {
+            return { options: resp.data?.map((i: I_JSONObject) => ({ value: i.id_facu, label: i.nomb_facu })) };
         }),
         "wrapperClassName": "col-6",
         "validations": {

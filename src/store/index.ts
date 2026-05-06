@@ -24,7 +24,9 @@ const slices = {
 
 const combinedSlices = combineReducers(slices);
 
-const reducer = (state: any, action: UnknownAction) => {
+type T_RootState = ReturnType<typeof combinedSlices>;
+
+const reducer = (state: T_RootState | undefined, action: UnknownAction) => {
     if (logout.match(action) || (setUnauthorized.match(action) && !!(action.payload))) {
         localStorageService.deleteItems(["user", "token"]);
         state = undefined;

@@ -3,10 +3,10 @@ import { stringBase64 } from "./constantsService"
 const prefix = window._NGconfig.storage_prefix;
 
 export default {
-    setItem: function (name: string, value: any) {
+    setItem: function (name: string, value: unknown) {
         localStorage.setItem(stringBase64(`${prefix}${name}`), stringBase64(value))
     },
-    setItems: function (object: any) {
+    setItems: function (object: Record<string, unknown>) {
         for (const key in object) { this.setItem(`${key}`, object[key]) }
     },
     getItem: function (name: string) { return stringBase64(localStorage.getItem(stringBase64(`${prefix}${name}`)), true) },
@@ -25,10 +25,10 @@ export default {
 
 
 export const sessionStorageService = {
-    setItem: function (name: string, value: any) {
+    setItem: function (name: string, value: unknown) {
         sessionStorage.setItem(stringBase64(`${prefix}${name}`), stringBase64(value))
     },
-    setItems: function (object: any) {
+    setItems: function (object: Record<string, unknown>) {
         for (const key in object) { this.setItem(`${key}`, object[key]) }
     },
     getItem: function (name: string) { return stringBase64(sessionStorage.getItem(stringBase64(`${prefix}${name}`)), true) },

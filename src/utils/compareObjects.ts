@@ -1,4 +1,10 @@
-const objectsAreEquals = (object1: any, object2: any, strictDataType = true) => {
+type T_Comparable = Record<string, unknown>;
+
+const objectsAreEquals = (
+    object1: T_Comparable,
+    object2: T_Comparable,
+    strictDataType = true,
+): boolean => {
     const keys1 = Object.keys(object1);
     const keys2 = Object.keys(object2);
     if (keys1.length !== keys2.length) {
@@ -9,7 +15,7 @@ const objectsAreEquals = (object1: any, object2: any, strictDataType = true) => 
         const val2 = object2[key];
         const areObjects = isObject(val1) && isObject(val2);
         if (
-            (areObjects && !objectsAreEquals(val1, val2)) ||
+            (areObjects && !objectsAreEquals(val1, val2, strictDataType)) ||
             (!areObjects && (strictDataType ? val1 !== val2 : val1 != val2))
         ) {
             return false;
@@ -18,7 +24,7 @@ const objectsAreEquals = (object1: any, object2: any, strictDataType = true) => 
     return true;
 }
 
-function isObject(object: any) {
+function isObject(object: unknown): object is T_Comparable {
     return object != null && typeof object === 'object';
 }
 

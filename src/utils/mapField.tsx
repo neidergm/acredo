@@ -1,4 +1,5 @@
-import { lazy, Suspense } from "react";
+/* eslint-disable react-refresh/only-export-components -- archivo mixto: util `mapField` + componentes auxiliares. */
+import { lazy, type Ref, Suspense } from "react";
 import { Button, Spinner } from "reactstrap";
 import { BsBoxArrowUpRight } from 'react-icons/bs';
 import { type I_FormField, type I_FormFieldWithAnswer } from "../interfaces/conditions.interface";
@@ -7,6 +8,24 @@ import { AXIOS_REQUEST } from "../services/axiosService";
 import { getFormItemDefaultValue } from "./formUtils";
 import EvidenceSelect from "../components/EvidenceSelect";
 import DataListAttachmentInput from "../components/DataListAttachmentInput";
+
+// Forma del `field` que `react-ngm-form` (vía Controller de RHF) inyecta a la
+// función render. Genérico sobre el tipo de value para permitir narrowing por
+// tipo de campo (ej. ckeditor → string, pick_attach_ref → unknown, etc.).
+type T_RenderField<TValue = unknown> = {
+    name: string;
+    value: TValue;
+    onChange: (value: TValue) => void;
+    onBlur: () => void;
+    ref: unknown;
+    invalid?: boolean;
+    className?: string;
+    [k: string]: unknown;
+};
+
+// Tipos mínimos del editor reflejando solo lo que consumimos acá.
+type T_CKEditorInstance = { getData: () => string; setData: (data: string) => void };
+type T_CKEvent = { name: string };
 
 const TextEditor = lazy(() => import("../components/TextEditor"));
 
@@ -27,31 +46,33 @@ export const isAGoogleDocField = (type: string) => ["googledocs", "googlesheets"
  * @param {I_FormField} item 
  * @return {I_JSONObject} JSON FIELD
  */
-const mapField = (item: I_FormField, defaultValue?: any) => {
+const mapField = (item: I_FormField, defaultValue?: unknown) => {
     let field = item.json_campo;
     field.key = field.name;
 
     if (field.tag === "custom") {
         if (field.type === "ckeditor") {
-            field.render = ({ field: { ref, onChange, onBlur, value, ...f } }: any) => {
+            field.render = ({ field: { ref, onChange, onBlur, value, ...f } }: { field: T_RenderField<string> }) => {
                 return <Suspense fallback={<EditorPlaceholder />}>
                     <TextEditor
                         {...f}
                         className={f.invalid ? "is-invalid" : ""}
-                        data={defaultValue || value}
+                        data={String(defaultValue ?? value ?? "")}
                         inputRef={ref}
-                        onChange={(_event: any, editor: any) => {
+                        onChange={(_event: T_CKEvent, editor: T_CKEditorInstance) => {
                             onChange(editor.getData())
                         }}
-                        onBlur={(_event: any, editor: any) => {
-                            onBlur(editor.getData())
+                        onBlur={() => {
+                            // RHF.onBlur no recibe args (solo marca touched); el valor ya se
+                            // sincronizó vía onChange en cada keystroke del editor.
+                            onBlur()
                         }}
                     />
                 </Suspense>
             }
         } else if (isAGoogleDocField(field.type)) {
             const baseurl = field.defaultValue;
-            field.render = ({ field: { value } }: any) => {
+            field.render = ({ field: { value } }: { field: T_RenderField<string> }) => {
                 return <>
                     <div className="text-end">
                         <Button
@@ -79,12 +100,12 @@ const mapField = (item: I_FormField, defaultValue?: any) => {
                 </>
             }
         } else if (field.type === "pick_attach_ref") {
-            field.render = ({ field: { ref, onChange, onBlur, value, name, ...f } }: any) => {
+            field.render = ({ field: { ref, onChange, onBlur, value, name, ...f } }: { field: T_RenderField }) => {
                 const { validations, type, tag, ...props } = f;
                 return <DataListAttachmentInput
                     name={name}
                     onChange={onChange}
-                    innerRef={ref}
+                    innerRef={ref as Ref<HTMLInputElement>}
                     onBlur={onBlur}
                     className={f.className}
                     value={value}
@@ -98,7 +119,8 @@ const mapField = (item: I_FormField, defaultValue?: any) => {
                     if (!value) {
                         callback({ request: undefined })
                     } else {
-                        (field.request?.params as any)[field.dependsOn as any] = value;
+                        const params = field.request?.params as Record<string, unknown> | undefined;
+                        if (params) params[field.dependsOn as string] = value;
                         callback({ request: { ...field.request } })
                     }
                     // if (!value) {
@@ -112,21 +134,23 @@ const mapField = (item: I_FormField, defaultValue?: any) => {
                 }
             }
 
-            field.render = ({ field: { tag, validations, ref, ...f } }: any) => {
+            field.render = ({ field: { tag, validations, ref, ...f } }: { field: T_RenderField<string> }) => {
                 return <EvidenceSelect
                     {...f}
-                    innerRef={ref}
+                    innerRef={ref as Ref<HTMLInputElement>}
                 // request={field.request}
                 />
             }
         } else {
+            // Fallback para tipos no soportados — el `tag: 'HTML'` ensancha el literal
+            // permitido en T_FieldsTypes. La asignación es deliberada pero TS la rechaza.
             field = {
                 ...field,
                 label: 'Error',
-                tag: 'HTML' as any,
+                tag: 'HTML',
                 type: 'div',
                 value: `<p>Campo tipo ${field.type} (${field.tag}) no soportado</p>`
-            }
+            } as unknown as typeof field
         }
     } else if (field.tag === "select") {
 
@@ -150,7 +174,7 @@ const mapField = (item: I_FormField, defaultValue?: any) => {
     } else if (field.tag === "list") {
         field.fields = field.fields.map((f, _i) => mapField({ json_campo: f } as typeof item)!)
     } else if (field.tag) {
-        field.defaultValue = defaultValue;
+        field.defaultValue = defaultValue as typeof field.defaultValue;
     }
 
     return field;

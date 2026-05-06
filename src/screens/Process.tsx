@@ -90,7 +90,7 @@ const Process = () => {
         <ProcessForm
           formProps={{ id: FORMID }}
           defaultValues={defaultData}
-          onSubmit={(data: never) => editProcess(process, data, defaultData)}
+          onSubmit={(data) => editProcess(process, data, defaultData)}
         />
       </>,
       footer: <ModalFooter className='justify-content-between'>
@@ -160,7 +160,7 @@ const Process = () => {
     })
   }
 
-  const createNewProces = (data: never) => {
+  const createNewProces = (data: I_JSONObject) => {
     openAlert({
       type: "question",
       title: "¿Está seguro?",
@@ -319,15 +319,16 @@ const Process = () => {
                             </tbody>
                           </table>
                           <div className='text-md-center d-inline-flex flex-column justify-content-end'>
-                            <b className="small d-none d-sm-block fw-semibold mt-1">Progreso</b>
+                            <b className="small d-none d-sm-block fw-semibold mt-1 mb-2">Progreso</b>
                             <div>
                               <CircleProgress
                                 progress={process.porcentaje || 0}
-                                stroke={4}
+                                stroke={8}
                                 radius={32}
                                 color={process.porcentaje >= 100 ? "#0d6efd" : undefined}
-                                content={`${process.porcentaje || 0}%`}
-                              />
+                              >
+                                {`${process.porcentaje || 0}%`}
+                              </CircleProgress>
                             </div>
                           </div>
                         </div>

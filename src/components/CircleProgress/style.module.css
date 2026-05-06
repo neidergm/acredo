@@ -1,16 +1,37 @@
-.circleprogress-container{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    position: relative;
-  }
-  .circleprogress-container .content-text {
-      position: absolute;
-      font-size: 0.85rem;
-  }
-  .circleprogress-container circle {
-    transition: stroke-dashoffset 0.35s;
-    transform: rotate(-90deg);
-    transform-origin: 50% 50%;
-  }
+.container {
+  position: relative;
+  display: inline-block;
+  line-height: 0;
+}
+
+/* Overlay de contenido, siempre centrado sobre el SVG. inset:0 + flex
+   centra independiente del tamaño del SVG y del contexto del padre. */
+.content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.1;
+  text-align: center;
+  pointer-events: none;
+}
+
+.container circle {
+  fill: none;
+}
+
+/* Track de fondo (primer círculo). */
+.container circle:first-child {
+  opacity: 0.2;
+}
+
+/* Anillo de progreso (segundo círculo). transform-box: fill-box hace que
+   `transform-origin: 50% 50%` se interprete como el centro del propio
+   círculo (no del viewBox del SVG), evitando inline-styles dinámicos. */
+.container circle:last-child {
+  transform: rotate(-90deg);
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  transition: stroke-dasharray 0.3s linear;
+}

@@ -6,9 +6,13 @@ import mapField from "../utils/mapField";
 
 // export const taskForm = (showGoogleDocField = true, showConditionTypeField = true): T_FieldsTypes[] => {
 
-let fetchedCharge: any;
-const fetchedUsers: any = {};
-let fetchedRole: any;
+type T_OptionsCache = {
+    options: Array<{ value: number | string; label: string; title?: string }>
+};
+
+let fetchedCharge: T_OptionsCache | undefined;
+const fetchedUsers: Record<string, T_OptionsCache> = {};
+let fetchedRole: T_OptionsCache | undefined;
 
 export const taskForm = (showConditionTypeField = true, process_type?: number): T_FieldsTypes[] => {
 

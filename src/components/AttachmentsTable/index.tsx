@@ -217,7 +217,7 @@ const AttachmentsTable = ({
                 closeLoader()
                 toast.error("No se pudo actualizar el orden", { position: "top-right" })
             })
-        } catch (error) {
+        } catch {
             return toast.error("Hubo un error, por favor contacte al administrador", { position: "top-right" })
         }
     }

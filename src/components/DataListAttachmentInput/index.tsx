@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { type Ref, useEffect, useState } from 'react'
 import { Col, Input, Row } from 'reactstrap'
 import { AXIOS_REQUEST } from '../../services/axiosService';
 import { ATTACHMENTS_BY_PHASE } from '../../services/endPointsService';
@@ -8,10 +8,13 @@ import { type I_JSONObject } from '../../interfaces/generic.interface';
 
 type T_Props = {
     name: string;
-    innerRef: (r: never) => void;
-    onChange: (value: any) => void;
-    onBlur: (value: any) => void;
-    [x: string]: any;
+    value?: unknown;
+    innerRef?: Ref<HTMLInputElement>;
+    onChange: (value: unknown) => void;
+    onBlur: (value: unknown) => void;
+    placeholder?: string;
+    className?: string;
+    [x: string]: unknown;
 }
 
 const DataListInput = ({ name, onChange, onBlur, value, ...props }: T_Props) => {

@@ -1,10 +1,20 @@
 import { type PayloadAction, createAction, createAsyncThunk, createSlice, } from "@reduxjs/toolkit";
 import { AXIOS_REQUEST } from "../../services/axiosService";
 import { CONDITION_DETAILS, PHASES_WITH_COND_BY_PROCESS, STAGES } from "../../services/endPointsService";
-import { type I_ConditionsState } from "../../interfaces/store.interface";
-import { type T_Phase, type T_PhasesWithConditions, type T_Stage } from "../../interfaces/phasesAndStages.interface";
+import { type I_ConditionsState, type T_SelectedConditionData } from "../../interfaces/store.interface";
+import { type T_Action, type T_Phase, type T_PhasesWithConditions, type T_Stage } from "../../interfaces/phasesAndStages.interface";
 import { type I_JSONObject } from "../../interfaces/generic.interface";
 import { type I_Condition } from "../../interfaces/conditions.interface";
+
+// Forma del row crudo de la API endpoint STAGES (cada etapa con su info de fase).
+type T_StageRow = {
+    id_etapa: number;
+    nomb_etapa: string;
+    est_etapa: number;
+    acciones: T_Action[] | null;
+    id_fase: number;
+    nomb_fase: string;
+};
 
 const name = "task";
 
@@ -35,20 +45,21 @@ export const getPhasesAndStagesOfCondition = createAsyncThunk(`${name}/getPhases
 
     const resp = await AXIOS_REQUEST(`${STAGES}${id_cond}`).catch((err) => ({ ...err, error: true }))
 
-    const ps = (resp.data as any[]).reduce((p, c, _idx) => {
+    const ps = (resp.data as T_StageRow[]).reduce<Record<number, T_Phase>>((p, c) => {
         const stage: T_Stage = {
             name: c.nomb_etapa,
             id: c.id_etapa,
             actions: c.acciones,
-            status: !(c.acciones) ? 0 : c.est_etapa,
-            actions_completed: c.acciones?.reduce((p: number, c: I_JSONObject) => c.est_accion === 2 ? p += 1 : p, 0)
+            status: !(c.acciones) ? 0 : (c.est_etapa as 0 | 1),
+            actions_completed: c.acciones?.reduce((acc: number, a: I_JSONObject) => a.est_accion === 2 ? acc + 1 : acc, 0)
         }
 
         const phase = p[c.id_fase];
 
         if (phase) {
-            phase.stages.push(stage);
-            phase.stages_completed += stage.status;
+            // Garantizado por el branch `else` de la primera ocurrencia: stages siempre existe.
+            phase.stages!.push(stage);
+            phase.stages_completed = (phase.stages_completed ?? 0) + stage.status;
         } else {
             p[c.id_fase] = {
                 name: c.nomb_fase,
@@ -84,7 +95,7 @@ const taskSlice = createSlice({
         selectCondition: (state, action: PayloadAction<I_Condition | null>) => {
             state.selected = action.payload;
         },
-        setSelectedConditionData: (state, action: PayloadAction<any>) => {
+        setSelectedConditionData: (state, action: PayloadAction<T_SelectedConditionData | null>) => {
             state.selectedData = action.payload === null ? {} : { ...state.selectedData, ...action.payload };
         },
     },

@@ -179,7 +179,7 @@ const AllAttachments = ({
                         {/* <td style={{ maxWidth: "300px" }}>{i.evidencias}</td> */}
                     </tr>
                 })
-        } catch (error) {
+        } catch {
             return <tr className='bg-danger bg-opacity-25'>
                 <td
                     className="text-nowrap"
@@ -229,7 +229,7 @@ const AllAttachments = ({
             const docName = `ANEXOS ${name}`.substring(0, 250).replaceAll(/[\/\?<>\\:\*\|"]/g, "_");
             generateSheetInBook(workbook, data, "Anexos")['!merges'] = merges;
             XLSX.writeFile(workbook, `ANEXOS ${docName}.xlsx`)
-        } catch (error) {
+        } catch {
             downloadExcelDoc(_data, "ANEXOS DEL PROCESO")
         } finally {
             toast.dismiss(tid);

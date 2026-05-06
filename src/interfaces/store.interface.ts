@@ -7,8 +7,6 @@ import { type I_Process } from "./process.interface";
 import { type I_Program } from "./programs.interface";
 import { type I_User } from "./user.interface";
 
-export interface I_AppAction<T = any> { type: string, payload: T }
-
 export interface I_UserState {
     userInfo: I_User | null,
     unauthorized?: string | null | false,

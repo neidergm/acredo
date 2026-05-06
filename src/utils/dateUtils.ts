@@ -4,9 +4,14 @@
  * @returns Date from string
  */
 export const stringToDate = (date: string) => {
-    const d: any = date.trim().split(/[-|/ |T :]/);
-    const [d1, d2, d3, ...dx] = d;
-    return d1.length === 4 ? new Date(d1, d2 - 1, d3, ...dx) : new Date(d3, d2 - 1, d1, ...dx);
+    const [d1, d2, d3, h = "0", min = "0", s = "0", ms = "0"] = date.trim().split(/[-|/ |T :]/);
+    const yearFirst = d1.length === 4;
+    return new Date(
+        +(yearFirst ? d1 : d3),
+        +d2 - 1,
+        +(yearFirst ? d3 : d1),
+        +h, +min, +s, +ms,
+    );
 }
 
 export const dateToString = (date: Date, join = "-", reverse = false) => {

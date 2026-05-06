@@ -1,30 +1,35 @@
-import { Component } from 'react';
-import { BsInfoCircle,  } from 'react-icons/bs';
-// import { ExclamationTriangle, ThreeDotsVertical } from 'react-bootstrap-icons';
+import { Component, type CSSProperties, type ErrorInfo, type ReactNode } from 'react';
+import { BsInfoCircle } from 'react-icons/bs';
+
+type T_Props = {
+    children?: ReactNode,
+    className?: string,
+    style?: CSSProperties,
+};
 
 type T_State = {
     hasError: boolean,
-    error: any,
-    tryLoad: any,
-    tryNumber: number
+    error: string | null,
+    tryLoad: boolean,
+    tryNumber: number,
 }
 
-class ErrorComponent extends Component<any, T_State> {
-    constructor(props: any) {
+class ErrorComponent extends Component<T_Props, T_State> {
+    constructor(props: T_Props) {
         super(props);
         this.state = {
             hasError: false,
             error: null,
-            tryLoad: null,
+            tryLoad: false,
             tryNumber: 0
         };
     }
 
-    static getDerivedStateFromError(error: any) {
-        return { hasError: true, error, tryLoad: false };
+    static getDerivedStateFromError(_error: Error): Partial<T_State> {
+        return { hasError: true, tryLoad: false };
     }
 
-    componentDidCatch(error: any, errorInfo: any) {
+    componentDidCatch(error: Error, errorInfo: ErrorInfo) {
         const data = {
             error,
             message: error.message || "NG",

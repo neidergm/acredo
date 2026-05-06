@@ -426,16 +426,15 @@ const Conditions = () => {
                                 <div className="rounded-circle">
                                   <CircleProgress
                                     progress={phase.porcentaje || 0}
-                                    stroke={4}
+                                    stroke={8}
                                     radius={32}
                                     color="#06a099"
-                                    content={
-                                      !(phase.porcentaje) ?
-                                        <div className="text-muted"><BsPauseFill /></div>
-                                        :
-                                        <b>{phase.porcentaje || 0}%</b>
+                                  >
+                                    {!(phase.porcentaje)
+                                      ? <div className="text-muted"><BsPauseFill /></div>
+                                      : <b>{phase.porcentaje || 0}%</b>
                                     }
-                                  />
+                                  </CircleProgress>
                                 </div>
                               </div>
                               <div className="d-flex justify-content-center flex-column">
@@ -521,20 +520,21 @@ const Conditions = () => {
                                       onClick={() => goToConditionDetailsScreen(item)}
                                     >
                                       <div className="float-end ps-2 d-inline-flex flex-column align-items-center">
-                                        <div className="d-none d-md-block">
+                                        <div className="d-none d-md-block mb-2">
                                           <div className="px-3 rounded-pill badge opacity-50"
                                             style={{ backgroundColor: `${item.color}` }}>
                                             {item.estado}
                                           </div>
                                         </div>
-                                        <div className="ps-2">
+                                        <div>
                                           <CircleProgress
                                             progress={item.porcentaje || 0}
-                                            stroke={5}
-                                            radius={34}
+                                            stroke={8}
+                                            radius={32}
                                             color={item.porcentaje >= 100 ? "#31ac69" : undefined}
-                                            content={`${item.porcentaje || 0}%`}
-                                          />
+                                          >
+                                            {`${item.porcentaje || 0}%`}
+                                          </CircleProgress>
                                         </div>
                                       </div>
 

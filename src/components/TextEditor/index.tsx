@@ -1,32 +1,42 @@
-import { useState, useRef } from 'react'
+import { type CSSProperties, useState } from 'react'
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 // import * as Font from '@ckeditor/ckeditor5-font/src/font';
 
 import './style.css';
 
+type T_CKEditorInstance = {
+    getData: () => string;
+    setData: (data: string) => void;
+};
+
+// type T_WordCountStats = { characters: number; words: number };
+
 interface I_Props {
     data: string;
     disabled?: boolean;
     className?: string;
-    config?: { [x: string]: any };
-    [x: string]: any;
+    style?: CSSProperties;
+    config?: Record<string, unknown>;
+    invalid?: boolean;
+    inputRef?: unknown;
+    [x: string]: unknown;
 }
 
 export default function TextEditor({ data, config, disabled, style, className, ...props }: I_Props) {
 
-    const [_editor, setEditor] = useState<any>(null);
+    const [_editor, setEditor] = useState<T_CKEditorInstance | null>(null);
 
-    const counterContainer = useRef<any>();
+    // const counterContainer = useRef<HTMLElement | undefined>();
 
-    const [_wordCountConfig, _setWordCountConfig] = useState({
-            container: counterContainer.current,
-            displayCharacters: true,
-            displayWords: true,
-            onUpdate: (_stats: any) => {
-                // console.log("states", stats);
-            }
-    });
+    // const [_wordCountConfig, _setWordCountConfig] = useState({
+    //         container: counterContainer.current,
+    //         displayCharacters: true,
+    //         displayWords: true,
+    //         // onUpdate: (_stats: T_WordCountStats) => {
+    //         //     // console.log("states", stats);
+    //         // }
+    // });
 
     const defaultConfig = {
         // fontFamily: {
@@ -63,7 +73,7 @@ export default function TextEditor({ data, config, disabled, style, className, .
         // extraPlugins: 'WordCount',
         // WordCount: {
         //     showCharCount: true,
-            
+
         //     maxCharCount: 200,
 
         //     hardLimit: true,
@@ -95,19 +105,8 @@ export default function TextEditor({ data, config, disabled, style, className, .
                 editor={ClassicEditor}
                 data={data}
 
-                onReady={(editor: any) => {
+                onReady={(editor: T_CKEditorInstance) => {
                     setEditor(editor);
-
-                    // You can store the "editor" and use when it is needed.
-                    // console.log("Editor is ready to use!", editor);
-                    // console.log(
-                    //     "toolbar: ",
-                    //     Array.from(editor.ui.componentFactory.names())
-                    // );
-                    // console.log(
-                    //     "plugins: ",
-                    //     ClassicEditor.builtinPlugins.map((plugin: any) => plugin.pluginName)
-                    // );
                 }}
                 // onChange={(event: any, editor: any) => {
                 //     const data = editor.getData();

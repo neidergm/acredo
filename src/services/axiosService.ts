@@ -1,4 +1,4 @@
-import axios, { type AxiosProgressEvent } from 'axios';
+import axios, { type AxiosError, type AxiosProgressEvent } from 'axios';
 import { BASE_URL } from './constantsService';
 import localStorageService from './localStorageService';
 import { type I_JSONObject } from '../interfaces/generic.interface';
@@ -19,7 +19,7 @@ const setOnUnauthorized = (cb: typeof onUnauthorized) => { onUnauthorized = cb; 
 // Response: unwrap data en éxito, preservar AxiosError + side-effects en error.
 api.interceptors.response.use(
     resp => resp.data,
-    err => {
+    (err: AxiosError) => {
         if (err.code === "ERR_NETWORK") {
             toast.error("Hubo un error, tal vez se deba a su conexión a internet", {
                 id: "GEN_ERROR",
@@ -43,6 +43,7 @@ api.interceptors.response.use(
  * @param header Headers extra para esta request.
  * @param onUploadProgress Callback de progreso para uploads.
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const AXIOS_REQUEST = <T = any>(
     url: string,
     method = "get",
@@ -51,7 +52,7 @@ const AXIOS_REQUEST = <T = any>(
     onUploadProgress?: (e: AxiosProgressEvent) => void,
 ): Promise<T> => {
     method = method.toLowerCase();
-    const headers: Record<string, any> = { ...header };
+    const headers: Record<string, string> = { ...header };
     let params: I_JSONObject | null = null;
     let body: typeof data = data;
 
@@ -59,8 +60,8 @@ const AXIOS_REQUEST = <T = any>(
         body = null;
         if (typeof data === "string") {
             url += data;
-        } else {
-            params = data as I_JSONObject;
+        } else if (data && !(data instanceof FormData)) {
+            params = data;
         }
     }
 

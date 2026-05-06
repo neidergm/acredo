@@ -73,7 +73,7 @@ const useFilters = <T>(
                         const val = (p as never)[`${key}`];
                         if (!(f[key].options)) f[key].options = [];
                         if (val && !(f[key].options?.includes(val))) f[key].options?.push(val)
-                    } catch (e) {
+                    } catch {
                         f[key].options = []
                     }
                 }

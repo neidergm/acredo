@@ -10,8 +10,38 @@ interface I_Props {
     failureCallback?: (error: string) => void,
 }
 
+// Tipos mínimos del SDK Google Identity Services (GSI) que usamos.
+// El paquete oficial @types/google.accounts no está instalado; estos cubren
+// solo la superficie efectivamente consumida por este componente.
+type T_GsiPromptNotification = {
+    isNotDisplayed: () => boolean;
+    getNotDisplayedReason: () => string;
+    isSkippedMoment: () => boolean;
+    getSkippedReason: () => string;
+    isDismissedMoment: () => boolean;
+    getDismissedReason: () => string;
+};
+
+type T_GsiAccountsId = {
+    initialize: (config: {
+        client_id: string;
+        callback: (response: I_Google_response) => void;
+        cancel_on_tap_outside?: boolean;
+    }) => void;
+    prompt: (cb?: (notification: T_GsiPromptNotification) => void) => void;
+    renderButton: (parent: HTMLElement | null, options: {
+        type?: "standard" | "icon";
+        theme?: string;
+        size?: "large" | "medium" | "small";
+        width?: number | null;
+        shape?: "pill" | "rectangular" | "circle" | "square";
+    }) => void;
+};
+
 declare global {
-    interface Window { google: any; }
+    interface Window {
+        google?: { accounts: { id: T_GsiAccountsId } };
+    }
 }
 
 interface I_Google_response {
@@ -22,36 +52,9 @@ interface I_Google_response {
 }
 
 const GoogleLogin = (props: I_Props) => {
-    useEffect(() => {
-        const script = document.createElement('script')
-        script.src = 'https://accounts.google.com/gsi/client'
-        script.async = true;
-        script.onload = initializeGsi;
-        document.querySelector('body')?.appendChild(script);
-
-        return () => {
-            document.querySelector('body')?.removeChild(script)
-        }
-    }, [])
-
-    const initializeGsi = () => {
-        try {
-            window.google?.accounts.id.initialize({
-                client_id: GOOGLE_CLIENT_ID,
-                callback: responseGoogle,
-                cancel_on_tap_outside: true,
-            });
-
-            showOneTapPrompt();
-            showGLoginBtn();
-
-        } catch (error) {
-            console.log({ error })
-        }
-    }
 
     const showOneTapPrompt = () => {
-        window.google.accounts.id.prompt((_notification: any) => {
+        window.google?.accounts.id.prompt((_notification) => {
             // console.log(notification)
             // if (notification.isNotDisplayed()) {
             //     console.log(notification.getNotDisplayedReason())
@@ -64,7 +67,7 @@ const GoogleLogin = (props: I_Props) => {
     }
 
     const showGLoginBtn = () => {
-        window.google.accounts.id.renderButton(document.getElementById("NG_GLOGIN_BTN"), {
+        window.google?.accounts.id.renderButton(document.getElementById("NG_GLOGIN_BTN"), {
             type: "standard", //OR icon
             theme: props.color || 'filled_black', //or Outline/filled_blue
             size: 'large',
@@ -81,6 +84,35 @@ const GoogleLogin = (props: I_Props) => {
             props.successCallback(data.credential);
         }
     }
+
+    const initializeGsi = () => {
+        try {
+            window.google?.accounts.id.initialize({
+                client_id: GOOGLE_CLIENT_ID,
+                callback: responseGoogle,
+                cancel_on_tap_outside: true,
+            });
+
+            showOneTapPrompt();
+            showGLoginBtn();
+
+        } catch {
+            props.failureCallback?.('Hubo un error, intenta nuevamente');
+        }
+    }
+
+    useEffect(() => {
+        const script = document.createElement('script')
+        script.src = 'https://accounts.google.com/gsi/client'
+        script.async = true;
+        script.onload = initializeGsi;
+        document.querySelector('body')?.appendChild(script);
+
+        return () => {
+            document.querySelector('body')?.removeChild(script)
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     return (
         <div id="NG_GLOGIN_BTN" className={props.disabled ? "disabled" : ""}>

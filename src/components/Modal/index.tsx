@@ -1,4 +1,4 @@
-import { Children } from 'react';
+import { Children, type Dispatch, type SetStateAction } from 'react';
 import {
     Modal as ModalB,
     ModalHeader as ModalHeaderB,
@@ -19,15 +19,16 @@ type T_ModalHeaderProps = {
 
 export type T_ModalJSON = T_ModalHeaderProps & ModalFooterProps & ModalProps;
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const closeModal = (
-    setStateCallback: (currentState: any) => any,
-    onClosedCallback?: () => any
+    setStateCallback: Dispatch<SetStateAction<T_ModalJSON | null>>,
+    onClosedCallback?: () => void,
 ) => {
-    return setStateCallback((currentState: T_ModalJSON) => {
-        const extra = {onClosed: onClosedCallback || currentState?.onClosed}
+    return setStateCallback((currentState) => {
+        const extra = { onClosed: onClosedCallback || currentState?.onClosed };
         if (!(extra.onClosed)) delete extra.onClosed;
 
-        return { ...currentState, isOpen: false, ...extra }
+        return { ...currentState, isOpen: false, ...extra };
     });
 }
 

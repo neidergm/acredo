@@ -1,9 +1,10 @@
+import { type ReactElement, type ReactNode } from 'react';
 import { GoBackButton } from "../GoBackButton"
 import classnames from 'classnames';
 
 export const SubHeader = (
     { text, children, showBackButton, className }:
-        { text: string | JSX.Element, children?: any, showBackButton?: boolean, className?: string }
+        { text: string | ReactElement, children?: ReactNode, showBackButton?: boolean, className?: string }
 ) => {
     return (
         <div className={classnames("d-flex container-fluid gap-2 mb-5", className)}>

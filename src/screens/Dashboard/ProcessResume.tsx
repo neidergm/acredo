@@ -21,11 +21,12 @@ export const ProcessResumeItem = ({ process, pickItem }: { process: I_Process, p
             <div>
                 <CircleProgress
                     progress={process.porcentaje || 0}
-                    stroke={5}
+                    stroke={8}
                     radius={30}
                     color={process.porcentaje >= 100 ? "#0d6efd" : undefined}
-                    content={<small>{process.porcentaje || 0}%</small>}
-                />
+                >
+                    <small>{process.porcentaje || 0}%</small>
+                </CircleProgress>
             </div>
             <div className="flex-grow-1">
                 <div className='d-flex flex-column text-secondary text-opacity-75'>
