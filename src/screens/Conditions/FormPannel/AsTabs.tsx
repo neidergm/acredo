@@ -51,7 +51,7 @@ const AsTabs = ({
             })
     }
 
-    const submit = (data: Record<string, unknown>, form: T_Form, callback?: VoidFunction, onlyRefreshForm = false) => {
+    const submit = (data: Record<string, unknown> | null, form: T_Form, callback?: VoidFunction, onlyRefreshForm = false) => {
         if (onlyRefreshForm) {
             getFormFields()
         } else {

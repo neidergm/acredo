@@ -3,11 +3,11 @@ const _CONFIG = {
     app_help_link: "https://sites.google.com/curn.edu.co/acredohelp",
     app_colors: {
         login: {
-            background: "#ff9400",
+            background: "#0f2030",
             color: "#fff"
         },
         header: {
-            background: "linear-gradient(to right, #06A099 0%, #31AC69 100%)",
+            background: "#0f2030",
             color: "#f8f9fa"
         }
     },

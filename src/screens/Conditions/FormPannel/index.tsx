@@ -31,7 +31,7 @@ type JSON = Record<string, unknown>;
 
 export type T_FormPannelActions = {
     onPickOne: (f: T_Form, onlyGetAnswer?: boolean) => Promise<T_Form>;
-    onSubmit: (data: JSON, formItem: T_Form, callback?: VoidFunction, onlyRefreshForm?: boolean) => void;
+    onSubmit: (data: JSON | null, formItem: T_Form, callback?: VoidFunction, onlyRefreshForm?: boolean) => void;
     onDelete?: (item: string, title?: string, subtitle?: ReactNode, callback?: VoidFunction) => void;
     onDeleteForm?: (item: number, subtitle?: ReactNode, callback?: VoidFunction) => void;
     onObservationsDone: VoidFunction;
@@ -58,7 +58,7 @@ const FormPannel = ({
 
     const { closeLoader, openLoader } = useLoader()
 
-    const confirmSubmit = (data: JSON, formItem: T_Form, callback?: VoidFunction) => {
+    const confirmSubmit = (data: JSON | null, formItem: T_Form, callback?: VoidFunction) => {
         openAlert({
             title: "¿Desea guardar los cambios?",
             type: "question",
@@ -110,10 +110,10 @@ const FormPannel = ({
         })
     }
 
-    const submitAll = (data: JSON, formItem: T_Form, callback?: VoidFunction) => {
+    const submitAll = (data: JSON | null, formItem: T_Form, callback?: VoidFunction) => {
         const method = formItem.est_resp === 1 ? "PUT" : "POST";
-        data = getDifferenceBetweenData(formItem.defaultValues, data);
-     
+        data = getDifferenceBetweenData(formItem.defaultValues, data || {});
+
         if (!Object.keys(data).length) return toast.error("No hay cambios para guardar", { position: "top-right", icon: <i className='text-warning'><BsExclamationCircleFill /> </i> })
         openLoader("Guardando datos");
         const keysOnField = ["id_campo"];
@@ -170,11 +170,11 @@ const FormPannel = ({
             if (item.tipo_form !== 0) {
                 multiplesAnswers = answers.reduce((p, c) => {
                     if (c.json_campo.name === "tipo_anexo") {
-                    // (c.json_campo.validations as any).disabled = true;
-                    // (c.json_campo.validations as any) = { disabled: true };
-                    (c.json_campo as JSON).disabled = true;
-                    c.json_campo.children = undefined;
-                }
+                        // (c.json_campo.validations as any).disabled = true;
+                        // (c.json_campo.validations as any) = { disabled: true };
+                        (c.json_campo as JSON).disabled = true;
+                        c.json_campo.children = undefined;
+                    }
                     if (c.nomb_anexo) isAttachmentsTable = true;
                     p[c.grupo_resp] = [...(p[c.grupo_resp] || []), c];
                     return { ...p }

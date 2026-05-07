@@ -25,7 +25,7 @@ interface I_Props {
 
 export default function TextEditor({ data, config, disabled, style, className, ...props }: I_Props) {
 
-    const [_editor, setEditor] = useState<T_CKEditorInstance | null>(null);
+    const [, setEditor] = useState<T_CKEditorInstance | null>(null);
 
     // const counterContainer = useRef<HTMLElement | undefined>();
 

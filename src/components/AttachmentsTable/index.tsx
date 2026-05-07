@@ -252,6 +252,7 @@ const AttachmentsTable = ({
     }
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setMapedList(mapList(list))
     }, [list])
 

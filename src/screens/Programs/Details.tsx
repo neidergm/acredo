@@ -118,7 +118,7 @@ const Details = () => {
             }
         }
 
-        const form = programForm(defaultValues)
+        const form = programForm()
         setModal({
             isOpen: true,
             title: "Modificar programa",

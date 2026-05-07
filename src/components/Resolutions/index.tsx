@@ -273,6 +273,7 @@ const Resolutions = ({ program_id, saveCallback, canEdit = false, children }: T_
 
     useEffect(() => {
         if (actives?.length && !(actives[activeTab])) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setActiveTab(0)
         }
     }, [actives])

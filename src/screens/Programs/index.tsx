@@ -48,7 +48,7 @@ const Programs = () => {
         const FORM_ID = "PROGRAM_FORM";
         const defaultValues = {};
 
-        const form = programForm(defaultValues)
+        const form = programForm()
 
         setModal({
             isOpen: true,

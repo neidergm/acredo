@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import Card from "../../components/Card";
 import classnames from "classnames";
 import Loader from '../../components/Loader';
@@ -18,9 +18,9 @@ const ProgramsResume = () => {
   const indicators = useAppSelector(s => s.dashboard.programsIndicators);
   const filter = useAppSelector(s => s.dashboard.programsSelectedFilter);
   const programsDictionary = useAppSelector(s => s.dashboard.programsList);
-  const loadedList = useRef<{ [filter: string]: boolean }>({})
+  const [loadedList, setLoadedList] = useState<Record<string, boolean>>({})
 
-  const markAsLoadedList = (filter: string) => loadedList.current[filter] = true
+  const markAsLoadedList = (filter: string) => setLoadedList(prev => ({ ...prev, [filter]: true }))
 
   const programsList = filter ? programsDictionary[filter?.estado] : null;
   const navigate = useNavigate();
@@ -86,18 +86,15 @@ const ProgramsResume = () => {
   }, [])
 
   useEffect(() => {
-    const getPrograms = () => {
-      const f = filter?.estado || "";
-      if (loadedList.current[f]) return null;
+    if (!filter) return;
+    const f = filter.estado || "";
+    if (loadedList[f]) return;
 
-      const url = `${GET_PROGRAMS_BY_STATE}${f}`;
-      AXIOS_REQUEST(url).then(resp => {
-        dispatch(setProgramsList(f, resp.data));
-        markAsLoadedList(f)
-      })
-    }
-
-    if (filter) getPrograms();
+    const url = `${GET_PROGRAMS_BY_STATE}${f}`;
+    AXIOS_REQUEST(url).then(resp => {
+      dispatch(setProgramsList(f, resp.data));
+      markAsLoadedList(f)
+    })
   }, [filter])
 
   return (
@@ -150,7 +147,7 @@ const ProgramsResume = () => {
               >
                 <small className='fw-bold text-uppercase  text-uppercase'>{filter?.texto}</small>
               </div>
-              {programsDictionary[filter?.estado] && !loadedList.current[filter?.estado] &&
+              {programsDictionary[filter?.estado] && !loadedList[filter?.estado] &&
                 <div className="d-inline-block float-end px-3">
                   <Loader isOpen loaderAsModal={false} size="sm" />
                 </div>

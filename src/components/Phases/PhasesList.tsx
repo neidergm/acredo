@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { AccordionBody, AccordionHeader, AccordionItem, Badge, Button, Offcanvas, OffcanvasBody, OffcanvasHeader, UncontrolledAccordion } from 'reactstrap';
 import { type T_Action, type T_Phase, type T_Stage } from '../../interfaces/phasesAndStages.interface'
 import styles from './phases.module.css';
@@ -29,6 +29,19 @@ const PhasesList = ({ isAdmin, taskEnded }: T_Props) => {
 
   const list = useAppSelector(state => state.conditions.selectedData.phases)
   const active = useAppSelector(state => state.conditions.selectedData.active)
+
+  // Re-sync selectStage when phases list refreshes (storing-info-from-previous-renders pattern).
+  const [prevList, setPrevList] = useState(list);
+  if (prevList !== list) {
+    setPrevList(list);
+    if (selectStage) {
+      const p = list?.find(i => i.id === selectStage.phase.id);
+      setSelectStage(p ? {
+        stage: selectStage.stage.id ? (p.stages || []).find(i => i.id === selectStage.stage.id)! : (p.stages || []).at(-1)!,
+        phase: p,
+      } : null);
+    }
+  }
 
   const showActionDetails = (action: T_Action, stage: T_Stage, phase: T_Phase) => {
     const dateDiff = getDateDiff(new Date(action.fecha_accion));
@@ -174,18 +187,6 @@ const PhasesList = ({ isAdmin, taskEnded }: T_Props) => {
       </>
     }
   </div>
-
-  useEffect(() => {
-    if ((selectStage)) {
-      setSelectStage((c) => {
-        const p = list?.find(i => i.id === c!.phase.id);
-        return p ? {
-          stage: c!.stage.id ? (p.stages || []).find(i => i.id === c!.stage.id)! : (p.stages || []).at(-1)!,
-          phase: p
-        } : null;
-      })
-    }
-  }, [list])
 
   if (!(list)) {
     return <div className='mb-3'><Loader loaderAsModal={false} /></div>

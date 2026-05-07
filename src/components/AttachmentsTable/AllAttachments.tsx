@@ -107,7 +107,7 @@ const AllAttachments = ({
         const { _attName_completed, _deletedReference, _isReference, _nomb_anexo, _user, _lastUpdate, ...data } = attachs;
 
         try {
-            return data.ceanexo?.filter((_a: any) => new RegExp(`${filter}`, "gi").test(`${_nomb_anexo}-${data.anexo_nombre}`))
+            return data.ceanexo?.filter(() => new RegExp(`${filter}`, "gi").test(`${_nomb_anexo}-${data.anexo_nombre}`))
                 .map((i: any, idx: number) => {
                     return <tr key={`row-${_nomb_anexo}-${idx}`} className={classnames({ "table-danger": _deletedReference })}>
                         {idx === 0 && <td

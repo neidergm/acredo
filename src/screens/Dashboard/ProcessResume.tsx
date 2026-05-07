@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import Card from "../../components/Card"
 import Loader from "../../components/Loader";
 import classnames from "classnames";
@@ -60,9 +60,9 @@ const ProcessResume = () => {
     const indicators = useAppSelector(s => s.dashboard.processIndicators);
     const filter = useAppSelector(s => s.dashboard.processSelectedFilter);
     const processDictionary = useAppSelector(s => s.dashboard.processList);
-    const loadedList = useRef<{ [filter: string]: boolean }>({})
+    const [loadedList, setLoadedList] = useState<Record<string, boolean>>({})
 
-    const markAsLoadedList = (filter: string) => loadedList.current[filter] = true
+    const markAsLoadedList = (filter: string) => setLoadedList(prev => ({ ...prev, [filter]: true }))
 
     const processList = filter ? processDictionary[filter?.estado] : null;
     const navigate = useNavigate();
@@ -94,18 +94,15 @@ const ProcessResume = () => {
     }, [])
 
     useEffect(() => {
-        const getProcess = () => {
-            const f = filter?.estado || "Todos";
-            if (loadedList.current[f]) return null;
+        if (!filter) return;
+        const f = filter.estado || "Todos";
+        if (loadedList[f]) return;
 
-            const url = f !== "Todos" ? `${GET_PROCESS_BY_STATE}${filter?.estado}` : PROCESS_LIST
-            AXIOS_REQUEST(url).then(resp => {
-                dispatch(setProcessList(f, resp.data));
-                markAsLoadedList(f)
-            })
-        }
-
-        if (filter) getProcess()
+        const url = f !== "Todos" ? `${GET_PROCESS_BY_STATE}${filter.estado}` : PROCESS_LIST
+        AXIOS_REQUEST(url).then(resp => {
+            dispatch(setProcessList(f, resp.data));
+            markAsLoadedList(f)
+        })
     }, [filter])
 
     return (<>
@@ -155,7 +152,7 @@ const ProcessResume = () => {
                         >
                             <small className='fw-bold text-uppercase text-uppercase'>{filter?.texto}</small>
                         </div>
-                        {processDictionary[filter?.estado] && !loadedList.current[filter?.estado] &&
+                        {processDictionary[filter?.estado] && !loadedList[filter?.estado] &&
                             <div className="d-inline-block float-end px-3">
                                 <Loader isOpen loaderAsModal={false} size="sm" />
                             </div>

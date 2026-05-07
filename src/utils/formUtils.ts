@@ -159,13 +159,13 @@ export const transformFileValue = (files: T_FileAnswer[]) => files.map((e) => ({
  * @returns value
  */
 export const getFormItemDefaultValue = ({ respuesta, json_campo }: I_FormFieldWithAnswer) => {
-    let rta = respuesta;
+    let rta: unknown = respuesta;
     if (json_campo.tag === "file" && respuesta) {
-        rta = transformFileValue(rta)
+        rta = transformFileValue(respuesta as T_FileAnswer[])
     } else if (json_campo.tag === "list") {
         const filesFields = json_campo.fields.reduce((p, c) => c.tag === "file" ? [...p, c.name] : p, [] as string[]);
         if ((filesFields.length)) {
-            rta = respuesta.map((r: I_JSONObject) => {
+            rta = (respuesta as I_JSONObject[]).map((r) => {
                 filesFields.forEach(t => { r[t] = transformFileValue(r[t]) })
                 return r;
             })
@@ -174,7 +174,7 @@ export const getFormItemDefaultValue = ({ respuesta, json_campo }: I_FormFieldWi
     return rta
 }
 
-export const getDifferenceBetweenData = (oldValues: I_JSONObject, newValues: I_JSONObject, excludeEmptyValues = true) => {
+export const getDifferenceBetweenData = (oldValues: I_JSONObject = {}, newValues: I_JSONObject, excludeEmptyValues = true) => {
 
     const diff: I_JSONObject = {};
     for (const key in newValues) {
