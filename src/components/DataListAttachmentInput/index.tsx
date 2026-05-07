@@ -44,37 +44,39 @@ const DataListInput = ({ name, onChange, onBlur, value, ...props }: T_Props) => 
     }
 
     useEffect(() => {
-        !list.length && AXIOS_REQUEST(ATTACHMENTS_BY_PHASE + active?.phase?.id).then(({ data }: { data: T_AttachmentsOfPhases }) => {
-            let filteredByPhase: typeof list = [];
-            let valuePosition = -1;
+        if (!list.length) {
+            AXIOS_REQUEST(ATTACHMENTS_BY_PHASE + active?.phase?.id).then(({ data }: { data: T_AttachmentsOfPhases }) => {
+                let filteredByPhase: typeof list = [];
+                let valuePosition = -1;
 
-            data.forEach(phase => {
-                filteredByPhase = [
-                    ...filteredByPhase,
-                    ...Object.values(phase.anexos.reduce((p: I_JSONObject, c) => {
-                        if (!p[c.grupo_resp]) p[c.grupo_resp] = new Array(4)
-                        if (c.nomb_anexo) {
-                            p[c.grupo_resp][0] = c.nomb_anexo;
-                            p[c.grupo_resp][2] = c.grupo_resp;
-                            p[c.grupo_resp][3] = c.respuesta[0];
-                            p[c.grupo_resp][4] = c.id_resp;
+                data.forEach(phase => {
+                    filteredByPhase = [
+                        ...filteredByPhase,
+                        ...Object.values(phase.anexos.reduce((p: I_JSONObject, c) => {
+                            if (!p[c.grupo_resp]) p[c.grupo_resp] = new Array(4)
+                            if (c.nomb_anexo) {
+                                p[c.grupo_resp][0] = c.nomb_anexo;
+                                p[c.grupo_resp][2] = c.grupo_resp;
+                                p[c.grupo_resp][3] = c.respuesta[0];
+                                p[c.grupo_resp][4] = c.id_resp;
 
-                            if (value === c.id_resp) {
-                                valuePosition = Object.keys(p[c.grupo_resp]).findIndex(i => i === c.grupo_resp);
+                                if (value === c.id_resp) {
+                                    valuePosition = Object.keys(p[c.grupo_resp]).findIndex(i => i === c.grupo_resp);
+                                }
+
+                            } else if (c.name_campo === "anexo_nombre") {
+                                p[c.grupo_resp][1] = c.respuesta
                             }
-
-                        } else if (c.name_campo === "anexo_nombre") {
-                            p[c.grupo_resp][1] = c.respuesta
-                        }
-                        return { ...p }
-                    }, {}))
-                ]
+                            return { ...p }
+                        }, {}))
+                    ]
+                })
+                setList(filteredByPhase)
+                if (value) {
+                    setSelected(filteredByPhase[valuePosition])
+                }
             })
-            setList(filteredByPhase)
-            if (value) {
-                setSelected(filteredByPhase[valuePosition])
-            }
-        })
+        }
     }, [])
 
     return (

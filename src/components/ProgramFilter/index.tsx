@@ -70,7 +70,7 @@ const ProgramFilter = ({ list, updateList }: T_Props) => {
         filterLoaded.current = true;
 
         return () => {
-            filter && dispatch(setFilterProgramParams(filter))
+            if (filter) dispatch(setFilterProgramParams(filter))
         }
     }, [])
 

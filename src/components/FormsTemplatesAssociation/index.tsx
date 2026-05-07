@@ -60,7 +60,7 @@ const FormsTemplatesAssociaton = ({
         AXIOS_REQUEST(GET_TEMPLATES_CATEGORIES).then((r) => setCategoriesList(r.data))
     }
 
-    const saveChanges = (e: any) => {
+    const saveChanges = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         const selectedItems = Object.values(selectedList).sort((a, b) => a.position - b.position);
@@ -99,7 +99,7 @@ const FormsTemplatesAssociaton = ({
     const doAssotiation = (idsTemplates: number[]) => {
         const data = jsonToFormData({ form_cond: idsTemplates.join(","), id_cond: taskId });
         openLoader("Asociando plantillas");
-        AXIOS_REQUEST(ASOCIATE_FORM_TO_TASK, "PUT", data).then(async (_resp) => {
+        AXIOS_REQUEST(ASOCIATE_FORM_TO_TASK, "PUT", data).then(async () => {
             toast.success("Formularios asociados correctamente", { position: "top-right" });
             openLoader("Espere", null)
             return dispatch(getContionData(Number(taskId!))).then(() => {

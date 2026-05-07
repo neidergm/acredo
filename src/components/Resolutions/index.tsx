@@ -49,7 +49,7 @@ const Resolutions = ({ program_id, saveCallback, canEdit = false, children }: T_
         inactiveColor = "warning",
         defaultColor = "success"
     ) => {
-        let text = "";
+        let text: string;
         let color = defaultColor;
         let icon = undefined;
         const v = getDateDiff(expiration);
@@ -96,12 +96,12 @@ const Resolutions = ({ program_id, saveCallback, canEdit = false, children }: T_
             const d = jsonToFormData({ id_reso, estado: -1 }, "resoluciones[0].");
             d.append(`id_prog`, `${program_id}`)
 
-            AXIOS_REQUEST(`${DELETE_PROGRAM_RESOLUTION}`, "PUT", d).then(_res => {
+            AXIOS_REQUEST(`${DELETE_PROGRAM_RESOLUTION}`, "PUT", d).then(() => {
                 toast.success("Resolución eliminada correctamente", { position: "top-right" });
                 loadResolutions().then(() => {
                     closeLoader(() => saveCallback?.(true))
                 })
-            }).catch(_e => {
+            }).catch(() => {
                 closeLoader()
                 toast.error("No se pudo eliminar la resolución", { position: "top-right" });
             })
@@ -119,7 +119,7 @@ const Resolutions = ({ program_id, saveCallback, canEdit = false, children }: T_
             const { fech_ejec, fech_reso, ncre_snies, nper_snies, vige_reso, peri_acad, reso_apro, reco_min, jres_deta, just_reso, estado, url_reso } = reso;
             defaultValues = {
                 fech_ejec, fech_reso, ncre_snies, nper_snies, vige_reso, reso_apro, peri_acad, reco_min, jres_deta, just_reso, estado: `${estado}`,
-                file_reso: [{ name: "Documento resolución", url: url_reso}]
+                file_reso: [{ name: "Documento resolución", url: url_reso }]
             }
         }
 
@@ -135,7 +135,7 @@ const Resolutions = ({ program_id, saveCallback, canEdit = false, children }: T_
                         data = getDifferenceBetweenData(defaultValues, data, false)
                         if (Object.keys(data).length) {
                             data.reso_apro ||= reso?.reso_apro;
-                            reso?.id_reso && (data.id_reso = reso.id_reso);
+                            if (reso?.id_reso) data.id_reso = reso.id_reso;
                             saveResolutionData(data, reso ? "PUT" : "POST")
                         } else {
                             toast.error("No hay cambios para actualizar", { position: "top-right", icon: <i className='text-warning'><BsExclamationCircleFill /> </i> })
@@ -157,7 +157,7 @@ const Resolutions = ({ program_id, saveCallback, canEdit = false, children }: T_
             d.append("id_prog", `${program_id}`)
 
             AXIOS_REQUEST(SAVE_PROGRAM_RESOLUTION, type, d)
-                .then(_res => {
+                .then(() => {
                     toast.success(`Resolución ${type === "PUT" ? "actualizada" : "registrada"} correctamente`, { position: "top-right" });
                     openLoader("Actualizando listado", null)
                     loadResolutions().then(() => {
@@ -165,7 +165,7 @@ const Resolutions = ({ program_id, saveCallback, canEdit = false, children }: T_
                         closeLoader(() => saveCallback?.(true))
                     })
                 })
-                .catch(_err => {
+                .catch(() => {
                     closeLoader()
                     toast.error(`No se pudo ${type === "PUT" ? "actualizar" : "registrar"} la resolución`, { position: "top-right" });
                 })
@@ -399,7 +399,7 @@ const Resolutions = ({ program_id, saveCallback, canEdit = false, children }: T_
                 </TabContent>
             </div>}
 
-            {children?.(onAdd, () => { actives && onEdit(actives[activeTab]) }, () => setShowAll(true), !!(actives?.length))}
+            {children?.(onAdd, () => { if (actives) onEdit(actives[activeTab]) }, () => setShowAll(true), !!(actives?.length))}
         </>
     )
 }

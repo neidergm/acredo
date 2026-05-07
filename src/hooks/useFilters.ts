@@ -19,7 +19,11 @@ const useFilters = <T>(
     const [filter, setFilter] = useState(filters);
 
     const setActiveFilters = (property: string) => {
-        filter[property].active ? doFilter(property, "", true) : setFilter(f => { f[property].active = true; return { ...f } })
+        if (filter[property].active) {
+            doFilter(property, "", true);
+        } else {
+            setFilter(f => { f[property].active = true; return { ...f } });
+        }
     }
 
     const quitAllActiveFilters = () => {
@@ -49,7 +53,7 @@ const useFilters = <T>(
     }
 
     const doFilter = (property: string, value: string, quitActiveFilter = false) => {
-        const f = filter;
+        const f = { ...filter };
         if (property !== "") {
             f[property].value = value;
             if (quitActiveFilter) f[property].active = false;

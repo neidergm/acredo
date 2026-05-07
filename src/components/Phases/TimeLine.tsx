@@ -5,7 +5,7 @@ import { getDateDiff, getNormalDate } from '../../utils/dateUtils';
 import { Badge } from 'reactstrap';
 import { BsCheckCircleFill, BsFlagFill } from 'react-icons/bs';
 
-const TimeLine = ({ list, canEdit: _canEdit, taskEnded }: { list: T_Stage[], canEdit: boolean, taskEnded?: boolean }) => {
+const TimeLine = ({ list, taskEnded }: { list: T_Stage[], canEdit: boolean, taskEnded?: boolean }) => {
     return (
         <div>
             {list.map(stage => <div>

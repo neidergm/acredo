@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, type ReactNode } from 'react'
 import Loader from '../../../components/Loader';
 import { type I_Form, type I_FormField, type I_FormFieldWithAnswer } from '../../../interfaces/conditions.interface';
 import { type I_JSONObject, type T_FieldsTypes } from '../../../interfaces/generic.interface';
@@ -27,12 +27,14 @@ export type T_Form = {
     orden_resp?: number;
 } & I_Form;
 
+type JSON = Record<string, unknown>;
+
 export type T_FormPannelActions = {
     onPickOne: (f: T_Form, onlyGetAnswer?: boolean) => Promise<T_Form>;
-    onSubmit: (data: any, formItem: T_Form, callback?: () => void, onlyRefreshForm?: boolean) => void;
-    onDelete?: (item: string, title?: string, subtitle?: any, callback?: () => void) => void;
-    onDeleteForm?: (item: number, subtitle: string | JSX.Element, callback?: () => void) => void;
-    onObservationsDone: () => void;
+    onSubmit: (data: JSON, formItem: T_Form, callback?: VoidFunction, onlyRefreshForm?: boolean) => void;
+    onDelete?: (item: string, title?: string, subtitle?: ReactNode, callback?: VoidFunction) => void;
+    onDeleteForm?: (item: number, subtitle?: ReactNode, callback?: VoidFunction) => void;
+    onObservationsDone: VoidFunction;
 }
 
 type T_Props = {
@@ -46,7 +48,6 @@ const FormPannel = ({
     formId,
     canEdit = false,
     canAddForms,
-    codCond: _codCond
 }: T_Props) => {
     const { id_cond } = useParams();
 
@@ -57,7 +58,7 @@ const FormPannel = ({
 
     const { closeLoader, openLoader } = useLoader()
 
-    const confirmSubmit = (data: any, formItem: T_Form, callback?: () => void) => {
+    const confirmSubmit = (data: JSON, formItem: T_Form, callback?: VoidFunction) => {
         openAlert({
             title: "¿Desea guardar los cambios?",
             type: "question",
@@ -66,17 +67,17 @@ const FormPannel = ({
         })
     }
 
-    const deleteFormItem = (item: number, subtitle: string | JSX.Element, callback?: () => void) => {
+    const deleteFormItem = (item: number, subtitle?: ReactNode, callback?: VoidFunction) => {
         openAlert(
             confirmDeleteAlertObject(subtitle, {
                 onClick: () => closeAlert(() => {
                     openLoader("Eliminando formulario")
-                    return AXIOS_REQUEST(DESASOCIATE_FORM_TO_TASK + item, "DELETE").then(_resp => {
+                    return AXIOS_REQUEST(DESASOCIATE_FORM_TO_TASK + item, "DELETE").then(() => {
                         callback?.()
                         setFormList(null)
                         toast.success('Se ha eliminado el formulario correctamente', { position: "top-right" });
                         closeLoader(getForms)
-                    }).catch(_err => {
+                    }).catch(() => {
                         closeLoader()
                         toast.error('No se pudo eliminar el formulario', { position: "top-right" })
                     })
@@ -85,7 +86,7 @@ const FormPannel = ({
         )
     }
 
-    const confirmDelete = (item: string, title = "¿Está seguro?", children: any = "", callback?: () => void) => {
+    const confirmDelete = (item: string, title = "¿Está seguro?", children?: ReactNode, callback?: VoidFunction) => {
         openAlert({
             title,
             children,
@@ -95,21 +96,21 @@ const FormPannel = ({
         })
     }
 
-    const deleteItem = (item: string, callback?: () => void) => {
+    const deleteItem = (item: string, callback?: VoidFunction) => {
         openLoader("Eliminando")
 
-        return AXIOS_REQUEST(DELETE_ANSWER + item, "DELETE").then(_resp => {
+        return AXIOS_REQUEST(DELETE_ANSWER + item, "DELETE").then(() => {
             toast.success('Se ha eliminado correctamente', { position: "top-right" });
             closeLoader(() => {
                 callback?.();
             })
-        }).catch(_err => {
+        }).catch(() => {
             closeLoader()
             toast.error('No se pudo eliminar', { position: "top-right" })
         })
     }
 
-    const submitAll = (data: any, formItem: T_Form, callback?: () => void) => {
+    const submitAll = (data: JSON, formItem: T_Form, callback?: VoidFunction) => {
         const method = formItem.est_resp === 1 ? "PUT" : "POST";
         data = getDifferenceBetweenData(formItem.defaultValues, data);
      
@@ -126,19 +127,21 @@ const FormPannel = ({
             { id_cond }
         );
         return AXIOS_REQUEST(SAVE_ANSWERS, method, formData)
-            .then(_res => {
-                method === "POST" && formItem.est_resp === 0 && setFormList(e => {
-                    const current = e!.findIndex(i => i.id_fcamp === formItem.id_fcamp);
-                    if (current) e![current] = { ...e![current], est_resp: 1 }
-                    return [...e!]
-                });
+            .then(() => {
+                if (method === "POST" && formItem.est_resp === 0) {
+                    setFormList(e => {
+                        const current = e!.findIndex(i => i.id_fcamp === formItem.id_fcamp);
+                        if (current) e![current] = { ...e![current], est_resp: 1 }
+                        return [...e!]
+                    });
+                }
                 closeLoader(() => {
                     callback?.()
                 });
                 toast.success("Se registraron los datos correctamente", { position: "top-right" })
                 return true;
             })
-            .catch(_err => {
+            .catch(() => {
                 closeLoader();
                 toast.error("No se pudo registrar la información", { position: "top-right" });
                 return false;
@@ -149,9 +152,9 @@ const FormPannel = ({
 
         let answers: null | Array<I_FormFieldWithAnswer> = null;
         let fields: null | Array<I_FormField | I_FormFieldWithAnswer> = item.originalFieldsObject;
-        let multiplesAnswers: { [x: string]: Array<I_FormFieldWithAnswer> } = {};
+        let multiplesAnswers: Record<string, Array<I_FormFieldWithAnswer>> = {};
 
-        const multiplesValues: { [x: string]: T_Form } = {};
+        const multiplesValues: Record<string, T_Form> = {};
         let isAttachmentsTable = false;
         if (item.est_resp === 1 || onlyGetAnswer) answers = await getFormWithAnswers(item.id_fcamp);
 
@@ -169,8 +172,8 @@ const FormPannel = ({
                     if (c.json_campo.name === "tipo_anexo") {
                     // (c.json_campo.validations as any).disabled = true;
                     // (c.json_campo.validations as any) = { disabled: true };
-                    (c.json_campo as any).disabled = true;
-                    (c.json_campo.children as any) = null;
+                    (c.json_campo as JSON).disabled = true;
+                    c.json_campo.children = undefined;
                 }
                     if (c.nomb_anexo) isAttachmentsTable = true;
                     p[c.grupo_resp] = [...(p[c.grupo_resp] || []), c];
@@ -239,7 +242,7 @@ const FormPannel = ({
         return !(formId) ? setFormList([]) : AXIOS_REQUEST(FORM + formId)
             .then(res => {
                 setFormList(res.data)
-            }).catch(_err => {
+            }).catch(() => {
                 setFormList([])
             })
     }

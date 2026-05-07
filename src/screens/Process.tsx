@@ -119,7 +119,7 @@ const Process = () => {
 
   const deleteProcess = (process: I_Process) => {
     openLoader("Eliminando proceso")
-    AXIOS_REQUEST(DELETE_PROCESS + process.id_conv, "DELETE").then(_r => {
+    AXIOS_REQUEST(DELETE_PROCESS + process.id_conv, "DELETE").then(() => {
       openLoader("Actualizando listado", null)
       dispatch(getProcessList()).then(() => { closeModal(setModal); closeLoader() })
       toast.success("Se ha eliminado el proceso correctamente", { position: "top-right" })
@@ -145,7 +145,7 @@ const Process = () => {
         value: "Si, modificar", onClick: () => {
           openLoader("Modificando proceso", () => {
             const d = jsonToFormData({ id_conv: process.id_conv, ...data });
-            AXIOS_REQUEST(UPDATE_PROCESS, "PUT", d).then(_r => {
+            AXIOS_REQUEST(UPDATE_PROCESS, "PUT", d).then(() => {
               toast.success("Se ha modificado el proceso correctamente", { position: "top-right" })
               openLoader("Actualizando listado", null)
               dispatch(getProcessList()).then(() => { closeModal(setModal); closeLoader() })
@@ -170,7 +170,7 @@ const Process = () => {
           openLoader("Creando proceso", () => {
             const d = jsonToFormData(data);
             AXIOS_REQUEST(CREATE_PROCESS, "POST", d)
-              .then(_r => {
+              .then(() => {
                 toast.success("Se ha creado el proceso correctamente", { position: "top-right" })
                 openLoader("Actualizando listado", null)
                 dispatch(getProcessList()).then(() => { closeModal(setModal); closeLoader() })

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, type ReactNode } from 'react'
 import { TabContent, TabPane, Nav, NavItem, NavLink, Button } from 'reactstrap';
 import Loader from '../../../components/Loader';
 import classnames from 'classnames';
@@ -12,7 +12,7 @@ type T_Props = {
     canEdit: boolean,
     id_cond: string,
     formList: T_Form[],
-    children?: JSX.Element | JSX.Element[] | false
+    children?: ReactNode
 } & T_FormPannelActions
 
 const AsTabs = ({
@@ -27,7 +27,7 @@ const AsTabs = ({
     onObservationsDone
 }: T_Props) => {
     const [currentActiveTab, setCurrentActiveTab] = useState(0);
-    const [loadedItems, setLoadedItems] = useState<Array<T_Form | null>>(formList.map(_i => null));
+    const [loadedItems, setLoadedItems] = useState<Array<T_Form | null>>(formList.map(() => null));
     const [observationsIsOpen, setObservationsIsOpen] = useState<T_Form | null>(null);
 
     const showObservations = (item: T_Form | null) => setObservationsIsOpen(item)
@@ -51,21 +51,20 @@ const AsTabs = ({
             })
     }
 
-    const submit = (data: any, form: T_Form, callback?: () => void, onlyRefreshForm = false) => {
-        onlyRefreshForm ?
+    const submit = (data: Record<string, unknown>, form: T_Form, callback?: VoidFunction, onlyRefreshForm = false) => {
+        if (onlyRefreshForm) {
             getFormFields()
-            :
-            onSubmit(
-                data,
-                form,
+        } else {
+            onSubmit(data, form,
                 () => {
                     getFormFields();
                     callback?.();
                 }
             )
+        }
     }
 
-    const deleteHandle = (item: string, title?: string, subtitle?: any) => {
+    const deleteHandle = (item: string, title?: string, subtitle?: ReactNode) => {
         onDelete?.(
             item,
             title,
@@ -81,6 +80,7 @@ const AsTabs = ({
     }
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         if (!loadedItems[currentActiveTab]) getFormFields()
     }, [currentActiveTab]);
 

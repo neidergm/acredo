@@ -69,7 +69,7 @@ const ProcessResume = () => {
 
     const chooseFilter = (_filter: typeof filter) => {
         if ((_filter?.estado !== filter?.estado)) {
-             
+
             dispatch(setProcessSelectedFilter(_filter!))
         }
     }
@@ -105,7 +105,7 @@ const ProcessResume = () => {
             })
         }
 
-        filter && getProcess()
+        if (filter) getProcess()
     }, [filter])
 
     return (<>

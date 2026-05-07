@@ -94,7 +94,7 @@ const Details = () => {
                                     navigate(-1)
                                 })
 
-                            }).catch(_e => {
+                            }).catch(() => {
                                 closeLoader()
                                 toast.error("No se pudo eliminar el programa", { position: "top-right" });
                             })
@@ -157,14 +157,14 @@ const Details = () => {
 
     const saveProgramData = ({ departamento, ...data }: I_JSONObject) => {
         return openLoader("Actualizando datos", () => {
-            departamento && (data.depa_prog = departamento);
+            if (departamento) (data.depa_prog = departamento);
             data.id_prog = program?.id_prog;
 
-            return AXIOS_REQUEST(SAVE_PROGRAM_DATA, "PUT", jsonToFormData(data, "[0].")).then(_resp => {
+            return AXIOS_REQUEST(SAVE_PROGRAM_DATA, "PUT", jsonToFormData(data, "[0].")).then(() => {
                 toast.success("Datos del programa actualizados correctamente", { position: 'top-right' })
                 closeLoader(() => closeModal(setModal))
                 return getProgramInfo(true)
-            }).catch(_err => {
+            }).catch(() => {
                 closeLoader()
                 toast.error("No se pudo actualizar datos del programa", { position: 'top-right' })
             })
@@ -177,7 +177,7 @@ const Details = () => {
         if (!id_program) {
             navigate(-1)
         } else {
-            needGetProgramData && getProgramInfo()
+            if (needGetProgramData) getProgramInfo()
         }
         return () => {
             if (needRefreshList) dispatch(getProgramsList())

@@ -5,7 +5,7 @@ import { FORMATION_TYPES_LIST } from '../services/constantsService';
 import { CITIES_BY_DEPARTMENT, DEPARTMENT_LIST, GET_FACULTAD } from '../services/endPointsService';
 import mapField from '../utils/mapField';
 
-const programForm = (_defaultValues: I_JSONObject): T_FieldsTypes[] => [
+const programForm = (): T_FieldsTypes[] => [
     {
         "name": "nomb_prog",
         "label": "Nombre del programa",

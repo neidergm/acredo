@@ -52,11 +52,15 @@ const UsersManagement = () => {
 
     setOpened(i => {
       const f = i.findIndex(id => id === `${idx}`)
-      f !== -1 ? i.splice(f, 1) : i.push(`${idx}`)
+      if (f !== -1) {
+        i.splice(f, 1)
+      } else {
+        i.push(`${idx}`)
+      }
       return [...i]
     })
 
-    !usersByGroup[idx] && getUsersByGroup(group.id_cargo, idx)
+    if (!usersByGroup[idx]) getUsersByGroup(group.id_cargo, idx)
   }
 
   const createCharge = () => {
@@ -96,7 +100,7 @@ const UsersManagement = () => {
     })
   }
 
-  const editUser = (_user: any, _chargeIdx: number) => {
+  const editUser = () => {
     const formID = "EDIT_USER_FORM";
 
     setModal({
@@ -211,7 +215,7 @@ const UsersManagement = () => {
   useEffect(() => {
     AXIOS_REQUEST(CHARGE).then(r => {
       setGroups(r.data)
-    }).catch(_e => {
+    }).catch(() => {
       setGroups(false)
     })
   }, [])
@@ -315,7 +319,7 @@ const UsersManagement = () => {
                               </div>
                               <div>
                                 {u.nomb_resp} <small className='d-none d-md-inline'>({u.iden_resp})</small>
-                                <Button color='link' className='py-0 mb-1' onClick={() => editUser(u, idx)}> <BsPencilSquare size={16} /></Button>
+                                <Button color='link' className='py-0 mb-1' onClick={() => editUser()}> <BsPencilSquare size={16} /></Button>
                               </div>
                               <div className='ms-auto d-none d-md-block'>
                                 ROL DE USUARIO

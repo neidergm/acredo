@@ -139,7 +139,7 @@ const Conditions = () => {
     })
   }
 
-  const createPhase = (data: any) => {
+  const createPhase = (data: Record<string, unknown>) => {
     openLoader("Creando fase");
 
     const d = jsonToFormData({
@@ -149,20 +149,20 @@ const Conditions = () => {
       "[0].fech_fin": data.fecha_fin
     });
 
-    AXIOS_REQUEST(SAVE_PHASE, "POST", d).then(_r => {
+    AXIOS_REQUEST(SAVE_PHASE, "POST", d).then(() => {
       toast.success("Se ha creado la fase correctamente", { position: "top-right" });
       if (searchParams.get("status")) {
         searchParams.delete("status")
         setSearchParams(searchParams, { replace: true })
       }
       refreshData()
-    }).catch(_e => {
+    }).catch(() => {
       closeLoader();
       toast.error("No se pudo crear la fase", { position: "top-right" });
     })
   }
 
-  const createTask = ({ responsable, ...data }: any, phase: T_PhasesWithConditions) => {
+  const createTask = ({ responsable, ...data }: Record<string, unknown>, phase: T_PhasesWithConditions) => {
     openLoader("Creando nueva tarea");
     const d = jsonToFormData({
       ...data,
@@ -170,16 +170,18 @@ const Conditions = () => {
       id_fase: phase.id_fase
     })
 
-    !!(responsable?.length) && responsable.forEach((r: { user: string, role: string }, i: number) => {
-      d.append(`responsable[${i}].id_rc`, r.user);
-      d.append(`responsable[${i}].rol_cond`, r.role);
-    })
+    if (Array.isArray(responsable) && !!responsable.length) {
+      responsable.forEach((r: { user: string, role: string }, i: number) => {
+        d.append(`responsable[${i}].id_rc`, r.user);
+        d.append(`responsable[${i}].rol_cond`, r.role);
+      })
+    }
 
-    AXIOS_REQUEST(SAVE_TASK, "POST", d).then(_r => {
+    AXIOS_REQUEST(SAVE_TASK, "POST", d).then(() => {
       toast.success("Se ha creado la tarea correctamente", { position: "top-right" });
       openLoader("Actualizando", null)
       refreshData()
-    }).catch(_r => {
+    }).catch(() => {
       closeLoader()
       toast.error("No se pudo crear la tarea", { position: "top-right" })
     })
@@ -194,10 +196,10 @@ const Conditions = () => {
             onClick: () => closeAlert(() => {
               openLoader("Eliminando fase")
               AXIOS_REQUEST(DELETE_PHASE + phase.id_fase, "DELETE")
-                .then(_r => {
+                .then(() => {
                   toast.success("Se eliminó la fase correctamente", { position: "top-right" });
                   refreshData()
-                }).catch(_r => toast.error("No se pudo eliminar la fase", { position: "top-right" }))
+                }).catch(() => toast.error("No se pudo eliminar la fase", { position: "top-right" }))
                 .finally(() => closeLoader())
             })
           }
@@ -230,7 +232,7 @@ const Conditions = () => {
     })
   }
 
-  const editPhase = (data: any, phase: T_PhasesWithConditions) => {
+  const editPhase = (data: Record<string, unknown>, phase: T_PhasesWithConditions) => {
     openLoader("Modificando fase");
 
     const d = jsonToFormData({
@@ -240,11 +242,11 @@ const Conditions = () => {
       "[0].fech_fin": data.fecha_fin
     });
 
-    AXIOS_REQUEST(SAVE_PHASE, "PUT", d).then(_r => {
+    AXIOS_REQUEST(SAVE_PHASE, "PUT", d).then(() => {
       toast.success("Se ha modificado la fase correctamente", { position: "top-right" });
       openLoader("Actualizando", null)
       refreshData()
-    }).catch(_e => {
+    }).catch(() => {
       closeLoader()
       toast.error("No se pudo modificar la fase", { position: "top-right" })
     })

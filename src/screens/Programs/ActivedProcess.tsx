@@ -19,11 +19,12 @@ const ActivedProcess = ({ id_program, quantity }: T_Props) => {
 
     useEffect(() => {
         if (quantity === 0) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setProcess([])
         } else {
             AXIOS_REQUEST(GET_ACTIVE_PROCESS + id_program).then(res => {
                 setProcess(res.data)
-            }).catch(_e => {
+            }).catch(() => {
                 setProcess(false)
             })
         }

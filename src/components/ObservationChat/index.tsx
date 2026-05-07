@@ -144,7 +144,7 @@ const ObservationChat = ({
 
         const fd = jsonToFormData(data)
 
-        AXIOS_REQUEST(SAVE_OBSERVATION, "POST", fd).then(_resp => {
+        AXIOS_REQUEST(SAVE_OBSERVATION, "POST", fd).then(() => {
             toast.success("Se ha registrado la observación", { position: 'top-right' })
             shouldRequestOnUnmount.current = true;
         })
@@ -185,12 +185,13 @@ const ObservationChat = ({
         if (grupo) {
             url += `/${grupo}`;
         }
-        (!messages || !Object.keys(messages)?.length)
-            && AXIOS_REQUEST(`${url}`).then(resp => {
+        if (!messages || !Object.keys(messages)?.length) {
+            AXIOS_REQUEST(`${url}`).then(resp => {
                 buildMessages(resp.data);
-            }).catch(_err => {
+            }).catch(() => {
                 setMessages(undefined)
             })
+        }
     }
 
     const scrollTo = (id: string) => {
@@ -207,7 +208,7 @@ const ObservationChat = ({
         return () => {
             if (shouldRequestOnUnmount.current) {
                 callbackOnUnmount?.(shouldRequestOnUnmount.current);
-                selectedProcess?.id_conv && dispatch(getPhasesWithConditions(selectedProcess.id_conv));
+                if (selectedProcess?.id_conv) dispatch(getPhasesWithConditions(selectedProcess.id_conv));
             }
         }
     }, [messages])

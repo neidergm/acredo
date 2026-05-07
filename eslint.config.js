@@ -23,6 +23,21 @@ export default defineConfig([
         'error',
         { prefer: 'type-imports', fixStyle: 'inline-type-imports' },
       ],
+      // '@react-hooks/exhaustive-deps': 'off',
+      // // Alinear con tsconfig (`noUnusedLocals`/`noUnusedParameters` ya ignoran prefix `_`).
+      // '@typescript-eslint/no-unused-vars': ['error', {
+      //   argsIgnorePattern: '^_',
+      //   varsIgnorePattern: '^_',
+      //   caughtErrorsIgnorePattern: '^_',
+      //   destructuredArrayIgnorePattern: '^_',
+      //   ignoreRestSiblings: true,
+      // }],
+      // // Permitir short-circuit (`a && fn()`) y ternarios como statements — son
+      // // patrones idiomáticos de fire-and-forget usados en todo el codebase.
+      // '@typescript-eslint/no-unused-expressions': ['error', {
+      //   allowShortCircuit: true,
+      //   allowTernary: true,
+      // }],
     },
   },
 ])

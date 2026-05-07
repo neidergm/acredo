@@ -65,9 +65,9 @@ export interface I_HistoryItem {
     id_cond: number;
     id_resp: number;
     id_fcamp: number;
-    json_campo: { [x: string]: any };
+    json_campo: Record<string, unknown>;
     marc_temp: string;
-    respuesta: any;
+    respuesta: unknown;
     usuario: string;
     tipo: string;
 }
@@ -86,7 +86,7 @@ export interface I_FormFieldWithAnswer extends I_FormField {
     id_fcamp: number;
     id_resp: number;
     nomb_form: string;
-    respuesta: any | Array<T_FileAnswer>;
+    respuesta: unknown | Array<T_FileAnswer>;
     nomb_anexo: null | string;
     usuario?: string;
     num_obs?: number;

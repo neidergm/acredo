@@ -38,15 +38,14 @@ declare global {
 console.log("%cADVERTENCIA: \nEsta es una función del navegador destinada a desarrolladores. \nSi intenta hacer algo aquí para habilitar alguna función o \"piratear\" caracteristicas del sitio, podrías perder el acceso al mismo."
   , "color:red;font-size:20px;background-color: yellow;font-weight: bold;");
 
-
-!!(window._NGconfig.maintenance_url) && AXIOS_REQUEST(window._NGconfig.maintenance_url, 'get', null)
-  .then(resp => {
-    if (!!(resp) && typeof resp === 'string') {
-      window.location.href = resp;
-    }
-  }).catch()
-
-
+if (window._NGconfig.maintenance_url) {
+  AXIOS_REQUEST(window._NGconfig.maintenance_url, 'get', null)
+    .then(resp => {
+      if (!!(resp) && typeof resp === 'string') {
+        window.location.href = resp;
+      }
+    }).catch()
+}
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

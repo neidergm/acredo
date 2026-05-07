@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type CSSProperties } from 'react'
 import {
     closestCenter,
     DndContext,
@@ -34,7 +34,7 @@ import { Badge } from 'reactstrap';
 
 type T_Props = {
     list: Array<T_MapedItemList>,
-    orderRef: React.MutableRefObject<any>
+    orderRef: React.MutableRefObject<Array<T_MapedItemList>>,
 }
 
 const Ordering = ({ list, orderRef }: T_Props) => {
@@ -101,7 +101,7 @@ function SortableItem({ id, data }: { id: number, data: T_MapedItemList }) {
         isSorting,
     } = useSortable({ id });
 
-    const style: any = {
+    const style: CSSProperties = {
         transform: CSS.Transform.toString(transform),
         transition,
         ...(isDragging ? {

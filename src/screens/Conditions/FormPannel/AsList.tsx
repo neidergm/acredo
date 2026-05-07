@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
 import { Button, Card, CardBody, CloseButton } from 'reactstrap';
 import { BsChatDots, BsChatDotsFill, BsCheckCircleFill, BsExclamationCircleFill, BsXCircle } from 'react-icons/bs';
 import Loader from '../../../components/Loader';
@@ -11,7 +11,7 @@ import './../Details/style.css';
 type T_Props = {
     canEdit: boolean,
     id_cond: string,
-    children?: JSX.Element | JSX.Element[] | boolean,
+    children?: ReactNode,
     formList: T_Form[],
 } & T_FormPannelActions;
 
@@ -29,11 +29,11 @@ const AsList = ({
 
     const [currentActiveTab, setCurrentActiveTab] = useState<number | null>(null);
     const [observationsIsOpen, setObservationsIsOpen] = useState<T_Form | null>(null);
-    const [loadedItems, setLoadedItems] = useState<Array<T_Form | null>>(formList.map(_i => null));
+    const [loadedItems, setLoadedItems] = useState<Array<T_Form | null>>(formList.map(() => null));
 
     const showObservations = (item: T_Form | null) => setObservationsIsOpen(item)
 
-    const selectItem = (item: typeof currentActiveTab, _pick = true) => {
+    const selectItem = (item: typeof currentActiveTab) => {
         if (item === null) return setCurrentActiveTab(null);
         setCurrentActiveTab(item);
     }
@@ -44,10 +44,10 @@ const AsList = ({
         });
     }
 
-    const submit = (data: any, form: T_Form, callback?: () => void, onlyRefreshForm = false) => {
-        onlyRefreshForm ?
+    const submit = (data: Record<string, unknown>, form: T_Form, callback?: VoidFunction, onlyRefreshForm = false) => {
+        if (onlyRefreshForm) {
             getFormFields()
-            :
+        } else {
             onSubmit(
                 data,
                 form,
@@ -56,9 +56,10 @@ const AsList = ({
                     callback?.();
                 }
             )
+        }
     }
 
-    const deleteHandle = (item: string, title?: string, subtitle?: any) => {
+    const deleteHandle = (item: string, title?: string, subtitle?: ReactNode) => {
         onDelete?.(
             item,
             title,
@@ -72,12 +73,12 @@ const AsList = ({
     const getFormFields = () => {
         if (currentActiveTab === null) return;
         const items = loadedItems;
-        const form = items[currentActiveTab];
+        const form = items[currentActiveTab] ? { ...items[currentActiveTab] } : null;
         if ((form)) {
             form.fields = [];
             setLoadedItems(items);
         }
-        onPickOne(form || formList[currentActiveTab], !!(form))
+        onPickOne((form || formList[currentActiveTab]) as T_Form, !!(form))
             .then(resp => {
                 items[currentActiveTab] = resp;
                 setLoadedItems([...items]);
@@ -200,7 +201,7 @@ const AsList = ({
                         <Button size="sm" color="danger" outline className='opacity-75'
                             onClick={() => deleteForm(selectedItem)}
                         >
-                            <i className='me-1'><BsXCircle size={16}/></i>
+                            <i className='me-1'><BsXCircle size={16} /></i>
                             <span>Eliminar este formulario</span>
                         </Button>
                     </div>}

@@ -1,4 +1,4 @@
- 
+
 import { useEffect, useState, useMemo } from 'react'
 import { useParams, useNavigate, Link, useSearchParams } from "react-router";
 import { BsCheckCircleFill, BsPaperclip, BsPencilSquare, BsExclamationCircleFill, BsInfoCircle, BsLink, BsPeople, BsThreeDotsVertical, BsXCircle } from 'react-icons/bs';
@@ -109,20 +109,22 @@ const ConditionsDetails = () => {
   }
 
   const showGeneralAttachmentsTable = () => {
-    processSelected && setModalData({
-      isOpen: true,
-      size: "xl",
-      fullscreen: "lg",
-      title: "Anexos de la fase",
-      children: <>
-        <AllAttachments phaseId={conditionSelected!.fase} />
-      </>,
-      footer: <ModalFooter>
-        <Button color='primary2' onClick={() => closeModal(setModalData)}>Cerrar</Button>
-        <Link to={`/proceso/fases/anexos/${conditionSelected?.fase}`} target="_blank"
-          className="btn btn-primary">Abrir en nueva pestaña</Link>
-      </ModalFooter>
-    })
+    if (processSelected) {
+      setModalData({
+        isOpen: true,
+        size: "xl",
+        fullscreen: "lg",
+        title: "Anexos de la fase",
+        children: <>
+          <AllAttachments phaseId={conditionSelected!.fase} />
+        </>,
+        footer: <ModalFooter>
+          <Button color='primary2' onClick={() => closeModal(setModalData)}>Cerrar</Button>
+          <Link to={`/proceso/fases/anexos/${conditionSelected?.fase}`} target="_blank"
+            className="btn btn-primary">Abrir en nueva pestaña</Link>
+        </ModalFooter>
+      })
+    }
   }
 
   const deleteTask = () => {
@@ -133,10 +135,10 @@ const ConditionsDetails = () => {
           onClick: () => closeAlert(() => {
             openLoader("Eliminando tarea")
 
-            AXIOS_REQUEST(DELETE_TASK + conditionSelected?.id_cond, "DELETE").then(_r => {
+            AXIOS_REQUEST(DELETE_TASK + conditionSelected?.id_cond, "DELETE").then(() => {
               toast.success("Se ha eliminado la tarea", { position: "top-right" });
               navigate(-1);
-            }).catch(_e => toast.error("No se pudo eliminar la tarea", { position: "top-right" }))
+            }).catch(() => toast.error("No se pudo eliminar la tarea", { position: "top-right" }))
               .finally(() => closeLoader())
           })
         }
@@ -215,7 +217,7 @@ const ConditionsDetails = () => {
 
       closeLoader()
       closeModal(setModalData)
-    }).catch(_r => {
+    }).catch(() => {
       closeLoader()
       toast.error("No se pudo actualizar la tarea", { position: "top-right" })
     })

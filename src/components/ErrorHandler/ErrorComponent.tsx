@@ -25,7 +25,7 @@ class ErrorComponent extends Component<T_Props, T_State> {
         };
     }
 
-    static getDerivedStateFromError(_error: Error): Partial<T_State> {
+    static getDerivedStateFromError(): Partial<T_State> {
         return { hasError: true, tryLoad: false };
     }
 
@@ -64,7 +64,7 @@ class ErrorComponent extends Component<T_Props, T_State> {
                                 <small>No se pudo cargar esta sección</small>
                             </h6>
                             <button disabled={!!(this.state.tryLoad)} className="btn btn-sm btn-outline-dark mt-2"
-                                onClick={() => { !(this.state.tryLoad) && this.tryLodAgain() }}>
+                                onClick={() => { if (!(this.state.tryLoad)) this.tryLodAgain() }}>
                                 {this.state.tryLoad ? <div className="spinner-border" role="status"></div> : "Reintentar"}</button>
                         </div>
                     </div>

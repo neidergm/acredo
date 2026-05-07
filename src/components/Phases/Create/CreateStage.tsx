@@ -61,9 +61,14 @@ const CreateStage = ({
           defaultValues={action ? {
             fecha_accion: action.fecha_accion,
             nomb_accion: action.nomb_accion,
-            responsible: action.usuarios?.filter(i => i.rol === "B").map((u: any) => ({ cargo: u.id_cargo, user: u.id_rc }))
+            responsible: action.usuarios?.filter(i => i.rol === "B").map(u => ({ cargo: u.id_cargo, user: u.id_rc }))
           } : {}}
-          onSubmit={(data) => { type === "Modificar" ? onEditAction(data, action || {} as T_Action) : onCreateAction(data) }}
+          onSubmit={(data) => {
+            if (type === "Modificar")
+              onEditAction(data, action || {} as T_Action)
+            else
+              onCreateAction(data)
+          }}
         />
       </div>,
       title: `${type} acción`,
@@ -80,8 +85,6 @@ const CreateStage = ({
   }
 
   const onCreateAction = (data: any | T_Action[], multiple = false) => {
-// eslint-disable-next-line no-debugger
-debugger
     let d = new FormData();
 
     if (multiple && typeof data === "object" && !!(data?.length)) {
@@ -109,16 +112,17 @@ debugger
         "[0].id_etapa": stage?.id,
       });
 
-      !!(data.responsible?.length) && data.responsible.forEach((r: { user: string }, i: number) => {
-        d.append(`[0].responsable[${i}].id_rc`, r.user);
-        d.append(`[0].responsable[${i}].rol_cond`, "B");
-        d.append(`[0].responsable[${i}].id_cond`, id_cond!);
-      })
+      if (Array.isArray(data.responsiblelength))
+        data.responsible.forEach((r: { user: string }, i: number) => {
+          d.append(`[0].responsable[${i}].id_rc`, r.user);
+          d.append(`[0].responsable[${i}].rol_cond`, "B");
+          d.append(`[0].responsable[${i}].id_cond`, id_cond!);
+        })
     }
 
     openLoader("Creando nueva acción")
 
-    AXIOS_REQUEST(PUT_ACTION, "POST", d).then(_r => {
+    AXIOS_REQUEST(PUT_ACTION, "POST", d).then(() => {
       toast.success("Se ha creado la acción correctamente", {
         position: "top-right"
       });
@@ -127,7 +131,7 @@ debugger
         closeModal(setModal);
       })
       dispatch(getPhasesAndStagesOfCondition(Number(id_cond)));
-    }).catch(_e => {
+    }).catch(() => {
       closeLoader()
       toast.error("No se pudo crear la acción", {
         position: "top-right"
@@ -144,15 +148,17 @@ debugger
       "[0].id_etapa": stage?.id,
     });
 
-    !!(data.responsible?.length) && data.responsible.forEach((r: { user: string }, i: number) => {
-      d.append(`[0].responsable[${i}].id_rc`, r.user);
-      d.append(`[0].responsable[${i}].rol_cond`, "B");
-      d.append(`[0].responsable[${i}].id_cond`, id_cond!);
-    })
+    if (data.responsible?.length) {
+      data.responsible.forEach((r: { user: string }, i: number) => {
+        d.append(`[0].responsable[${i}].id_rc`, r.user);
+        d.append(`[0].responsable[${i}].rol_cond`, "B");
+        d.append(`[0].responsable[${i}].id_cond`, id_cond!);
+      })
+    }
 
     openLoader("Actualizando acción")
 
-    AXIOS_REQUEST(PUT_ACTION, "PUT", d).then(_r => {
+    AXIOS_REQUEST(PUT_ACTION, "PUT", d).then(() => {
       toast.success("Se actualizó la acción correctamente", {
         position: "top-right"
       })
@@ -161,7 +167,7 @@ debugger
       closeLoader(() => {
         closeModal(setModal);
       })
-    }).catch(_e => {
+    }).catch(() => {
       closeLoader()
       toast.error("No se pudo actualizar la acción", {
         position: "top-right"
@@ -207,7 +213,7 @@ debugger
 
   const onDeleteAction = (action: T_Action) => {
     openLoader("Eliminando")
-    AXIOS_REQUEST(DELETE_ACTION + action.id_accion, "DELETE").then(_resp => {
+    AXIOS_REQUEST(DELETE_ACTION + action.id_accion, "DELETE").then(() => {
       toast.success('Acción eliminada correctamente', { position: 'top-right' });
       updateDataOnUnmount.current = true;
       dispatch(getPhasesAndStagesOfCondition(Number(id_cond)))
@@ -220,7 +226,7 @@ debugger
 
   const onDeleteStage = (stage: T_Stage) => {
     openLoader("Eliminando etapa")
-    AXIOS_REQUEST(DELETE_STAGE + stage.id, "DELETE").then(_resp => {
+    AXIOS_REQUEST(DELETE_STAGE + stage.id, "DELETE").then(() => {
       updateDataOnUnmount.current = true;
       toast.success('Etapa eliminada correctamente', { position: 'top-right' });
       dispatch(getPhasesAndStagesOfCondition(Number(id_cond)));
@@ -246,11 +252,11 @@ debugger
 
     openLoader("Actualizando etapa");
 
-    AXIOS_REQUEST(PUT_STAGE, "PUT", data).then(_r => {
+    AXIOS_REQUEST(PUT_STAGE, "PUT", data).then(() => {
       updateDataOnUnmount.current = true;
       dispatch(getPhasesAndStagesOfCondition(Number(id_cond)));
       toast.success("Se actualizó la etapa correctamente", { position: "top-right" });
-    }).catch(_e => {
+    }).catch(() => {
       toast.error("No se pudo actualizar la etapa", { position: "top-right" })
     }).finally(() => closeLoader())
   }
@@ -265,12 +271,12 @@ debugger
 
     openLoader("Registrando nueva etapa");
 
-    AXIOS_REQUEST(PUT_STAGE, "POST", data).then(_r => {
+    AXIOS_REQUEST(PUT_STAGE, "POST", data).then(() => {
       toast.success("Se ha registrado la etapa correctamente", { position: "top-right" });
       updateDataOnUnmount.current = true;
       dispatch(getPhasesAndStagesOfCondition(Number(id_cond)));
       // dispatch(getPhasesAndStagesOfCondition(Number(id_cond)));
-    }).catch(_e => {
+    }).catch(() => {
       toast.error("No se pudo registrar la etapa", { position: "top-right" })
     }).finally(() => closeLoader())
   }

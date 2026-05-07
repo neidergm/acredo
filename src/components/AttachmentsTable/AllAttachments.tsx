@@ -239,7 +239,7 @@ const AllAttachments = ({
     useEffect(() => {
         AXIOS_REQUEST(ATTACHMENTS_BY_PHASE + phaseId).then(({ data }: { data: T_AttachmentsOfPhases }) => {
             const g = data.map((item) => {
-                const anexos_by_group_resp = item.anexos?.reduce<{ [group: string]: T_AttachmentInPhase[] }>((p: any, c) => {
+                const anexos_by_group_resp = item.anexos?.reduce<{ [group: string]: T_AttachmentInPhase[] }>((p, c) => {
                     p[c.grupo_resp] = [...(p[c.grupo_resp] || []), c]
                     return p;
                 }, {}) || {}

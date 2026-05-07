@@ -39,7 +39,7 @@ const FormContent = ({ canEdit, formItem, onSubmit, onDelete, onObservationsDone
         })
     }
 
-    const submit = (data: any, form = formItem) => {
+    const submit = (data: Record<string, unknown>, form = formItem) => {
         onSubmit(
             data,
             form,
@@ -67,7 +67,7 @@ const FormContent = ({ canEdit, formItem, onSubmit, onDelete, onObservationsDone
                         outline
                         color={"primary"}
                         className="rounded-pill btn-sm px-3 mb-4 d-flex align-items-center"
-                        onClick={() => { canEdit && openFormAsModal(formItem) }}
+                        onClick={() => { if (canEdit) openFormAsModal(formItem) }}
                     >
                         <BsPlusCircleFill size={17} />
                         <span className="ms-2">Agregar</span>
@@ -131,7 +131,7 @@ const FormContent = ({ canEdit, formItem, onSubmit, onDelete, onObservationsDone
                             list={formItem.multiplesValues!}
                             onEdit={openFormAsModal}
                             orderingCallback={
-                                () => onSubmit(null, null as any, undefined, true)
+                                () => onSubmit(null, null as never, undefined, true)
                             }
                             onDelete={onDelete}
                             canEdit={canEdit}

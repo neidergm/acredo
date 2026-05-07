@@ -89,7 +89,7 @@ export default function TextEditor({ data, config, disabled, style, className, .
     }
 
 
-    const onError = (_phase: 'initialization' | 'runtime', _willEditorRestart: boolean) => {
+    const onError = () => {
         // console.log({ phase, willEditorRestart })
     }
 

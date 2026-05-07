@@ -1,6 +1,7 @@
 import { BsCheckCircleFill, BsExclamationCircleFill, BsInfoCircleFill, BsQuestionCircleFill, BsXCircleFill } from 'react-icons/bs';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from '../Modal';
 import { type ButtonProps, Button } from 'reactstrap';
+import type { ReactNode } from 'react';
 
 type T_Btn = Omit<ButtonProps, 'onClick'> & {
   /**
@@ -14,12 +15,12 @@ export interface I_AlertObject {
   isOpen: boolean,
   onClosed?: () => void,
   onOpened?: () => void,
-  children?: JSX.Element | JSX.Element[] | string | null;
+  children?: ReactNode;
   fullscreen?: boolean | 'sm' | 'md' | 'lg' | 'xl';
   showCloseX?: boolean;
   closeButton?: T_Btn;
   submitButton?: T_Btn;
-  title?: string | JSX.Element | JSX.Element[];
+  title?: ReactNode;
   size?: 'sm' | 'md' | 'lg' | 'xl';
   type?: keyof typeof alertType;
 }
@@ -66,7 +67,7 @@ const Alert = ({
         {...submitButton}
         onClick={() => {
           // !needFillConfirmation && closeAlert?.(submitButton.onClick);
-          submitButton.onClick && closeAlert?.(submitButton.onClick);
+          if (submitButton.onClick) closeAlert?.(submitButton.onClick);
         }}>{submitButton.value}</Button>
     )
   }

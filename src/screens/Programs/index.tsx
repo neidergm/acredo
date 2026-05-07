@@ -83,15 +83,15 @@ const Programs = () => {
 
     const saveProgramData = ({ departamento, ...data }: I_JSONObject) => {
         openLoader("Registrando programa", () => {
-            departamento && (data.depa_prog = departamento);
+            if (departamento) (data.depa_prog = departamento);
 
-            AXIOS_REQUEST(SAVE_PROGRAM_DATA, "POST", jsonToFormData(data, "[0].")).then(_resp => {
+            AXIOS_REQUEST(SAVE_PROGRAM_DATA, "POST", jsonToFormData(data, "[0].")).then(() => {
                 toast.success("Programa registrado correctamente", { position: 'top-right' });
                 getPrograms().then(() => {
                     closeModal(setModal);
                     closeLoader()
                 })
-            }).catch(_err => {
+            }).catch(() => {
                 closeLoader()
                 toast.error("No se pudo registrar el programa", { position: 'top-right' })
             })
@@ -107,7 +107,7 @@ const Programs = () => {
 
     useEffect(() => {
         if (!programsList || needRefreshList) { getPrograms() }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return (

@@ -18,7 +18,7 @@ type T_LoaderOptions = {
 
 export type T_LoaderProps = T_State & T_LoaderOptions;
 
-const useLoader = (_props: T_State = { isOpen: false }, _options?: T_LoaderOptions) => {
+const useLoader = () => {
 
     const dispatch = useAppDispatch()
     const loading = useAppSelector(s => s.loader)

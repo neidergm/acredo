@@ -27,7 +27,7 @@ const ProgramsResume = () => {
 
   const chooseFilter = (_filter: typeof filter) => {
     if ((_filter?.estado !== filter?.estado)) {
-       
+
       dispatch(setProgramsSelectedFilter(_filter!))
     }
   }
@@ -97,7 +97,7 @@ const ProgramsResume = () => {
       })
     }
 
-    filter && getPrograms()
+    if (filter) getPrograms();
   }, [filter])
 
   return (

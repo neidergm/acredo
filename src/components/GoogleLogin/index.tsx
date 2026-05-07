@@ -54,7 +54,7 @@ interface I_Google_response {
 const GoogleLogin = (props: I_Props) => {
 
     const showOneTapPrompt = () => {
-        window.google?.accounts.id.prompt((_notification) => {
+        window.google?.accounts.id.prompt(() => {
             // console.log(notification)
             // if (notification.isNotDisplayed()) {
             //     console.log(notification.getNotDisplayedReason())

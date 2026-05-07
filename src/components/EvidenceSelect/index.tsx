@@ -32,7 +32,6 @@ const EvidenceSelect = ({
     wrapperClassName,
     placeholder,
     onChange,
-    onBlur,
     request,
     disabled,
     ...props

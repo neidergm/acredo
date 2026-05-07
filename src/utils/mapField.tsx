@@ -101,6 +101,7 @@ const mapField = (item: I_FormField, defaultValue?: unknown) => {
             }
         } else if (field.type === "pick_attach_ref") {
             field.render = ({ field: { ref, onChange, onBlur, value, name, ...f } }: { field: T_RenderField }) => {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 const { validations, type, tag, ...props } = f;
                 return <DataListAttachmentInput
                     name={name}
@@ -134,6 +135,7 @@ const mapField = (item: I_FormField, defaultValue?: unknown) => {
                 }
             }
 
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             field.render = ({ field: { tag, validations, ref, ...f } }: { field: T_RenderField<string> }) => {
                 return <EvidenceSelect
                     {...f}
@@ -162,7 +164,7 @@ const mapField = (item: I_FormField, defaultValue?: unknown) => {
             }
         }
         if (field.dependsOn) {
-            field.watchingCallback = (value, callback, _formMethods) => {
+            field.watchingCallback = (value, callback) => {
                 // console.log(field)
                 // formMethods?.setValue(field.name, "")
                 if (!value) {
@@ -172,7 +174,7 @@ const mapField = (item: I_FormField, defaultValue?: unknown) => {
         }
 
     } else if (field.tag === "list") {
-        field.fields = field.fields.map((f, _i) => mapField({ json_campo: f } as typeof item)!)
+        field.fields = field.fields.map((f) => mapField({ json_campo: f } as typeof item)!)
     } else if (field.tag) {
         field.defaultValue = defaultValue as typeof field.defaultValue;
     }

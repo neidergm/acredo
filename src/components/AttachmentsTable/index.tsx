@@ -206,7 +206,7 @@ const AttachmentsTable = ({
             })
 
             openLoader("Modificando orden")
-            AXIOS_REQUEST(ORDERING_ANSWERS, "PUT", d).then(_r => {
+            AXIOS_REQUEST(ORDERING_ANSWERS, "PUT", d).then(() => {
                 toast.success("Orden actualizado", { position: "top-right" })
                 setMapedList([]);
                 closeLoader(() => {
