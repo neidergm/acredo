@@ -1,130 +1,128 @@
-import { type CSSProperties, useState } from 'react'
+import { useState, useEffect, useMemo, type CSSProperties } from 'react';
+import classname from 'classnames';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-// import * as Font from '@ckeditor/ckeditor5-font/src/font';
+import translations from 'ckeditor5/translations/es.js';
 
-import './style.css';
+import { ClassicEditor, DEFAULT_HEADING_OPTIONS } from './features';
+import type { onChangeType, T_ConfigParams } from './types';
 
-type T_CKEditorInstance = {
-    getData: () => string;
-    setData: (data: string) => void;
-};
+import { collectPlugins, resolveToolbar, toToolbarItems } from './utils';
+import 'ckeditor5/ckeditor5.css';
 
-// type T_WordCountStats = { characters: number; words: number };
+const LICENSE_KEY = 'GPL'; // or <YOUR_LICENSE_KEY>.
 
 interface I_Props {
-    data: string;
+    data?: string;
+    initialData?: string;
+    placeholder?: string;
     disabled?: boolean;
+    readOnly?: boolean;
     className?: string;
     style?: CSSProperties;
-    config?: Record<string, unknown>;
+    config?: T_ConfigParams;
     invalid?: boolean;
     inputRef?: unknown;
-    [x: string]: unknown;
+    name?: string;
+    onChange?: onChangeType;
+    onBlur?: VoidFunction
 }
 
-export default function TextEditor({ data, config, disabled, style, className, ...props }: I_Props) {
+export default function TextEditor({
+    initialData, placeholder, config = {}, style, invalid, disabled, readOnly, className, ...props
+}: I_Props) {
+    const [isLayoutReady, setIsLayoutReady] = useState(false);
 
-    const [, setEditor] = useState<T_CKEditorInstance | null>(null);
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setIsLayoutReady(true);
 
-    // const counterContainer = useRef<HTMLElement | undefined>();
+        return () => setIsLayoutReady(false);
+    }, []);
 
-    // const [_wordCountConfig, _setWordCountConfig] = useState({
-    //         container: counterContainer.current,
-    //         displayCharacters: true,
-    //         displayWords: true,
-    //         // onUpdate: (_stats: T_WordCountStats) => {
-    //         //     // console.log("states", stats);
-    //         // }
-    // });
+    const { editorConfig } = useMemo(() => {
 
-    const defaultConfig = {
-        // fontFamily: {
-        //     options: [
-        //         'default',
-        //         'Ubuntu, Arial, sans-serif',
-        //         'Ubuntu Mono, Courier New, Courier, monospace'
-        //     ]
-        // },
-        // colorButton_colors: 'CF5D4E,454545,FFF,DDD,CCEAEE,66AB16',
-        // colorButton_enableAutomatic: false,
-        toolbar: [
-            'undo', 'redo',
-            '|',
-            'heading',
-            '|',
-            'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote',
-            '|',
-            // 'strikethrough', 'underline', 'subscript', 'superscript',
-            'insertTable', '|',
-            'outdent', 'indent', '|',
-        ],
-        heading: {
-            options: [
-                { model: 'paragraph', title: 'Texto', class: 'ck-heading_paragraph' },
-                { model: 'heading1', view: 'h1', title: 'Título 1', class: 'ck-heading_heading1' },
-                { model: 'heading2', view: 'h2', title: 'Título 2', class: 'ck-heading_heading2' },
-                { model: 'heading3', view: 'h3', title: 'Título 3', class: 'ck-heading_heading3' },
-                { model: 'heading4', view: 'h4', title: 'Título 4', class: 'ck-heading_heading4' },
-                { model: 'heading5', view: 'h5', title: 'Título 5', class: 'ck-heading_heading5' },
-                { model: 'heading6', view: 'h6', title: 'Título 6', class: 'ck-heading_heading6' },
-            ]
-        },
-        // extraPlugins: 'WordCount',
-        // WordCount: {
-        //     showCharCount: true,
+        if (!isLayoutReady) return {};
 
-        //     maxCharCount: 200,
+        const { toolbar: features, showMenuBar, ...restConfig } = config;
 
-        //     hardLimit: true,
-        // }
-        // placeholder: "Type some text...",
-        // extraPlugins: [WordCount]
-        // plugins: 'WordCount',
-        // wordCount: {
-        //     container: document.getElementById("word-count"),
-        //     displayCharacters: true
-        //   }
-        // removePlugins: [ 'Heading', 'Link', 'CKFinder' ],
-    }
+        const toolbar = resolveToolbar(features);
 
-
-    const onError = () => {
-        // console.log({ phase, willEditorRestart })
-    }
-
-    const CKProps = {
-        config: { ...defaultConfig, ...config },
-        disabled: !!(disabled),
-        onError,
-    }
+        return {
+            editorConfig: {
+                root: {
+                    placeholder: placeholder,
+                    initialData,
+                },
+                toolbar: {
+                    items: toToolbarItems(toolbar),
+                    shouldNotGroupWhenFull: false
+                },
+                plugins: collectPlugins(toolbar),
+                licenseKey: LICENSE_KEY,
+                fontFamily: {
+                    supportAllValues: true
+                },
+                // fontSize: {
+                //     options: [10, 12, 14, 'default', 18, 20, 22],
+                //     supportAllValues: true
+                // },
+                heading: {
+                    options: DEFAULT_HEADING_OPTIONS
+                },
+                fullscreen: {
+                    onEnterCallback: (container: HTMLElement) =>
+                        container.classList.add(
+                            'editor-container',
+                            'editor-container_classic-editor',
+                            'editor-container_include-fullscreen',
+                            'main-container'
+                        )
+                },
+                language: 'es',
+                link: {
+                    addTargetToExternalLinks: true,
+                    defaultProtocol: 'https://',
+                    decorators: {
+                        toggleDownloadable: {
+                            mode: 'manual' as const,
+                            label: 'Downloadable',
+                            attributes: {
+                                download: 'file'
+                            }
+                        }
+                    }
+                },
+                menuBar: {
+                    isVisible: showMenuBar,
+                },
+                table: {
+                    contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
+                },
+                translations: [translations],
+                ...restConfig
+            }
+        };
+    }, [isLayoutReady, placeholder, initialData, config]);
 
     return (
-        <div style={style} className={className}>
-            <CKEditor
-                editor={ClassicEditor}
-                data={data}
-
-                onReady={(editor: T_CKEditorInstance) => {
-                    setEditor(editor);
-                }}
-                // onChange={(event: any, editor: any) => {
-                //     const data = editor.getData();
-                //     console.log({ event, editor, data });
-                // }}
-                {...CKProps}
-                {...props}
-            />
-            {/* <div id="word-count" ref={counterContainer}>
-                <div className="ck ck-word-count">
-                    <div className="ck-word-count__words">Words: 4</div>
-                    <div className="ck-word-count__characters">Characters: 28</div>
+        <div style={style} className={classname("main-container", className)}>
+            <div className={classname(
+                "editor-container",
+                "editor-container_classic-editor",
+                "editor-container_include-fullscreen",
+                {"disabled-editor": disabled}
+            )}>
+                <div className={classname("editor-container__editor", {"is-invalid": invalid})}>
+                    {editorConfig &&
+                        <CKEditor
+                            editor={ClassicEditor}
+                            config={editorConfig}
+                            disabled={disabled || readOnly}
+                            {...props}
+                        />
+                    }
                 </div>
-            </div> */}
-            {/* <div className="ck ck-word-count">
-                <div className="ck-word-count__words">Words: %%</div>
-                <div className="ck-word-count__characters">Characters: %%</div>
-            </div> */}
+            </div>
         </div>
-    )
+    );
 }

@@ -31,8 +31,7 @@ const TextEditor = lazy(() => import("../components/TextEditor"));
 
 const EditorPlaceholder = () => (
     <div
-        className="border rounded d-flex align-items-center justify-content-center text-muted small"
-        style={{ minHeight: 240 }}
+        className="border rounded d-flex align-items-center justify-content-center text-muted small py-4 px-2"
     >
         <Spinner size="sm" />
         <span className="ms-2">Cargando editor...</span>

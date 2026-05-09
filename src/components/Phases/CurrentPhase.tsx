@@ -209,7 +209,7 @@ const CurrentPhase = ({
         {/* <Loader {...loading} /> */}
         {
             (taskIsEnded || (!phase && phases?.[0]?.stages?.length === phases?.[0]?.stages_completed)) ?
-                <div className='w-100 h-100 d-flex justify-content-center align-items-center flex-column'>
+                <div className='w-100 h-100 d-flex justify-content-center align-items-center flex-column gap-3'>
                     {taskIsEnded ?
                         <b className="d-block fw-semibold">Tarea completada</b>
                         :
@@ -218,8 +218,9 @@ const CurrentPhase = ({
                     <CircleProgress
                         progress={taskProgress}
                         color={expiredDate ? "#dc3545" : '#198754'}
-                        stroke={8}
-                        radius={10}
+                        stroke={14}
+                        radius={48}
+                        strokeStyle='round'
                     >
                         <b>{taskProgress}%</b>
                     </CircleProgress>
@@ -245,8 +246,9 @@ const CurrentPhase = ({
                             <CircleProgress
                                 progress={taskProgress}
                                 color={expiredDate ? "#dc3545" : '#198754'}
-                                stroke={8}
-                                radius={10}
+                                stroke={14}
+                                radius={48}
+                                strokeStyle='round'
                             >
                                 <b>{taskProgress}%</b>
                             </CircleProgress>

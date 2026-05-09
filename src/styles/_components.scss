@@ -1,6 +1,8 @@
 // Overrides puntuales de componentes Bootstrap que NO se pueden expresar como
 // variables Sass (comportamientos, no valores).
 
+@import "./ckeditor-styles";
+
 // === Botones ===
 // $warning es naranja claro; el contraste auto de Bootstrap escogería negro,
 // pero queremos blanco por branding.
@@ -42,10 +44,10 @@
 }
 
 // Inputs deshabilitados sin border (excepto los tipo button que conservan apariencia).
-*[disabled]:not([type="radio"]):not([type="checkbox"]):not([type="button"]),
-.form-control.disabled {
-    border: none;
-}
+// *[disabled]:not([type="radio"]):not([type="checkbox"]):not([type="button"]),
+// .form-control.disabled {
+//     border: none;
+// }
 
 // === Card ===
 // Hereda el radius del contenedor padre (cards anidadas o con wrappers redondeados).
@@ -58,3 +60,4 @@
 // Modificadores para anular padding del body bajo demanda.
 .accordion-body-px-0 { --bs-accordion-body-padding-x: 0; }
 .accordion-body-py-0 { --bs-accordion-body-padding-y: 0; }
+

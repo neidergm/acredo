@@ -1,0 +1,249 @@
+    .ck-powered-by,
+    .ck-powered-by-balloon {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0px !important;
+        width: 0px !important;
+        border: none !important;
+        z-index: -10 !important;
+    }
+
+    .editor-container_classic-editor {
+
+        --ck-custom-border-focus-color: #a2cdff;
+
+        .ck-sticky-panel>.ck-sticky-panel__content {
+            position: relative;
+            //     border: none !important;
+
+            &:after,
+            &:before {
+                content: " ";
+                position: absolute;
+                height: 2px;
+                width: 1rem;
+                bottom: -1px;
+                background: #fff;
+            }
+
+            &:after {
+                right: 0;
+            }
+        }
+
+        .ck-reset.ck-editor {
+            background-color: var(--bs-body-bg) !important;
+            border-radius: var(--bs-border-radius);
+            // padding: 0.25rem;
+            // border: 1px solid var(--bs-border-color);
+        }
+
+        .ck-editor__editable {
+            border-top-color: var(--bs-border-color) !important;
+        }
+
+        .ck.ck-editor:focus-within {
+            transition: all 0.1s linear;
+
+            box-shadow: 0 0 0 0.25rem var(--bs-focus-ring-color);
+
+            .ck.ck-sticky-panel__content {
+                border-color: var(--ck-custom-border-focus-color);
+            }
+
+            // .ck.ck-toolbar {
+            //     border-color: var(--bs-primary) !important;
+            // }
+        }
+
+        .ck.ck-editor {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            transition: box-shadow 0.15s ease-in-out;
+        }
+
+        .ck.ck-editor__main {
+            display: flex;
+            flex-grow: 1;
+            flex-direction: column;
+            overflow: auto;
+        }
+
+        .ck.ck-editor__main>.ck-content {
+            height: 100%;
+        }
+
+        // .ck.ck-editor__main>.ck-editor__editable {
+        //     border-top-left-radius: var(--bs-border-radius);
+        //     border-top-right-radius: var(--bs-border-radius);
+        // }
+
+
+        --ck-content-line-height: 1.2rem;
+
+        --ck-border-radius: var(--bs-border-radius);
+        --ck-content-font-family: var(--bs-body-font-family);
+        --ck-font-size-base: var(--bs-body-font-size);
+        --ck-icon-size: 1rem;
+
+        //     Base colors ------------------------------------------------------------- */
+
+        --ck-color-base-background: var(--bs-body-bg);
+        --ck-color-base-border: var(--bs-border-color);
+        // --ck-color-base-foreground: var(--bs-tertiary-bg);
+
+        // CK CONTENT
+        --ck-content-font-color: var(--bs-body-color);
+        // --ck-inner-shadow: 0 0 0 0.25rem rgba(68, 155, 255, 0.25);
+        --ck-inner-shadow: none;
+        --ck-focus-ring: 1px solid var(--ck-custom-border-focus-color);
+
+        //     --ck-color-focus-border: var(--bs-primary);
+        //     --ck-color-focus-outer-shadow: var(--bs-focus-ring-color);
+        //     --ck-color-text: var(--bs-body-color);
+        //     --ck-color-shadow-drop: rgba(0, 0, 0, 0.075);
+        //     --ck-color-shadow-inner: rgba(0, 0, 0, 0.075);
+
+        //     /* -- Overrides the default .ck-button class colors. ---------------------------------------- */
+
+        //     --ck-color-button-default-hover-background: var(--bs-secondary-bg);
+        //     --ck-color-button-default-active-background: var(--bs-secondary-bg);
+        //     --ck-color-button-default-active-shadow: var(--bs-border-color);
+
+        //     --ck-color-button-on-background: var(--bs-primary-bg-subtle);
+        //     --ck-color-button-on-hover-background: var(--bs-primary-bg-subtle);
+        //     --ck-color-button-on-active-background: var(--bs-primary-bg-subtle);
+        //     --ck-color-button-on-active-shadow: var(--bs-primary-border-subtle);
+        //     --ck-color-button-on-disabled-background: transparent;
+        //     --ck-color-button-on-color: var(--bs-primary);
+
+        //     --ck-color-button-action-background: var(--bs-success);
+        //     --ck-color-button-action-hover-background: var(--bs-success);
+        //     --ck-color-button-action-active-background: var(--bs-success);
+        //     --ck-color-button-action-active-shadow: var(--bs-success-border-subtle);
+        //     --ck-color-button-action-disabled-background: var(--bs-success);
+        //     --ck-color-button-action-text: var(--bs-white);
+
+        //     --ck-color-button-save: var(--bs-success);
+        //     --ck-color-button-cancel: var(--bs-danger);
+
+        //     /* -- Overrides the default .ck-dropdown class colors. -------------------------------------- */
+
+        //     --ck-color-dropdown-panel-border: var(--bs-border-color);
+        //     --ck-color-dropdown-panel-background: var(--bs-body-bg);
+
+        //     /* -- Overrides the default .ck-dialog class colors. ---------------------------------------- */
+
+        //     --ck-color-dialog-form-header-border: var(--bs-border-color);
+
+        //     /* -- Overrides the default .ck-splitbutton class colors. ----------------------------------- */
+
+        //     --ck-color-split-button-hover-background: var(--bs-secondary-bg);
+        //     --ck-color-split-button-hover-border: var(--bs-border-color);
+
+        //     /* -- Overrides the default .ck-input class colors. ----------------------------------------- */
+
+        //     --ck-color-input-background: var(--bs-body-bg);
+        //     --ck-color-input-border: var(--bs-border-color);
+        //     --ck-color-input-text: var(--bs-body-color);
+        //     --ck-color-input-disabled-background: var(--bs-secondary-bg);
+        //     --ck-color-input-disabled-border: var(--bs-border-color);
+        //     --ck-color-input-disabled-text: var(--bs-secondary-color);
+
+        //     /* -- Overrides the default .ck-list class colors. ------------------------------------------ */
+
+        //     --ck-color-list-background: var(--bs-body-bg);
+        //     --ck-color-list-button-hover-background: var(--bs-secondary-bg);
+        //     --ck-color-list-button-on-background: var(--bs-primary);
+        //     --ck-color-list-button-on-text: var(--bs-white);
+
+        //     /* -- Overrides the default .ck-balloon-panel class colors. --------------------------------- */
+
+        //     --ck-color-panel-background: var(--bs-body-bg);
+        //     --ck-color-panel-border: var(--bs-border-color);
+
+        //     /* -- Overrides the default .ck-toolbar class colors. --------------------------------------- */
+
+        //     --ck-color-toolbar-background: var(--bs-body-bg);
+        //     --ck-color-toolbar-border: var(--bs-border-color);
+
+        //     /* -- Overrides the default .ck-tooltip class colors. --------------------------------------- */
+
+        //     --ck-color-tooltip-background: var(--bs-dark);
+        //     --ck-color-tooltip-text: var(--bs-light);
+
+        //     /* -- Overrides the default colors used by the ckeditor5-image package. --------------------- */
+
+        //     --ck-content-color-image-caption-background: var(--bs-tertiary-bg);
+        //     --ck-content-color-image-caption-text: var(--bs-body-color);
+
+        //     /* -- Overrides the default colors used by the ckeditor5-widget package. -------------------- */
+
+        //     --ck-color-widget-blurred-border: var(--bs-border-color);
+        //     --ck-color-widget-hover-border: var(--bs-warning);
+        //     --ck-color-widget-editable-focus-background: var(--bs-body-bg);
+
+        //     /* -- Overrides the default colors used by the ckeditor5-link package. ---------------------- */
+
+        //     --ck-color-link-default: var(--bs-link-color);
+        //     --ck-color-link-selected-background: var(--bs-primary-bg-subtle);
+
+
+        //     /* -- Layout: editor flex en columna, ocupa el alto del contenedor. ------------------------- */
+
+
+
+        //     /* Esquinas redondeadas: toolbar arriba, content abajo. Sin esto las dos
+        //        cajas se redondean por separado y se ven dos bumps en la unión. */
+        //     .ck.ck-toolbar {
+        //         border-radius: var(--bs-border-radius) var(--bs-border-radius) 0 0;
+        //     }
+
+        //     .ck.ck-editor__main>.ck-content {
+        //         border-radius: 0 0 var(--bs-border-radius) var(--bs-border-radius);
+        //     }
+
+        //     /* Focus ring tipo .form-control: el wrapper externo (.ck-editor) recibe
+
+        .editor-container__editor.is-invalid {
+
+            .ck-reset.ck-editor {
+                border-color: var(--bs-form-invalid-border-color) !important;
+            }
+
+            .ck-editor__editable {
+                border-color: var(--bs-form-invalid-border-color) !important;
+                border-top-color: var(--bs-border-color) !important;
+            }
+
+            .ck.ck-sticky-panel__content {
+                border-color: var(--bs-form-invalid-border-color) !important;
+            }
+
+            .ck.ck-editor:focus-within {
+                box-shadow: 0 0 0 0.25rem rgba(var(--bs-danger-rgb), 0.25);
+            }
+
+            .ck.ck-editor__main>.ck-content {
+                background-image: url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 12 12%27 width=%2712%27 height=%2712%27 fill=%27none%27 stroke=%27%23dc3545%27%3e%3ccircle cx=%276%27 cy=%276%27 r=%274.5%27/%3e%3cpath stroke-linejoin=%27round%27 d=%27M5.8 3.6h.4L6 6.5z%27/%3e%3ccircle cx=%276%27 cy=%278.2%27 r=%27.6%27 fill=%27%23dc3545%27 stroke=%27none%27/%3e%3c/svg%3e");
+                background-repeat: no-repeat;
+                background-position: right calc(0.375em + 0.1875rem) bottom calc(0.375em + 0.1875rem);
+                background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+            }
+        }
+
+        &.disabled-editor {
+            --ck-color-base-background: var(--bs-secondary-bg) !important;
+
+            .ck.ck-toolbar,
+            .ck-editor__top {
+                display: none;
+            }
+
+            .ck.ck-editor__main>.ck-editor__editable {
+                border-top-left-radius: var(--bs-border-radius);
+                border-top-right-radius: var(--bs-border-radius);
+            }
+        }
+    }
