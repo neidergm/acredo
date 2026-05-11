@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, type CSSProperties } from 'react';
+import { useState, useEffect, useMemo, type CSSProperties, useRef, useImperativeHandle, type Ref } from 'react';
 import classname from 'classnames';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import translations from 'ckeditor5/translations/es.js';
@@ -21,7 +21,7 @@ interface I_Props {
     style?: CSSProperties;
     config?: T_ConfigParams;
     invalid?: boolean;
-    inputRef?: unknown;
+    inputRef?: Ref<unknown>;
     name?: string;
     onChange?: onChangeType;
     onBlur?: VoidFunction
@@ -31,6 +31,7 @@ export default function TextEditor({
     initialData, placeholder, config = {}, style, invalid, disabled, readOnly, className, ...props
 }: I_Props) {
     const [isLayoutReady, setIsLayoutReady] = useState(false);
+    const editorRef = useRef<ClassicEditor | null>(null);
 
     useEffect(() => {
         // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -38,6 +39,10 @@ export default function TextEditor({
 
         return () => setIsLayoutReady(false);
     }, []);
+
+    useImperativeHandle(props.inputRef, () => ({
+        focus: () => editorRef.current?.editing.view.focus()
+    }), []);
 
     const { editorConfig } = useMemo(() => {
 
@@ -110,14 +115,17 @@ export default function TextEditor({
                 "editor-container",
                 "editor-container_classic-editor",
                 "editor-container_include-fullscreen",
-                {"disabled-editor": disabled}
+                { "disabled-editor": disabled }
             )}>
-                <div className={classname("editor-container__editor", {"is-invalid": invalid})}>
+                <div className={classname("editor-container__editor", { "is-invalid": invalid })}>
                     {editorConfig &&
                         <CKEditor
                             editor={ClassicEditor}
                             config={editorConfig}
                             disabled={disabled || readOnly}
+                            onReady={(editor) => {
+                                editorRef.current = editor;
+                            }}
                             {...props}
                         />
                     }

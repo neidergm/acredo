@@ -17,7 +17,7 @@ type T_RenderField<TValue = unknown> = {
     value: TValue;
     onChange: (value: TValue) => void;
     onBlur: () => void;
-    ref: unknown;
+    ref: Ref<unknown>;
     invalid?: boolean;
     className?: string;
     [k: string]: unknown;
