@@ -72,14 +72,14 @@ const FormsTemplatesAssociaton = ({
         const idsTemplates: number[] = [];
 
         openAlert({
-            title: "¿Desea realizar los cambios?",
+            title: "Â¿Desea realizar los cambios?",
             type: "question",
             size: "lg",
             children: <>
-                <span className='mb-4 pb-2 d-block'>Esta acción es irreversible, no se podrán quitar o modificar más adelante las plantillas seleccionadas</span>
+                <span className='mb-4 pb-2 d-block'>Esta acciÃ³n es irreversible, no se podrÃ¡n quitar o modificar mÃ¡s adelante las plantillas seleccionadas</span>
 
                 <span className='text-start text-dark d-block' >
-                    <span>Se asociarán las siguientes plantillas a la tarea en el orden indicado:</span>
+                    <span>Se asociarÃ¡n las siguientes plantillas a la tarea en el orden indicado:</span>
                     {selectedItems.map((t) => {
                         idsTemplates.push(t.data.id_plantilla);
                         return <span className='mb-1 d-block' key={t.position}>
@@ -159,8 +159,8 @@ const FormsTemplatesAssociaton = ({
                                         <label className="form-check-label stretched-link" htmlFor={`item-${item.id_plantilla}`}>
                                             <span>{item.nomb_plantilla}</span>
                                             <p className='text-muted mt-2'>
-                                                <b className='small d-block fw-semibold'>Descripción:</b>
-                                                <small>{item.desc_plantilla || "Sin descripción"}</small>
+                                                <b className='small d-block fw-semibold'>DescripciÃ³n:</b>
+                                                <small>{item.desc_plantilla || "Sin descripciÃ³n"}</small>
                                             </p>
                                         </label>
                                     </div>
@@ -185,9 +185,9 @@ const FormsTemplatesAssociaton = ({
             </OffcanvasHeader>
             <OffcanvasBody>
 
-                <p className='border-start border-3 border-success ps-3 py-1 mb-4'>Seleccione 1 o más plantillas de formularios que desee asociar a esta tarea, tenga en cuenta que el orden en que seleccione las plantillas será el orden en que se visualizarán</p>
+                <p className='border-start border-3 border-success ps-3 py-1 mb-4'>Seleccione 1 o mÃ¡s plantillas de formularios que desee asociar a esta tarea, tenga en cuenta que el orden en que seleccione las plantillas serÃ¡ el orden en que se visualizarÃ¡n</p>
                 {!(categoriesList) ?
-                    <Loader isOpen loaderAsModal={false}><p className='small'>Consultado categorías</p></Loader>
+                    <Loader isOpen loaderAsModal={false}><p className='small'>Consultado categorÃ­as</p></Loader>
                     :
                     <div className={styles["categories-container"]}>
                         <Accordion flush open={acccordionOpen} {...{ toggle: toggleAccordion }}>
@@ -219,7 +219,7 @@ const FormsTemplatesAssociaton = ({
             <div className='pb-3 pt-4 px-3'>
                 <div className='d-flex justify-content-between'>
                     <div>
-                        <Button color='primary2' className='ms-auto' onClick={() => toggle()}>Cerrar</Button>
+                        <Button color='primary-surface' className='ms-auto' onClick={() => toggle()}>Cerrar</Button>
                     </div>
                     {!!(Object.keys(selectedList).length) &&
                         <div>

@@ -7,10 +7,10 @@ import localStorageService from '../services/localStorageService';
 import userSlice from './slices/userSlice';
 import taskSlice from './slices/taskSlice';
 import dashboardSlice from './slices/dashboardSlice';
-import notificationsSlice from './slices/notificationsSlice';
 import loaderSlice, {} from './slices/loaderSlice';
 import programsSlice from './slices/programsSlice';
 import processSlice from './slices/processSlice';
+import { baseApi } from '../services/api/baseApi';
 
 const slices = {
     user: userSlice,
@@ -18,8 +18,8 @@ const slices = {
     programs: programsSlice,
     process: processSlice,
     conditions: taskSlice,
-    notifications: notificationsSlice,
     loader: loaderSlice,
+    [baseApi.reducerPath]: baseApi.reducer,
 }
 
 const combinedSlices = combineReducers(slices);
@@ -39,7 +39,7 @@ const store = configureStore({
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: false
         // serializableCheck: { ignoredActions: [open.type, close.type]}
-    }),
+    }).concat(baseApi.middleware),
 });
 
 export const startUserConfigurations = () => {

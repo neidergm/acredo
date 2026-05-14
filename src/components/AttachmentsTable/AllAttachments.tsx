@@ -13,10 +13,10 @@ import { getNormalDate } from '../../utils/dateUtils'
 import type { XLSX_Range } from '../../utils/xslxUtils'
 
 const generateExcelBookData = (list: T_AttachmentMetaData[]) => {
-    const extraCells = ["Ubicación", "Criterios", "Evidencias"];
+    const extraCells = ["UbicaciÃ³n", "Criterios", "Evidencias"];
     const extraCells_keyName = ["ubianexo", "nomb_criterio", "nomb_evidencia"];
 
-    const header = ["Nombre", "Url", "Última modificación", "Usuario", ...extraCells, "¿Es referenciado?"];
+    const header = ["Nombre", "Url", "Ãšltima modificaciÃ³n", "Usuario", ...extraCells, "Â¿Es referenciado?"];
 
     const criterialCell = extraCells.map(i => header.indexOf(i));
 
@@ -159,7 +159,7 @@ const AllAttachments = ({
                                 </p>}
                                 <div className='text-muted'>
                                     <div>
-                                        <small><BsCalendar2Event size={13} /> Última modificación {getNormalDate(_lastUpdate, { dateStyle: 'long' })}</small>
+                                        <small><BsCalendar2Event size={13} /> Ãšltima modificaciÃ³n {getNormalDate(_lastUpdate, { dateStyle: 'long' })}</small>
                                     </div>
                                     <div>
                                         <small><BsPeople size={13} /> {_user}</small>
@@ -275,7 +275,7 @@ const AllAttachments = ({
         <>
             <div className='text-end mb-3 row justify-content-end'>
                 <div className='col'>
-                    <Button color='primary2' onClick={() => { downloadAllInExcelDoc() }}>
+                    <Button color='primary-surface' onClick={() => { downloadAllInExcelDoc() }}>
                         <i className='me-2'><BsCloudArrowDownFill /></i>Descargar todo
                     </Button>
                 </div>
@@ -313,7 +313,7 @@ const AllAttachments = ({
                                         <thead className='small'>
                                             <tr className="table-primary">
                                                 <th>Anexo</th>
-                                                <th>Ubicación evidencia</th>
+                                                <th>UbicaciÃ³n evidencia</th>
                                                 <th>Criterios y evidencias</th>
                                                 {/* <th>Evidencia</th> */}
                                             </tr>

@@ -83,7 +83,7 @@ const Resolutions = ({ program_id, saveCallback, canEdit = false, children }: T_
     const confirmDelete = (item: I_Resolutions) => {
         openAlert(
             confirmDeleteAlertObject(
-                <span>Se eliminará permanentemente la resolución <b>{item.reso_apro}</b></span>,
+                <span>Se eliminarÃ¡ permanentemente la resoluciÃ³n <b>{item.reso_apro}</b></span>,
                 {
                     onClick: () => closeAlert(() => onDelete(item.id_reso))
                 },
@@ -92,18 +92,18 @@ const Resolutions = ({ program_id, saveCallback, canEdit = false, children }: T_
     }
 
     const onDelete = (id_reso: number) => {
-        openLoader("Eliminando resolución", () => {
+        openLoader("Eliminando resoluciÃ³n", () => {
             const d = jsonToFormData({ id_reso, estado: -1 }, "resoluciones[0].");
             d.append(`id_prog`, `${program_id}`)
 
             AXIOS_REQUEST(`${DELETE_PROGRAM_RESOLUTION}`, "PUT", d).then(() => {
-                toast.success("Resolución eliminada correctamente", { position: "top-right" });
+                toast.success("ResoluciÃ³n eliminada correctamente", { position: "top-right" });
                 loadResolutions().then(() => {
                     closeLoader(() => saveCallback?.(true))
                 })
             }).catch(() => {
                 closeLoader()
-                toast.error("No se pudo eliminar la resolución", { position: "top-right" });
+                toast.error("No se pudo eliminar la resoluciÃ³n", { position: "top-right" });
             })
         })
     }
@@ -119,13 +119,13 @@ const Resolutions = ({ program_id, saveCallback, canEdit = false, children }: T_
             const { fech_ejec, fech_reso, ncre_snies, nper_snies, vige_reso, peri_acad, reso_apro, reco_min, jres_deta, just_reso, estado, url_reso } = reso;
             defaultValues = {
                 fech_ejec, fech_reso, ncre_snies, nper_snies, vige_reso, reso_apro, peri_acad, reco_min, jres_deta, just_reso, estado: `${estado}`,
-                file_reso: [{ name: "Documento resolución", url: url_reso }]
+                file_reso: [{ name: "Documento resoluciÃ³n", url: url_reso }]
             }
         }
 
         setModal({
             isOpen: true,
-            title: reso ? "Modificar resolución" : "Registrar resolución",
+            title: reso ? "Modificar resoluciÃ³n" : "Registrar resoluciÃ³n",
             size: "lg",
             children: <>
                 <Form
@@ -145,20 +145,20 @@ const Resolutions = ({ program_id, saveCallback, canEdit = false, children }: T_
                 />
             </>,
             footer: <ModalFooter>
-                <Button color='primary2' onClick={() => closeModal(setModal)}>Cancelar</Button>
+                <Button color='primary-surface' onClick={() => closeModal(setModal)}>Cancelar</Button>
                 <Button form={FORM_ID} color='primary'>Guardar{reso ? " cambios" : ""}</Button>
             </ModalFooter>
         })
     }
 
     const saveResolutionData = (data: I_JSONObject, type: string) => {
-        openLoader(type === "PUT" ? "Modificando resolución" : "Registrando resolución", () => {
+        openLoader(type === "PUT" ? "Modificando resoluciÃ³n" : "Registrando resoluciÃ³n", () => {
             const d = jsonToFormData(data, "resoluciones[0].");
             d.append("id_prog", `${program_id}`)
 
             AXIOS_REQUEST(SAVE_PROGRAM_RESOLUTION, type, d)
                 .then(() => {
-                    toast.success(`Resolución ${type === "PUT" ? "actualizada" : "registrada"} correctamente`, { position: "top-right" });
+                    toast.success(`ResoluciÃ³n ${type === "PUT" ? "actualizada" : "registrada"} correctamente`, { position: "top-right" });
                     openLoader("Actualizando listado", null)
                     loadResolutions().then(() => {
                         closeModal(setModal)
@@ -167,7 +167,7 @@ const Resolutions = ({ program_id, saveCallback, canEdit = false, children }: T_
                 })
                 .catch(() => {
                     closeLoader()
-                    toast.error(`No se pudo ${type === "PUT" ? "actualizar" : "registrar"} la resolución`, { position: "top-right" });
+                    toast.error(`No se pudo ${type === "PUT" ? "actualizar" : "registrar"} la resoluciÃ³n`, { position: "top-right" });
                 })
         })
     }
@@ -224,22 +224,22 @@ const Resolutions = ({ program_id, saveCallback, canEdit = false, children }: T_
                         </div>
                         <div className='d-flex gap-4 mt-3 small mb-3 flex-wrap'>
                             <div>
-                                <b className='d-block'>Fecha de resolución</b>
+                                <b className='d-block'>Fecha de resoluciÃ³n</b>
                                 <span>{r.fech_reso}</span>
                             </div>
                             <div>
                                 <b className='d-block'>Vigencia</b>
-                                <span>{r.vige_reso} año{r.vige_reso > 1 && "s"} ({r.fech_vige})</span>
+                                <span>{r.vige_reso} aÃ±o{r.vige_reso > 1 && "s"} ({r.fech_vige})</span>
                             </div>
                             <div>
-                                <b className='d-block'>Créditos</b>
-                                <span>{r.ncre_snies} créditos</span>
+                                <b className='d-block'>CrÃ©ditos</b>
+                                <span>{r.ncre_snies} crÃ©ditos</span>
                             </div>
 
                         </div>
                         <div className='small d-flex flex-column gap-2 text-secondary'>
                             <div>
-                                <b className='fw-semibold'>Fecha de ejecución: </b>{getNormalDate(r.fech_ejec, { dateStyle: "long" })}
+                                <b className='fw-semibold'>Fecha de ejecuciÃ³n: </b>{getNormalDate(r.fech_ejec, { dateStyle: "long" })}
                             </div>
                             <div>
                                 <b className='fw-semibold'>Periodos: </b>
@@ -247,13 +247,13 @@ const Resolutions = ({ program_id, saveCallback, canEdit = false, children }: T_
                             </div>
 
                             <div>
-                                <b className='fw-semibold'>Justificación de resolución: </b>{r.just_reso || "No tiene"}
+                                <b className='fw-semibold'>JustificaciÃ³n de resoluciÃ³n: </b>{r.just_reso || "No tiene"}
                             </div>
                             <div>
-                                <b className='fw-semibold'>Justificación detallada: </b>{r.jres_deta || "No tiene"}
+                                <b className='fw-semibold'>JustificaciÃ³n detallada: </b>{r.jres_deta || "No tiene"}
                             </div>
                             {r.url_reso && <div>
-                                <b className='fw-semibold'>Documento: </b><a target='_blank' href={r.url_reso}>Ver resolución</a>
+                                <b className='fw-semibold'>Documento: </b><a target='_blank' href={r.url_reso}>Ver resoluciÃ³n</a>
                             </div>}
                         </div>
                         {/* <div className={`position-absolute text-${color}`} style={{
@@ -338,17 +338,17 @@ const Resolutions = ({ program_id, saveCallback, canEdit = false, children }: T_
                                 <div className='d-flex gap-1 small justify-content-between text-secondary'>
                                     <div className='bg-light py-2 px-2 px-lg-3 rounded-3 flex-grow-1'>
                                         <span className='d-block mb-2'>
-                                            <b className='text-dark'>Resolución: </b><span>{r.reso_apro}</span>
+                                            <b className='text-dark'>ResoluciÃ³n: </b><span>{r.reso_apro}</span>
                                         </span>
                                         <span>{getNormalDate(r.fech_reso, { dateStyle: "long" })}</span>
                                     </div>
                                     <div className='bg-light py-2 px-2 px-lg-3 rounded-3 flex-grow-1'>
-                                        <b className='d-block mb-2 text-dark'>Fecha de ejecución</b>
+                                        <b className='d-block mb-2 text-dark'>Fecha de ejecuciÃ³n</b>
                                         <span>{getNormalDate(r.fech_ejec, { dateStyle: "long" })}</span>
                                     </div>
                                     <div className='bg-light py-2 px-2 px-lg-3 rounded-3 flex-grow-1'>
                                         <span className='d-block mb-2'>
-                                            <b className='text-dark'>Vigencia: </b><span>{r.vige_reso} año{r.vige_reso > 1 && "s"}</span>
+                                            <b className='text-dark'>Vigencia: </b><span>{r.vige_reso} aÃ±o{r.vige_reso > 1 && "s"}</span>
                                         </span>
                                         <span>
                                             {getNormalDate(r.fech_vige, { dateStyle: "long" })}
@@ -369,15 +369,15 @@ const Resolutions = ({ program_id, saveCallback, canEdit = false, children }: T_
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><b className="fw-semibold">Periodos académicos</b></td>
+                                        <td><b className="fw-semibold">Periodos acadÃ©micos</b></td>
                                         <td>{r.nper_snies} periodo{r.nper_snies > 1 && "s"} <span className='text-muted'>( {r.peri_acad} )</span></td>
                                     </tr>
                                     <tr>
-                                        <td><b className="fw-semibold">Nro. Créditos</b></td>
-                                        <td>{r.ncre_snies} créditos</td>
+                                        <td><b className="fw-semibold">Nro. CrÃ©ditos</b></td>
+                                        <td>{r.ncre_snies} crÃ©ditos</td>
                                     </tr>
                                     <tr>
-                                        <td><b className="fw-semibold">Documento de resolución</b></td>
+                                        <td><b className="fw-semibold">Documento de resoluciÃ³n</b></td>
                                         <td>
                                             {r.url_reso ? <a className='link-dark' href={r.url_reso} target='_blank' rel="noreferrer">
                                                 <BsFilePdf size={18} /> Ver documento
@@ -386,11 +386,11 @@ const Resolutions = ({ program_id, saveCallback, canEdit = false, children }: T_
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><b className="fw-semibold">Justificación de resolución</b></td>
+                                        <td><b className="fw-semibold">JustificaciÃ³n de resoluciÃ³n</b></td>
                                         <td>{r.just_reso}</td>
                                     </tr>
                                     <tr>
-                                        <td><b className="fw-semibold">Justificación detallada</b></td>
+                                        <td><b className="fw-semibold">JustificaciÃ³n detallada</b></td>
                                         <td>{r.jres_deta}</td>
                                     </tr>
                                 </tbody>

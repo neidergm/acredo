@@ -71,10 +71,10 @@ const CreateStage = ({
           }}
         />
       </div>,
-      title: `${type} acción`,
+      title: `${type} acciÃ³n`,
       size: "lg",
       footer: <ModalFooter>
-        <Button color='primary2' onClick={() => closeModal(setModal)}>Cancelar</Button>
+        <Button color='primary-surface' onClick={() => closeModal(setModal)}>Cancelar</Button>
         <Button form={formID} color='primary'>Guardar{type === "Modificar" ? " cambios" : ""}</Button>
       </ModalFooter>
     })
@@ -120,10 +120,10 @@ const CreateStage = ({
         })
     }
 
-    openLoader("Creando nueva acción")
+    openLoader("Creando nueva acciÃ³n")
 
     AXIOS_REQUEST(PUT_ACTION, "POST", d).then(() => {
-      toast.success("Se ha creado la acción correctamente", {
+      toast.success("Se ha creado la acciÃ³n correctamente", {
         position: "top-right"
       });
       updateDataOnUnmount.current = true;
@@ -133,7 +133,7 @@ const CreateStage = ({
       dispatch(getPhasesAndStagesOfCondition(Number(id_cond)));
     }).catch(() => {
       closeLoader()
-      toast.error("No se pudo crear la acción", {
+      toast.error("No se pudo crear la acciÃ³n", {
         position: "top-right"
       })
     })
@@ -156,10 +156,10 @@ const CreateStage = ({
       })
     }
 
-    openLoader("Actualizando acción")
+    openLoader("Actualizando acciÃ³n")
 
     AXIOS_REQUEST(PUT_ACTION, "PUT", d).then(() => {
-      toast.success("Se actualizó la acción correctamente", {
+      toast.success("Se actualizÃ³ la acciÃ³n correctamente", {
         position: "top-right"
       })
       updateDataOnUnmount.current = true;
@@ -169,7 +169,7 @@ const CreateStage = ({
       })
     }).catch(() => {
       closeLoader()
-      toast.error("No se pudo actualizar la acción", {
+      toast.error("No se pudo actualizar la acciÃ³n", {
         position: "top-right"
       })
     })
@@ -178,7 +178,7 @@ const CreateStage = ({
   const modalToDeleteAction = (action: T_Action) => {
     openAlert(
       confirmDeleteAlertObject(
-        <span>Se eliminará la acción <b>{action.nomb_accion}</b></span>,
+        <span>Se eliminarÃ¡ la acciÃ³n <b>{action.nomb_accion}</b></span>,
         {
           onClick: () => closeAlert(() => onDeleteAction(action))
         }
@@ -191,7 +191,7 @@ const CreateStage = ({
       return openAlert({
         title: "Espere",
         type: "warning",
-        children: <span>No se puede eliminar debido a que la tarea quedaría sin etapas</span>,
+        children: <span>No se puede eliminar debido a que la tarea quedarÃ­a sin etapas</span>,
         closeButton: { value: "Ok" }
       })
     } else if (stage.actions_completed! > 0) {
@@ -204,7 +204,7 @@ const CreateStage = ({
     }
     openAlert(
       confirmDeleteAlertObject(
-        <span>Se eliminará la etapa <b>{stage.name}</b> con todas las acciones relacionadas a la misma</span>,
+        <span>Se eliminarÃ¡ la etapa <b>{stage.name}</b> con todas las acciones relacionadas a la misma</span>,
         {
           onClick: () => closeAlert(() => onDeleteStage(stage))
         }
@@ -214,11 +214,11 @@ const CreateStage = ({
   const onDeleteAction = (action: T_Action) => {
     openLoader("Eliminando")
     AXIOS_REQUEST(DELETE_ACTION + action.id_accion, "DELETE").then(() => {
-      toast.success('Acción eliminada correctamente', { position: 'top-right' });
+      toast.success('AcciÃ³n eliminada correctamente', { position: 'top-right' });
       updateDataOnUnmount.current = true;
       dispatch(getPhasesAndStagesOfCondition(Number(id_cond)))
     }).catch(() => {
-      toast.error('No se pudo eliminar la acción', { position: 'top-right' });
+      toast.error('No se pudo eliminar la acciÃ³n', { position: 'top-right' });
     }).finally(() => {
       closeLoader()
     })
@@ -255,7 +255,7 @@ const CreateStage = ({
     AXIOS_REQUEST(PUT_STAGE, "PUT", data).then(() => {
       updateDataOnUnmount.current = true;
       dispatch(getPhasesAndStagesOfCondition(Number(id_cond)));
-      toast.success("Se actualizó la etapa correctamente", { position: "top-right" });
+      toast.success("Se actualizÃ³ la etapa correctamente", { position: "top-right" });
     }).catch(() => {
       toast.error("No se pudo actualizar la etapa", { position: "top-right" })
     }).finally(() => closeLoader())
@@ -296,8 +296,8 @@ const CreateStage = ({
           }
           openAlert({
             type: "question",
-            title: "¿Está seguro?",
-            children: `Se copiarán ${data.length} acciones en esta etapa. Tenga en cuenta que la copia incluye fechas y responsables`,
+            title: "Â¿EstÃ¡ seguro?",
+            children: `Se copiarÃ¡n ${data.length} acciones en esta etapa. Tenga en cuenta que la copia incluye fechas y responsables`,
             submitButton: {
               value: "Ok, continuar", onClick: () => onCreateAction(data, true)
             },
@@ -306,7 +306,7 @@ const CreateStage = ({
         }} />
       </>,
       footer: <ModalFooter>
-        <Button color="primary2" type='button' onClick={() => closeModal(setModal)}>Cerrar</Button>
+        <Button color="primary-surface" type='button' onClick={() => closeModal(setModal)}>Cerrar</Button>
         <Button color="primary" form='COPY_FORM'>Ok, copiar</Button>
       </ModalFooter>
     })
@@ -361,7 +361,7 @@ const CreateStage = ({
               </div>
               {stage?.status !== 1 && <div>
                 <Button disabled={!(stageIsRegistered)} color='primary' size="sm" className='rounded-2' onClick={() => modalToAddNewAction()}>
-                  Crear nueva acción
+                  Crear nueva acciÃ³n
                 </Button>
               </div>}
             </div>
@@ -375,7 +375,7 @@ const CreateStage = ({
                   !(actions.length) ? <div className='text-secondary pt-5 text-center'>
                     <p className='mt-5'>No hay acciones registradas</p>
                     <div className='mt-3'>
-                      <Button disabled={(phase?.stages?.length || 0) <= 1} color="primary2" size='sm' onClick={() => copyActionsFromPhase()}><BsUiChecks /> Copiar acciones desde etapa</Button>
+                      <Button disabled={(phase?.stages?.length || 0) <= 1} color="primary-surface" size='sm' onClick={() => copyActionsFromPhase()}><BsUiChecks /> Copiar acciones desde etapa</Button>
                     </div>
                   </div>
                     :

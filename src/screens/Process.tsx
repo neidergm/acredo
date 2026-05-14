@@ -66,7 +66,7 @@ const Process = () => {
         />
       </>,
       footer: <ModalFooter className='justify-content-between'>
-        <Button color='primary2' onClick={() => closeModal(setModal)}>Cancelar</Button>
+        <Button color='primary-surface' onClick={() => closeModal(setModal)}>Cancelar</Button>
         <Button color='primary' form={FORMID}>Continuar</Button>
       </ModalFooter>
     })
@@ -94,7 +94,7 @@ const Process = () => {
         />
       </>,
       footer: <ModalFooter className='justify-content-between'>
-        <Button color='primary2' onClick={() => closeModal(setModal)}>Cancelar</Button>
+        <Button color='primary-surface' onClick={() => closeModal(setModal)}>Cancelar</Button>
         <Button color='primary' form={FORMID}>Continuar</Button>
       </ModalFooter>
     })
@@ -110,7 +110,7 @@ const Process = () => {
       })
     }
 
-    openAlert(confirmDeleteAlertObject("Se eliminará el proceso con todo lo que se incluye en el mismo",
+    openAlert(confirmDeleteAlertObject("Se eliminarÃ¡ el proceso con todo lo que se incluye en el mismo",
       {
         onClick: () => closeAlert(() => deleteProcess(process))
       }
@@ -139,8 +139,8 @@ const Process = () => {
     }
     openAlert({
       type: "question",
-      title: "¿Está seguro?",
-      children: "Se modificarán datos en el proceso",
+      title: "Â¿EstÃ¡ seguro?",
+      children: "Se modificarÃ¡n datos en el proceso",
       submitButton: {
         value: "Si, modificar", onClick: () => {
           openLoader("Modificando proceso", () => {
@@ -163,8 +163,8 @@ const Process = () => {
   const createNewProces = (data: I_JSONObject) => {
     openAlert({
       type: "question",
-      title: "¿Está seguro?",
-      children: "Se creará un nuevo proceso con los datos indicados",
+      title: "Â¿EstÃ¡ seguro?",
+      children: "Se crearÃ¡ un nuevo proceso con los datos indicados",
       submitButton: {
         value: "Si, crear", onClick: () => {
           openLoader("Creando proceso", () => {

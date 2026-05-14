@@ -33,7 +33,7 @@ const FormContent = ({ canEdit, formItem, onSubmit, onDelete, onObservationsDone
                 formProps={{ id: FORM_ID }}
             />,
             footer: canEdit && <ModalFooter>
-                <Button color="primary2" onClick={() => closeModal(setModal)}>Cancelar</Button>
+                <Button color="primary-surface" onClick={() => closeModal(setModal)}>Cancelar</Button>
                 <Button color="primary" form={FORM_ID}>Guardar</Button>
             </ModalFooter>
         })
@@ -109,7 +109,7 @@ const FormContent = ({ canEdit, formItem, onSubmit, onDelete, onObservationsDone
                                         <Button onClick={() => {
                                             onDelete!(`${respItem.id_fcamp}/${r}`,
                                                 undefined,
-                                                <>Esta acción es irreversible, se eliminará de forma permanente este bloque de respuestas</>
+                                                <>Esta acciÃ³n es irreversible, se eliminarÃ¡ de forma permanente este bloque de respuestas</>
                                             )
                                         }}
                                             color='' title="Eliminar" className='p-1 text-danger' size='sm'>

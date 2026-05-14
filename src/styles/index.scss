@@ -1,29 +1,68 @@
 // Bootstrap source build con overrides organizados en partials.
-// El orden de imports es CRÍTICO — sigue el patrón canónico de Bootstrap 5.3.
-// Doc: https://getbootstrap.com/docs/5.3/customize/sass
+// El orden de imports es CRÍTICO — sigue exactamente el pipeline de
+// `bootstrap/scss/bootstrap.scss` insertando nuestros partials en los
+// puntos donde Bootstrap define los maps que queremos extender.
+//
+// Doc oficial: https://getbootstrap.com/docs/5.3/customize/sass
+// Doc oficial: https://getbootstrap.com/docs/5.3/customize/color-modes#sass
 
-// 1. Required: functions debe ir primero.
+// === Configuration ===
 @import "bootstrap/scss/functions";
 
-// 2. Variable overrides ANTES de bootstrap variables (sobrescriben los !default).
+// Nuestros overrides ANTES de variables (sobrescriben los !default).
 @import "variables";
 
-// 3. Bootstrap variables (definen $theme-colors, $white, etc.).
 @import "bootstrap/scss/variables";
 @import "bootstrap/scss/variables-dark";
 
-// 4. Theme colors custom DESPUÉS de variables (hace map-merge con $theme-colors).
+// Extender $theme-colors ANTES de maps (que deriva $theme-colors-rgb de él).
 @import "theme-colors";
 
-// 5. Maps + mixins + utilities (necesarios para que Bootstrap genere las clases).
 @import "bootstrap/scss/maps";
 @import "bootstrap/scss/mixins";
 @import "bootstrap/scss/utilities";
 
-// 6. Bootstrap completo.
-@import "bootstrap/scss/bootstrap";
+// === Layout & components ===
+@import "bootstrap/scss/root";
+@import "bootstrap/scss/reboot";
+@import "bootstrap/scss/type";
+@import "bootstrap/scss/images";
+@import "bootstrap/scss/containers";
+@import "bootstrap/scss/grid";
+@import "bootstrap/scss/tables";
+@import "bootstrap/scss/forms";
+@import "bootstrap/scss/buttons";
+@import "bootstrap/scss/transitions";
+@import "bootstrap/scss/dropdown";
+@import "bootstrap/scss/button-group";
+@import "bootstrap/scss/nav";
+@import "bootstrap/scss/navbar";
+@import "bootstrap/scss/card";
+@import "bootstrap/scss/accordion";
+@import "bootstrap/scss/breadcrumb";
+@import "bootstrap/scss/pagination";
+@import "bootstrap/scss/badge";
+@import "bootstrap/scss/alert";
+@import "bootstrap/scss/progress";
+@import "bootstrap/scss/list-group";
+@import "bootstrap/scss/close";
+@import "bootstrap/scss/toasts";
+@import "bootstrap/scss/modal";
+@import "bootstrap/scss/tooltip";
+@import "bootstrap/scss/popover";
+@import "bootstrap/scss/carousel";
+@import "bootstrap/scss/spinners";
+@import "bootstrap/scss/offcanvas";
+@import "bootstrap/scss/placeholders";
 
-// 7. Estilos de la app (post-Bootstrap, en orden de cascada).
+// Helpers
+@import "bootstrap/scss/helpers";
+
+// Utilities API (genera las clases atómicas — debe ir DESPUÉS de utilities y de
+// cualquier modificación a $utilities).
+@import "bootstrap/scss/utilities/api";
+
+// === App overrides (post-Bootstrap, en orden de cascada) ===
 @import "typography";
 @import "layout";
 @import "components";

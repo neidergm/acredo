@@ -51,31 +51,31 @@ const PhasesList = ({ isAdmin, taskEnded }: T_Props) => {
       size: "lg",
       title: action.nomb_accion,
       footer: <ModalFooter className='justify-content-start'>
-        <Button color='primary2' onClick={() => closeModal(setModal)}>Cerrar</Button>
+        <Button color='primary-surface' onClick={() => closeModal(setModal)}>Cerrar</Button>
       </ModalFooter>,
       children: <div>
         {action.est_accion === 2 && <div >
           <p className='border-start border-4 ps-2 border-success'>
-            <b className='d-block'>Fecha de realización: </b>
+            <b className='d-block'>Fecha de realizaciÃ³n: </b>
             <span>
               {getNormalDate(action.marc_update, { dateStyle: "full", timeStyle: "short" })}
             </span>
           </p>
           {action.usua_finalizar && <p className='border-start border-4 ps-2 border-success'>
-            <b className='d-block'>Usuario que finalizó la acción: </b>
+            <b className='d-block'>Usuario que finalizÃ³ la acciÃ³n: </b>
             <span>{action.usua_finalizar}</span>
           </p>}
         </div>}
         <p>
-          <b className='d-block'>Fecha límite: </b>
+          <b className='d-block'>Fecha lÃ­mite: </b>
           <span>
             {getNormalDate(action.fecha_accion, { dateStyle: "full" })}
             {action.est_accion === 0 ?
-              (taskEnded && <Badge className='float-end' pill>No se realizó</Badge>)
+              (taskEnded && <Badge className='float-end' pill>No se realizÃ³</Badge>)
               : (action.est_accion === 2 ?
                 <Badge pill color='success' className='float-end d-line-block'>Realizada</Badge> :
                 <Badge pill color={dateDiff < 0 ? "danger" : "primary"} className='float-end d-line-block'>
-                  {dateDiff < 0 ? `Vencido hace ${dateDiff * -1} días` : `Vence ${dateDiff === 0 ? "hoy" : "en " + dateDiff + " días"}`}
+                  {dateDiff < 0 ? `Vencido hace ${dateDiff * -1} dÃ­as` : `Vence ${dateDiff === 0 ? "hoy" : "en " + dateDiff + " dÃ­as"}`}
                 </Badge>)}
           </span>
         </p>
@@ -178,7 +178,7 @@ const PhasesList = ({ isAdmin, taskEnded }: T_Props) => {
     {isAdmin && !!list &&
       <>
         <Button size='sm' color='link' onClick={() => toggleTimeLine()}>
-          Línea de tiempo
+          LÃ­nea de tiempo
         </Button>
         <Button color='primary' size='sm' className='ms-auto' onClick={() => createNewStage(list[0])}>
           <i><BsPlus /></i>
@@ -226,7 +226,7 @@ const PhasesList = ({ isAdmin, taskEnded }: T_Props) => {
       </Offcanvas>
       <Offcanvas isOpen={showTimeLine} style={{ minWidth: "65%" }} fade>
         <OffcanvasHeader toggle={toggleTimeLine}>
-          <span className='ps-3 border-start border-success border-4 py-1'>Línea de tiempo de acciones</span>
+          <span className='ps-3 border-start border-success border-4 py-1'>LÃ­nea de tiempo de acciones</span>
         </OffcanvasHeader>
         <OffcanvasBody>
           <TimeLine list={list[0].stages!} canEdit={isAdmin} taskEnded={taskEnded} />

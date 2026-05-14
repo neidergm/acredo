@@ -1,7 +1,6 @@
 import { type I_Condition } from "./conditions.interface";
 import { type I_ProcessIndicators, type T_ProgramsIndicators } from "./dashboard.interface";
 import { type I_JSONObject } from "./generic.interface";
-import { type I_Notification } from "./notification.interface";
 import { type T_SelectedPhase, type T_Phase, type T_PhasesWithConditions } from "./phasesAndStages.interface";
 import { type I_Process } from "./process.interface";
 import { type I_Program } from "./programs.interface";
@@ -10,11 +9,6 @@ import { type I_User } from "./user.interface";
 export interface I_UserState {
     userInfo: I_User | null,
     unauthorized?: string | null | false,
-}
-
-export interface I_NotificationsState {
-    list: I_Notification[] | null,
-    unreadCount: number,
 }
 
 export interface I_ProcessState {

@@ -76,9 +76,9 @@ const Conditions = () => {
         <AllAttachments phaseId={phase.id_fase} />
       </>,
       footer: <ModalFooter>
-        <Button color='primary2' onClick={() => closeModal(setModal)}>Cerrar</Button>
+        <Button color='primary-surface' onClick={() => closeModal(setModal)}>Cerrar</Button>
         <Link to={`/proceso/fases/anexos/${phase.id_fase}`} target="_blank"
-          className="btn btn-primary">Abrir en nueva pestaña</Link>
+          className="btn btn-primary">Abrir en nueva pestaÃ±a</Link>
       </ModalFooter>
     })
   }
@@ -103,7 +103,7 @@ const Conditions = () => {
       title: `${type} fase`,
       size: "md",
       footer: <ModalFooter className='justify-content-between'>
-        <Button color='primary2' onClick={() => closeModal(setModal)}>Cancelar</Button>
+        <Button color='primary-surface' onClick={() => closeModal(setModal)}>Cancelar</Button>
         <Button form={formID} color='primary'>Guardar {type !== "Crear" && "cambios"}</Button>
       </ModalFooter>
     })
@@ -133,7 +133,7 @@ const Conditions = () => {
       title: `Crear nueva tarea`,
       size: "xl",
       footer: <ModalFooter className='justify-content-between'>
-        <Button color='primary2' onClick={() => closeModal(setModal)}>Cancelar</Button>
+        <Button color='primary-surface' onClick={() => closeModal(setModal)}>Cancelar</Button>
         <Button form={formID} color='primary'>Guardar</Button>
       </ModalFooter>
     })
@@ -191,13 +191,13 @@ const Conditions = () => {
     openAlert(
       !(phase.porcentaje) ?
         confirmDeleteAlertObject(
-          <span>Se eliminará la fase <b>{phase.nomb_fase}</b> con todas las tareas y avances en el proceso</span>,
+          <span>Se eliminarÃ¡ la fase <b>{phase.nomb_fase}</b> con todas las tareas y avances en el proceso</span>,
           {
             onClick: () => closeAlert(() => {
               openLoader("Eliminando fase")
               AXIOS_REQUEST(DELETE_PHASE + phase.id_fase, "DELETE")
                 .then(() => {
-                  toast.success("Se eliminó la fase correctamente", { position: "top-right" });
+                  toast.success("Se eliminÃ³ la fase correctamente", { position: "top-right" });
                   refreshData()
                 }).catch(() => toast.error("No se pudo eliminar la fase", { position: "top-right" }))
                 .finally(() => closeLoader())
@@ -220,7 +220,7 @@ const Conditions = () => {
       title: "Resumen de usuarios",
       size: "xl",
       footer: <ModalFooter className='justify-content-between'>
-        <Button color='primary2' onClick={() => closeModal(setModal)}>Cerrar</Button>
+        <Button color='primary-surface' onClick={() => closeModal(setModal)}>Cerrar</Button>
       </ModalFooter>,
       children: <>
         <p className="mb-5">Este es el listado de los usuarios que se encuentran asociados a tareas y/o acciones, agrupados por fases y tareas</p>
@@ -353,10 +353,10 @@ const Conditions = () => {
 
                   <div className="mt-auto">
                     {(is_admin || is_supervisor) && phasesWithConditions[selectedProcess.id_conv] && <>
-                      <Button size="sm" color="primary2" onClick={() => showUserResume()}>
+                      <Button size="sm" color="primary-surface" onClick={() => showUserResume()}>
                         Ver resumen de usuarios
                       </Button>
-                      {/* <Button size="sm" color="primary2" className="ms-2" onClick={() => printReport()}>
+                      {/* <Button size="sm" color="primary-surface" className="ms-2" onClick={() => printReport()}>
                         <Printer size={16} />
                       </Button> */}
                     </>
@@ -392,7 +392,7 @@ const Conditions = () => {
         <div>
           {selectedProcess === null ? <div className="text-center text-secondary opacity-50">
             <BsExclamationCircleFill size={40} />
-            <h4 className="mt-3">No se encontró el proceso</h4>
+            <h4 className="mt-3">No se encontrÃ³ el proceso</h4>
           </div>
             : selectedProcess === undefined || !phasesWithConditions[selectedProcess.id_conv] ? <Loader isOpen loaderAsModal={false} />
               : <>
@@ -452,7 +452,7 @@ const Conditions = () => {
                             </div>
                             {phase.porcentaje < 100 && <div>
                               {dateDiffInPhase < 0 && <Badge color="secondary" className="bg-opacity-25 opacity-75 text-danger me-2">
-                                Venció hace {dateDiffInPhase * -1} días
+                                VenciÃ³ hace {dateDiffInPhase * -1} dÃ­as
                               </Badge>}
                             </div>}
                           </AccordionHeader>
@@ -564,7 +564,7 @@ const Conditions = () => {
                                       <div className="d-flex gap-3">
                                         {/* <p className="card-text d-none small d-xl-inline-block">
                                           <small className="text-muted opacity-50" style={{ marginTop: "-50px" }}>
-                                            Última actualización el {new Date(item.marc_update).toLocaleString([], { dateStyle: "long", timeStyle: "short" })}
+                                            Ãšltima actualizaciÃ³n el {new Date(item.marc_update).toLocaleString([], { dateStyle: "long", timeStyle: "short" })}
                                           </small>
                                         </p> */}
                                         {item.etapa_actual ?
@@ -579,11 +579,11 @@ const Conditions = () => {
                                                 <small>{item.etapa_actual.nomb_etapa}</small>
                                               </p>
                                               <p className="mb-1">
-                                                <small className="d-block text-secondary fw-semibold lh-1 text-nowrap">Acción actual:</small>
+                                                <small className="d-block text-secondary fw-semibold lh-1 text-nowrap">AcciÃ³n actual:</small>
                                                 <small>{item.etapa_actual.nomb_accion}</small>
                                               </p>
                                               <p className="mb-1">
-                                                <small className="d-block text-secondary fw-semibold lh-1 text-nowrap">Responsable de acción:</small>
+                                                <small className="d-block text-secondary fw-semibold lh-1 text-nowrap">Responsable de acciÃ³n:</small>
                                                 <small className="text-break">{item.etapa_actual.responsables.replace?.(",", "; ")}</small>
                                               </p>
                                             </div>)
@@ -607,7 +607,7 @@ const Conditions = () => {
                                               )
                                                 :
                                                 <p className="mb-1 opacity-50">
-                                                  <small className="d-block text-secondary fw-semibold lh-1">Fecha de finalización:</small>
+                                                  <small className="d-block text-secondary fw-semibold lh-1">Fecha de finalizaciÃ³n:</small>
                                                   <small>{new Date(item.marc_update).toLocaleString([], { dateStyle: "long", timeStyle: "short" })}</small>
                                                 </p>
                                             }

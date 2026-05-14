@@ -9,14 +9,17 @@ const Avatar = () => {
     }
 
     return (
-        <div className='avatar'>
-            <div>
-                {userInfo.picture ?
-                    <img src={userInfo.picture} alt="User"/>
-                    :
-                    userInfo.mail[0]
-                }
-            </div>
+        <div style={{ width: 38, height: 38 }}>
+            {userInfo.picture ?
+                <img
+                    className='bg-secondary rounded-circle cursor-pointer'
+                    src={userInfo.picture}
+                    alt=""
+                    style={{ width: "100%", height: "100%", objectFit: 'cover' }}
+                />
+                :
+                userInfo.mail[0].toUpperCase()
+            }
         </div>
     )
 }

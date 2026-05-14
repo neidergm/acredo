@@ -11,19 +11,19 @@ import { BsJournalBookmark, BsKanban, BsPeople } from 'react-icons/bs';
 const Menu = () => {
     return <div className='d-flex gap-2'>
         <div>
-            <Link to="proceso" className='btn btn-primary2 d-flex gap-1 gap-sm-2 align-items-center flex-column flex-sm-row'>
+            <Link to="proceso" className='btn btn-primary-surface d-flex gap-1 gap-sm-2 align-items-center flex-column flex-sm-row'>
                 <BsKanban size={17} />
                 <span className='d-block d-sm-inline-block'>Procesos</span>
             </Link>
         </div>
         <div>
-            <Link to="programa" className='btn btn-primary2 d-flex gap-1 gap-sm-2 align-items-center flex-column flex-sm-row'>
+            <Link to="programa" className='btn btn-primary-surface d-flex gap-1 gap-sm-2 align-items-center flex-column flex-sm-row'>
                 <BsJournalBookmark size={17} />
                 Programas
             </Link>
         </div>
         <div>
-            <Link to="usuarios" className='btn btn-primary2 d-flex gap-1 gap-sm-2 align-items-center flex-column flex-sm-row'>
+            <Link to="usuarios" className='btn btn-primary-surface d-flex gap-1 gap-sm-2 align-items-center flex-column flex-sm-row'>
                 <BsPeople size={17} />
                 Usuarios
             </Link>
@@ -54,10 +54,10 @@ const Dashboard = () => {
                         <small className='small opacity-50 d-md-block mb-1'>Mostrar resumen</small>
                         <div className={classnames('d-flex align-items-center  justify-content-end', styles["toggler-container"])}>
                             <div className='bg-white p-1 rounded-3'>
-                                <Button color={tab === 1 ? 'primary2 fw-semibold' : "link"} className='rounded-3 px-3' size='sm' onClick={() => pickTab(1)}>
+                                <Button color={tab === 1 ? 'primary-surface fw-semibold' : "link"} className='rounded-3 px-3' size='sm' onClick={() => pickTab(1)}>
                                     Procesos
                                 </Button>
-                                <Button color={tab === 2 ? 'primary2 fw-semibold' : "link-dark"} className='rounded-3 px-3' size='sm' onClick={() => pickTab(2)}>
+                                <Button color={tab === 2 ? 'primary-surface fw-semibold' : "link-dark"} className='rounded-3 px-3' size='sm' onClick={() => pickTab(2)}>
                                     Programas
                                 </Button>
                             </div>

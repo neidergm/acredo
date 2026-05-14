@@ -1,11 +1,8 @@
-// Tipografía: declaración de fuentes custom y estilos que afectan exclusivamente
-// elementos textuales (no layout).
 
-@font-face {
-    font-family: 'FredokaOne';
-    src: url('../fonts/FredokaOne-Regular.ttf');
-}
-
-code {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+.eyebrow {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: $_secondary;
 }

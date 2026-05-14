@@ -51,7 +51,7 @@ const Alert = ({
     buttons.push(
       <Button
         key="closeButton"
-        color="primary2"
+        color="primary-surface"
         {...closeButton}
         onClick={() => {
           closeAlert?.(closeButton.onClick);
@@ -156,7 +156,7 @@ export default Alert;
 //   if (closeButton) {
 //     buttons.push(<Button
 //       key="closeButton"
-//       color="primary2"
+//       color="primary-surface"
 //       {...closeButton}
 //       onClick={() => {
 //         toggle();

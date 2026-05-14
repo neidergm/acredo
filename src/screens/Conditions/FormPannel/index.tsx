@@ -60,9 +60,9 @@ const FormPannel = ({
 
     const confirmSubmit = (data: JSON | null, formItem: T_Form, callback?: VoidFunction) => {
         openAlert({
-            title: "¿Desea guardar los cambios?",
+            title: "Â¿Desea guardar los cambios?",
             type: "question",
-            submitButton: { value: "Sí, guardar", onClick: () => submitAll(data, formItem, callback) },
+            submitButton: { value: "SÃ­, guardar", onClick: () => submitAll(data, formItem, callback) },
             closeButton: { value: "No, cancelar" }
         })
     }
@@ -86,12 +86,12 @@ const FormPannel = ({
         )
     }
 
-    const confirmDelete = (item: string, title = "¿Está seguro?", children?: ReactNode, callback?: VoidFunction) => {
+    const confirmDelete = (item: string, title = "Â¿EstÃ¡ seguro?", children?: ReactNode, callback?: VoidFunction) => {
         openAlert({
             title,
             children,
             type: "question",
-            submitButton: { value: "Sí, eliminar", onClick: () => { deleteItem(item, callback) } },
+            submitButton: { value: "SÃ­, eliminar", onClick: () => { deleteItem(item, callback) } },
             closeButton: { value: "No, cancelar" },
         })
     }
@@ -143,7 +143,7 @@ const FormPannel = ({
             })
             .catch(() => {
                 closeLoader();
-                toast.error("No se pudo registrar la información", { position: "top-right" });
+                toast.error("No se pudo registrar la informaciÃ³n", { position: "top-right" });
                 return false;
             })
     }
@@ -278,7 +278,7 @@ const FormPannel = ({
             onDelete={confirmDelete}
         >
             <div className='d-flex'>
-                {!!(canAddForms) && <Button size="sm" color="primary2" className='ms-auto' onClick={toggleEditFormsPannel}>
+                {!!(canAddForms) && <Button size="sm" color="primary-surface" className='ms-auto' onClick={toggleEditFormsPannel}>
                     <i className='me-1'><BsLink /></i>
                     <span>Agregar plantillas de formularios</span>
                 </Button>}
@@ -306,7 +306,7 @@ const FormPannel = ({
                         </div>
                     </div></div>
                 <div>
-                    <Button size="sm" color="primary2" onClick={toggleEditFormsPannel}>
+                    <Button size="sm" color="primary-surface" onClick={toggleEditFormsPannel}>
                         <i className='me-1'><BsLink /></i>
                         <span>Agregar plantillas de formularios</span>
                     </Button>

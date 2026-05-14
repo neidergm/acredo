@@ -81,7 +81,7 @@ const ConditionsDetails = () => {
       </div>,
       size: "xl",
       footer: <ModalFooter>
-        <Button color="primary2" onClick={() => closeModal(setModalData)}>Cerrar</Button>
+        <Button color="primary-surface" onClick={() => closeModal(setModalData)}>Cerrar</Button>
       </ModalFooter>
     })
   }
@@ -93,12 +93,12 @@ const ConditionsDetails = () => {
       title: "Usuarios responsables",
       size: "xl",
       footer: <ModalFooter className='justify-content-between'>
-        <Button color='primary2' onClick={() => closeModal(setModalData)}>Cerrar</Button>
+        <Button color='primary-surface' onClick={() => closeModal(setModalData)}>Cerrar</Button>
       </ModalFooter>,
       children: <>
         <Table responsive striped borderless>
           <thead>
-            <tr><th></th><th>Acción (Etapa)</th><th>Responsable</th></tr>
+            <tr><th></th><th>AcciÃ³n (Etapa)</th><th>Responsable</th></tr>
           </thead>
           <tbody>
             {conditionSelected?.resumen_usuario.map((u, idx) => <tr key={idx}><th>{idx + 1}</th><td>{u.accion}</td><td>{u.nomb_resp}</td></tr>)}
@@ -119,9 +119,9 @@ const ConditionsDetails = () => {
           <AllAttachments phaseId={conditionSelected!.fase} />
         </>,
         footer: <ModalFooter>
-          <Button color='primary2' onClick={() => closeModal(setModalData)}>Cerrar</Button>
+          <Button color='primary-surface' onClick={() => closeModal(setModalData)}>Cerrar</Button>
           <Link to={`/proceso/fases/anexos/${conditionSelected?.fase}`} target="_blank"
-            className="btn btn-primary">Abrir en nueva pestaña</Link>
+            className="btn btn-primary">Abrir en nueva pestaÃ±a</Link>
         </ModalFooter>
       })
     }
@@ -130,7 +130,7 @@ const ConditionsDetails = () => {
   const deleteTask = () => {
     openAlert(
       confirmDeleteAlertObject(
-        <span>Se eliminará la tarea con las etapas y acciones relacionadas a la misma</span>,
+        <span>Se eliminarÃ¡ la tarea con las etapas y acciones relacionadas a la misma</span>,
         {
           onClick: () => closeAlert(() => {
             openLoader("Eliminando tarea")
@@ -187,7 +187,7 @@ const ConditionsDetails = () => {
             }
             openAlert({
               type: "question",
-              title: "¿Desea guardar los cambios realizados?",
+              title: "Â¿Desea guardar los cambios realizados?",
               closeButton: { value: "No, cancelar" }, submitButton: {
                 value: "Si, guardar", onClick: () => onSubmitEditTask(d)
               }
@@ -199,7 +199,7 @@ const ConditionsDetails = () => {
       title: `Editar tarea`,
       size: "xl",
       footer: <ModalFooter className='justify-content-between'>
-        <Button color='primary2' onClick={() => closeModal(setModalData)}>Cancelar</Button>
+        <Button color='primary-surface' onClick={() => closeModal(setModalData)}>Cancelar</Button>
         <Button form={formID} color='primary'>Guardar</Button>
       </ModalFooter>
     })
@@ -284,7 +284,7 @@ const ConditionsDetails = () => {
                   className='border-start border-5 border-dark py-1 ps-3 pe-4 bg-secondary bg-opacity-10 mb-2'
                   style={{ borderRadius: "2px 10px 10px 2px" }}
                 >
-                  <small className='fw-bold text-uppercase '>Información</small>
+                  <small className='fw-bold text-uppercase '>InformaciÃ³n</small>
                 </div>
               </div>
               {(!processSelected) ?
@@ -301,7 +301,7 @@ const ConditionsDetails = () => {
                     </span>
                   </div>
                   {!!conditionSelected?.condicion && <div>
-                    <b>Condición:</b>
+                    <b>CondiciÃ³n:</b>
                     <span className="d-block">{conditionSelected.condicion}</span>
                   </div>}
                   {!!processSelected.programa && <div title="Ver detalles del programa">

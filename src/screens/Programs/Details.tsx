@@ -81,7 +81,7 @@ const Details = () => {
         }
         openAlert(
             confirmDeleteAlertObject(
-                <span>Se eliminará permanentemente el programa <b>{program!.nomb_prog}</b></span>,
+                <span>Se eliminarÃ¡ permanentemente el programa <b>{program!.nomb_prog}</b></span>,
                 {
                     onClick: () => closeAlert(() => {
                         openLoader("Eliminando programa", () => {
@@ -132,11 +132,11 @@ const Details = () => {
                         if (Object.keys(data).length) {
                             openAlert({
                                 type: "question",
-                                title: `¿Está seguro?`,
-                                children: "Se actualizarán los datos de este programa",
+                                title: `Â¿EstÃ¡ seguro?`,
+                                children: "Se actualizarÃ¡n los datos de este programa",
                                 closeButton: { value: "No, cancelar" },
                                 submitButton: {
-                                    value: "Sí, actualizar", onClick: () => {
+                                    value: "SÃ­, actualizar", onClick: () => {
                                         saveProgramData(data);
                                     }
                                 }
@@ -149,7 +149,7 @@ const Details = () => {
                 />
             </>,
             footer: <ModalFooter>
-                <Button color='primary2' onClick={() => closeModal(setModal)}>Cancelar</Button>
+                <Button color='primary-surface' onClick={() => closeModal(setModal)}>Cancelar</Button>
                 <Button form={FORM_ID} color='primary'>Guardar cambios</Button>
             </ModalFooter>
         })
@@ -214,7 +214,7 @@ const Details = () => {
                                                     className='border-start border-5 border-dark py-1 ps-3 pe-4 bg-secondary bg-opacity-10 mb-2 d-inline-block'
                                                     style={{ borderRadius: "2px 10px 10px 2px" }}
                                                 >
-                                                    <small className='fw-bold text-uppercase'>INFORMACIÓN</small>
+                                                    <small className='fw-bold text-uppercase'>INFORMACIÃ“N</small>
                                                 </div>
                                             </div>
                                             <div className='mt-4'>
@@ -225,7 +225,7 @@ const Details = () => {
                                                             <td>{program.facultad}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td><b className="fw-semibold text-nowrap">Código de programa</b></td>
+                                                            <td><b className="fw-semibold text-nowrap">CÃ³digo de programa</b></td>
                                                             <td>{program.cod_prog}</td>
                                                         </tr>
                                                         <tr>
@@ -241,7 +241,7 @@ const Details = () => {
                                                             <td>{program.cod_snies} <small className='text-muted'>({getNormalDate(program.freg_snies, { dateStyle: "long" })})</small></td>
                                                         </tr>
                                                         <tr>
-                                                            <td><b className="fw-semibold text-nowrap">Nivel de formación</b></td>
+                                                            <td><b className="fw-semibold text-nowrap">Nivel de formaciÃ³n</b></td>
                                                             <td>{program.nivel_prog}</td>
                                                         </tr>
                                                         <tr>
@@ -249,11 +249,11 @@ const Details = () => {
                                                             <td>{program.moda_prog}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td><b className="fw-semibold">Tipo de formación</b></td>
+                                                            <td><b className="fw-semibold">Tipo de formaciÃ³n</b></td>
                                                             <td>{program.tform_prog}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td><b className="fw-semibold">Título otorgado</b></td>
+                                                            <td><b className="fw-semibold">TÃ­tulo otorgado</b></td>
                                                             <td>{program.titu_prog}</td>
                                                         </tr>
                                                     </tbody>
@@ -278,7 +278,7 @@ const Details = () => {
                                                 </div>
                                                 <div className='text-end'>
                                                     <Button size='sm' color='primary' onClick={() => updateProgramData()}>
-                                                        <i className='me-1'><BsPencilSquare size={15} /></i> Actualizar información
+                                                        <i className='me-1'><BsPencilSquare size={15} /></i> Actualizar informaciÃ³n
                                                     </Button>
                                                 </div>
                                             </div>}
@@ -316,7 +316,7 @@ const Details = () => {
                                                         </div>}
                                                         <div className='d-inline-block text-end'>
                                                             <Button size='sm' color='primary' onClick={() => add()}>
-                                                                <i className='me-1'><BsPlus size={16} /></i> Nueva resolución
+                                                                <i className='me-1'><BsPlus size={16} /></i> Nueva resoluciÃ³n
                                                             </Button>
                                                         </div>
                                                     </>}

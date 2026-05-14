@@ -65,7 +65,7 @@ const AttachmentsTable = ({
     const deleteAttach = (item: T_Form, attach: I_FormFieldWithAnswer) => {
         onDelete!(`${item.id_fcamp}/${attach.grupo_resp}`,
             undefined,
-            <>Esta acción es irreversible, se eliminará de forma permanente el anexo <b>{attach?.nomb_anexo}</b></>
+            <>Esta acciÃ³n es irreversible, se eliminarÃ¡ de forma permanente el anexo <b>{attach?.nomb_anexo}</b></>
         )
     }
 
@@ -177,18 +177,18 @@ const AttachmentsTable = ({
             title: "Cambiar orden de los anexos",
             children: mapedList && <Ordering list={mapedList} orderRef={orderRef} />,
             footer: canEdit && <ModalFooter>
-                <Button color="primary2" onClick={() => closeModal(setModal)}>Cancelar</Button>
+                <Button color="primary-surface" onClick={() => closeModal(setModal)}>Cancelar</Button>
                 <Button color="primary" onClick={() => {
                     if (!orderRef.current.length) {
                         return toast.error("No hay cambios para guardar", { position: "top-right", icon: <i className='text-warning'><BsExclamationCircleFill /> </i> })
                     }
                     openAlert({
                         type: "warning",
-                        title: "¿Está seguro?",
-                        children: "Se cambiará el orden de los anexos, tenga en cuenta que la codificación y numeración cambiará",
+                        title: "Â¿EstÃ¡ seguro?",
+                        children: "Se cambiarÃ¡ el orden de los anexos, tenga en cuenta que la codificaciÃ³n y numeraciÃ³n cambiarÃ¡",
                         closeButton: { value: "No, cancelar" },
                         submitButton: {
-                            value: "Sí, guardar",
+                            value: "SÃ­, guardar",
                             onClick: saveNewOrder
                         }
                     })
@@ -293,7 +293,7 @@ const AttachmentsTable = ({
                                     canEdit && mapedList.length ?
                                         <div onClick={() => changeOrder()} className='cursor-pointer'>
                                             Anexo
-                                            {/* <Button color='primary2' size='sm' className='ms-auto' >
+                                            {/* <Button color='primary-surface' size='sm' className='ms-auto' >
                                                 <ArrowDownUp size={14} /> Ordenar
                                             </Button> */}
                                         </div>
@@ -303,7 +303,7 @@ const AttachmentsTable = ({
                             </div>
                         </th>
                         {/* <th>Evidencia</th> */}
-                        <th>Ubicación evidencia</th>
+                        <th>UbicaciÃ³n evidencia</th>
                         <th>Criterio y evidencia</th>
                     </tr>
                 </thead>

@@ -1,13 +1,237 @@
-// Sass variable overrides para Bootstrap. Deben importarse ANTES de
-// `bootstrap/scss/variables` para sobrescribir los `!default`.
+// ═══════════════════════════════════════════════════════
 //
-// Cambiar acá impacta toda la generación de utilities, components y CSS vars.
+// @import "variables";        // Theme colors, typography, borders, etc. use before bootstrap file.
+// @import "bootstrap";        // o bootstrap/scss/bootstrap
+//
+// ═══════════════════════════════════════════════════════
 
-// === Tema ===
-$primary: #449bff;
-$warning: #ff862f;
-$info: #06a099;
-$success: #31ac69;
+// ── Breakpoints ──────────────────────────────────────────
+$grid-breakpoints: (
+  xs:   0,
+  sm:   576px,
+  md:   768px,
+  lg:   992px,
+  xl:   1200px,
+  xxl:  1400px,
+  xxxl: 1600px
+);
 
-// === Componentes ===
+$container-max-widths: (
+  sm:   540px,
+  md:   720px,
+  lg:   960px,
+  xl:   1140px,
+  xxl:  1320px,
+  xxxl: 1540px
+);
+
+// ── Tokens internos (no se exportan a Bootstrap) ────────
+$_navy:         #0F2030;
+$_emerald:      #10B981;
+$_mint:         #6EE7B7;
+$_mint-surface: #F0FDF9;
+$_mint-border:  #A7F3D0;
+$_green:        #0D9488;
+$_blue:         #3B82F6;
+$_orange:       #F59E0B;
+$_red:          #EF4444;
+$_secondary:    #64748B;
+$_muted:        #475569;
+$_border-color: #E2E8F0;
+$_contrast-dark:#022C22;   // texto sobre emerald · ratio real: 5.97:1 ✓
+
+// ── 1. Colores del tema ──────────────────────────────────
+$white:     #fff;
+$primary:   $_emerald;
+$secondary: $_secondary;
+$success:   $_green;
+$info:      $_blue;
+$warning:   $_orange;
+$danger:    $_red;
+$light:     $_mint-surface;
+$dark:      $_navy;
+
+// Bootstrap elige el color de texto sobre botones con color-contrast().
+// Forzamos texto oscuro sobre el primary (emerald):
+$min-contrast-ratio:   3.0;             // umbral para forzar texto oscuro sobre primary
+$color-contrast-dark:  $_contrast-dark; // Bootstrap usará #022C22 sobre emerald · ratio: 5.97:1 ✓
+
+// Estado activo de componentes (list-group, nav, etc.).
+// $_border-color mantiene la intención de un active sutil (similar al hover).
+// Anulamos con $_navy para garantizar contraste legible sobre ese fondo claro.
+$component-active-color:  $_navy;
+$component-active-bg:     $_border-color;
+
+// ── 2. Cuerpo ────────────────────────────────────────────
+$body-color:              #1E3A5F;  // 11.5:1 ✓
+// $body-bg:                 #F8FAFC;
+$body-secondary-color:    $_muted;
+$body-tertiary-bg:        #eceff3;
+$link-color:              $_secondary;
+// $link-hover-color:        #0D9488;
+$link-decoration:         none;
+
+// ── 3. Tipografía ────────────────────────────────────────
+$font-family-base: "DM Sans Variable", "Inter Variable", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+$font-family-code: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+
+$headings-font-family:   "DM Sans Variable", "Inter Variable", "Segoe UI", Tahoma;
+$headings-font-weight:    600;
+$headings-line-height:    1.1;
+$headings-color:          $_navy;
+
+$display-font-weight:     600;
+$display-line-height:     1.05;
+
+$lead-font-weight:        300;
+$text-muted:              $_muted;
+
+// ── 4. Bordes y radio ────────────────────────────────────
+$border-width:        0.5px;
+$border-color:        $_border-color;
+
+$border-radius:       0.5rem;     //  8px
+$border-radius-sm:    0.375rem;   //  6px
+$border-radius-lg:    0.625rem;   // 10px
+$border-radius-xl:    0.75rem;    // 12px
+$border-radius-xxl:   1rem;       // 16px
+$border-radius-pill:  9999px;
+
+// ── 5. Sombras ───────────────────────────────────────────
+$box-shadow:    0 4px 16px rgba($_navy, 0.10);
+$box-shadow-sm: 0 2px  8px rgba($_navy, 0.08);
+$box-shadow-lg: 0 8px 28px rgba($_navy, 0.12);
+
+// ── 6. Espaciado (extiende la escala de Bootstrap) ───────
+$spacers: (
+  0: 0,
+  1: .25rem,    //  4px
+  2: .5rem,     //  8px
+  3: .75rem,    // 12px
+  4: 1rem,      // 16px
+  5: 1.25rem,   // 20px
+  6: 1.5rem,    // 24px
+  7: 2rem,      // 32px
+  8: 2.5rem,    // 40px
+  9: 3rem,      // 48px
+  10: 4rem,     // 64px
+);
+
+// ── 7. Focus ─────────────────────────────────────────────
+$focus-ring-width:    3px;
+$focus-ring-opacity:  0.18;
+$focus-ring-color:    rgba($_emerald, $focus-ring-opacity);
+
+// ── 8. Botones ───────────────────────────────────────────
+$btn-font-weight:      500;
+$btn-border-radius:    $border-radius-lg;
+$btn-border-radius-sm: $border-radius;
+$btn-border-radius-lg: $border-radius-lg;
+$btn-border-width:     $border-width;
+$btn-padding-y:        .3rem;
+$btn-padding-x:        .75rem;
 $btn-disabled-opacity: 0.45;
+
+// ── 9. Formularios ───────────────────────────────────────
+$input-border-color:        $_border-color;
+$input-border-width:        $border-width;
+$input-border-radius:       $border-radius-lg;
+$input-focus-border-color:  $_emerald;
+$input-focus-box-shadow:    0 0 0 3px rgba($_emerald, 0.08);
+$input-placeholder-color:   #c3c7cc;
+
+$form-check-input-checked-bg-color:     $_emerald;
+$form-check-input-checked-border-color: $_emerald;
+
+$form-label-font-weight:  500;
+$form-label-font-size:    .8125rem;
+$form-label-color:        $body-color;
+
+// ── 10. Cards ────────────────────────────────────────────
+$card-border-width:    $border-width;
+$card-border-color:    $_border-color;
+$card-border-radius:   $border-radius-xl;
+$card-cap-bg:          inherit;
+$card-box-shadow:      $box-shadow-sm;
+
+// ── 11. Modales ──────────────────────────────────────────
+$modal-content-border-radius:  $border-radius-xxl;
+$modal-content-border-width:   $border-width;
+$modal-backdrop-opacity:       0.6;
+
+// ── 12. Navbar ───────────────────────────────────────────
+$navbar-dark-color:         rgba(#fff, 0.65);
+$navbar-dark-hover-color:   $_mint;
+$navbar-dark-active-color:  $_mint;
+
+// ── 13. Dropdowns ────────────────────────────────────────
+$dropdown-border-width:       $border-width;
+$dropdown-border-radius:      $border-radius-xl;
+$dropdown-box-shadow:         $box-shadow-lg;
+$dropdown-link-hover-color:   $_navy;
+$dropdown-link-hover-bg:      $_border-color;
+$dropdown-link-active-color:  $_navy;
+$dropdown-link-active-bg:     $_border-color;
+
+// ── 14. Tablas ───────────────────────────────────────────
+$table-border-color:     $_border-color;
+$table-striped-bg:       rgba($_border-color, 0.7);
+$table-hover-bg:         $_border-color;
+$table-th-font-weight:   500;
+
+// ── 15. Progreso ─────────────────────────────────────────
+$progress-height:        .5rem;
+$progress-bg:            $_mint-border;
+$progress-bar-bg:        $_emerald;
+$progress-border-radius: $border-radius-pill;
+
+// ── 16. Badges ───────────────────────────────────────────
+$badge-border-radius:    $border-radius-pill;
+$badge-font-size:        .7em;
+$badge-font-weight:      500;
+
+// ── 17. Acordeón ─────────────────────────────────────────
+$accordion-border-width:             $border-width;
+$accordion-button-active-bg:         $_border-color;
+$accordion-button-active-color:      $_navy;   // fix: Bootstrap usaba $primary como texto → 2.42:1 fail
+$accordion-button-focus-box-shadow:  0 0 0 3px rgba($_emerald, 0.1);
+
+// ── 18. Paginación ───────────────────────────────────────
+$pagination-border-color:        $_border-color;
+$pagination-hover-color:         $_navy;
+$pagination-hover-bg:            $_border-color;
+$pagination-hover-border-color:  $_mint-border;
+$pagination-active-color:        $_contrast-dark;
+$pagination-active-bg:           $_emerald;
+$pagination-active-border-color: $_emerald;
+$pagination-disabled-color:      $_muted;
+
+// ── 19. Nav / Pills / Tabs ───────────────────────────────
+// Hover y active coherentes con dropdown, list-group y tablas
+$nav-link-hover-color:             $_navy;
+$nav-tabs-border-color:            $_border-color;
+$nav-tabs-link-hover-border-color: $_border-color;
+$nav-tabs-link-active-color:       $_navy;
+$nav-pills-link-active-color:      $_contrast-dark;
+$nav-pills-link-active-bg:         $_emerald;
+
+// ── 20. List Group ───────────────────────────────────────
+// Alinea hover y active con el mismo $_border-color del resto de componentes
+$list-group-border-color:           $_border-color;
+$list-group-hover-bg:               $_border-color;
+$list-group-action-color:           $body-color;
+$list-group-action-hover-color:     $_navy;
+$list-group-action-hover-bg:        $_border-color;
+$list-group-action-active-color:    $_navy;
+$list-group-action-active-bg:       $_border-color;
+$list-group-active-color:           $_contrast-dark;
+$list-group-active-bg:              $_emerald;
+$list-group-active-border-color:    $_emerald;
+
+// ── 21. Tooltips ─────────────────────────────────────────
+$tooltip-bg:            $_navy;
+$tooltip-border-radius: $border-radius;
+$tooltip-font-size:     .75rem;
+
+// ── 22. Transiciones ─────────────────────────────────────
+$transition-base: all .2s ease;

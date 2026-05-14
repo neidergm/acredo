@@ -66,8 +66,8 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
 
     const deleteEvent = (event: I_ProgramEvent) => {
         openAlert({
-            title: "¿Está seguro?",
-            children: "El evento quedará eliminado",
+            title: "Â¿EstÃ¡ seguro?",
+            children: "El evento quedarÃ¡ eliminado",
             closeButton: { value: "No, cancelar" },
             submitButton: {
                 value: "Si, eliminar", onClick: () => {
@@ -137,7 +137,7 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
                 />
             </>,
             footer: <ModalFooter>
-                <Button color='primary2' onClick={() => closeModal(setModal)}>Cancelar</Button>
+                <Button color='primary-surface' onClick={() => closeModal(setModal)}>Cancelar</Button>
                 <Button form={FORM_ID} color='primary'>Guardar{event ? " cambios" : ""}</Button>
             </ModalFooter>
         })
@@ -177,7 +177,7 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
                                 options={
                                     [
                                         { text: `${event.reco_evento.length} Recordatorios`, optionProps: { header: true } },
-                                        ...(event.reco_evento.map?.((e) => ({ text: `${e.num_dia} días antes del evento`, optionProps: { disabled: true } })) || [])
+                                        ...(event.reco_evento.map?.((e) => ({ text: `${e.num_dia} dÃ­as antes del evento`, optionProps: { disabled: true } })) || [])
                                     ]
                                 }                                >
                                 <DropdownToggle size="sm" color='link' className='text-dark p-0 position-relative'>
@@ -219,7 +219,7 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
                     <div className='mt-2'>
                         <p className='fw-semibold mb-1'>{event.nomb_evento}</p>
                         <div className='text-secondary small'>
-                            {event.desc_evento ? <div dangerouslySetInnerHTML={{ __html: `${event.desc_evento}` }}></div> : "Sin descripción"}
+                            {event.desc_evento ? <div dangerouslySetInnerHTML={{ __html: `${event.desc_evento}` }}></div> : "Sin descripciÃ³n"}
                         </div>
                     </div>
                 </div>
@@ -227,7 +227,7 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
             {(!limit || limit >= list.length) && <div className={classnames(styles["event-item"], styles["no-more-item"])}>
                 <div>
                     <i className='me-2 text-success'><BsCheckLg /></i>
-                    <small>No hay más eventos para mostrar</small>
+                    <small>No hay mÃ¡s eventos para mostrar</small>
                 </div>
             </div>}
         </>
@@ -248,11 +248,11 @@ const ProgramEvents = ({ events: evs, limit, program_id, callback, children, can
                 <div className='pb-2 mt-4'>
                     <div className={classnames('d-flex align-items-center', styles["toggler-container"])}>
                         <div className='bg-secondary bg-opacity-10 p-1 rounded-3'>
-                            <Button color={tab === 1 ? 'primary2 fw-semibold' : "link-secondary"}
+                            <Button color={tab === 1 ? 'primary-surface fw-semibold' : "link-secondary"}
                                 className='rounded-3 px-3' size='sm' onClick={() => setTab(1)}>
-                                Próximos
+                                PrÃ³ximos
                             </Button>
-                            <Button color={tab === 2 ? 'primary2 fw-semibold' : "link-secondary"}
+                            <Button color={tab === 2 ? 'primary-surface fw-semibold' : "link-secondary"}
                                 className='rounded-3 px-3' size='sm' onClick={() => setTab(2)}>
                                 Pasados
                             </Button>

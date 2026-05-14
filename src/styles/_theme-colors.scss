@@ -1,13 +1,19 @@
-// Theme colors custom. Debe ir DESPUÉS de `bootstrap/scss/variables` porque
-// hace map-merge con $theme-colors (definido ahí).
+// Custom theme colors — Fase 1: extender $theme-colors.
+// Debe importarse DESPUÉS de `bootstrap/scss/variables` y ANTES de
+// `bootstrap/scss/maps` (que consume $theme-colors para derivar $theme-colors-rgb).
 //
-// Cada entry genera automáticamente el set completo de utilities:
-//   .btn-{name}, .btn-outline-{name}, .bg-{name}, .bg-{name}-subtle,
-//   .text-{name}, .text-{name}-emphasis, .border-{name}, .border-{name}-subtle,
-//   .link-{name}, .alert-{name}, etc.
+// Doc: https://getbootstrap.com/docs/5.3/customize/color
+//
+// Cada entry auto-genera:
+//   .btn-{name}, .btn-outline-{name}
+//   .bg-{name}, .border-{name}, .text-{name}
+//   .link-{name}, --bs-{name}, --bs-{name}-rgb
+//
+// Las variantes *-emphasis / *-subtle se merge-an en `_theme-emphasis.scss`
+// porque requieren que `bootstrap/scss/maps` ya haya corrido.
 
 $custom-colors: (
-    "primary2": #c8e1ff,
+    "primary-surface": $_mint,
 );
 
 $theme-colors: map-merge($theme-colors, $custom-colors);

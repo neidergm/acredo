@@ -6,25 +6,25 @@
 // === Botones ===
 // $warning es naranja claro; el contraste auto de Bootstrap escogería negro,
 // pero queremos blanco por branding.
-.btn-warning, .btn-primary {
-    --bs-btn-color: #fff;
-    --bs-btn-hover-color: #fff;
-    --bs-btn-active-color: #fff;
-    --bs-btn-disabled-color: #fff;
-}
+// .btn-warning, .btn-primary {
+//     --bs-btn-color: #fff;
+//     --bs-btn-hover-color: #fff;
+//     --bs-btn-active-color: #fff;
+//     --bs-btn-disabled-color: #fff;
+// }
 
-// .btn-primary2 base ya viene auto-generado por theme color.
-// Solo personalizamos el comportamiento especial: hover muta a `primary` completo
-// en lugar de oscurecer el color base.
-.btn-primary2 {
-    --bs-btn-color: #0077ff;
-    --bs-btn-hover-color: #fff;
-    --bs-btn-hover-bg: var(--bs-primary);
-    --bs-btn-hover-border-color: var(--bs-primary);
-    --bs-btn-active-color: #fff;
-    --bs-btn-active-bg: var(--bs-primary);
-    --bs-btn-active-border-color: var(--bs-primary);
-}
+// .btn-primary-surface base ya viene auto-generada por theme color.
+// Personalizamos el comportamiento especial: hover muta a `primary` completo
+// (mint → emerald) en lugar de oscurecer el color base.
+// .btn-primary-surface {
+//     --bs-btn-color: #{$emerald-dark};
+//     --bs-btn-hover-color: #fff;
+//     --bs-btn-hover-bg: var(--bs-primary);
+//     --bs-btn-hover-border-color: var(--bs-primary);
+//     --bs-btn-active-color: #fff;
+//     --bs-btn-active-bg: var(--bs-primary);
+//     --bs-btn-active-border-color: var(--bs-primary);
+// }
 
 // Btn group: primero/segundo elemento sin radius en bordes interiores.
 .btn-group > *:first-child {

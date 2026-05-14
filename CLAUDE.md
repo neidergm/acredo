@@ -68,7 +68,19 @@ Note: `react-router@7` made `navigate()` return `Promise<void>`. Don't `return n
 
 ### Forms
 
-The app uses `react-ngm-form`. Form definitions are colocated in `src/forms/` as TS arrays of field descriptors typed as `T_FieldsTypes` (re-exported from the library). `src/utils/formUtils.ts` (esp. `formToSubmitData`) converts form state into the `FormData` shape the backend expects, with conventions like nested date min/max validation and a `dataPrefix` (default `"resp"`) for serialized field names.
+The app uses `react-ngm-form` (a thin wrapper over `react-hook-form`). Form definitions are colocated in `src/forms/` as TS arrays of field descriptors typed as `T_FieldsTypes` (re-exported from the library) — a few legacy ones are JSON files (`phase.form.json`, `stage.form.json`) loaded directly.
+
+`src/utils/formUtils.ts` is the **serialization** side: `formToSubmitData` converts form state into the `FormData` shape the backend expects, with conventions like nested date min/max validation and a `dataPrefix` (default `"resp"`) for serialized field names. `getDifferenceBetweenData` produces partial updates (used to PATCH only changed fields), and `getFormItemDefaultValue` rehydrates file/list answers.
+
+`src/utils/mapField.tsx` is the **rendering** side and is central to all form work — read this before adding any new field type. Backend fields arrive as `{ json_campo: I_FormField }`; `mapField` mutates `json_campo` in-place to attach the right behavior based on `tag`/`type`:
+- `tag: "custom"` + `type: "ckeditor"` → renders the lazy `TextEditor` inside a `<Suspense>` boundary, bridging `editor.getData()` to RHF's `onChange`.
+- `tag: "custom"` + `type` in `googledocs`/`googlesheets`/`googleslides` → embedded iframe preview with `defaultValue` as the base URL.
+- `tag: "custom"` + `type: "pick_attach_ref"` → renders `DataListAttachmentInput`.
+- `tag: "custom"` + `type: "select"` → renders `EvidenceSelect`; if `dependsOn` is set, generates a `watchingCallback` that rewrites `request.params[dependsOn]` and refetches options when the parent field changes.
+- `tag: "select"` with a `request` but no `doRequest` → injects a default `doRequest` using `AXIOS_REQUEST`.
+- `tag: "list"` → recursively `mapField`s the nested `fields` array.
+
+`mapFieldAndDefaultValues(list, list2?)` is the entry point used by screens: it merges saved answers (`list2`) into defaults and runs every field through `mapField`. The `Controller`-injected `ref` for custom fields is passed as `inputRef` — for a custom component to participate in RHF's `shouldFocusError` auto-focus on submit, it must expose `.focus()` via `useImperativeHandle` on that ref (otherwise focus-on-error silently no-ops).
 
 ### UI and locale
 
@@ -81,7 +93,7 @@ The app uses `react-ngm-form`. Form definitions are colocated in `src/forms/` as
 - **Icons** come from `react-icons/bs` (Bootstrap Icons set). Names use the `Bs` prefix: `BsBell`, `BsPencilSquare`, `BsExclamationCircleFill`, etc. There is NO local icons file.
 - The UI is Spanish; dates are formatted with `'es-CO'` locale via `src/utils/dateUtils.ts`.
 - Toast/loader are mounted globally in `src/main.tsx` (`react-hot-toast` + `<Loader />` driven by `loaderSlice`); use the `useLoader` hook rather than mounting your own.
-- Rich text uses `@ckeditor/ckeditor5-build-classic` — heavyweight (~1MB), so `TextEditor` is `lazy()`-loaded inside `src/utils/mapField.tsx` with a local `<Suspense>` boundary and a fixed-height placeholder. Drag-and-drop uses `@dnd-kit`; spreadsheet IO uses `xlsx` (also lazy — dynamic-imported only inside the export functions of `AttachmentsTable/AllAttachments.tsx` to keep it out of the main chunk).
+- Rich text uses the modular CKEditor 5 distribution (`ckeditor5` + `@ckeditor/ckeditor5-editor-classic` + `@ckeditor/ckeditor5-react`, all v48), licensed `GPL`. `ClassicEditor` and the plugin list are assembled locally in `src/components/TextEditor/features.ts`; toolbar/plugin resolution lives in `src/components/TextEditor/utils.ts`. The editor is heavyweight, so `TextEditor` is `lazy()`-loaded inside `src/utils/mapField.tsx` with a local `<Suspense>` boundary and a fixed-height placeholder. Drag-and-drop uses `@dnd-kit`; spreadsheet IO uses `xlsx` (also lazy — dynamic-imported only inside the export functions of `AttachmentsTable/AllAttachments.tsx` to keep it out of the main chunk).
 
 ## Conventions worth following
 

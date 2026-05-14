@@ -74,7 +74,7 @@ const UsersManagement = () => {
       </>,
       size: "lg",
       footer: <ModalFooter>
-        <Button color='primary2' onClick={() => closeModal(setModal)}>Cancelar</Button>
+        <Button color='primary-surface' onClick={() => closeModal(setModal)}>Cancelar</Button>
         <Button form={formID} color='primary'>Guardar</Button>
       </ModalFooter>
     })
@@ -94,7 +94,7 @@ const UsersManagement = () => {
       </>,
       size: "lg",
       footer: <ModalFooter>
-        <Button color='primary2' onClick={() => closeModal(setModal)}>Cancelar</Button>
+        <Button color='primary-surface' onClick={() => closeModal(setModal)}>Cancelar</Button>
         <Button form={formID} color='primary'>Guardar</Button>
       </ModalFooter>
     })
@@ -111,7 +111,7 @@ const UsersManagement = () => {
       </>,
       size: "lg",
       footer: <ModalFooter>
-        <Button color='primary2' onClick={() => closeModal(setModal)}>Cancelar</Button>
+        <Button color='primary-surface' onClick={() => closeModal(setModal)}>Cancelar</Button>
         <Button form={formID} color='primary'>Guardar</Button>
       </ModalFooter>
     })
@@ -139,9 +139,9 @@ const UsersManagement = () => {
     }
 
     openAl = () => openAlert({
-      title: "¿Estás seguro?",
+      title: "Â¿EstÃ¡s seguro?",
       type: "question",
-      children: "Se eliminará este cargo de forma permanente",
+      children: "Se eliminarÃ¡ este cargo de forma permanente",
       closeButton: { value: "No, cancelar" },
       submitButton: {
         value: "Si, eliminar", onClick: () => {
@@ -173,7 +173,7 @@ const UsersManagement = () => {
       </>,
       size: "lg",
       footer: <ModalFooter>
-        <Button color='primary2' onClick={() => closeModal(setModal)}>Cancelar</Button>
+        <Button color='primary-surface' onClick={() => closeModal(setModal)}>Cancelar</Button>
         <Button form={formID} color='primary'>Guardar</Button>
       </ModalFooter>
     })
@@ -185,9 +185,9 @@ const UsersManagement = () => {
     const isEnabled = user.disponible === 0;
 
     openAlert({
-      title: "¿Está seguro?",
+      title: "Â¿EstÃ¡ seguro?",
       type: "question",
-      children: isEnabled ? 'Se realizará la desactivación de este usuario' : 'Se realizará la activación de este usuario',
+      children: isEnabled ? 'Se realizarÃ¡ la desactivaciÃ³n de este usuario' : 'Se realizarÃ¡ la activaciÃ³n de este usuario',
       closeButton: { value: "No, cancelar" },
       submitButton: {
         value: `Si, realizar`, onClick: () => {
@@ -225,7 +225,7 @@ const UsersManagement = () => {
     <>
       <SubHeader
         showBackButton
-        text="Gestión de usuarios"
+        text="GestiÃ³n de usuarios"
         className="container-xxl"
       />
 
@@ -301,7 +301,7 @@ const UsersManagement = () => {
                         {!!usersByGroup[idx].length && <div className='d-flex justify-content-between mb-3 align-items-center'>
                           <div className='small text-muted'>Activo</div>
                           <div>
-                            {is_admin && <Button size="sm" color='primary2' onClick={() => addUser(idx)} ><BsPlus size={17} /> Agregar usuario</Button>}
+                            {is_admin && <Button size="sm" color='primary-surface' onClick={() => addUser(idx)} ><BsPlus size={17} /> Agregar usuario</Button>}
                           </div>
                         </div>}
                         {usersByGroup[idx].length ?
@@ -335,7 +335,7 @@ const UsersManagement = () => {
                               </span>
 
                               <div className='float-end'>
-                                <Button size="sm" color='primary2'><BsPlus /> Agregar usuario</Button>
+                                <Button size="sm" color='primary-surface'><BsPlus /> Agregar usuario</Button>
                               </div>
                             </div>
                           </ListGroupItem>

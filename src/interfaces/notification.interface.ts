@@ -1,3 +1,5 @@
+export type T_NotificationType = 0 | 1 | 2;
+
 export interface I_Notification {
     // id: number;
     // message: string;
@@ -23,8 +25,8 @@ export interface I_Notification {
      * 1: Asignación 
      * 2: Pendiente por cumplir
      */
-    tipo_noti: 0 | 1 | 2;
-    desc_tipo_noti: string;
+    tipo_noti: T_NotificationType;
+    // desc_tipo_noti: string;
 
     // html_content?: JSX.Element
 }

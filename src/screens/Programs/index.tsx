@@ -61,11 +61,11 @@ const Programs = () => {
                     onSubmit={data => {
                         openAlert({
                             type: "question",
-                            title: `¿Está seguro?`,
-                            children: "Se registrará un nuevo programa",
+                            title: `Â¿EstÃ¡ seguro?`,
+                            children: "Se registrarÃ¡ un nuevo programa",
                             closeButton: { value: "No, cancelar" },
                             submitButton: {
-                                value: "Sí, registrar", onClick: () => {
+                                value: "SÃ­, registrar", onClick: () => {
                                     saveProgramData(data);
                                 }
                             }
@@ -75,7 +75,7 @@ const Programs = () => {
                 />
             </>,
             footer: <ModalFooter>
-                <Button color='primary2' onClick={() => closeModal(setModal)}>Cancelar</Button>
+                <Button color='primary-surface' onClick={() => closeModal(setModal)}>Cancelar</Button>
                 <Button form={FORM_ID} color='primary'>Guardar cambios</Button>
             </ModalFooter>
         })
@@ -178,7 +178,7 @@ const Programs = () => {
                                                 <div className='row'>
                                                     <div className='col-auto small text-secondary text-center text-wrap'>
                                                         <div className='mb-2'>
-                                                            <b className='d-block'>Código</b>
+                                                            <b className='d-block'>CÃ³digo</b>
                                                             <span>{item.cod_prog}</span>
                                                         </div>
                                                         <div className='mb-2'>
@@ -207,7 +207,7 @@ const Programs = () => {
                                                             <span>{item.nivel_prog}</span>
                                                         </div>
                                                         <div className='mb-1'>
-                                                            <b>Formación: </b>
+                                                            <b>FormaciÃ³n: </b>
                                                             <span>{item.tform_prog}</span>
                                                         </div>
                                                         <div className='mb-1'>
@@ -215,7 +215,7 @@ const Programs = () => {
                                                             <span>{item.moda_prog}</span>
                                                         </div>
                                                         <div className='mb-1'>
-                                                            <b>Resolución: </b>
+                                                            <b>ResoluciÃ³n: </b>
                                                             {
                                                                 item.fech_reso?.length ?
                                                                     (item.fech_reso.length === 1 ?
