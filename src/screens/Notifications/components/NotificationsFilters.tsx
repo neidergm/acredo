@@ -17,7 +17,7 @@ export default function NotificationsFilters({ scope, onChange, totalCount, unre
     const isActive = (s: T_FilterScope) => scope === s;
 
     return (
-        <div className="d-flex gap-2 flex-wrap align-items-center py-2">
+        <div className="d-flex gap-2 align-items-center overflow-auto text-nowrap">
             <Button
                 variant={isActive("all") ? "dark text-primary-surface" : "outline-secondary"}
                 size="sm"

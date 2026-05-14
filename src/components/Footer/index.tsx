@@ -3,7 +3,7 @@ import classnames from 'classnames'
 const Footer = ({ className }: { className?: string }) => {
   return (
     <div className={classnames('text-center py-3', className)}>
-      <small>Corporación Universitaria Rafael Núñez | Institución Universitaria | Vigilada Mineducación</small>
+      <small>Acredo &copy; {new Date().getFullYear()}</small>
     </div>
   )
 }

@@ -26,9 +26,7 @@ export const notificationsApi = baseApi.injectEndpoints({
                 data: jsonToFormData(body),
             }),
             invalidatesTags: ["NotificationCount"],
-            // Optimistic update: el item se ve leído al instante. Si la mutación
-            // falla, el patch se revierte y el toast ERR_NETWORK ya lo emite el
-            // interceptor de axios.
+            // Optimistic update: el item se ve leído al instante. Si la mutación falla, el patch se revierte
             onQueryStarted: async ({ id_noti }, { dispatch, queryFulfilled }) => {
                 const patch = dispatch(
                     notificationsApi.util.updateQueryData(

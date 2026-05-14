@@ -52,7 +52,7 @@ export const getNormalDate = (value: string | number, options?: Intl.DateTimeFor
  * @returns number of days
  */
 export const getDateDiff = (from: Date | string, to = new Date()): number => {
-    if (typeof from === "string") { from = stringToDate(from) }
-    const dias = from.getTime() - to.getTime();
-    return Math.ceil(dias / (1000 * 60 * 60 * 24));
+    const fromDate = typeof from === "string" ? stringToDate(from) : from;
+    const diffTime = Math.abs(to.getTime() - fromDate.getTime());
+    return Math.floor(diffTime / (1000 * 60 * 60 * 24));
 }

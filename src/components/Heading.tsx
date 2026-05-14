@@ -17,7 +17,7 @@ const Heading = ({
     withBackButton = true,
 }: Props) => {
     return (
-        <Stack direction="horizontal" className="align-items-center mb-4 gap-3">
+        <Stack direction="horizontal" className="align-items-center mb-6 gap-3">
             {withBackButton && (
                 <div>
                     <Button
@@ -31,7 +31,6 @@ const Heading = ({
                 </div>
             )}
             <div>
-
                 <h1 className={classnames("h3 mb-0", className)} >
                     {children}
                 </h1>

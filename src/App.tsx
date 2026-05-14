@@ -31,16 +31,18 @@ const RequireAdmin = ({ children }: { children: ReactElement }) => {
 
 const App = () => {
 
-  const user = useAppSelector(state => state.user);
+  const user = useAppSelector(state => !!state.user.userInfo);
+  const unauthorized = useAppSelector(state => state.user.unauthorized);
+
   const dispatch = useAppDispatch();
 
-  if (!!(user.unauthorized) || !(user.userInfo)) {
+  if (!!(unauthorized) || !(user)) {
     return <Suspense fallback={<FallbackComponent />}>
-      {user.unauthorized &&
+      {unauthorized &&
         <div className='position-absolute w-100' style={{ zIndex: 1 }}>
           <Toast className='border-0 bg-danger text-white my-4 mx-auto'>
             <Toast.Body className='d-flex justify-content-between'>
-              <div>{user.unauthorized}</div>
+              <div>{unauthorized}</div>
               <div><CloseButton variant='white' onClick={() => { dispatch(setUnauthorized()) }} /></div>
             </Toast.Body>
           </Toast>
@@ -75,7 +77,7 @@ const App = () => {
             </Routes>
           </Suspense>
         </main>
-        <footer className='border-top'><Footer className='text-muted small' /></footer>
+        <footer><Footer className='text-muted small' /></footer>
       </Router>
     </div>
   );

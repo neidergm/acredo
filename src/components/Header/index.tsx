@@ -31,17 +31,17 @@ export const Header = () => {
 
   return (
     <div className="py-1 bg-dark">
-      <div className="container-fluid container-xxxl d-flex align-items-center gap-3 py-1">
+      <div className="container-fluid container-xxxl d-flex align-items-center gap-3 py-2 py-sm-1">
         <a onClick={goToHome} role="button">
           <picture>
             <source srcSet={logo_wordmark} media="(min-width: 576px)" />
-            <img alt='LogoHeader' src={logo} height={52} />
+            <img alt='LogoHeader' src={logo} height={38} />
           </picture>
         </a>
 
-        <div className="vr bg-light align-self-center" style={{height: "30px"}} />
+        <div className="vr bg-light align-self-center d-none d-md-block" style={{height: "30px"}} />
 
-        <span className="small text-secondary">{currentPathName}</span>
+        <span className="small text-secondary d-none d-md-block">{currentPathName}</span>
 
         <Stack direction='horizontal' className='ms-auto text-center small gap-5'>
           <NavLink to={is_admin ? "/" : "/proceso"} className={({ isActive }) => isActive ? activeClassName : ''}>

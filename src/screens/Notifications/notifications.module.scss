@@ -1,0 +1,13 @@
+// CSS Modules compilan en aislamiento, así que necesitan importar explícitamente
+// el map $grid-breakpoints (de nuestras variables) y el mixin de Bootstrap.
+@import "../../styles/variables";
+@import "bootstrap/scss/mixins/breakpoints";
+
+.notifications-container {
+    height: 64dvh;
+
+    @include media-breakpoint-down(lg) {
+        height: auto;
+        min-height: 64dvh;
+     }
+}

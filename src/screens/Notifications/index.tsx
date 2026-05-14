@@ -7,6 +7,8 @@ import NotificationsList from "./components/NotificationsList";
 import NotificationDetailPanel from "./components/NotificationDetailPanel";
 import Heading from "../../components/Heading";
 
+import styles from "./notifications.module.scss";
+
 export default function Notifications() {
     const { data: list, isLoading, isError, refetch } = useGetNotificationsQuery();
     const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -56,12 +58,11 @@ export default function Notifications() {
 
                 {!isLoading && !isError && (
                     <Row
-                        className="g-3 mt-1"
-                        style={{ minHeight: "60dvh" }}
+                        className={classnames("g-3 mt-1", styles['notifications-container'])}
                     >
                         <Col
                             {...(selected ? { lg: 5, xl: 4 } : { lg: 7, xl: 8 })}
-                            className={classnames("transition-all-linear", { "d-none d-lg-block": selected })}
+                            className={classnames("transition-all-linear mh-100", { "d-none d-lg-block": selected })}
                         >
                             <NotificationsList
                                 notifications={filtered}
@@ -70,7 +71,7 @@ export default function Notifications() {
                             />
                         </Col>
                         <Col
-                            className={classnames("transition-all-linear", { "d-none d-lg-block": !selected })}
+                            className={classnames("transition-all-linear mh-100", { "d-none d-lg-block": !selected })}
                         >
                             <NotificationDetailPanel
                                 notification={selected}

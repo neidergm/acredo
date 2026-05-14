@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { LuArrowLeft, LuMailOpen } from "react-icons/lu";
-import { Button, Card, CloseButton, Stack } from "react-bootstrap";
+import { Badge, Button, Card, CloseButton, Stack } from "react-bootstrap";
 import { type I_Notification } from "../../../interfaces/notification.interface";
 import { getNormalDate } from "../../../utils/dateUtils";
 import { useMarkAsReadMutation } from "../../../services/api/notifications.api";
@@ -21,8 +21,8 @@ export default function NotificationDetailPanel({ notification, onClose }: Props
     }, [notification, markAsRead]);
 
     return (
-        <Card className="h-100">
-            <Card.Body>
+        <Card className="h-100 overflow-hidden">
+            <Card.Body className="overflow-auto">
                 {
                     !notification ? (
                         <div className="d-flex flex-column align-items-center justify-content-center text-secondary h-100 py-5 gap-3">
@@ -43,20 +43,21 @@ export default function NotificationDetailPanel({ notification, onClose }: Props
                                 onClick={onClose}
                                 className="d-lg-none"
                             />
-                            <small className="text-secondary ms-auto">
+                            <small className="text-secondary ms-auto 2small">
                                 {getNormalDate(notification.marc_temp, { dateStyle: "long", timeStyle: "short" })}
                             </small>
                         </Stack>
 
                         <div>
-                            <span className="eyebrow">{getNotificationLabel(notification.tipo_noti)}</span>
-                            <h2 className="mt-1" style={{ fontSize: "28px" }}>
+                            <Badge bg="info">
+                                {getNotificationLabel(notification.tipo_noti)}
+                            </Badge>
+                            <h3>
                                 {getNotificationSubject(notification.asun_noti)}
-                            </h2>
+                            </h3>
                         </div>
                         <div
-                            className="flex-grow-1 overflow-auto mt-4"
-                            style={{ fontSize: 15, color: "#1E3A5F", lineHeight: 1.6 }}
+                            className="flex-grow-1 overflow-auto mt-7"
                             dangerouslySetInnerHTML={{ __html: notification.desc_noti }}
                         />
                     </>
