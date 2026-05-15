@@ -4,14 +4,16 @@
 @import "./ckeditor-styles";
 
 // === Botones ===
-// $warning es naranja claro; el contraste auto de Bootstrap escogería negro,
-// pero queremos blanco por branding.
-// .btn-warning, .btn-primary {
-//     --bs-btn-color: #fff;
-//     --bs-btn-hover-color: #fff;
-//     --bs-btn-active-color: #fff;
-//     --bs-btn-disabled-color: #fff;
-// }
+// Bootstrap default es `display: inline-block`, lo que hace que iconos SVG
+// queden alineados a la baseline del texto (parecen "subidos"). Cambiamos a
+// inline-flex con align-items:center para que cualquier <Icon /> + texto
+// dentro de un .btn quede verticalmente centrado sin clases extra por botón.
+.btn {
+    display: inline-flex;
+    gap: .5rem;
+    align-items: center;
+    justify-content: center;
+}
 
 // .btn-primary-surface base ya viene auto-generada por theme color.
 // Personalizamos el comportamiento especial: hover muta a `primary` completo

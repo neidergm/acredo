@@ -31,7 +31,7 @@ export const Header = () => {
 
   return (
     <div className="py-1 bg-dark">
-      <div className="container-fluid container-xxxl d-flex align-items-center gap-3 py-2 py-sm-1">
+      <div className="container-fluid container-xxxl d-flex align-items-center gap-3 py-2">
         <a onClick={goToHome} role="button">
           <picture>
             <source srcSet={logo_wordmark} media="(min-width: 576px)" />
@@ -44,11 +44,11 @@ export const Header = () => {
         <span className="small text-secondary d-none d-md-block">{currentPathName}</span>
 
         <Stack direction='horizontal' className='ms-auto text-center small gap-5'>
-          <NavLink to={is_admin ? "/" : "/proceso"} className={({ isActive }) => isActive ? activeClassName : ''}>
+          <NavLink to={is_admin ? "/" : "/proceso"} className={({ isActive }) => isActive ? activeClassName : undefined}>
             <LuHouse size={20} />
             <span className='d-block small mt-1 lh-1'>Inicio</span>
           </NavLink>
-          <NavLink to="/notificaciones" className={({ isActive }) => isActive ? activeClassName : ''}>
+          <NavLink to="/notificaciones" className={({ isActive }) => isActive ? activeClassName : undefined}>
             <span className="position-relative">
               <LuBell size={20} />
               {unreadCount !== 0 && (

@@ -52,7 +52,7 @@ export default function NotificationItem({ notification }: Props) {
             </div>
             <div className="flex-grow-1 overflow-hidden">
                 <div className="mb-1 lh-1 d-flex align-items-center gap-2 justify-content-between">
-                    <span className={classnames("eyebrow small", { [fg]: unread }, { "fw-semibold": unread })}>
+                    <span className={classnames("eyebrow small mb-1", { [fg]: unread }, { "fw-semibold": unread })}>
                         <small>
                         {getNotificationLabel(notification.tipo_noti)}
                         </small>     

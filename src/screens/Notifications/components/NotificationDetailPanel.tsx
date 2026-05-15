@@ -49,7 +49,7 @@ export default function NotificationDetailPanel({ notification, onClose }: Props
                         </Stack>
 
                         <div>
-                            <Badge bg="info">
+                            <Badge bg="info" className="mb-1">
                                 {getNotificationLabel(notification.tipo_noti)}
                             </Badge>
                             <h3>

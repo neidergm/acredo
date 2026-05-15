@@ -1,9 +1,12 @@
-import { Button, DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown } from 'reactstrap';
+import { Badge, Button, Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector'
 import { logout } from '../../store/slices/userSlice';
 import Alert from '../Alert';
 import useAlert from '../../hooks/useAlert';
+import { Stack } from 'react-bootstrap';
+import { LuCircleHelp, LuPower } from 'react-icons/lu';
+import { APP_HELP_LINK } from '../../services/constantsService';
 
 interface I_MenuProps {
     children: JSX.Element | JSX.Element[]
@@ -32,35 +35,67 @@ const Menu = ({ children }: I_MenuProps) => {
         <div>
             <Alert {...alertData} />
 
-            <UncontrolledDropdown>
-                <DropdownToggle caret tag="div" className='d-flex align-items-center'>
+            <Dropdown>
+                <Dropdown.Toggle as="div" className='d-flex align-items-center'>
                     {children}
-                </DropdownToggle>
-                <DropdownMenu className='border-0 shadow-sm mt-1 py-3'>
-                    <DropdownItem header style={{ whiteSpace: "normal" }} className="pb-4">
-                        <p style={{ width: "300px" }} className="text-center mb-0 pb-3 border-bottom">
-                            {userInfo?.cargo}
+                </Dropdown.Toggle>
+                <Dropdown.Menu className='shadow mt-1 py-5 px-sm-3 px-2 '>
+                    <Dropdown.Header >
+                        <Stack direction='horizontal' gap={4} className=' border-bottom pb-6 mb-4'>
+                            <img
+                                src={userInfo?.picture || "/images/default-profile.png"}
+                                alt="Foto de perfil"
+                                className="rounded-circle"
+                                width={75}
+                                height={75}
+                            />
+                            <div className='small fw-semibold text-wrap'>
+                                {userInfo?.displayName}
+                            </div>
+                        </Stack>
+                    </Dropdown.Header>
+
+                    <Dropdown.Item disabled className='text-body text-wrap' as={"div"}>
+                        <Stack direction='horizontal' gap={2} className='mb-7 justify-content-between align-items-center lh-1'>
+                            <Badge bg="primary-subtle" text="primary text-uppercase">
+                                {userInfo?.rol_nomb || "Usuario"}
+                            </Badge>
+                            <small>DNI: {userInfo?.dni}</small>
+                        </Stack>
+                        <p className='lh-sm'>
+                            <small className='d-block fw-semibold'>Cargo:</small>
+                            <span>{userInfo?.cargo}</span>
                         </p>
-                    </DropdownItem>
-                    <DropdownItem header >
-                        <p>
-                            <b className='d-block'>Correo:</b>
+                        <p className='lh-sm'>
+                            <small className='d-block fw-semibold'>Correo:</small>
                             <span>{userInfo?.mail}</span>
                         </p>
-                        <p>
-                            <b className='d-block'>Identificación:</b>
-                            <span>{userInfo?.dni}</span>
-                        </p>
-                        <p>
-                            <b className='d-block'>Rol:</b>
-                            <span>{userInfo?.rol_nomb || "Usuario"}</span>
-                        </p>
-                    </DropdownItem>
-                    <DropdownItem disabled tag="div" style={{ "pointerEvents": "initial" }} className="mt-3 text-center">
-                        <Button color='primary' onClick={confirmLogout} size='sm'>Cerrar sesión</Button>
-                    </DropdownItem>
-                </DropdownMenu>
-            </UncontrolledDropdown>
+                    </Dropdown.Item>
+
+                    <Dropdown.ItemText as={"div"} className='d-flex justify-content-between align-items-end'>
+                        <Button variant='light' className="mt-4" onClick={confirmLogout}>
+                            <LuPower /> Cerrar sesión
+                        </Button>
+
+                        {APP_HELP_LINK &&
+                            <OverlayTrigger
+                                overlay={<Tooltip id="btt-2">Ir al centro de ayuda</Tooltip>}
+                            >
+                                {(p) => (
+                                    <Button
+                                        {...p}
+                                        variant='link'
+                                        className="px-0"
+                                        onClick={() => window.open(APP_HELP_LINK, "_blank")}
+                                    >
+                                        <LuCircleHelp size={20} />
+                                    </Button>
+                                )}
+                            </OverlayTrigger>
+                        }
+                    </Dropdown.ItemText>
+                </Dropdown.Menu>
+            </Dropdown>
         </div>
     )
 }
