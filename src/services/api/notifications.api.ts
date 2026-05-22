@@ -16,8 +16,7 @@ export const notificationsApi = baseApi.injectEndpoints({
         getNotificationsReport: build.query<number, void>({
             query: () => "noti/reporte",
             providesTags: ["NotificationCount"],
-            transformResponse: (raw: T_NotificationReportResponse) =>
-                raw?.[0]?.pendientes ?? 0,
+            transformResponse: (raw: T_NotificationReportResponse) => raw?.[0]?.pendientes ?? 0,
         }),
         markAsRead: build.mutation<T_MarkAsReadResponse, T_MarkAsReadRequest>({
             query: (body) => ({

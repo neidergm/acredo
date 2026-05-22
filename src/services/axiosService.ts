@@ -10,12 +10,12 @@ import localStorageService from './localStorageService';
 import { type I_JSONObject } from '../interfaces/generic.interface';
 import { toast } from 'react-hot-toast';
 
-const api = axios.create({
+const axiosInstance = axios.create({
     baseURL: BASE_URL,
     timeout: 15000
 });
 
-api.interceptors.request.use(config => {
+axiosInstance.interceptors.request.use(config => {
     const token = localStorageService.getItem("token");
     if (token) config.headers.set("Authorization", `Bearer ${token}`);
     return config;
@@ -26,7 +26,7 @@ let onUnauthorized: ((msg: string) => void) | null = null;
 const setOnUnauthorized = (cb: typeof onUnauthorized) => { onUnauthorized = cb; };
 
 // Response: unwrap data en éxito, preservar AxiosError + side-effects en error.
-api.interceptors.response.use(
+axiosInstance.interceptors.response.use(
     resp => resp.data,
     (err: AxiosError) => {
         if (err.code === AxiosError.ERR_NETWORK) {
@@ -74,7 +74,7 @@ const AXIOS_REQUEST = <T = any>(
         }
     }
 
-    return api({
+    return axiosInstance({
         url,
         method,
         data: body,
@@ -92,17 +92,11 @@ export type T_BaseQueryError = {
     data: unknown;
 };
 
-type T_ApiEnvelope<T> = {
-    cod: number;
-    data: T;
-    msg: string;
-};
+type BaseQuery = BaseQueryFn<T_BaseQueryArgs, unknown, T_BaseQueryError>;
 
-type BaseQuery<T> = BaseQueryFn<T_BaseQueryArgs, T_ApiEnvelope<T>, T_BaseQueryError>;
-
-const RTKBaseQuery: BaseQuery<unknown> = async (args) => {
+const RTKBaseQuery: BaseQuery = async (args) => {
     try {
-        const result = await api(args as AxiosRequestConfig);
+        const result = await axiosInstance(args as AxiosRequestConfig);
         return result;
     } catch (err) {
         const axiosError = err as AxiosError;
@@ -118,5 +112,6 @@ const RTKBaseQuery: BaseQuery<unknown> = async (args) => {
 export {
     AXIOS_REQUEST,
     setOnUnauthorized,
-    RTKBaseQuery
+    RTKBaseQuery,
+    axiosInstance
 };

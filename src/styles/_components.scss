@@ -1,8 +1,6 @@
 // Overrides puntuales de componentes Bootstrap que NO se pueden expresar como
 // variables Sass (comportamientos, no valores).
 
-@import "./ckeditor-styles";
-
 // === Botones ===
 // Bootstrap default es `display: inline-block`, lo que hace que iconos SVG
 // queden alineados a la baseline del texto (parecen "subidos"). Cambiamos a

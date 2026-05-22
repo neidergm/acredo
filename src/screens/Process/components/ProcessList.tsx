@@ -25,7 +25,7 @@ export default function ProcessList({ processes, canManage }: Props) {
 
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-    const searchParams = useSearchParams();
+    const [searchParams] = useSearchParams();
 
     const [updateProcess] = useUpdateProcessMutation();
     const [deleteProcess] = useDeleteProcessMutation();

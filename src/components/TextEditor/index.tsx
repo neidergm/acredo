@@ -8,6 +8,7 @@ import type { onChangeType, T_ConfigParams } from './types';
 
 import { collectPlugins, resolveToolbar, toToolbarItems } from './utils';
 import 'ckeditor5/ckeditor5.css';
+import "./ckeditor-styles.scss";
 
 const LICENSE_KEY = 'GPL'; // or <YOUR_LICENSE_KEY>.
 
