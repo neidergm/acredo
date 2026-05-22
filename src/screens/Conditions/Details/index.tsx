@@ -15,7 +15,8 @@ import Alert from '../../../components/Alert';
 import { CurrentPhase, PhasesList } from '../../../components/Phases';
 import FormPannel from './../FormPannel';
 import { getDifferenceBetweenData, jsonToFormData } from '../../../utils/formUtils';
-import { getProcessList } from '../../../store/slices/processSlice';
+import { selectProcess } from '../../../store/slices/processSlice';
+import { processApi } from '../../../services/api/process.api';
 import Card from '../../../components/Card';
 import { getPhasesAndStagesOfCondition, getContionData, setSelectedConditionData } from '../../../store/slices/taskSlice';
 import { isAdmin, isLead, isOnlyView, isSupervisor } from '../../../utils/userRolUtils';
@@ -229,7 +230,16 @@ const ConditionsDetails = () => {
       return
     }
     if (!processSelected) {
-      dispatch(getProcessList({ id_process: Number(id_process), status: searchParams.get("status") || "" }))
+      dispatch(
+        processApi.endpoints.getProcesses.initiate(
+          searchParams.get("status") ? { status: searchParams.get("status") as string } : undefined
+        )
+      )
+        .unwrap()
+        .then((list) => {
+          const found = list.find((p) => p.id_conv === Number(id_process)) ?? null;
+          dispatch(selectProcess(found));
+        });
     }
     else {
       if (!(conditionSelected)) {

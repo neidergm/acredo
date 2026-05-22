@@ -8,7 +8,8 @@ import { useAppSelector } from "../../hooks/useAppSelector";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { selectCondition, getPhasesWithConditions } from "../../store/slices/taskSlice";
 import CircleProgress from "../../components/CircleProgress";
-import { getProcessList } from "../../store/slices/processSlice";
+import { selectProcess } from "../../store/slices/processSlice";
+import { processApi } from "../../services/api/process.api";
 import Card from "../../components/Card";
 import classnames from 'classnames';
 import { getDateDiff, getNormalDate } from "../../utils/dateUtils";
@@ -262,15 +263,18 @@ const Conditions = () => {
 
   const getData = () => {
     const filterType = searchParams.get("status") || "";
-    // if (filterType) {
-    //   return AXIOS_REQUEST(`${GET_PROCESS_BY_STATE}${filterType}`).then(resp => {
-    //     dispatch(setProcessList(resp.data));
-    //   })
-    // }
-    // return dispatch(getProcessList({ id_process: Number(id_process), status: filterType })).then((r) =>
-    return dispatch(getProcessList({ id_process: Number(id_process), status: filterType })).then((r) =>
-      dispatch(getPhasesWithConditions(Number(id_process))).then(() => r.payload)
+    return dispatch(
+      processApi.endpoints.getProcesses.initiate(filterType ? { status: filterType } : undefined)
     )
+      .unwrap()
+      .then((list) => {
+        const selected = list.find((p) => p.id_conv === Number(id_process)) ?? null;
+        dispatch(selectProcess(selected));
+        return { list, selected };
+      })
+      .then((payload) =>
+        dispatch(getPhasesWithConditions(Number(id_process))).then(() => payload)
+      );
   }
 
   useEffect(() => {

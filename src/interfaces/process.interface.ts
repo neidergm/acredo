@@ -16,3 +16,8 @@ export interface I_Process {
     sede: string,
     tipo_cond: string,
 }
+
+export interface I_ProcessType {
+    id_tcond: number;
+    nomb_tcond: string;
+}

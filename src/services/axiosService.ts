@@ -1,14 +1,23 @@
-import axios, { type AxiosError, type AxiosProgressEvent } from 'axios';
+import axios, {
+    HttpStatusCode,
+    AxiosError,
+    type AxiosProgressEvent,
+    type AxiosRequestConfig
+} from 'axios';
+import type { BaseQueryFn } from '@reduxjs/toolkit/query/react';
 import { BASE_URL } from './constantsService';
 import localStorageService from './localStorageService';
 import { type I_JSONObject } from '../interfaces/generic.interface';
 import { toast } from 'react-hot-toast';
 
-const api = axios.create({ baseURL: BASE_URL });
+const api = axios.create({
+    baseURL: BASE_URL,
+    timeout: 15000
+});
 
 api.interceptors.request.use(config => {
     const token = localStorageService.getItem("token");
-    if (token) config.headers.Authorization = `Bearer ${token}`;
+    if (token) config.headers.set("Authorization", `Bearer ${token}`);
     return config;
 });
 
@@ -20,7 +29,7 @@ const setOnUnauthorized = (cb: typeof onUnauthorized) => { onUnauthorized = cb; 
 api.interceptors.response.use(
     resp => resp.data,
     (err: AxiosError) => {
-        if (err.code === "ERR_NETWORK") {
+        if (err.code === AxiosError.ERR_NETWORK) {
             toast.error("Hubo un error, tal vez se deba a su conexión a internet", {
                 id: "GEN_ERROR",
                 position: "bottom-center",
@@ -28,7 +37,7 @@ api.interceptors.response.use(
                 className: "bg-warning text-white",
             });
         }
-        if (err.response?.status === 401) {
+        if (err.response?.status === HttpStatusCode.Unauthorized) {
             onUnauthorized?.("Su sesión ha expirado");
         }
         return Promise.reject(err);
@@ -75,4 +84,39 @@ const AXIOS_REQUEST = <T = any>(
     }) as unknown as Promise<T>;
 };
 
-export { AXIOS_REQUEST, setOnUnauthorized };
+// ── RTK Query adapter ───────────────────────────────────────────────
+export type T_BaseQueryArgs = string | AxiosRequestConfig;
+
+export type T_BaseQueryError = {
+    status: number | "FETCH_ERROR";
+    data: unknown;
+};
+
+type T_ApiEnvelope<T> = {
+    cod: number;
+    data: T;
+    msg: string;
+};
+
+type BaseQuery<T> = BaseQueryFn<T_BaseQueryArgs, T_ApiEnvelope<T>, T_BaseQueryError>;
+
+const RTKBaseQuery: BaseQuery<unknown> = async (args) => {
+    try {
+        const result = await api(args as AxiosRequestConfig);
+        return result;
+    } catch (err) {
+        const axiosError = err as AxiosError;
+        return {
+            error: {
+                status: axiosError.response?.status ?? "FETCH_ERROR",
+                data: axiosError.response?.data ?? axiosError.message,
+            },
+        };
+    }
+};
+
+export {
+    AXIOS_REQUEST,
+    setOnUnauthorized,
+    RTKBaseQuery
+};

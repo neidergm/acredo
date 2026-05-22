@@ -10,11 +10,11 @@ import {
 export const notificationsApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
         getNotifications: build.query<T_NotificationListResponse, void>({
-            query: () => ({ url: "noti" }),
+            query: () => "noti",
             providesTags: ["Notification"],
         }),
         getNotificationsReport: build.query<number, void>({
-            query: () => ({ url: "noti/reporte" }),
+            query: () => "noti/reporte",
             providesTags: ["NotificationCount"],
             transformResponse: (raw: T_NotificationReportResponse) =>
                 raw?.[0]?.pendientes ?? 0,

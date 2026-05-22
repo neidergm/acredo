@@ -1,0 +1,23 @@
+// Mirror Notifications: bring in Bootstrap breakpoints for media-breakpoint mixins.
+// @import "../../styles/variables";
+// @import "bootstrap/scss/mixins/breakpoints";
+
+// .type-strip {
+//     height: 4px;
+//     width: 100%;
+// }
+
+.snies {
+    font-family: "Courier New", monospace;
+    font-size: 0.7rem;
+    min-height: 14px;
+}
+
+.card-clickable {
+    cursor: pointer;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+
+    &:hover {
+        transform: translateY(-2px);
+    }
+}
