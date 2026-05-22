@@ -1,6 +1,6 @@
 import type { T_NotificationType } from "../../../interfaces/notification.interface";
 import { getNotificationLabel } from "../../../utils/notifications.utils";
-import { Button } from "react-bootstrap";
+import { Button, Stack } from "react-bootstrap";
 
 export type T_FilterScope = "all" | "unread" | T_NotificationType;
 
@@ -17,7 +17,7 @@ export default function NotificationsFilters({ scope, onChange, totalCount, unre
     const isActive = (s: T_FilterScope) => scope === s;
 
     return (
-        <div className="d-flex gap-2 align-items-center overflow-auto text-nowrap">
+        <Stack direction="horizontal" gap={2} className="overflow-auto text-nowrap">
             <Button
                 variant={isActive("all") ? "dark text-primary-surface" : "outline-secondary"}
                 size="sm"
@@ -46,6 +46,6 @@ export default function NotificationsFilters({ scope, onChange, totalCount, unre
                     {getNotificationLabel(t)}
                 </Button>
             ))}
-        </div>
+        </Stack>
     );
 }

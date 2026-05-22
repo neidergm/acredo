@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import classnames from "classnames";
-import { Alert, Button, Col, Row, Spinner } from "react-bootstrap";
+import { Alert, Button, Col, Container, Row, Spinner } from "react-bootstrap";
 import { useGetNotificationsQuery } from "../../services/api/notifications.api";
 import NotificationsFilters, { type T_FilterScope } from "./components/NotificationsFilters";
 import NotificationsList from "./components/NotificationsList";
@@ -30,7 +30,7 @@ export default function Notifications() {
 
     return (
         <>
-            <div className="container-fluid container-xxxl">
+            <Container fluid="xxxl">
 
                 <Heading>Tu actividad reciente</Heading>
 
@@ -80,7 +80,7 @@ export default function Notifications() {
                         </Col>
                     </Row>
                 )}
-            </div>
+            </Container>
         </>
     );
 }
